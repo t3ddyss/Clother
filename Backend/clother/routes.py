@@ -1,6 +1,6 @@
 import time
 import re
-import asyncio
+from threading import Thread
 
 from clother import app, db, jwt, mail
 from clother.models import User
@@ -13,10 +13,12 @@ from email_validator import validate_email, EmailNotValidError
 from sqlalchemy.exc import IntegrityError
 from .util.security import ts
 from flask_mail import Message
+from itsdangerous.exc import BadSignature, SignatureExpired, BadData
 
 
-async def send_message(message):
-    mail.send(message)
+def send_message(message):
+    with app.app_context():
+        mail.send(message)
 
 
 @app.route('/register', methods=['POST'])
@@ -41,7 +43,7 @@ def register():
                                   '(?=.*?[^A-Za-z\s0-9])')  # at least 1 special character
     if not password_pattern.match(password):
         return jsonify({'message': 'Password should be at least 8 and less than 25 characters, '
-                                   'contain at least 1 digit, 1 upcase letter, 1 lowercase letter and '
+                                   'contain at least 1 digit, 1 uppercase letter, 1 lowercase letter and '
                                    '1 special character'}), 422
 
     name = data['name']
@@ -71,7 +73,9 @@ def register():
         'activate_account.html',
         action_url=confirm_url)
     message = Message('Confirm your email address', sender='fnsokolov@edu.hse.ru', recipients=[user.email], html=html)
-    asyncio.run(send_message(message))
+
+    thread = Thread(target=send_message, args=(message,))
+    thread.start()
 
     return jsonify({'access_token': create_access_token(user.id),
                     'refresh_token': create_refresh_token(user.id)
@@ -80,17 +84,21 @@ def register():
 
 @app.route('/confirm/<token>')
 def confirm_email(token):
-    email = None
     try:
-        email = ts.loads(token, salt="confirm_email", max_age=86400)
-    except:
-        abort(404)
+        email = ts.loads(token, salt="confirm_email", max_age=2_592_000)  # 30 days
+    except SignatureExpired as ex:
+        try:
+            email = ts.load_payload(ex.payload)
+            User.query.filter_by(email=email).first().delete()
+            db.session.commit()
+        except BadData:
+            return jsonify({'message': "Invalid token"}), 403
+        return jsonify({{'message': "Token has expired"}}), 403
+    except BadSignature:
+        return jsonify({'message': "Invalid token"}), 403
 
-    user = User.query.filter_by(email=email).first_or_404()
-
+    user = User.query.filter_by(email=email).first()
     user.email_verified = True
-
-    # db.session.add(user)
     db.session.commit()
 
     return jsonify({'message': 'Your account was successfully activated!'})
@@ -109,12 +117,13 @@ def login():
     if not password:
         return jsonify({"message": "Missing password parameter"}), 400
 
-    if email != 'test' or password != 'test':
-        return jsonify({"message": "Bad email or password"}), 401
-
-    # Identity can be any data that is json serializable
-    access_token = create_access_token(identity=email)
-    return jsonify(access_token=access_token), 200
+    user = User.query.filter_by(email=email).first()
+    if user and check_password_hash(pwhash=user.password, password=password):
+        return jsonify({'access_token': create_access_token(user.id),
+                        'refresh_token': create_refresh_token(user.id)
+                        })
+    else:
+        return jsonify({"message": "Wrong email or password"}), 403
 
 
 @app.route('/users', methods=['GET'])
@@ -135,6 +144,20 @@ def get_user(user_id):
         return jsonify({"message": f"User with ID {user_id} doesn't exist"}), 404
     else:
         return jsonify(user.to_json())
+
+
+@app.route('/test_email')
+def test_email():
+    html = render_template(
+        'activate_account.html',
+        action_url='https://google.com')
+    message = Message('Confirm your email address', sender='fnsokolov@edu.hse.ru',
+                      recipients=['tedorsokolov@gmail.com'], html=html)
+
+    thread = Thread(target=send_message, args=(message,))
+    thread.start()
+
+    return jsonify({'sent': 'sent'})
 
 
 @app.route('/users_test')
