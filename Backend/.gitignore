@@ -237,3 +237,5 @@ _mailinglist
 # Coverage reports
 *,cover
 
+# Database
+/clother.db
