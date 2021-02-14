@@ -1,5 +1,6 @@
 from clother import db
 from datetime import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class User(db.Model):
@@ -12,8 +13,11 @@ class User(db.Model):
     name = db.Column(db.String(50), nullable=False)
     image = db.Column(db.String(50), default=None)
 
-    def get_description(self):
-        return f'User {self.name} with email {self.email}.'
+    def set_password(self, password):
+        self.password = generate_password_hash(password, method='sha256')
 
-    def to_json(self):
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
+
+    def to_dict(self):
         return {'id': self.id, 'email': self.email, 'password': self.password, 'name': self.name}

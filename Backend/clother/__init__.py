@@ -1,16 +1,26 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_jwt_extended import JWTManager
-from flask_mail import Mail, Message
+from clother.extensions import db, migrate, cache, jwt, mail
+from clother import authentication, user
 
-from config import Config
 
-app = Flask(__name__, instance_relative_config=True)
-app.config.from_object(Config)
-app.config.from_pyfile('config.cfg')
+def create_app(config_filename):
+    app = Flask(__name__, instance_relative_config=True)
+    app.config.from_pyfile(f"../{config_filename}")
+    app.config.from_pyfile(config_filename)
 
-jwt = JWTManager(app)
-db = SQLAlchemy(app)
-mail = Mail(app)
+    register_extensions(app)
+    register_blueprints(app)
+    return app
 
-from clother import routes
+
+def register_extensions(app):
+    db.init_app(app)
+    migrate.init_app(app, db)
+    cache.init_app(app)
+    jwt.init_app(app)
+    mail.init_app(app)
+
+
+def register_blueprints(app):
+    app.register_blueprint(authentication.views.blueprint)
+    app.register_blueprint(user.views.blueprint)

@@ -224,18 +224,5 @@ cython_debug/
 pyvenv.cfg
 pip-selfcheck.json
 
-.DS_Store
-.flaskenv
-*.pyc
-*.pyo
-env*
-_mailinglist
-.cache/
-.idea/
-.vscode
-
 # Coverage reports
 *,cover
-
-# Database
-/clother.db
