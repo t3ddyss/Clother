@@ -65,9 +65,7 @@ def register():
 
     send_email(subject='Confirm your email address', recipients=[user.email], html=html)
 
-    return {'access_token': create_access_token(user.id),
-            'refresh_token': create_refresh_token(user.id)
-            }
+    return {'message': 'Check your inbox'}
 
 
 @blueprint.route('/auth/confirm_email/<token>')
@@ -90,7 +88,7 @@ def confirm_email(token):
     user.email_verified = True
     db.session.commit()
 
-    return {'message': 'Your account was successfully activated!'}
+    return 'Your account was successfully activated!'
 
 
 @blueprint.route('/login', methods=['POST'])
@@ -173,10 +171,10 @@ def reset_password(token):
     if form.validate_on_submit():
         user.set_password(form.password.data)
         db.session.commit()
-        return {'message': 'Password has been successfully changed'}
+        return 'Password has been successfully changed'
 
     if not user.password == data['password']:
-        return {'message': 'Password has already been reset'}, 410
+        return 'Password has already been reset', 410
 
     return render_template('reset_password.html', form=form)
 
@@ -225,7 +223,7 @@ def get_form_test():
     form = ResetPasswordForm()
 
     if form.validate_on_submit():
-        return 0
+        return 'Success'
     return render_template('reset_password.html', form=form)
 
 
