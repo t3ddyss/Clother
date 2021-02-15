@@ -183,16 +183,25 @@ def reset_password(token):
 
 @blueprint.route('/email_test')
 def get_email_test():
+    # html = render_template(
+    #     'confirmation.html',
+    #     subject_text='You are almost done!',
+    #     body_text='To complete email verification, please press the button below.',
+    #     button_text='Verify email',
+    #     action_url='https://google.com')
+    #
+    # send_email(subject='Confirm your email address', recipients=['tedorsokolov@gmail.com'], html=html)
     html = render_template(
         'confirmation.html',
-        subject_text='You are almost done!',
-        body_text='To complete email verification, please press the button below.',
-        button_text='Verify email',
+        subject_text='Password reset',
+        body_text="To reset your password, please press the button below. If you didn't request a password reset, "
+                  "just ignore this email",
+        button_text='Reset password',
         action_url='https://google.com')
 
-    send_email(subject='Confirm your email address', recipients=['tedorsokolov@gmail.com'], html=html)
+    send_email(subject='Forgot your password?', recipients=['tedorsokolov@gmail.com'], html=html)
 
-    return 'Email sent'
+    return {'message': 'Check your inbox'}
 
 
 @blueprint.route('/error_test')
@@ -211,9 +220,12 @@ def get_template_test():
         action_url='https://google.com')
 
 
-@blueprint.route('/form_test')
+@blueprint.route('/form_test', methods=['GET', 'POST'])
 def get_form_test():
     form = ResetPasswordForm()
+
+    if form.validate_on_submit():
+        return 0
     return render_template('reset_password.html', form=form)
 
 
