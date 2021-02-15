@@ -5,3 +5,4 @@ Flask_JWT_Extended==3.25.0
 Werkzeug==1.0.1
 Flask==1.1.2
 itsdangerous~=1.1.0
+WTForms~=2.3.3
