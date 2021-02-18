@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Clother" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/grey_night_dark</item>
         <item name="colorPrimaryVariant">@color/grey_night_mid</item>
@@ -15,7 +15,10 @@
         <item name="android:statusBarColor">?attr/colorPrimary</item>
         <item name="android:windowLightStatusBar">false</item>
 
-        <!-- Customize your theme here. -->
+        <!-- TextColor. -->
         <item name="android:textColor">?attr/colorOnPrimary</item>
+
+        <!-- TextInput style. -->
+        <item name="textInputStyle">@style/AppTheme.TextInputLayoutStyle</item>
     </style>
 </resources>

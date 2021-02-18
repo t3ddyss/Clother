@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Clother" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@android:color/white</item>
         <item name="colorPrimaryVariant">@color/white_day_light</item>
@@ -19,7 +19,40 @@
         <item name="android:navigationBarColor">?attr/colorPrimaryVariant</item>
         <item name="android:windowLightNavigationBar">true</item>
 
-        <!-- Customize your theme here. -->
+        <!-- Text color. -->
         <item name="android:textColor">?attr/colorOnPrimary</item>
+
+        <!-- TextInput style. -->
+        <item name="textInputStyle">@style/AppTheme.TextInputLayoutStyle</item>
+    </style>
+
+    <!-- Splash screen. -->
+    <style name="SplashScreenTheme" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/layout_splash_screen</item>
+        <item name="android:navigationBarColor">?attr/colorPrimary</item>
+    </style>
+
+    <!-- EditText style -->
+    <!-- https://stackoverflow.com/questions/56044075/overriding-edittextstyle-doesnt-work-with-latest-material-components-base-style -->
+    <style name="AppTheme.TextInputLayoutStyle"
+        parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/green_500</item>
+        <item name="hintTextColor">@color/green_500</item>
+        <item name="materialThemeOverlay">@style/AppTheme.MaterialThemeOverlay</item>
+    </style>
+
+    <style name="AppTheme.MaterialThemeOverlay">
+        <item name="editTextStyle">@style/AppTheme.TextInputEditTextStyle</item>
+    </style>
+
+    <style name="AppTheme.TextInputEditTextStyle"
+        parent="@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox">
+        <item name="android:textCursorDrawable">@drawable/textinput_cursor</item>
+    </style>
+
+    <!-- Button style -->
+    <style name="GreenButton" parent="@style/Widget.MaterialComponents.Button">
+        <item name="color">@color/green_500</item>
+        <item name="backgroundColor">@color/green_500</item>
     </style>
 </resources>
