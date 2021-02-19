@@ -1,4 +1,4 @@
-package com.t3ddyss.clother.ui.notifications
+package com.t3ddyss.clother.ui.profile
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

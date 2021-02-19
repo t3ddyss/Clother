@@ -1,4 +1,4 @@
-package com.t3ddyss.clother.ui.dashboard
+package com.t3ddyss.clother.ui.messages
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

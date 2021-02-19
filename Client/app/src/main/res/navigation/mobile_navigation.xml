@@ -13,19 +13,19 @@
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.t3ddyss.clother.ui.dashboard.DashboardFragment"
+        android:name="com.t3ddyss.clother.ui.messages.DashboardFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_messages" />
 
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="com.t3ddyss.clother.ui.notifications.NotificationsFragment"
+        android:name="com.t3ddyss.clother.ui.profile.NotificationsFragment"
         android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_profile" />
 
     <fragment
         android:id="@+id/navigation_login"
-        android:name="com.t3ddyss.clother.ui.login.LoginFragment"
+        android:name="com.t3ddyss.clother.ui.sign_up.SignUpFragment"
         android:label="Login"
-        tools:layout="@layout/fragment_login"/>
+        tools:layout="@layout/fragment_sign_up"/>
 </navigation>

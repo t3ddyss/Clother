@@ -49,10 +49,4 @@
         parent="@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox">
         <item name="android:textCursorDrawable">@drawable/textinput_cursor</item>
     </style>
-
-    <!-- Button style -->
-    <style name="GreenButton" parent="@style/Widget.MaterialComponents.Button">
-        <item name="color">@color/green_500</item>
-        <item name="backgroundColor">@color/green_500</item>
-    </style>
 </resources>
