@@ -4,17 +4,15 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.google.gson.Gson
-import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
-import com.t3ddyss.clother.data.ErrorResponse
+import com.t3ddyss.clother.data.ResponseSignUp
 import com.t3ddyss.clother.data.UserRepository
-import org.json.JSONObject
 import retrofit2.HttpException
 
 
 class HomeViewModel : ViewModel() {
 
-    private val repository: UserRepository = UserRepository()
+    private val repository by lazy { UserRepository() }
 
     // Dispatchers.IO to create a new scope
     val users = liveData {
@@ -28,11 +26,11 @@ class HomeViewModel : ViewModel() {
                 Log.d("ViewModel", ex.message().toString())
 
                 val gson = Gson()
-                val type = object: TypeToken<ErrorResponse>() {}.type
-                val errorResponse: ErrorResponse? = gson
+                val type = object: TypeToken<ResponseSignUp>() {}.type
+                val responseSignUp: ResponseSignUp? = gson
                         .fromJson(ex.response()?.errorBody()?.charStream(), type)
 
-                errorResponse?.let { Log.d("ViewModel",
+                responseSignUp?.let { Log.d("ViewModel",
                         it.message ?: "Error message is NULL") }
             }
         }

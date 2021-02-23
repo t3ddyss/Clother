@@ -3,10 +3,25 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+
     <!-- Strings related to login -->
+    <string name="name">Name</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="sign_up">Sign up</string>
-    <string name="already_have_an_account_sign_in">Already have an account? Sign in</string>
-    <string name="name">Name</string>
+    <string name="email_activation">To activate your account, please follow instructions we sent to</string>
+    <string name="sign_in">Sign in</string>
+    <string name="already_registered">Already have an account? Sign in</string>
+    <string name="forgot_password">Forgot your password?</string>
+    <string name="reset_password">Reset password</string>
+    <string name="okay">Okay</string>
+    <string name="name_requirements">Name should contain at least 2 and less than 50 characters</string>
+    <string name="email_invalid">Email address is invalid</string>
+    <string name="password_requirements">Password should be at least 8 and less than 25 characters,
+        contain at least 1 digit, 1 uppercase letter, 1 lowercase letter
+        and 1 special character</string>
+    <string name="check_inbox">Check your inbox</string>
+    <string name="your_email">your email address</string>
+    <string name="no_connection">You are offline :(</string>
+    <string name="unknown_error">Unknown error</string>
 </resources>

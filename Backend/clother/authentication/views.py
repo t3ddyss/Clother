@@ -18,6 +18,7 @@ blueprint = Blueprint('auth', __name__)
 
 @blueprint.route('/register', methods=['POST'])
 def register():
+    time.sleep(1.5)
     if not request.is_json:
         return {'message': 'Expected JSON in the request body'}, 400
     data = request.get_json()
@@ -63,7 +64,7 @@ def register():
         button_text='Verify email',
         action_url=confirmation_url)
 
-    send_email(subject='Confirm your email address', recipients=[user.email], html=html)
+    # send_email(subject='Confirm your email address', recipients=[user.email], html=html)
 
     return {'message': 'Check your inbox'}
 

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_login">
+    app:startDestination="@+id/signUpFragment">
 
     <fragment
         android:id="@+id/navigation_home"
@@ -13,19 +13,44 @@
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.t3ddyss.clother.ui.messages.DashboardFragment"
+        android:name="com.t3ddyss.clother.ui.messages.MessagesFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_messages" />
 
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="com.t3ddyss.clother.ui.profile.NotificationsFragment"
+        android:name="com.t3ddyss.clother.ui.profile.ProfileFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_profile" />
 
     <fragment
-        android:id="@+id/navigation_login"
+        android:id="@+id/signUpFragment"
         android:name="com.t3ddyss.clother.ui.sign_up.SignUpFragment"
-        android:label="Login"
-        tools:layout="@layout/fragment_sign_up"/>
+        android:label="@string/sign_up"
+        tools:layout="@layout/fragment_sign_up">
+        <action
+            android:id="@+id/action_signUpFragment_to_emailSentFragment"
+            app:destination="@id/emailSentFragment"
+            app:popUpTo="@id/signUpFragment"
+            app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_signUpFragment_to_signInFragment"
+            app:destination="@id/signInFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/emailSentFragment"
+        android:name="com.t3ddyss.clother.ui.email_sent.EmailSentFragment"
+        android:label="@string/check_inbox"
+        tools:layout="@layout/fragment_email_sent">
+        <argument android:name="email_sent_message"
+            app:argType="string" />
+        <argument
+            android:name="email_address"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/signInFragment"
+        android:name="com.t3ddyss.clother.ui.sign_in.SignInFragment"
+        android:label="@string/sign_in"
+        tools:layout="@layout/fragment_sign_in"/>
 </navigation>
