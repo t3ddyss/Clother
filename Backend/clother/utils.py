@@ -23,3 +23,6 @@ def validate_password(password):
 # at least 1 special character
 def get_password_regex():
     return re.compile(r'^(?=\S{8,25}$)(?=.*?\d)(?=.*?[a-z])(?=.*?[A-Z])(?=\S+$)(?=.*?[^A-Za-z\s0-9])')
+
+
+response_delay = 1.5

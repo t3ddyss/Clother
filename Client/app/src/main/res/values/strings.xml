@@ -24,4 +24,7 @@
     <string name="your_email">your email address</string>
     <string name="no_connection">You are offline :(</string>
     <string name="unknown_error">Unknown error</string>
+    <string name="messages">Messages</string>
+    <string name="profile">Profile</string>
+    <string name="resend_email">Resend email</string>
 </resources>

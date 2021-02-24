@@ -10,7 +10,7 @@ from sqlalchemy.exc import IntegrityError
 
 from clother import db
 from clother.user.models import User
-from clother.utils import send_email, validate_password
+from clother.utils import send_email, validate_password, response_delay
 from .forms import ResetPasswordForm
 
 blueprint = Blueprint('auth', __name__)
@@ -18,7 +18,7 @@ blueprint = Blueprint('auth', __name__)
 
 @blueprint.route('/register', methods=['POST'])
 def register():
-    time.sleep(1.5)
+    time.sleep(response_delay)
     if not request.is_json:
         return {'message': 'Expected JSON in the request body'}, 400
     data = request.get_json()
@@ -94,6 +94,7 @@ def confirm_email(token):
 
 @blueprint.route('/login', methods=['POST'])
 def login():
+    time.sleep(response_delay)
     if not request.is_json:
         return {"message": "Missing JSON in request"}, 400
 
@@ -106,6 +107,8 @@ def login():
         return {"message": "Missing password parameter"}, 400
 
     user = User.query.filter_by(email=email).first()
+    if not user.email_verified:
+        return {"message": "You haven't verified your email address"}, 403
     if user and user.check_password(password):
         return {'access_token': create_access_token(user.id),
                 'refresh_token': create_refresh_token(user.id)

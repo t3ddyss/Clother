@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
@@ -34,8 +34,7 @@
 
     <!-- EditText style -->
     <!-- https://stackoverflow.com/questions/56044075/overriding-edittextstyle-doesnt-work-with-latest-material-components-base-style -->
-    <style name="AppTheme.TextInputLayoutStyle"
-        parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+    <style name="AppTheme.TextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="boxStrokeColor">@color/green_500</item>
         <item name="hintTextColor">@color/green_500</item>
         <item name="materialThemeOverlay">@style/AppTheme.MaterialThemeOverlay</item>
@@ -45,8 +44,7 @@
         <item name="editTextStyle">@style/AppTheme.TextInputEditTextStyle</item>
     </style>
 
-    <style name="AppTheme.TextInputEditTextStyle"
-        parent="@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox">
+    <style name="AppTheme.TextInputEditTextStyle" parent="@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox">
         <item name="android:textCursorDrawable">@drawable/textinput_cursor</item>
     </style>
 </resources>

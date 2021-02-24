@@ -1,10 +1,11 @@
 package com.t3ddyss.clother
 
+import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -14,11 +15,13 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.snackbar.Snackbar
 import com.t3ddyss.clother.databinding.ActivityMainBinding
+import com.t3ddyss.clother.utilities.AUTHENTICATED
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
+    private val sp by lazy { getPreferences(Context.MODE_PRIVATE) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
@@ -31,8 +34,15 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager
                 .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
+
+        if (sp.getBoolean(AUTHENTICATED, false)) {
+            val navGraph = navController.graph
+            navGraph.startDestination = R.id.homeFragment
+            navController.graph = navGraph
+        }
+
         appBarConfiguration = AppBarConfiguration(setOf(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications))
+                R.id.homeFragment, R.id.messagesFragment, R.id.profileFragment))
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
 
@@ -47,7 +57,7 @@ class MainActivity : AppCompatActivity() {
                         toolbar.visibility = View.VISIBLE
                         navView.visibility = View.GONE
                     }
-                    R.id.signInFragment ->  {
+                    R.id.signInFragment -> {
                         toolbar.visibility = View.VISIBLE
                         navView.visibility = View.GONE
                     }
@@ -60,7 +70,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as? ConnectivityManager
-        connectivityManager?.registerDefaultNetworkCallback(object: ConnectivityManager.NetworkCallback() {
+        connectivityManager?.registerDefaultNetworkCallback(object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
 
             }

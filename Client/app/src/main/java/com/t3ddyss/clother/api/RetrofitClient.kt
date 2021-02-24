@@ -12,15 +12,15 @@ object RetrofitClient {
     // Checking if app's running from the emulator for debug purposes
     val instance: ClotherService by lazy {
         if (Build.FINGERPRINT.contains("generic"))
-        Retrofit.Builder()
-            .baseUrl(BASE_URL_EMULATOR)
-            .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
-            .build()
-            .create(ClotherService::class.java)
+            Retrofit.Builder()
+                    .baseUrl(BASE_URL_EMULATOR)
+                    .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
+                    .build()
+                    .create(ClotherService::class.java)
         else Retrofit.Builder()
-            .baseUrl(BASE_URL_DEVICE)
-            .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
-            .build()
-            .create(ClotherService::class.java)
+                .baseUrl(BASE_URL_DEVICE)
+                .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
+                .build()
+                .create(ClotherService::class.java)
     }
 }

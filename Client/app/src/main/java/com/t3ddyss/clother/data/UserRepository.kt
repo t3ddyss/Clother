@@ -1,6 +1,5 @@
 package com.t3ddyss.clother.data
 
-import android.util.Log
 import com.t3ddyss.clother.api.ClotherService
 import com.t3ddyss.clother.api.RetrofitClient
 

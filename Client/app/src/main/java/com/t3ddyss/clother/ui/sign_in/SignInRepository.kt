@@ -1,23 +1,23 @@
-package com.t3ddyss.clother.ui.sign_up
+package com.t3ddyss.clother.ui.sign_in
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.t3ddyss.clother.api.*
 import com.t3ddyss.clother.data.ErrorResponse
-import com.t3ddyss.clother.data.SignUpResponse
+import com.t3ddyss.clother.data.SignInResponse
 import com.t3ddyss.clother.data.User
 import retrofit2.HttpException
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 
 // TODO inject RetrofitClient using Hilt or Dagger
-class SignUpRepository {
+class SignInRepository {
     private val client: ClotherService = RetrofitClient.instance
 
-    suspend fun createUser(user: User): Resource<SignUpResponse> {
+    suspend fun signInWithCredentials(user: User): Resource<SignInResponse> {
         return try {
-            val response = client.createUserWithCredentials(user)
-            Success(response.also { it.email = user.email })
+            val response = client.signInWithCredentials(user)
+            Success(response)
 
         } catch (ex: HttpException) {
             val gson = Gson()

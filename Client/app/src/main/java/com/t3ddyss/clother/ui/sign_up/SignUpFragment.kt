@@ -9,7 +9,11 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.snackbar.Snackbar
 import com.t3ddyss.clother.R
-import com.t3ddyss.clother.data.LoadingStates
+import com.t3ddyss.clother.api.Error
+import com.t3ddyss.clother.api.Failed
+import com.t3ddyss.clother.api.Loading
+import com.t3ddyss.clother.api.Success
+import com.t3ddyss.clother.data.SignUpResponse
 import com.t3ddyss.clother.databinding.FragmentSignUpBinding
 import com.t3ddyss.clother.utilities.*
 
@@ -25,8 +29,8 @@ class SignUpFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSignUpBinding.inflate(inflater, container, false)
 
@@ -34,52 +38,51 @@ class SignUpFragment : Fragment() {
                 {
                     it?.let {
                         binding.editTextSignUpName.text = it.toEditable()
-                }
+                    }
                 })
         signUpViewModel.email.observe(viewLifecycleOwner,
-                {it?.let {
-                    binding.editTextSignUpEmail.text = it.toEditable()
-                }})
-        signUpViewModel.password.observe(viewLifecycleOwner,
-                {it?.let {
-                    binding.editTextSignUpPassword.text = it.toEditable()
-                }})
-
-        signUpViewModel.loadingState.observe(viewLifecycleOwner,
                 {
-                    it ?: return@observe
-                    when (it) {
-                        LoadingStates.LOADING ->
-                            binding.frameLayoutSignUpLoading.visibility = View.VISIBLE
-                        LoadingStates.LOADED -> {}
-                        LoadingStates.FAILED_TO_LOAD -> {
-                            binding.frameLayoutSignUpLoading.visibility = View.GONE
-                            Snackbar.make(binding.constraintLayoutSignUp,
-                                    getString(R.string.no_connection), Snackbar.LENGTH_SHORT).show()
-                        }
+                    it?.let {
+                        binding.editTextSignUpEmail.text = it.toEditable()
+                    }
+                })
+        signUpViewModel.password.observe(viewLifecycleOwner,
+                {
+                    it?.let {
+                        binding.editTextSignUpPassword.text = it.toEditable()
                     }
                 })
 
-        signUpViewModel.responseSignUp.observe(viewLifecycleOwner,
-                 {
-                     val response = it.getContentIfNotHandled() ?: return@observe
+        signUpViewModel.signUpResponse.observe(viewLifecycleOwner,
+                {
+                    val response = it.getContentIfNotHandled() ?: return@observe
 
-                     if (response.isSuccessful) {
-                         navController.navigate(
-                                 SignUpFragmentDirections.actionSignUpFragmentToEmailSentFragment(
-                                         getString(R.string.email_activation) + " ",
-                                         response.email ?: getString(R.string.your_email)))
-                     }
-
-                     // TODO implement localization on server side or in client
-                     else {
-                         Snackbar.make(binding.constraintLayoutSignUp,
-                                 response.message ?: getString(R.string.unknown_error),
-                                 Snackbar.LENGTH_SHORT).show()
-                     }
-
-                     binding.frameLayoutSignUpLoading.visibility = View.GONE
-                     signUpViewModel.clearCredentials()
+                    // TODO implement error messages localization on server side or in client
+                    when(response){
+                        is Loading<SignUpResponse> ->
+                            binding.frameLayoutSignUpLoading.visibility = View.VISIBLE
+                        is Success<SignUpResponse> -> {
+                            navController.navigate(
+                                SignUpFragmentDirections.actionSignUpFragmentToEmailSentFragment(
+                                        getString(R.string.email_activation) + " ",
+                                        response.data?.email ?: getString(R.string.your_email)))
+                            binding.frameLayoutSignUpLoading.visibility = View.GONE
+                            signUpViewModel.clearCredentials()
+                        }
+                        is Error<SignUpResponse> -> {
+                            binding.frameLayoutSignUpLoading.visibility = View.GONE
+                            Snackbar.make(binding.constraintLayoutSignUp,
+                                    response.message ?:
+                                    getString(R.string.unknown_error),
+                                    Snackbar.LENGTH_SHORT).show()
+                        }
+                        is Failed<SignUpResponse> -> {
+                            binding.frameLayoutSignUpLoading.visibility = View.GONE
+                            Snackbar.make(binding.constraintLayoutSignUp,
+                                    getString(R.string.no_connection),
+                                    Snackbar.LENGTH_SHORT).show()
+                        }
+                    }
                 })
 
         return binding.root
@@ -119,8 +122,8 @@ class SignUpFragment : Fragment() {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onPause() {
+        super.onPause()
         signUpViewModel.saveName(binding.editTextSignUpName.text())
         signUpViewModel.saveEmail(binding.editTextSignUpEmail.text())
         signUpViewModel.savePassword(binding.editTextSignUpPassword.text())

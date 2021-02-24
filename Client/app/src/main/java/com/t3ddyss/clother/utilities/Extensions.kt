@@ -13,6 +13,6 @@ fun String.validateEmail() = Patterns.EMAIL_ADDRESS.matcher(this).matches()
 
 fun String.validatePassword() = this.matches(password_regex)
 
-fun String.toEditable():Editable = Editable.Factory.getInstance().newEditable(this)
+fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)
 
 fun TextInputEditText.text() = this.text.toString().trim()

@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:ignore="ContentDescription">
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
+
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout_sign_in"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
+
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline_sign_in"
                 android:layout_width="wrap_content"
@@ -25,10 +28,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/fragment_horizontal_margin"
+                app:hintAnimationEnabled="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/guideline_sign_in"
-                app:hintAnimationEnabled="false">
+                app:layout_constraintTop_toBottomOf="@id/guideline_sign_in">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editText_sign_in_email"
                     android:layout_width="match_parent"
@@ -42,12 +46,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/fragment_horizontal_margin"
+                app:hintAnimationEnabled="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/textInput_sign_in_email"
-                app:hintAnimationEnabled="false"
                 app:passwordToggleEnabled="true"
                 app:passwordToggleTint="@color/green_500">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editText_sign_in_password"
                     android:layout_width="match_parent"
@@ -87,13 +92,15 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/button_sign_in"
-                app:layout_constraintVertical_bias="0"/>
+                app:layout_constraintVertical_bias="0" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
     <FrameLayout
+        android:id="@+id/frameLayout_sign_in_loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="?attr/colorPrimary"
         android:visibility="gone">
 
         <ProgressBar
