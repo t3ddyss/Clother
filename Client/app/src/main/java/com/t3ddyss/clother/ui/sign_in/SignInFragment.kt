@@ -58,7 +58,7 @@ class SignInFragment : Fragment() {
                 is Failed<SignInResponse> -> {
                     binding.frameLayoutSignInLoading.visibility = View.GONE
                     Snackbar.make(binding.constraintLayoutSignIn,
-                            getString(R.string.no_connection),
+                            getString(R.string.no_connection) + SAD_FACE,
                             Snackbar.LENGTH_SHORT).show()
                 }
             }
@@ -81,6 +81,10 @@ class SignInFragment : Fragment() {
             binding.textInputSignInEmail.isErrorEnabled = false
 
             signInViewModel.signInWithCredentials(email, password)
+        }
+
+        binding.textViewResetPassword.setOnClickListener {
+            navController.navigate(R.id.action_signInFragment_to_resetPasswordFragment)
         }
     }
 

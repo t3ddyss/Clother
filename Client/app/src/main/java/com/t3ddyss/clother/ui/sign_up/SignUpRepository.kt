@@ -12,7 +12,7 @@ import java.net.SocketTimeoutException
 
 // TODO inject RetrofitClient using Hilt or Dagger
 class SignUpRepository {
-    private val client: ClotherService = RetrofitClient.instance
+    private val client: ClotherAuthService = RetrofitClient.instance
 
     suspend fun createUser(user: User): Resource<SignUpResponse> {
         return try {

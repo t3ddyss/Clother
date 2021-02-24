@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.t3ddyss.clother.ui.home.HomeFragment"
-        android:label="@string/title_home"
+        android:label="@string/home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
@@ -29,15 +29,15 @@
         android:label="@string/sign_up"
         tools:layout="@layout/fragment_sign_up">
         <action
-            android:id="@+id/action_signUpFragment_to_emailSentFragment"
-            app:destination="@id/emailSentFragment"
+            android:id="@+id/action_signUpFragment_to_emailActionFragment"
+            app:destination="@id/emailActionFragment"
             app:popUpTo="@id/signUpFragment"
             app:popUpToInclusive="false" />
         <action
             android:id="@+id/action_signUpFragment_to_signInFragment"
             app:destination="@id/signInFragment"
             app:popUpTo="@id/signUpFragment"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="false" />
         <action
             android:id="@+id/action_signUpFragment_to_homeFragment"
             app:destination="@id/homeFragment"
@@ -45,12 +45,12 @@
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
-        android:id="@+id/emailSentFragment"
-        android:name="com.t3ddyss.clother.ui.email_sent.EmailSentFragment"
+        android:id="@+id/emailActionFragment"
+        android:name="com.t3ddyss.clother.ui.email_action.EmailActionFragment"
         android:label="@string/check_inbox"
-        tools:layout="@layout/fragment_email_sent">
+        tools:layout="@layout/fragment_email_action">
         <argument
-            android:name="email_sent_message"
+            android:name="email_action_message"
             app:argType="string" />
         <argument
             android:name="email_address"
@@ -65,6 +65,20 @@
             android:id="@+id/action_signInFragment_to_homeFragment"
             app:destination="@id/homeFragment"
             app:popUpTo="@id/signUpFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_signInFragment_to_resetPasswordFragment"
+            app:destination="@id/resetPasswordFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/resetPasswordFragment"
+        android:name="com.t3ddyss.clother.ui.password_reset.ResetPasswordFragment"
+        android:label="@string/reset_password"
+        tools:layout="@layout/fragment_reset_password">
+        <action
+            android:id="@+id/action_resetPasswordFragment_to_emailActionFragment"
+            app:destination="@id/emailActionFragment"
+            app:popUpTo="@id/resetPasswordFragment"
             app:popUpToInclusive="true" />
     </fragment>
 </navigation>

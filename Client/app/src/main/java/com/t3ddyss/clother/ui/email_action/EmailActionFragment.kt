@@ -1,4 +1,4 @@
-package com.t3ddyss.clother.ui.email_sent
+package com.t3ddyss.clother.ui.email_action
 
 import android.os.Bundle
 import android.text.SpannableStringBuilder
@@ -9,20 +9,21 @@ import androidx.core.text.bold
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.navArgs
-import com.t3ddyss.clother.databinding.FragmentEmailSentBinding
+import com.t3ddyss.clother.databinding.FragmentEmailActionBinding
 
+class EmailActionFragment : Fragment() {
 
-class EmailSentFragment : Fragment() {
-
-    private var _binding: FragmentEmailSentBinding? = null
+    private var _binding: FragmentEmailActionBinding? = null
     private val binding get() = _binding!!
-    private val args: EmailSentFragmentArgs by navArgs()
+
+    private val navController by lazy { NavHostFragment.findNavController(this) }
+    private val args: EmailActionFragmentArgs by navArgs()
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentEmailSentBinding.inflate(inflater, container, false)
+        _binding = FragmentEmailActionBinding.inflate(inflater, container, false)
 
         return binding.root
     }
@@ -31,11 +32,9 @@ class EmailSentFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val message = SpannableStringBuilder()
-                .append(args.emailSentMessage)
+                .append(args.emailActionMessage)
                 .bold { append(args.emailAddress) }
         binding.textViewEmailSent.text = message
-
-        val navController = NavHostFragment.findNavController(this)
 
         binding.buttonEmailSent.setOnClickListener {
             navController.navigateUp()

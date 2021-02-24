@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -16,6 +15,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.snackbar.Snackbar
 import com.t3ddyss.clother.databinding.ActivityMainBinding
 import com.t3ddyss.clother.utilities.AUTHENTICATED
+import com.t3ddyss.clother.utilities.SAD_FACE
 
 class MainActivity : AppCompatActivity() {
 
@@ -53,11 +53,7 @@ class MainActivity : AppCompatActivity() {
                         toolbar.visibility = View.INVISIBLE
                         navView.visibility = View.GONE
                     }
-                    R.id.emailSentFragment -> {
-                        toolbar.visibility = View.VISIBLE
-                        navView.visibility = View.GONE
-                    }
-                    R.id.signInFragment -> {
+                    R.id.emailActionFragment, R.id.signInFragment, R.id.resetPasswordFragment -> {
                         toolbar.visibility = View.VISIBLE
                         navView.visibility = View.GONE
                     }
@@ -77,7 +73,8 @@ class MainActivity : AppCompatActivity() {
 
             override fun onLost(network: Network) {
                 Snackbar.make(binding.container,
-                        getString(R.string.no_connection), Snackbar.LENGTH_SHORT).show()
+                        getString(R.string.no_connection) + SAD_FACE,
+                        Snackbar.LENGTH_SHORT).show()
             }
         })
     }

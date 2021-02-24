@@ -63,8 +63,8 @@ class SignUpFragment : Fragment() {
                             binding.frameLayoutSignUpLoading.visibility = View.VISIBLE
                         is Success<SignUpResponse> -> {
                             navController.navigate(
-                                SignUpFragmentDirections.actionSignUpFragmentToEmailSentFragment(
-                                        getString(R.string.email_activation) + " ",
+                                SignUpFragmentDirections.actionSignUpFragmentToEmailActionFragment(
+                                        getString(R.string.email_activation),
                                         response.data?.email ?: getString(R.string.your_email)))
                             binding.frameLayoutSignUpLoading.visibility = View.GONE
                             signUpViewModel.clearCredentials()
@@ -79,7 +79,7 @@ class SignUpFragment : Fragment() {
                         is Failed<SignUpResponse> -> {
                             binding.frameLayoutSignUpLoading.visibility = View.GONE
                             Snackbar.make(binding.constraintLayoutSignUp,
-                                    getString(R.string.no_connection),
+                                    getString(R.string.no_connection) + SAD_FACE,
                                     Snackbar.LENGTH_SHORT).show()
                         }
                     }

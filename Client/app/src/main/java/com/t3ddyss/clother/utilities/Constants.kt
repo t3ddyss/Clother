@@ -9,3 +9,5 @@ const val REFRESH_TOKEN = "refresh_token"
 const val AUTHENTICATED = "authenticated"
 
 const val DEFAULT_STRING_VALUE = ""
+
+const val SAD_FACE = "\ud83d\ude25"

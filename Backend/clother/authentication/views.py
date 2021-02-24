@@ -119,6 +119,7 @@ def login():
 
 @blueprint.route('/auth/forgot_password', methods=['POST'])
 def forgot_password():
+    time.sleep(response_delay)
     if not request.is_json:
         return {"message": "Missing JSON in request"}, 400
     data = request.get_json()
@@ -148,7 +149,7 @@ def forgot_password():
         button_text='Reset password',
         action_url=confirmation_url)
 
-    send_email(subject='Forgot your password?', recipients=[user.email], html=html)
+    # send_email(subject='Forgot your password?', recipients=[user.email], html=html)
 
     return {'message': 'Check your inbox'}
 
