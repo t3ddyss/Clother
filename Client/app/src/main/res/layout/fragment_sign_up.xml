@@ -97,9 +97,9 @@
                 android:background="@drawable/button_rounded"
                 android:text="@string/sign_up"
                 app:backgroundTint="@null"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInput_sign_up_password" />
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/textView_sign_in"
@@ -107,10 +107,9 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/fragment_horizontal_margin"
                 android:text="@string/already_registered"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/button_sign_up"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button_sign_up"
                 app:layout_constraintVertical_bias="0" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

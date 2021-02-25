@@ -1,18 +1,22 @@
 <resources>
     <string name="app_name">Clother</string>
     <string name="home">Home</string>
+    <string name="messages">Messages</string>
+    <string name="profile">Profile</string>
 
-    <!-- Strings related to login -->
+    <!-- Authentication -->
     <string name="name">Name</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="sign_up">Sign up</string>
-    <string name="email_activation">To activate your account,
-        please follow instructions we sent to\u0020</string>
     <string name="sign_in">Sign in</string>
+    <string name="reset_password">Reset password</string>
     <string name="already_registered">Already have an account? Sign in</string>
     <string name="forgot_password">Forgot your password?</string>
-    <string name="reset_password">Reset password</string>
+    <string name="email_activation">To activate your account,
+        please follow instructions we sent to\u0020</string>
+    <string name="password_reset_message">To reset your password,
+        please follow instructions we sent to\u0020</string>
     <string name="okay">Okay</string>
     <string name="name_requirements">Name should contain at least 2 and less than 50 characters</string>
     <string name="email_invalid">Email address is invalid</string>
@@ -23,8 +27,4 @@
     <string name="your_email">your email address</string>
     <string name="no_connection">You are offline\u0020</string>
     <string name="unknown_error">Unknown error</string>
-    <string name="messages">Messages</string>
-    <string name="profile">Profile</string>
-    <string name="password_reset_message">To reset your password,
-        please follow instructions we sent to\u0020</string>
 </resources>
