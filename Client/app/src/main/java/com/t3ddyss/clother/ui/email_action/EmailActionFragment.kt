@@ -9,6 +9,7 @@ import androidx.core.text.bold
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.navArgs
+import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentEmailActionBinding
 
 class EmailActionFragment : Fragment() {
@@ -34,10 +35,10 @@ class EmailActionFragment : Fragment() {
         val message = SpannableStringBuilder()
                 .append(args.emailActionMessage)
                 .bold { append(args.emailAddress) }
-        binding.textViewEmailSent.text = message
+        binding.textViewEmailActionMessage.text = message
 
-        binding.buttonEmailSent.setOnClickListener {
-            navController.navigateUp()
+        binding.buttonEmailActionOk.setOnClickListener {
+            navController.navigate(R.id.action_emailActionFragment_to_signInFragment)
         }
     }
 }

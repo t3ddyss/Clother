@@ -7,7 +7,7 @@
     tools:ignore="ContentDescription">
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_email_sent"
+        android:id="@+id/guideline_email_action"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -16,14 +16,14 @@
     <ImageView
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/guideline_email_sent"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_email_action"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_clother" />
 
     <Button
-        android:id="@+id/button_email_sent"
+        android:id="@+id/button_email_action_ok"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fragment_horizontal_margin"
@@ -35,7 +35,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/textView_email_sent"
+        android:id="@+id/textView_email_action_message"
         android:breakStrategy="simple"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
