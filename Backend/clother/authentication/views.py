@@ -1,24 +1,48 @@
 import re
 import time
+from datetime import datetime
+from datetime import timezone
 
-from flask import Blueprint, current_app, request, url_for, render_template, after_this_request
-from flask_jwt_extended import create_access_token, create_refresh_token
 from email_validator import validate_email, EmailNotValidError
+from flask import Blueprint, current_app, request, url_for, render_template, after_this_request
+from flask_jwt_extended import (create_access_token, create_refresh_token, get_jwt_identity,
+                                jwt_required, get_jwt)
 from itsdangerous import URLSafeTimedSerializer
 from itsdangerous.exc import BadSignature, SignatureExpired, BadData
 from sqlalchemy.exc import IntegrityError
 
-from clother import db
-from clother.user.models import User
+from clother import db, jwt
+from clother.users.models import User
 from clother.utils import send_email, validate_password, response_delay
 from .forms import ResetPasswordForm
+from .models import TokenBlocklist
 
 blueprint = Blueprint('auth', __name__)
 
 
+@jwt.token_in_blocklist_loader
+def check_if_token_revoked(jwt_header, jwt_payload):
+    jti = jwt_payload["jti"]
+    token = db.session.query(TokenBlocklist.id).filter_by(jti=jti).scalar()
+    return token is not None
+
+
+@blueprint.route('/auth/refresh')
+@jwt_required(refresh=True)
+def refresh_tokens():
+    user_id = get_jwt_identity()
+    jti = get_jwt()["jti"]
+    now = datetime.now(timezone.utc)
+    db.session.add(TokenBlocklist(jti=jti, created_at=now))
+    db.session.commit()
+
+    return {'access_token': create_access_token(user_id),
+            'refresh_token': create_refresh_token(user_id)
+            }
+
+
 @blueprint.route('/register', methods=['POST'])
 def register():
-    time.sleep(response_delay)
     if not request.is_json:
         return {'message': 'Expected JSON in the request body'}, 400
     data = request.get_json()
@@ -64,7 +88,7 @@ def register():
         button_text='Verify email',
         action_url=confirmation_url)
 
-    # send_email(subject='Confirm your email address', recipients=[user.email], html=html)
+    send_email(subject='Confirm your email address', recipients=[user.email], html=html)
 
     return {'message': 'Check your inbox'}
 
@@ -94,7 +118,6 @@ def confirm_email(token):
 
 @blueprint.route('/login', methods=['POST'])
 def login():
-    time.sleep(response_delay)
     if not request.is_json:
         return {"message": "Missing JSON in request"}, 400
 
@@ -119,7 +142,6 @@ def login():
 
 @blueprint.route('/auth/forgot_password', methods=['POST'])
 def forgot_password():
-    time.sleep(response_delay)
     if not request.is_json:
         return {"message": "Missing JSON in request"}, 400
     data = request.get_json()
@@ -149,7 +171,7 @@ def forgot_password():
         button_text='Reset password',
         action_url=confirmation_url)
 
-    # send_email(subject='Forgot your password?', recipients=[user.email], html=html)
+    send_email(subject='Forgot your password?', recipients=[user.email], html=html)
 
     return {'message': 'Check your inbox'}
 
@@ -176,7 +198,7 @@ def reset_password(token):
     if form.validate_on_submit():
         user.set_password(form.password.data)
         db.session.commit()
-        return 'Password has been successfully changed'
+        return 'Password has been successfully changed!'
 
     if not user.password == data['password']:
         return 'Password has already been reset', 410
@@ -184,55 +206,15 @@ def reset_password(token):
     return render_template('reset_password.html', form=form)
 
 
-@blueprint.route('/email_test')
-def get_email_test():
-    # html = render_template(
-    #     'confirmation.html',
-    #     subject_text='You are almost done!',
-    #     body_text='To complete email verification, please press the button below.',
-    #     button_text='Verify email',
-    #     action_url='https://google.com')
-    #
-    # send_email(subject='Confirm your email address', recipients=['tedorsokolov@gmail.com'], html=html)
-    html = render_template(
-        'confirmation.html',
-        subject_text='Password reset',
-        body_text="To reset your password, please press the button below. If you didn't request a password reset, "
-                  "just ignore this email",
-        button_text='Reset password',
-        action_url='https://google.com')
-
-    send_email(subject='Forgot your password?', recipients=['tedorsokolov@gmail.com'], html=html)
-
-    return {'message': 'Check your inbox'}
+@blueprint.route('/auth/protected_test')
+@jwt_required()
+def protected_test():
+    user_id = get_jwt_identity()
+    user = User.query.filter_by(id=user_id).first()
+    return user.to_dict()
 
 
-@blueprint.route('/error_test')
-def get_error_test():
-    time.sleep(0.5)
-    return 'Some error', 404
-
-
-@blueprint.route('/template_test')
-def get_template_test():
-    return render_template(
-        'confirmation.html',
-        subject_text='You are almost done!',
-        body_text='To complete email verification, please press the button below.',
-        button_text='Verify email',
-        action_url='https://google.com')
-
-
-@blueprint.route('/form_test', methods=['GET', 'POST'])
-def get_form_test():
-    form = ResetPasswordForm()
-
-    if form.validate_on_submit():
-        return 'Success'
-    return render_template('reset_password.html', form=form)
-
-
-@blueprint.route('/')
-def hello_world():
-    time.sleep(0.5)
-    return 'Hello world!'
+# Simulate response delay while testing app on localhost
+@blueprint.before_request
+def simulate_delay():
+    time.sleep(response_delay)
