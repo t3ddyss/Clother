@@ -6,17 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.t3ddyss.clother.R
-import com.t3ddyss.clother.api.Error
-import com.t3ddyss.clother.api.Failed
-import com.t3ddyss.clother.api.Loading
-import com.t3ddyss.clother.api.Success
-import com.t3ddyss.clother.data.SignUpResponse
+import com.t3ddyss.clother.data.*
 import com.t3ddyss.clother.databinding.FragmentSignUpBinding
 import com.t3ddyss.clother.utilities.*
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SignUpFragment : Fragment() {
 
     private val signUpViewModel by viewModels<SignUpViewModel>()
@@ -25,7 +23,7 @@ class SignUpFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val navController by lazy {
-        NavHostFragment.findNavController(this)
+        findNavController()
     }
 
     override fun onCreateView(
@@ -65,7 +63,7 @@ class SignUpFragment : Fragment() {
                             navController.navigate(
                                 SignUpFragmentDirections.actionSignUpFragmentToEmailActionFragment(
                                         getString(R.string.email_activation),
-                                        response.data?.email ?: getString(R.string.your_email)))
+                                        response.content?.email ?: getString(R.string.your_email)))
                             binding.frameLayoutSignUpLoading.visibility = View.GONE
                             signUpViewModel.clearCredentials()
                         }
@@ -79,7 +77,7 @@ class SignUpFragment : Fragment() {
                         is Failed<SignUpResponse> -> {
                             binding.frameLayoutSignUpLoading.visibility = View.GONE
                             Snackbar.make(binding.constraintLayoutSignUp,
-                                    getString(R.string.no_connection) + SAD_FACE,
+                                    getString(R.string.no_connection),
                                     Snackbar.LENGTH_SHORT).show()
                         }
                     }

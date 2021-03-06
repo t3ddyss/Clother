@@ -25,6 +25,6 @@
         and 1 special character</string>
     <string name="check_inbox">Check your inbox</string>
     <string name="your_email">your email address</string>
-    <string name="no_connection">You are offline\u0020</string>
+    <string name="no_connection">You are offline</string>
     <string name="unknown_error">Unknown error</string>
 </resources>

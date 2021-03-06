@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.text.bold
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentEmailActionBinding
@@ -17,7 +18,7 @@ class EmailActionFragment : Fragment() {
     private var _binding: FragmentEmailActionBinding? = null
     private val binding get() = _binding!!
 
-    private val navController by lazy { NavHostFragment.findNavController(this) }
+    private val navController by lazy { findNavController() }
     private val args: EmailActionFragmentArgs by navArgs()
 
     override fun onCreateView(

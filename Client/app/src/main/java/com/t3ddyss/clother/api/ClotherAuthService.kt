@@ -5,7 +5,6 @@ import com.t3ddyss.clother.data.SignInResponse
 import com.t3ddyss.clother.data.SignUpResponse
 import com.t3ddyss.clother.data.User
 import retrofit2.http.Body
-import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface ClotherAuthService {

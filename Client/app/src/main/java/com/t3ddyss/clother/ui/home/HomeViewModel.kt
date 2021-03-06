@@ -13,27 +13,27 @@ import retrofit2.HttpException
 
 class HomeViewModel : ViewModel() {
 
-    private val repository by lazy { UserRepository() }
-
-    // +Dispatchers.IO to create a new scope
-    val users = liveData(viewModelScope.coroutineContext) {
-        try {
-            val usersList = repository.getUsers()
-            emit(usersList)
-        } catch (ex: Exception) {
-            if (ex is HttpException) {
-                Log.d("ViewModel", ex.message().toString())
-
-                val gson = Gson()
-                val type = object : TypeToken<SignUpResponse>() {}.type
-                val signUpResponse: SignUpResponse? = gson
-                        .fromJson(ex.response()?.errorBody()?.charStream(), type)
-
-                signUpResponse?.let {
-                    Log.d("ViewModel",
-                            null ?: "Error message is NULL")
-                }
-            }
-        }
-    }
+//    private val repository by lazy { UserRepository() }
+//
+//    // +Dispatchers.IO to create a new scope
+//    val users = liveData(viewModelScope.coroutineContext) {
+//        try {
+//            val usersList = repository.getUsers()
+//            emit(usersList)
+//        } catch (ex: Exception) {
+//            if (ex is HttpException) {
+//                Log.d("ViewModel", ex.message().toString())
+//
+//                val gson = Gson()
+//                val type = object : TypeToken<SignUpResponse>() {}.type
+//                val signUpResponse: SignUpResponse? = gson
+//                        .fromJson(ex.response()?.errorBody()?.charStream(), type)
+//
+//                signUpResponse?.let {
+//                    Log.d("ViewModel",
+//                            null ?: "Error message is NULL")
+//                }
+//            }
+//        }
+//    }
 }

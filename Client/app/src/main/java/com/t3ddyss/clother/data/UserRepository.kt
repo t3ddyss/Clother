@@ -1,10 +1,8 @@
 package com.t3ddyss.clother.data
 
 import com.t3ddyss.clother.api.ClotherAuthService
-import com.t3ddyss.clother.api.RetrofitClient
 
-class UserRepository {
-    private val client: ClotherAuthService = RetrofitClient.instance
+class UserRepository (private val authService: ClotherAuthService) {
 
     suspend fun getUsers(): List<User> {
 //        return client.getUsers()

@@ -1,6 +1,6 @@
 package com.t3ddyss.clother
 
-import android.content.Context
+import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.Network
 import android.os.Bundle
@@ -14,14 +14,16 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.snackbar.Snackbar
 import com.t3ddyss.clother.databinding.ActivityMainBinding
-import com.t3ddyss.clother.utilities.AUTHENTICATED
-import com.t3ddyss.clother.utilities.SAD_FACE
+import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private val sp by lazy { getPreferences(Context.MODE_PRIVATE) }
+    @Inject lateinit var prefs: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
@@ -35,7 +37,7 @@ class MainActivity : AppCompatActivity() {
                 .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
 
-        if (sp.getBoolean(AUTHENTICATED, false)) {
+        if (prefs.getBoolean(IS_AUTHENTICATED, false)) {
             val navGraph = navController.graph
             navGraph.startDestination = R.id.homeFragment
             navController.graph = navGraph
@@ -73,7 +75,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onLost(network: Network) {
                 Snackbar.make(binding.container,
-                        getString(R.string.no_connection) + SAD_FACE,
+                        getString(R.string.no_connection),
                         Snackbar.LENGTH_SHORT).show()
             }
         })

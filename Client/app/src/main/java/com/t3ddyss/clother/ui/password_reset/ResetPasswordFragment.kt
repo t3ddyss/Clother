@@ -6,27 +6,24 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.t3ddyss.clother.R
-import com.t3ddyss.clother.api.Error
-import com.t3ddyss.clother.api.Failed
-import com.t3ddyss.clother.api.Loading
-import com.t3ddyss.clother.api.Success
-import com.t3ddyss.clother.data.PasswordResetResponse
+import com.t3ddyss.clother.data.*
 import com.t3ddyss.clother.databinding.FragmentResetPasswordBinding
-import com.t3ddyss.clother.utilities.SAD_FACE
 import com.t3ddyss.clother.utilities.text
 import com.t3ddyss.clother.utilities.toEditable
 import com.t3ddyss.clother.utilities.validateEmail
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ResetPasswordFragment : Fragment() {
     private val resetPasswordViewModel by viewModels<ResetPasswordViewModel>()
 
     private var _binding: FragmentResetPasswordBinding? = null
     private val binding get() = _binding!!
 
-    private val navController by lazy { NavHostFragment.findNavController(this) }
+    private val navController by lazy { findNavController() }
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -49,7 +46,7 @@ class ResetPasswordFragment : Fragment() {
                             .navigate(ResetPasswordFragmentDirections
                             .actionResetPasswordFragmentToEmailActionFragment(
                                     getString(R.string.password_reset_message),
-                                    response.data?.email ?: getString(R.string.your_email)))
+                                    response.content?.email ?: getString(R.string.your_email)))
                     binding.frameLayoutResetPasswordLoading.visibility = View.GONE
                 }
                 is Error<PasswordResetResponse> -> {
@@ -62,7 +59,7 @@ class ResetPasswordFragment : Fragment() {
                 is Failed<PasswordResetResponse> -> {
                     binding.frameLayoutResetPasswordLoading.visibility = View.GONE
                     Snackbar.make(binding.constraintLayoutResetPassword,
-                            getString(R.string.no_connection) + SAD_FACE,
+                            getString(R.string.no_connection),
                             Snackbar.LENGTH_SHORT).show()
                 }
             }
