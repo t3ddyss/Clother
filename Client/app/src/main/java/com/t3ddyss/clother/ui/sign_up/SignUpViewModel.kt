@@ -58,9 +58,4 @@ class SignUpViewModel @Inject constructor(
             _signUpResponse.postValue(Event(response))
         }
     }
-
-    override fun onCleared() {
-        super.onCleared()
-        Log.d(DEBUG_TAG, "SignUpViewModel onCleared()")
-    }
 }

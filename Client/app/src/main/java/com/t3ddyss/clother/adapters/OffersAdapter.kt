@@ -6,13 +6,14 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.t3ddyss.clother.databinding.ItemOfferBinding
+import com.t3ddyss.clother.R
+import com.t3ddyss.clother.databinding.ListItemOfferBinding
 import com.t3ddyss.clother.models.Offer
 
 class OffersAdapter : PagingDataAdapter<Offer, OffersAdapter.OfferViewHolder>(OfferDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OfferViewHolder {
-        return OfferViewHolder(ItemOfferBinding.inflate(
+        return OfferViewHolder(ListItemOfferBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false))
@@ -23,13 +24,15 @@ class OffersAdapter : PagingDataAdapter<Offer, OffersAdapter.OfferViewHolder>(Of
     }
 
     class OfferViewHolder(
-        private val binding: ItemOfferBinding
+        private val binding: ListItemOfferBinding
         ) : RecyclerView.ViewHolder(binding.root) {
 
             fun bind(offer: Offer) {
                 binding.apply {
-                    Glide.with(imageViewOffer)
+                    Glide.with(imageViewOffer.context)
                         .load(offer.image)
+                        .placeholder(R.drawable.glide_placeholder)
+                        .dontAnimate()
                         .into(imageViewOffer)
 
                     textViewOfferTitle.text = offer.title

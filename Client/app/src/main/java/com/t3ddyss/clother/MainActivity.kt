@@ -8,10 +8,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
+import androidx.navigation.ui.*
 import com.google.android.material.snackbar.Snackbar
 import com.t3ddyss.clother.databinding.ActivityMainBinding
 import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
@@ -71,21 +68,24 @@ class MainActivity : AppCompatActivity() {
         }
 
         val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as? ConnectivityManager
-        connectivityManager?.registerDefaultNetworkCallback(object : ConnectivityManager.NetworkCallback() {
+        connectivityManager?.registerDefaultNetworkCallback(object :
+            ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
 
             }
 
             override fun onLost(network: Network) {
-                Snackbar.make(binding.container,
-                        getString(R.string.no_connection),
-                        Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(
+                    binding.container,
+                    getString(R.string.no_connection),
+                    Snackbar.LENGTH_SHORT
+                ).show()
             }
         })
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment)
-        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
-    }
+//    override fun onSupportNavigateUp(): Boolean {
+//        val navController = findNavController(R.id.nav_host_fragment)
+//        return navController.navigateUp(appBarConfiguration) //|| super.onSupportNavigateUp()
+//    }
 }

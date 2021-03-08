@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
     <item
         android:id="@+id/homeFragment"
         android:icon="@drawable/ic_checkroom"
-        android:title="@string/home" />
+        android:title="@string/home"
+        android:menuCategory="secondary"/>
 
     <item
         android:id="@+id/messagesFragment"
         android:icon="@drawable/ic_chat"
-        android:title="@string/messages" />
+        android:title="@string/messages"
+        android:menuCategory="secondary"/>
 
     <item
         android:id="@+id/profileFragment"
         android:icon="@drawable/ic_person"
-        android:title="@string/profile" />
-
+        android:title="@string/profile"
+        android:menuCategory="secondary"/>
 </menu>

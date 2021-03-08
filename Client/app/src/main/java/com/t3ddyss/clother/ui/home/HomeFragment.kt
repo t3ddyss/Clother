@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.fragment.findNavController
 import com.t3ddyss.clother.adapters.OffersAdapter
 import com.t3ddyss.clother.databinding.FragmentHomeBinding
 import com.t3ddyss.clother.utilities.DEBUG_TAG
@@ -54,10 +55,5 @@ class HomeFragment : Fragment() {
                 adapter.submitData(it)
             }
         }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        Log.d(DEBUG_TAG, "HomeFragment onSaveInstanceState() ${this.hashCode()}")
-        super.onSaveInstanceState(outState)
     }
 }

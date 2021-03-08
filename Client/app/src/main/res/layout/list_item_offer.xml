@@ -11,10 +11,11 @@
         android:id="@+id/imageView_offer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:layout_constraintHeight_min="100dp"/>
 
     <TextView
         android:id="@+id/textView_offer_title"

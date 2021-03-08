@@ -27,6 +27,7 @@ class HomeViewModel @Inject constructor(
         if (query == currentQuery && lastResult != null) {
             return lastResult
         }
+        Log.d(DEBUG_TAG, "HomeViewModel is going to fetch data from server")
 
         currentQuery = query
         val newResult = repository
@@ -38,6 +39,6 @@ class HomeViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        Log.d(DEBUG_TAG, "HomeViewModel onCleared()")
+        Log.d(DEBUG_TAG, "onCleared()")
     }
 }
