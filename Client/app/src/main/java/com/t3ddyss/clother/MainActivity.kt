@@ -18,6 +18,7 @@ import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
@@ -33,15 +34,17 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        val navHostFragment = supportFragmentManager
-                .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
+        val navGraph = navController.navInflater.inflate(R.navigation.main_graph)
 
         if (prefs.getBoolean(IS_AUTHENTICATED, false)) {
-            val navGraph = navController.graph
             navGraph.startDestination = R.id.homeFragment
-            navController.graph = navGraph
         }
+        else {
+            navGraph.startDestination = R.id.signUpFragment
+        }
+        navController.graph = navGraph
 
         appBarConfiguration = AppBarConfiguration(setOf(
                 R.id.homeFragment, R.id.messagesFragment, R.id.profileFragment))

@@ -11,6 +11,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.data.*
 import com.t3ddyss.clother.databinding.FragmentResetPasswordBinding
+import com.t3ddyss.clother.models.*
 import com.t3ddyss.clother.utilities.text
 import com.t3ddyss.clother.utilities.toEditable
 import com.t3ddyss.clother.utilities.validateEmail

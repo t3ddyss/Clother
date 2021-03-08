@@ -1,7 +1,12 @@
 package com.t3ddyss.clother.ui.sign_up
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.t3ddyss.clother.data.*
+import com.t3ddyss.clother.models.Loading
+import com.t3ddyss.clother.models.ResponseState
+import com.t3ddyss.clother.models.SignUpResponse
+import com.t3ddyss.clother.models.User
 import com.t3ddyss.clother.utilities.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -9,8 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    private val repository: SignUpRepository,
-    private val savedStateHandle: SavedStateHandle
+        private val repository: UsersRepository,
+        private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _name = savedStateHandle.getLiveData(NAME, DEFAULT_STRING_VALUE)
@@ -52,5 +57,10 @@ class SignUpViewModel @Inject constructor(
             val response = repository.createUser(User(name, email, password))
             _signUpResponse.postValue(Event(response))
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        Log.d(DEBUG_TAG, "SignUpViewModel onCleared()")
     }
 }

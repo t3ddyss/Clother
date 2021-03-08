@@ -1,39 +1,43 @@
 package com.t3ddyss.clother.ui.home
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import com.t3ddyss.clother.data.SignUpResponse
-import com.t3ddyss.clother.data.UserRepository
-import retrofit2.HttpException
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.t3ddyss.clother.data.OffersRepository
+import com.t3ddyss.clother.models.Offer
+import com.t3ddyss.clother.utilities.DEBUG_TAG
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+        private val repository: OffersRepository,
+        private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
 
-class HomeViewModel : ViewModel() {
+    private var currentQuery: Map<String, String>? = null
+    private var currentResult: Flow<PagingData<Offer>>? = null
 
-//    private val repository by lazy { UserRepository() }
-//
-//    // +Dispatchers.IO to create a new scope
-//    val users = liveData(viewModelScope.coroutineContext) {
-//        try {
-//            val usersList = repository.getUsers()
-//            emit(usersList)
-//        } catch (ex: Exception) {
-//            if (ex is HttpException) {
-//                Log.d("ViewModel", ex.message().toString())
-//
-//                val gson = Gson()
-//                val type = object : TypeToken<SignUpResponse>() {}.type
-//                val signUpResponse: SignUpResponse? = gson
-//                        .fromJson(ex.response()?.errorBody()?.charStream(), type)
-//
-//                signUpResponse?.let {
-//                    Log.d("ViewModel",
-//                            null ?: "Error message is NULL")
-//                }
-//            }
-//        }
-//    }
+    fun getOffers(query: Map<String, String>): Flow<PagingData<Offer>> {
+        val lastResult = currentResult
+        if (query == currentQuery && lastResult != null) {
+            return lastResult
+        }
+
+        currentQuery = query
+        val newResult = repository
+                .getOffersStream(query)
+                .cachedIn(viewModelScope)
+        currentResult = newResult
+        return newResult
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        Log.d(DEBUG_TAG, "HomeViewModel onCleared()")
+    }
 }

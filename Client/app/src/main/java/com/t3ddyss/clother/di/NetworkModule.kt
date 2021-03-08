@@ -2,6 +2,7 @@ package com.t3ddyss.clother.di
 
 import android.os.Build
 import com.t3ddyss.clother.api.ClotherAuthService
+import com.t3ddyss.clother.api.ClotherOffersService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,7 +16,7 @@ import javax.inject.Singleton
 object NetworkModule {
     // TODO remove this after deployment
     private const val BASE_URL_EMULATOR = "http://10.0.2.2:5000/"
-    private const val BASE_URL_DEVICE = "http://192.168.0.104:5000/"
+    private const val BASE_URL_DEVICE = "http://192.168.0.105:5000/"
 
     @Singleton
     @Provides
@@ -33,4 +34,9 @@ object NetworkModule {
     @Provides
     fun provideClotherAuthService(retrofit: Retrofit): ClotherAuthService =
         retrofit.create(ClotherAuthService::class.java)
+
+    @Singleton
+    @Provides
+    fun provideClotherOffersService(retrofit: Retrofit): ClotherOffersService =
+        retrofit.create(ClotherOffersService::class.java)
 }

@@ -1,4 +1,4 @@
-package com.t3ddyss.clother.data
+package com.t3ddyss.clother.models
 
 sealed class ResponseState<T>(
         val content: T? = null,

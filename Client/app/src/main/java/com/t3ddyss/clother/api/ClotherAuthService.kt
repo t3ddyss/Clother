@@ -1,9 +1,9 @@
 package com.t3ddyss.clother.api
 
-import com.t3ddyss.clother.data.PasswordResetResponse
-import com.t3ddyss.clother.data.SignInResponse
-import com.t3ddyss.clother.data.SignUpResponse
-import com.t3ddyss.clother.data.User
+import com.t3ddyss.clother.models.PasswordResetResponse
+import com.t3ddyss.clother.models.SignInResponse
+import com.t3ddyss.clother.models.SignUpResponse
+import com.t3ddyss.clother.models.User
 import retrofit2.http.Body
 import retrofit2.http.POST
 

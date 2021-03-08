@@ -2,6 +2,10 @@ package com.t3ddyss.clother.ui.password_reset
 
 import androidx.lifecycle.*
 import com.t3ddyss.clother.data.*
+import com.t3ddyss.clother.models.Loading
+import com.t3ddyss.clother.models.PasswordResetResponse
+import com.t3ddyss.clother.models.ResponseState
+import com.t3ddyss.clother.models.User
 import com.t3ddyss.clother.utilities.DEFAULT_STRING_VALUE
 import com.t3ddyss.clother.utilities.EMAIL
 import com.t3ddyss.clother.utilities.Event
@@ -11,8 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ResetPasswordViewModel @Inject constructor(
-    private val repository: ResetPasswordRepository,
-    private val savedStateHandle: SavedStateHandle): ViewModel() {
+        private val repository: UsersRepository,
+        private val savedStateHandle: SavedStateHandle): ViewModel() {
     private val _email = savedStateHandle.getLiveData(EMAIL, DEFAULT_STRING_VALUE)
     val email: LiveData<String> = _email
 
