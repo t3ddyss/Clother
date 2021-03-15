@@ -1,20 +1,26 @@
-import math
 from flask import Blueprint, request, jsonify
 from .models import Offer
 from flask_jwt_extended import jwt_required
 
 blueprint = Blueprint('offers', __name__)
 
-default_page_num = 1
 default_page_size = 10
 
 
 @blueprint.route('/offers')
 def get_offers():
-    page_num = request.args.get('page', default=default_page_num, type=int)
-    page_size = request.args.get('per_page', default=default_page_size, type=int)
+    after = request.args.get('after', default=None, type=int)
+    before = request.args.get('before', default=None, type=int)
+    limit = request.args.get('size', default=default_page_size, type=int)
 
-    offers = Offer.query.paginate(page=page_num, per_page=page_size)
-    total_pages = math.ceil(Offer.query.count() / page_size)
+    if after is None and before is None:  # initial request
+        offers = Offer.query.order_by(Offer.id.desc()).limit(limit).all()
 
-    return jsonify({'total_pages': total_pages, 'results': [offer.to_dict() for offer in offers.items]})
+    elif before is None:  # append
+        offers = Offer.query.order_by(Offer.id.desc()).filter(Offer.id < after).limit(limit).all()
+
+    else:  # prepend
+        offers = Offer.query.order_by(Offer.id.asc()).filter(Offer.id > before).limit(limit).all()
+        offers.reverse()
+
+    return jsonify([offer.to_dict() for offer in offers])

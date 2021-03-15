@@ -8,8 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
-import androidx.navigation.fragment.findNavController
 import com.t3ddyss.clother.adapters.OffersAdapter
 import com.t3ddyss.clother.databinding.FragmentHomeBinding
 import com.t3ddyss.clother.utilities.DEBUG_TAG
@@ -52,6 +50,7 @@ class HomeFragment : Fragment() {
 
         offersJob = lifecycleScope.launch {
             homeViewModel.getOffers(query).collectLatest {
+                Log.d(DEBUG_TAG, "Collected")
                 adapter.submitData(it)
             }
         }

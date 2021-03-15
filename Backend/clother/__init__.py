@@ -16,7 +16,7 @@ def create_app(config_filename):
 def register_extensions(app):
     db.init_app(app)
     migrate.init_app(app, db)
-    cache.init_app(app)
+    # cache.init_app(app)
     jwt.init_app(app)
     mail.init_app(app)
 

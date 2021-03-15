@@ -13,7 +13,8 @@ class OffersRepository @Inject constructor(private val service: ClotherOffersSer
 {
     fun getOffersStream(query: Map<String, String>): Flow<PagingData<Offer>> {
         return Pager(
-                config = PagingConfig(pageSize = CLOTHER_PAGE_SIZE, enablePlaceholders = false),
+                config = PagingConfig(pageSize = CLOTHER_PAGE_SIZE, enablePlaceholders = false,
+                initialLoadSize = CLOTHER_PAGE_SIZE),
                 pagingSourceFactory = { OffersPagingSource(service, query) }
         ).flow
     }
