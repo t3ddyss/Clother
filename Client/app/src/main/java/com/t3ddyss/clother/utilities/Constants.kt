@@ -2,7 +2,6 @@ package com.t3ddyss.clother.utilities
 
 const val DATABASE_NAME = "Clother.db"
 
-const val CLOTHER_INITIAL_KEY = 0
 const val CLOTHER_PAGE_SIZE = 10
 
 const val ACCESS_TOKEN = "access_token"

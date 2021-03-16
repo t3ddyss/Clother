@@ -1,6 +1,10 @@
+import time
+
 from flask import Blueprint, request, jsonify
 from .models import Offer
 from flask_jwt_extended import jwt_required
+
+from ..utils import response_delay
 
 blueprint = Blueprint('offers', __name__)
 
@@ -24,3 +28,9 @@ def get_offers():
         offers.reverse()
 
     return jsonify([offer.to_dict() for offer in offers])
+
+
+# Simulate response delay while testing app on localhost
+@blueprint.before_request
+def simulate_delay():
+    time.sleep(response_delay)

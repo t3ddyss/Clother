@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.t3ddyss.clother.data.OffersRepository
@@ -14,7 +15,9 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
+@ExperimentalPagingApi
+class HomeViewModel
+@Inject constructor(
         private val repository: OffersRepository,
         private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -27,8 +30,6 @@ class HomeViewModel @Inject constructor(
         if (query == currentQuery && lastResult != null) {
             return lastResult
         }
-
-        Log.d(DEBUG_TAG, "HomeViewModel is going to fetch data from server")
 
         currentQuery = query
         val newResult = repository

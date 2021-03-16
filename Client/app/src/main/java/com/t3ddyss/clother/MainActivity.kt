@@ -1,6 +1,7 @@
 package com.t3ddyss.clother
 
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.Network
 import android.os.Bundle
@@ -35,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
         val navGraph = navController.navInflater.inflate(R.navigation.main_graph)
 
-        if (prefs.getBoolean(IS_AUTHENTICATED, false)) {
+        if (prefs.getBoolean(IS_AUTHENTICATED, false) || true) { // for debug purposes
             navGraph.startDestination = R.id.homeFragment
         }
         else {
@@ -84,8 +85,8 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-//    override fun onSupportNavigateUp(): Boolean {
-//        val navController = findNavController(R.id.nav_host_fragment)
-//        return navController.navigateUp(appBarConfiguration) //|| super.onSupportNavigateUp()
-//    }
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment)
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
 }

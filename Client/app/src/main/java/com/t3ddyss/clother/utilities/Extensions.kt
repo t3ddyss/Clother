@@ -1,7 +1,10 @@
 package com.t3ddyss.clother.utilities
 
+import android.content.Context
 import android.text.Editable
 import android.util.Patterns
+import android.util.TypedValue
+import androidx.annotation.AttrRes
 import com.google.android.material.textfield.TextInputEditText
 
 val name_regex = """\p{L}{2,50}""".toRegex()
@@ -16,3 +19,9 @@ fun String.validatePassword() = this.matches(password_regex)
 fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)
 
 fun TextInputEditText.text() = this.text.toString().trim()
+
+fun Context.getThemeColor(@AttrRes res: Int): Int {
+    val typedValue = TypedValue()
+    theme.resolveAttribute (res, typedValue, true)
+    return typedValue.data
+}

@@ -24,7 +24,7 @@ buildscript {
         paging_version = '3.0.0-beta01'
         recyclerview_version = '1.2.0-beta02'
         retrofit_version = '2.9.0'
-        room_version = '2.2.6'
+        room_version = '2.3.0-beta03'
     }
 
     repositories {

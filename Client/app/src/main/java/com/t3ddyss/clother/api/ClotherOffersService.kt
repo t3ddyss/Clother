@@ -1,7 +1,6 @@
 package com.t3ddyss.clother.api
 
 import com.t3ddyss.clother.models.Offer
-import com.t3ddyss.clother.models.OfferResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 import retrofit2.http.QueryMap
