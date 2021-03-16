@@ -1,25 +1,33 @@
 package com.t3ddyss.clother
 
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.Network
+import android.net.NetworkCapabilities
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
 import com.google.android.material.snackbar.Snackbar
 import com.t3ddyss.clother.databinding.ActivityMainBinding
 import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
+import com.t3ddyss.clother.ui.shared_viewmodels.NetworkStateViewModel
+import com.t3ddyss.clother.utilities.DEBUG_TAG
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+    private val networkStateViewModel by viewModels<NetworkStateViewModel>()
     private lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
     @Inject lateinit var prefs: SharedPreferences
@@ -68,14 +76,51 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as? ConnectivityManager
-        connectivityManager?.registerDefaultNetworkCallback(object :
+        setupNetworkStateListener()
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment)
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    private fun setupNetworkStateListener() {
+        val connectivityManager = getSystemService(CONNECTIVITY_SERVICE)
+                as? ConnectivityManager ?: return
+
+        val isNetworkAvailable = isNetworkAvailable(connectivityManager)
+        if (isNetworkAvailable) {
+            networkStateViewModel.isNetworkAvailable.value = Pair(
+                first = false,
+                second = true
+            )
+        }
+        else {
+            networkStateViewModel.isNetworkAvailable.value = Pair(
+                first = true,
+                second = false
+            )
+        }
+
+        connectivityManager.registerDefaultNetworkCallback(object :
             ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
+                val wasNetworkAvailable = networkStateViewModel.isNetworkAvailable.value!!.second
 
+                if (!wasNetworkAvailable) {
+                    networkStateViewModel.isNetworkAvailable.postValue(Pair(
+                        first = true,
+                        second = true
+                    ))
+                }
             }
 
             override fun onLost(network: Network) {
+                networkStateViewModel.isNetworkAvailable.postValue(Pair(
+                    first = true,
+                    second = false
+                ))
+
                 Snackbar.make(
                     binding.container,
                     getString(R.string.no_connection),
@@ -85,8 +130,15 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment)
-        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    private fun isNetworkAvailable(connectivityManager: ConnectivityManager): Boolean {
+        val network = connectivityManager.activeNetwork ?: return false
+        val networkCapabilities =
+            connectivityManager.getNetworkCapabilities(network) ?: return false
+
+        return with(networkCapabilities) {
+            hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+                    || hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+                    || hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
+        }
     }
 }

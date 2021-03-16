@@ -2,17 +2,21 @@ package com.t3ddyss.clother.ui.home
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OffersAdapter
 import com.t3ddyss.clother.databinding.FragmentHomeBinding
+import com.t3ddyss.clother.ui.shared_viewmodels.NetworkStateViewModel
+import com.t3ddyss.clother.utilities.DEBUG_TAG
 import com.t3ddyss.clother.utilities.getThemeColor
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
@@ -25,6 +29,7 @@ import kotlinx.coroutines.launch
 class HomeFragment : Fragment() {
 
     private val homeViewModel by viewModels<HomeViewModel>()
+    private val networkStateViewModel by activityViewModels<NetworkStateViewModel>()
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -51,6 +56,19 @@ class HomeFragment : Fragment() {
             adapter.refresh()
             binding.swipeRefreshHome.isRefreshing = false
         }
+
+        networkStateViewModel.isNetworkAvailable.observe(viewLifecycleOwner, {
+            if (it.first) {
+                if (it.second) {
+                    Log.d(DEBUG_TAG, "NETWORK AVAILABLE AGAIN")
+                    adapter.retry()
+                }
+
+                else {
+                    Log.d(DEBUG_TAG, "NETWORK UNAVAILABLE")
+                }
+            }
+        })
 
         getOffers()
 
