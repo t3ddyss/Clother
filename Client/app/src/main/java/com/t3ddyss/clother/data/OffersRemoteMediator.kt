@@ -50,7 +50,7 @@ class OffersRemoteMediator(
             val items = service.getOffers(
                     afterKey = key,
                     beforeKey = null,
-                    size = when(loadType) {
+                    size = when (loadType) {
                         LoadType.REFRESH -> state.config.initialLoadSize
                         else -> state.config.pageSize
                     },
@@ -67,9 +67,7 @@ class OffersRemoteMediator(
             }
 
             MediatorResult.Success(endOfPaginationReached = items.isEmpty())
-        }
-
-        catch (ex: Exception) {
+        } catch (ex: Exception) {
             Log.d(DEBUG_TAG, ex.toString())
             MediatorResult.Error(ex)
         }

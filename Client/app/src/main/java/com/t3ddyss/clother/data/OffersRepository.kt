@@ -1,5 +1,6 @@
 package com.t3ddyss.clother.data
 
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -10,6 +11,7 @@ import com.t3ddyss.clother.db.OfferDao
 import com.t3ddyss.clother.db.RemoteKeyDao
 import com.t3ddyss.clother.models.Offer
 import com.t3ddyss.clother.utilities.CLOTHER_PAGE_SIZE
+import com.t3ddyss.clother.utilities.DEBUG_TAG
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -22,7 +24,8 @@ class OffersRepository @Inject constructor(
 {
 
     fun getOffersStream(query: Map<String, String>): Flow<PagingData<Offer>> {
-        val pagingSourceFactory = { db.offerDao().getAllOffers() }
+        val pagingSourceFactory = { Log.d(DEBUG_TAG, "Retrieving offers from db")
+            db.offerDao().getAllOffers() }
         return Pager(
                 config = PagingConfig(
                         pageSize = CLOTHER_PAGE_SIZE,

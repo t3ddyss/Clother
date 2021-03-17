@@ -1,17 +1,18 @@
 package com.t3ddyss.clother.ui.home
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
+import androidx.paging.LoadState
+import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OffersAdapter
 import com.t3ddyss.clother.databinding.FragmentHomeBinding
@@ -43,7 +44,33 @@ class HomeFragment : Fragment() {
             savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        adapter.addLoadStateListener {
+            if (it.append !is LoadState.Loading) {
+                binding.progressBar.isVisible = false
+                homeViewModel.endOfPaginationReachedBottom = it.append.endOfPaginationReached
+
+                if (it.append.endOfPaginationReached) {
+                    binding.recyclerViewHomeOffers.setPadding(0, 0, 0, 0)
+                }
+            }
+        }
+
         binding.recyclerViewHomeOffers.adapter = adapter
+        binding.recyclerViewHomeOffers.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+
+                if (!recyclerView.canScrollVertically(1)
+                        && newState==RecyclerView.SCROLL_STATE_IDLE) {
+                    if (!homeViewModel.endOfPaginationReachedBottom) {
+                        binding.progressBar.isVisible = true
+                    }
+                }
+                else {
+                    binding.progressBar.isVisible = false
+                }
+            }
+        })
 
         context?.getThemeColor(R.attr.colorPrimaryVariant)?.let {
             binding.swipeRefreshHome.setProgressBackgroundColorSchemeColor(it)
@@ -57,11 +84,12 @@ class HomeFragment : Fragment() {
             binding.swipeRefreshHome.isRefreshing = false
         }
 
+
         networkStateViewModel.isNetworkAvailable.observe(viewLifecycleOwner, {
             if (it.first) {
                 if (it.second) {
                     Log.d(DEBUG_TAG, "NETWORK AVAILABLE AGAIN")
-                    adapter.retry()
+//                    adapter.retry()
                 }
 
                 else {

@@ -22,6 +22,11 @@ fun TextInputEditText.text() = this.text.toString().trim()
 
 fun Context.getThemeColor(@AttrRes res: Int): Int {
     val typedValue = TypedValue()
-    theme.resolveAttribute (res, typedValue, true)
+    theme.resolveAttribute(res, typedValue, true)
     return typedValue.data
+}
+
+fun Context.convertDpToPx(dp: Int): Int {
+    val scale = resources.displayMetrics.density
+    return (dp * scale + 0.5f).toInt()
 }

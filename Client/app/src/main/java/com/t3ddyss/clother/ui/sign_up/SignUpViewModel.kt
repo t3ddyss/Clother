@@ -1,8 +1,7 @@
 package com.t3ddyss.clother.ui.sign_up
 
-import android.util.Log
 import androidx.lifecycle.*
-import com.t3ddyss.clother.data.*
+import com.t3ddyss.clother.data.UsersRepository
 import com.t3ddyss.clother.models.Loading
 import com.t3ddyss.clother.models.ResponseState
 import com.t3ddyss.clother.models.SignUpResponse

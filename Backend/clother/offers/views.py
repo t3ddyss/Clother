@@ -30,7 +30,14 @@ def get_offers():
     return jsonify([offer.to_dict() for offer in offers])
 
 
+@blueprint.route('/offers/updates')
+def get_offers_updates():
+    start = request.args.get('start', default=None, type=int)  # most recent post from Room cache
+    end = request.args.get('end', default=None, type=int)  # least recent post from Room cache
+    last_update_time = request.args.get('sud', default=None)  # most recent post from Room cache update time value
+
+
 # Simulate response delay while testing app on localhost
 @blueprint.before_request
 def simulate_delay():
-    time.sleep(response_delay)
+    time.sleep(7)
