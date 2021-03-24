@@ -16,9 +16,12 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.snackbar.Snackbar
 import com.t3ddyss.clother.databinding.ActivityMainBinding
-import com.t3ddyss.clother.ui.shared_viewmodels.NetworkStateViewModel
+import com.t3ddyss.clother.viewmodels.NetworkStateViewModel
 import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
 import dagger.hilt.android.AndroidEntryPoint
+import java.lang.Exception
+import java.net.ConnectException
+import java.net.SocketTimeoutException
 import javax.inject.Inject
 
 
@@ -119,11 +122,7 @@ class MainActivity : AppCompatActivity() {
                     second = false
                 ))
 
-                Snackbar.make(
-                    binding.container,
-                    getString(R.string.no_connection),
-                    Snackbar.LENGTH_SHORT
-                ).show()
+                showConnectionError()
             }
         })
     }
@@ -138,5 +137,25 @@ class MainActivity : AppCompatActivity() {
                     || hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
                     || hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
         }
+    }
+
+    fun showGenericError(throwable: Throwable) {
+        when (throwable) {
+            is SocketTimeoutException -> showGenericError(null)
+            !is ConnectException -> showConnectionError()
+        }
+    }
+
+    fun showGenericError(message: String?) {
+        Snackbar.make(binding.container,
+                message ?:
+                getString(R.string.unknown_error),
+                Snackbar.LENGTH_SHORT).show()
+    }
+
+    fun showConnectionError() {
+        Snackbar.make(binding.container,
+                getString(R.string.no_connection),
+                Snackbar.LENGTH_SHORT).show()
     }
 }

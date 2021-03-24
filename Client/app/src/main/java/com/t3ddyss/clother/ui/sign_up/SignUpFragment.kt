@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
+import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.data.*
 import com.t3ddyss.clother.databinding.FragmentSignUpBinding
@@ -70,16 +71,11 @@ class SignUpFragment : Fragment() {
                         }
                         is Error<SignUpResponse> -> {
                             binding.frameLayoutSignUpLoading.visibility = View.GONE
-                            Snackbar.make(binding.constraintLayoutSignUp,
-                                    response.message ?:
-                                    getString(R.string.unknown_error),
-                                    Snackbar.LENGTH_SHORT).show()
+                            (activity as? MainActivity)?.showGenericError(response.message)
                         }
                         is Failed<SignUpResponse> -> {
                             binding.frameLayoutSignUpLoading.visibility = View.GONE
-                            Snackbar.make(binding.constraintLayoutSignUp,
-                                    getString(R.string.no_connection),
-                                    Snackbar.LENGTH_SHORT).show()
+                            (activity as? MainActivity)?.showConnectionError()
                         }
                     }
                 })

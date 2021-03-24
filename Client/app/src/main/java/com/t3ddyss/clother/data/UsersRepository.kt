@@ -12,6 +12,7 @@ import java.net.ConnectException
 import java.net.SocketTimeoutException
 import javax.inject.Inject
 
+// TODO replace User with FieldMap
 class UsersRepository @Inject constructor(
         private val service: ClotherAuthService,
         private val prefs: SharedPreferences
@@ -29,7 +30,7 @@ class UsersRepository @Inject constructor(
             Failed()
 
         } catch (ex: SocketTimeoutException) {
-            Failed()
+            Error(null)
         }
     }
 
@@ -47,7 +48,7 @@ class UsersRepository @Inject constructor(
             Failed()
 
         } catch (ex: SocketTimeoutException) {
-            Failed()
+            Error(null)
         }
     }
 
@@ -69,7 +70,7 @@ class UsersRepository @Inject constructor(
             Failed()
 
         } catch (ex: SocketTimeoutException) {
-            Failed()
+            Error(null)
         }
     }
 }

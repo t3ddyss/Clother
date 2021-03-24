@@ -1,4 +1,4 @@
-package com.t3ddyss.clother.ui.shared_viewmodels
+package com.t3ddyss.clother.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

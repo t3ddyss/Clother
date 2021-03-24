@@ -3,7 +3,7 @@
     package="com.t3ddyss.clother">
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <!-- Remove android:usesCleartextTraffic="true" after deployment -->
+    <!-- TODO Remove android:usesCleartextTraffic="true" after deployment -->
     <application
         android:name=".ClotherApplication"
         android:allowBackup="false"
@@ -19,7 +19,6 @@
             android:theme="@style/SplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

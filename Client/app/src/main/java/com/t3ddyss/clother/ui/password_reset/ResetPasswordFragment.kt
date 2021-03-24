@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
+import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.data.*
 import com.t3ddyss.clother.databinding.FragmentResetPasswordBinding
@@ -52,16 +53,11 @@ class ResetPasswordFragment : Fragment() {
                 }
                 is Error<PasswordResetResponse> -> {
                     binding.frameLayoutResetPasswordLoading.visibility = View.GONE
-                    Snackbar.make(binding.constraintLayoutResetPassword,
-                            response.message ?:
-                            getString(R.string.unknown_error),
-                            Snackbar.LENGTH_SHORT).show()
+                    (activity as? MainActivity)?.showGenericError(response.message)
                 }
                 is Failed<PasswordResetResponse> -> {
                     binding.frameLayoutResetPasswordLoading.visibility = View.GONE
-                    Snackbar.make(binding.constraintLayoutResetPassword,
-                            getString(R.string.no_connection),
-                            Snackbar.LENGTH_SHORT).show()
+                    (activity as? MainActivity)?.showConnectionError()
                 }
             }
         }
