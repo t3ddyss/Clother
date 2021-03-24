@@ -13,11 +13,11 @@ from sqlalchemy.exc import IntegrityError
 
 from clother import db, jwt
 from clother.users.models import User
-from clother.utils import send_email, validate_password, response_delay
+from clother.utils import send_email, validate_password, response_delay, base_prefix
 from .forms import ResetPasswordForm
 from .models import TokenBlocklist
 
-blueprint = Blueprint('auth', __name__)
+blueprint = Blueprint('auth', __name__, url_prefix=(base_prefix + '/auth'))
 
 
 @jwt.token_in_blocklist_loader
@@ -27,7 +27,7 @@ def check_if_token_revoked(jwt_header, jwt_payload):
     return token is not None
 
 
-@blueprint.route('/auth/refresh')
+@blueprint.route('/refresh')
 @jwt_required(refresh=True)
 def refresh_tokens():
     user_id = get_jwt_identity()
@@ -93,7 +93,7 @@ def register():
     return {'message': 'Check your inbox'}
 
 
-@blueprint.route('/auth/confirm_email/<token>')
+@blueprint.route('/confirm_email/<token>')
 def confirm_email(token):
     ts = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
     try:
@@ -140,7 +140,7 @@ def login():
         return {"message": "Wrong email or password"}, 403
 
 
-@blueprint.route('/auth/forgot_password', methods=['POST'])
+@blueprint.route('/forgot_password', methods=['POST'])
 def forgot_password():
     if not request.is_json:
         return {"message": "Missing JSON in request"}, 400
@@ -176,7 +176,7 @@ def forgot_password():
     return {'message': 'Check your inbox'}
 
 
-@blueprint.route('/auth/reset_password/<token>', methods=['GET', 'POST'])
+@blueprint.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
     @after_this_request
     def after_request(response):
@@ -204,14 +204,6 @@ def reset_password(token):
         return 'Password has already been reset', 410
 
     return render_template('reset_password.html', form=form)
-
-
-@blueprint.route('/auth/protected_test')
-@jwt_required()
-def protected_test():
-    user_id = get_jwt_identity()
-    user = User.query.filter_by(id=user_id).first()
-    return user.to_dict()
 
 
 # Simulate response delay while testing app on localhost

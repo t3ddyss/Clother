@@ -4,7 +4,7 @@ import androidx.lifecycle.*
 import com.t3ddyss.clother.data.*
 import com.t3ddyss.clother.models.Loading
 import com.t3ddyss.clother.models.ResponseState
-import com.t3ddyss.clother.models.SignInResponse
+import com.t3ddyss.clother.models.AuthTokens
 import com.t3ddyss.clother.models.User
 import com.t3ddyss.clother.utilities.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,8 +22,8 @@ class SignInViewModel @Inject constructor(
     private val _password = savedStateHandle.getLiveData(PASSWORD, DEFAULT_STRING_VALUE)
     val password: LiveData<String> = _password
 
-    private val _signInResponse = MutableLiveData<ResponseState<SignInResponse>>()
-    val signInResponse: LiveData<ResponseState<SignInResponse>> = _signInResponse
+    private val _signInResponse = MutableLiveData<ResponseState<AuthTokens>>()
+    val authTokens: LiveData<ResponseState<AuthTokens>> = _signInResponse
 
     fun saveEmail(email: String) {
         savedStateHandle.set(EMAIL, email)

@@ -4,14 +4,15 @@ from flask import Blueprint, request, jsonify
 from .models import Offer
 from flask_jwt_extended import jwt_required
 
-from ..utils import response_delay
+from ..utils import response_delay, base_prefix
 
-blueprint = Blueprint('offers', __name__)
+blueprint = Blueprint('offers', __name__, url_prefix=(base_prefix + '/offers'))
 
 default_page_size = 10
 
 
-@blueprint.route('/offers')
+@blueprint.route('')
+@jwt_required()
 def get_offers():
     after = request.args.get('after', default=None, type=int)
     before = request.args.get('before', default=None, type=int)
@@ -30,14 +31,7 @@ def get_offers():
     return jsonify([offer.to_dict() for offer in offers])
 
 
-@blueprint.route('/offers/updates')
-def get_offers_updates():
-    start = request.args.get('start', default=None, type=int)  # most recent post from Room cache
-    end = request.args.get('end', default=None, type=int)  # least recent post from Room cache
-    last_update_time = request.args.get('sud', default=None)  # most recent post from Room cache update time value
-
-
 # Simulate response delay while testing app on localhost
 @blueprint.before_request
 def simulate_delay():
-    time.sleep(7)
+    time.sleep(response_delay)

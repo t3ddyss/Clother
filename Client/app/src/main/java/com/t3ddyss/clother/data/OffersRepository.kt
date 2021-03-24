@@ -1,5 +1,6 @@
 package com.t3ddyss.clother.data
 
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
@@ -18,6 +19,7 @@ import javax.inject.Inject
 @ExperimentalPagingApi
 class OffersRepository @Inject constructor(
     private val service: ClotherOffersService,
+    private val prefs: SharedPreferences,
     private val db: AppDatabase,
     private val offerDao: OfferDao,
     private val remoteKeyDao: RemoteKeyDao)
@@ -28,14 +30,15 @@ class OffersRepository @Inject constructor(
             db.offerDao().getAllOffers() }
         return Pager(
                 config = PagingConfig(
-                        pageSize = CLOTHER_PAGE_SIZE,
-                        enablePlaceholders = false),
+                    pageSize = CLOTHER_PAGE_SIZE,
+                    enablePlaceholders = false),
                 remoteMediator = OffersRemoteMediator(
-                        query = query,
-                        service = service,
-                        db = db,
-                        offerDao = offerDao,
-                        remoteKeyDao = remoteKeyDao),
+                    query = query,
+                    service = service,
+                    prefs = prefs,
+                    db = db,
+                    offerDao = offerDao,
+                    remoteKeyDao = remoteKeyDao),
                 pagingSourceFactory = pagingSourceFactory
         ).flow
     }

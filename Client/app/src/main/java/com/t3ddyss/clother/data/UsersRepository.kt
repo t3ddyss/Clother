@@ -34,7 +34,7 @@ class UsersRepository @Inject constructor(
         }
     }
 
-    suspend fun signInWithCredentials(user: User): ResponseState<SignInResponse> {
+    suspend fun signInWithCredentials(user: User): ResponseState<AuthTokens> {
         return try {
             val response = service.signInWithCredentials(user)
             saveTokens(response)
@@ -52,7 +52,7 @@ class UsersRepository @Inject constructor(
         }
     }
 
-    private fun saveTokens(response: SignInResponse) {
+    private fun saveTokens(response: AuthTokens) {
         prefs.edit().putString(ACCESS_TOKEN, response.accessToken).apply()
         prefs.edit().putString(REFRESH_TOKEN, response.refreshToken).apply()
         prefs.edit().putBoolean(IS_AUTHENTICATED, true).apply()

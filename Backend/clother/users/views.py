@@ -2,10 +2,12 @@ from flask import Blueprint
 from .models import User
 from flask_jwt_extended import jwt_required
 
-blueprint = Blueprint('users', __name__)
+from ..utils import base_prefix
+
+blueprint = Blueprint('users', __name__, url_prefix=(base_prefix + '/users'))
 
 
-@blueprint.route('/users/<user_id>')
+@blueprint.route('/<user_id>')
 @jwt_required()
 def get_user(user_id):
     user = User.query.filter_by(id=user_id).first()

@@ -1,5 +1,6 @@
 package com.t3ddyss.clother.data
 
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.paging.*
 import androidx.room.withTransaction
@@ -9,6 +10,7 @@ import com.t3ddyss.clother.db.OfferDao
 import com.t3ddyss.clother.db.RemoteKeyDao
 import com.t3ddyss.clother.models.Offer
 import com.t3ddyss.clother.models.RemoteKey
+import com.t3ddyss.clother.utilities.ACCESS_TOKEN
 import com.t3ddyss.clother.utilities.DEBUG_TAG
 import java.lang.Exception
 
@@ -16,10 +18,24 @@ import java.lang.Exception
 class OffersRemoteMediator(
     private val query: Map<String, String>,
     private val service: ClotherOffersService,
+    private val prefs: SharedPreferences,
     private val db: AppDatabase,
     private val offerDao: OfferDao,
-    private val remoteKeyDao: RemoteKeyDao
+    private val remoteKeyDao: RemoteKeyDao,
 ) : RemoteMediator<Int, Offer>() {
+    private var accessToken: String? = null
+    private var changeListener: SharedPreferences.OnSharedPreferenceChangeListener =
+        SharedPreferences.OnSharedPreferenceChangeListener { sp, key ->
+            run {
+                if (key == ACCESS_TOKEN) {
+                    accessToken = sp.getString(key, null)
+                }
+            }
+        }
+
+    init {
+        accessToken = prefs.getString(ACCESS_TOKEN, null)
+    }
 
     override suspend fun load(loadType: LoadType, state: PagingState<Int, Offer>): MediatorResult {
         val key: Int? = when (loadType) {
@@ -48,13 +64,14 @@ class OffersRemoteMediator(
 
         return try {
             val items = service.getOffers(
-                    afterKey = key,
-                    beforeKey = null,
-                    size = when (loadType) {
-                        LoadType.REFRESH -> state.config.initialLoadSize
-                        else -> state.config.pageSize
-                    },
-                    filters = query)
+                accessToken = "Bearer $accessToken",
+                afterKey = key,
+                beforeKey = null,
+                size = when (loadType) {
+                    LoadType.REFRESH -> state.config.initialLoadSize
+                    else -> state.config.pageSize
+                },
+                filters = query)
 
             db.withTransaction {
                 if (loadType == LoadType.REFRESH) {

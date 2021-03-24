@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.snackbar.Snackbar
 import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.data.*
@@ -39,18 +38,18 @@ class SignInFragment : Fragment() {
             binding.editTextSignInPassword.text = it.toEditable()
         })
 
-        signInViewModel.signInResponse.observe(viewLifecycleOwner, {
+        signInViewModel.authTokens.observe(viewLifecycleOwner, {
             when(it) {
-                is Loading<SignInResponse> ->
+                is Loading<AuthTokens> ->
                     binding.frameLayoutSignInLoading.visibility = View.VISIBLE
-                is Success<SignInResponse> -> {
+                is Success<AuthTokens> -> {
                     navController.navigate(R.id.action_signInFragment_to_homeFragment)
                 }
-                is Error<SignInResponse> -> {
+                is Error<AuthTokens> -> {
                     binding.frameLayoutSignInLoading.visibility = View.GONE
                     (activity as? MainActivity)?.showGenericError(it.message)
                 }
-                is Failed<SignInResponse> -> {
+                is Failed<AuthTokens> -> {
                     binding.frameLayoutSignInLoading.visibility = View.GONE
                     (activity as? MainActivity)?.showConnectionError()
                 }

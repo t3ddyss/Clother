@@ -4,6 +4,9 @@ from flask import current_app
 from flask_mail import Message
 from .extensions import mail
 
+base_prefix = '/api'
+response_delay = 1.5
+
 
 def send_email_async(app, message):
     with app.app_context():
@@ -24,5 +27,3 @@ def validate_password(password):
 def get_password_regex():
     return re.compile(r'^(?=\S{8,25}$)(?=.*?\d)(?=.*?[a-z])(?=.*?[A-Z])(?=\S+$)(?=.*?[^A-Za-z\s0-9])')
 
-
-response_delay = 1
