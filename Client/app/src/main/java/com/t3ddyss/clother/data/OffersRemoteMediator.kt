@@ -24,7 +24,7 @@ class OffersRemoteMediator(
     private val remoteKeyDao: RemoteKeyDao,
 ) : RemoteMediator<Int, Offer>() {
     private var accessToken: String? = null
-    private var changeListener: SharedPreferences.OnSharedPreferenceChangeListener =
+    private var changeListener =
         SharedPreferences.OnSharedPreferenceChangeListener { sp, key ->
             run {
                 if (key == ACCESS_TOKEN) {
@@ -35,6 +35,7 @@ class OffersRemoteMediator(
 
     init {
         accessToken = prefs.getString(ACCESS_TOKEN, null)
+        prefs.registerOnSharedPreferenceChangeListener(changeListener)
     }
 
     override suspend fun load(loadType: LoadType, state: PagingState<Int, Offer>): MediatorResult {
@@ -86,6 +87,7 @@ class OffersRemoteMediator(
             MediatorResult.Success(endOfPaginationReached = items.isEmpty())
         } catch (ex: Exception) {
             Log.d(DEBUG_TAG, "Mediator $ex")
+            Log.d(DEBUG_TAG, "Mediator ${Log.getStackTraceString(ex)}")
             MediatorResult.Error(ex)
         }
     }

@@ -8,10 +8,14 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Response
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
+
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -23,10 +27,26 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideHttpClient(authenticator: TokenAuthenticator): OkHttpClient {
-        return OkHttpClient()
-                .newBuilder()
-                .authenticator(authenticator)
-                .build()
+        val clientBuilder = OkHttpClient().newBuilder()
+
+        // Unexpected end of stream issue https://github.com/square/okhttp/issues/2738
+        clientBuilder.interceptors().add(Interceptor {
+            it.run {
+                proceed(
+                    request()
+                        .newBuilder()
+                        .addHeader("Connection", "close")
+                        .build()
+                )
+            }
+        })
+
+//        val logging = HttpLoggingInterceptor()
+//        logging.setLevel(HttpLoggingInterceptor.Level.HEADERS)
+
+        return clientBuilder
+            .authenticator(authenticator)
+            .build()
     }
 
     @Singleton
