@@ -85,7 +85,7 @@ class OffersRemoteMediator(
 
             MediatorResult.Success(endOfPaginationReached = items.isEmpty())
         } catch (ex: Exception) {
-            Log.d(DEBUG_TAG, ex.toString())
+            Log.d(DEBUG_TAG, "Mediator $ex")
             MediatorResult.Error(ex)
         }
     }

@@ -1,12 +1,10 @@
 package com.t3ddyss.clother.data
 
 import android.content.SharedPreferences
+import android.util.Log
 import com.t3ddyss.clother.api.ClotherAuthService
 import com.t3ddyss.clother.models.*
-import com.t3ddyss.clother.utilities.ACCESS_TOKEN
-import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
-import com.t3ddyss.clother.utilities.REFRESH_TOKEN
-import com.t3ddyss.clother.utilities.handleError
+import com.t3ddyss.clother.utilities.*
 import retrofit2.HttpException
 import java.net.ConnectException
 import java.net.SocketTimeoutException

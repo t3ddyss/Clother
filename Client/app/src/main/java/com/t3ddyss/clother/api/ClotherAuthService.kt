@@ -4,6 +4,7 @@ import com.t3ddyss.clother.models.PasswordResetResponse
 import com.t3ddyss.clother.models.AuthTokens
 import com.t3ddyss.clother.models.SignUpResponse
 import com.t3ddyss.clother.models.User
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -11,7 +12,7 @@ import retrofit2.http.POST
 
 interface ClotherAuthService {
     @GET("api/auth/refresh")
-    suspend fun refreshTokens(@Header("Authorization") refreshToken: String): AuthTokens
+    suspend fun refreshTokens(@Header("Authorization") refreshToken: String): Response<AuthTokens>
 
     @POST("api/auth/register")
     suspend fun createUserWithCredentials(@Body user: User): SignUpResponse

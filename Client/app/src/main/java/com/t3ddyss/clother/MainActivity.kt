@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
         val navGraph = navController.navInflater.inflate(R.navigation.main_graph)
 
-        if (prefs.getBoolean(IS_AUTHENTICATED, false)) { // for debug purposes
+        if (prefs.getBoolean(IS_AUTHENTICATED, false)) {
             navGraph.startDestination = R.id.homeFragment
         }
         else {

@@ -6,11 +6,14 @@ import com.t3ddyss.clother.utilities.ACCESS_TOKEN
 import com.t3ddyss.clother.utilities.DEBUG_TAG
 import com.t3ddyss.clother.utilities.REFRESH_TOKEN
 import dagger.Lazy
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
+import java.lang.Exception
+import java.lang.IllegalArgumentException
 import javax.inject.Inject
 
 class TokenAuthenticator @Inject constructor(
@@ -19,23 +22,31 @@ class TokenAuthenticator @Inject constructor(
 : Authenticator {
 
     override fun authenticate(route: Route?, response: Response): Request? {
-        val service = lazyService.get() ?: return null
-        val refreshToken = prefs.getString(REFRESH_TOKEN, null)
-                ?: throw IllegalArgumentException()
+        Log.d(DEBUG_TAG, "Need new access token")
 
-        val tokens = runBlocking {
-            service.refreshTokens("Bearer $refreshToken")
+        val service = lazyService.get() ?: return null
+        val refreshToken = prefs.getString(REFRESH_TOKEN, null) ?: return null
+        prefs.edit().remove(REFRESH_TOKEN).apply()
+
+        val refreshResponse = try {
+            runBlocking {
+                service.refreshTokens("Bearer $refreshToken")
+            }
+        }
+        catch (ex: Exception) {
+            null
         }
 
-        Log.d(DEBUG_TAG, "Got updated tokens")
-
+        val tokens = refreshResponse?.body() ?: return null
         prefs.edit().putString(ACCESS_TOKEN, tokens.accessToken).apply()
         prefs.edit().putString(REFRESH_TOKEN, tokens.refreshToken).apply()
 
+        Log.d(DEBUG_TAG, "Retrying request...")
+
         return response
-            .request
-            .newBuilder()
-            .header("Authorization", "Bearer ${tokens.accessToken}")
-            .build()
+                .request
+                .newBuilder()
+                .header("Authorization", "Bearer ${tokens.accessToken}")
+                .build()
     }
 }

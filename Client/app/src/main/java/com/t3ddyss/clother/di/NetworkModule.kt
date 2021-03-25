@@ -24,9 +24,9 @@ object NetworkModule {
     @Provides
     fun provideHttpClient(authenticator: TokenAuthenticator): OkHttpClient {
         return OkHttpClient()
-            .newBuilder()
-            .authenticator(authenticator)
-            .build()
+                .newBuilder()
+                .authenticator(authenticator)
+                .build()
     }
 
     @Singleton

@@ -1,5 +1,6 @@
 package com.t3ddyss.clother.ui.home
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
@@ -16,12 +18,15 @@ import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OffersAdapter
 import com.t3ddyss.clother.databinding.FragmentHomeBinding
-import com.t3ddyss.clother.viewmodels.NetworkStateViewModel
+import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
 import com.t3ddyss.clother.utilities.getThemeColor
+import com.t3ddyss.clother.viewmodels.NetworkStateViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -33,6 +38,7 @@ class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+    @Inject lateinit var prefs: SharedPreferences
     private val adapter = OffersAdapter()
 
     private var offersJob: Job? = null
@@ -60,12 +66,23 @@ class HomeFragment : Fragment() {
                 }
 
                 is LoadState.Error -> {
-                    binding.shimmerHome.isVisible = false
-                    binding.containerHome.isVisible = true
-                    binding.swipeRefreshHome.isRefreshing = false
+                    val error = (it.refresh as LoadState.Error).error
 
-                    (activity as? MainActivity)
-                            ?.showGenericError((it.refresh as LoadState.Error).error)
+                    if (error is HttpException && error.code() == 401) {
+                        findNavController().navigate(R.id.action_homeFragment_to_signUpFragment)
+
+                        (activity as? MainActivity)
+                            ?.showGenericError(getString(R.string.session_expired))
+                        prefs.edit().remove(IS_AUTHENTICATED).apply()
+                    }
+                    else {
+                        binding.shimmerHome.isVisible = false
+                        binding.containerHome.isVisible = true
+                        binding.swipeRefreshHome.isRefreshing = false
+
+                        (activity as? MainActivity)
+                            ?.showGenericError(error)
+                    }
                 }
             }
 
@@ -108,9 +125,7 @@ class HomeFragment : Fragment() {
             if (it.first) {
                 if (it.second) {
                     adapter.retry()
-                }
-
-                else {
+                } else {
                     (activity as? MainActivity)?.showConnectionError()
                 }
             }
