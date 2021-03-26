@@ -5,21 +5,27 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.os.Bundle
-import android.view.View
+import android.view.Gravity
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.transition.AutoTransition
+import androidx.transition.Slide
+import androidx.transition.TransitionManager
 import com.google.android.material.snackbar.Snackbar
 import com.t3ddyss.clother.databinding.ActivityMainBinding
 import com.t3ddyss.clother.viewmodels.NetworkStateViewModel
 import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
 import dagger.hilt.android.AndroidEntryPoint
-import java.lang.Exception
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import javax.inject.Inject
@@ -30,7 +36,11 @@ class MainActivity : AppCompatActivity() {
 
     private val networkStateViewModel by viewModels<NetworkStateViewModel>()
     private lateinit var binding: ActivityMainBinding
+
     private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var navController: NavController
+    private var destinationChangeListener: DestinationChangeListener? = null
+
     @Inject lateinit var prefs: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +52,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
+        navController = navHostFragment.navController
         val navGraph = navController.navInflater.inflate(R.navigation.main_graph)
 
         if (prefs.getBoolean(IS_AUTHENTICATED, false)) {
@@ -58,23 +68,8 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
 
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            with(binding) {
-                when (destination.id) {
-                    R.id.signUpFragment -> {
-                        toolbar.visibility = View.INVISIBLE
-                        navView.visibility = View.GONE
-                    }
-                    R.id.emailActionFragment, R.id.signInFragment, R.id.resetPasswordFragment -> {
-                        toolbar.visibility = View.VISIBLE
-                        navView.visibility = View.GONE
-                    }
-                    else -> {
-                        toolbar.visibility = View.VISIBLE
-                        navView.visibility = View.VISIBLE
-                    }
-                }
-            }
+        destinationChangeListener = DestinationChangeListener(binding).also {
+            navController.addOnDestinationChangedListener(it)
         }
 
         setupNetworkStateListener()
@@ -83,6 +78,26 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    fun showGenericError(throwable: Throwable) {
+        when (throwable) {
+            is SocketTimeoutException -> showGenericError(null)
+            !is ConnectException -> showConnectionError()
+        }
+    }
+
+    fun showGenericError(message: String?) {
+        Snackbar.make(binding.container,
+                message ?:
+                getString(R.string.unknown_error),
+                Snackbar.LENGTH_SHORT).show()
+    }
+
+    fun showConnectionError() {
+        Snackbar.make(binding.container,
+                getString(R.string.no_connection),
+                Snackbar.LENGTH_SHORT).show()
     }
 
     private fun setupNetworkStateListener() {
@@ -139,23 +154,73 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun showGenericError(throwable: Throwable) {
-        when (throwable) {
-            is SocketTimeoutException -> showGenericError(null)
-            !is ConnectException -> showConnectionError()
+    class DestinationChangeListener(
+        private val binding: ActivityMainBinding)
+    : NavController.OnDestinationChangedListener {
+        private val fragmentsWithoutToolbar = setOf(R.id.signUpFragment,
+                R.id.offerEditorFragment)
+
+        private val fragmentsWithoutBottomNav = setOf(R.id.emailActionFragment,
+        R.id.offerEditorFragment, R.id.resetPasswordFragment, R.id.signInFragment,
+        R.id.signUpFragment)
+
+        private val fragmentsWithInvisibleToolbar = setOf(R.id.signUpFragment)
+
+        override fun onDestinationChanged(
+            controller: NavController,
+            destination: NavDestination,
+            arguments: Bundle?
+        ) {
+            with (binding) {
+                if (destination.id !in fragmentsWithoutBottomNav) {
+                    if (!navView.isVisible) {
+                        animateBottomNav()
+                        navView.isVisible = true
+                    }
+                }
+                else {
+                    if (navView.isVisible) {
+                        animateBottomNav()
+                        navView.isVisible = false
+                    }
+                }
+
+                if (destination.id !in fragmentsWithoutToolbar) {
+                    if (!toolbar.isVisible) {
+                        animateToolbar()
+                        toolbar.isVisible = true
+                    }
+                }
+                else {
+                    if (toolbar.isVisible) {
+                        if (destination.id !in fragmentsWithInvisibleToolbar){
+                            animateToolbar()
+                            toolbar.isVisible = false
+                        }
+                        else {
+                            toolbar.isInvisible = true
+                        }
+                    }
+                }
+            }
         }
-    }
 
-    fun showGenericError(message: String?) {
-        Snackbar.make(binding.container,
-                message ?:
-                getString(R.string.unknown_error),
-                Snackbar.LENGTH_SHORT).show()
-    }
+        private fun animateBottomNav(gravity: Int = Gravity.BOTTOM) {
+            TransitionManager
+                .beginDelayedTransition(
+                        binding.navView,
+                        Slide(gravity),
+//                        AutoTransition()
+                )
+        }
 
-    fun showConnectionError() {
-        Snackbar.make(binding.container,
-                getString(R.string.no_connection),
-                Snackbar.LENGTH_SHORT).show()
+        private fun animateToolbar(gravity: Int = Gravity.TOP) {
+            TransitionManager
+                    .beginDelayedTransition(
+                            binding.toolbar,
+//                            Slide(gravity),
+                            AutoTransition()
+                    )
+        }
     }
 }

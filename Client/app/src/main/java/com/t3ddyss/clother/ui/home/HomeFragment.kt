@@ -11,6 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.CombinedLoadStates
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
@@ -39,7 +40,9 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     @Inject lateinit var prefs: SharedPreferences
+
     private val adapter = OffersAdapter()
+    private lateinit var loadStateListener: (CombinedLoadStates) -> Unit
 
     private var offersJob: Job? = null
 
@@ -50,7 +53,7 @@ class HomeFragment : Fragment() {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        adapter.addLoadStateListener {
+        loadStateListener = {
             val isRefreshInitiatedByUser = binding.swipeRefreshHome.isRefreshing
 
             when (it.refresh) {
@@ -97,6 +100,7 @@ class HomeFragment : Fragment() {
                 }
             }
         }
+        adapter.addLoadStateListener(loadStateListener)
         binding.recyclerViewHomeOffers.adapter = adapter
 
         // Show progressbar if reached end of current list
@@ -138,6 +142,7 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        adapter.removeLoadStateListener(loadStateListener)
         _binding = null
     }
 
