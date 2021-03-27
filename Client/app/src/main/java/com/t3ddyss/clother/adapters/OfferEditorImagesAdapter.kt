@@ -8,12 +8,16 @@ import com.bumptech.glide.Glide
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.ListItemImageAddBinding
 import com.t3ddyss.clother.databinding.ListItemImageEditorBinding
+import com.t3ddyss.clother.models.GalleryImage
 
 class OfferEditorImagesAdapter(
-        private val images: List<Uri?>,
-        private val detachImageListener: (Int) -> Unit,
+        private val images: MutableList<GalleryImage?>,
         private val attachImageListener: () -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    init {
+        images.add(null)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == R.layout.list_item_image_add) {
@@ -26,7 +30,7 @@ class OfferEditorImagesAdapter(
             ImageViewHolder(ListItemImageEditorBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
-                    false), detachImageListener)
+                    false))
         }
     }
 
@@ -38,28 +42,30 @@ class OfferEditorImagesAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        val uri = images[position]
+        val image = images[position]
 
-        return if (uri == null) R.layout.list_item_image_add
+        return if (image == null) R.layout.list_item_image_add
         else R.layout.list_item_image_editor
     }
 
     override fun getItemCount() = images.size
 
     inner class ImageViewHolder(
-            val binding: ListItemImageEditorBinding,
-            private val clickListener: (Int) -> Unit
+            val binding: ListItemImageEditorBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         init {
             binding.buttonRemove.setOnClickListener {
-                clickListener.invoke(absoluteAdapterPosition)
+                val position = absoluteAdapterPosition
+                images[position]?.isSelected = false
+                images.removeAt(position)
+                notifyItemRemoved(position)
             }
         }
 
-        fun bind(uri: Uri) {
+        fun bind(image: GalleryImage) {
             Glide.with(binding.image)
-                    .load(uri)
+                    .load(image.uri)
                     .into(binding.image)
         }
     }

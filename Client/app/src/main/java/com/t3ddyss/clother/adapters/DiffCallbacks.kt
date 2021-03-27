@@ -1,7 +1,7 @@
 package com.t3ddyss.clother.adapters
 
-import android.net.Uri
 import androidx.recyclerview.widget.DiffUtil
+import com.t3ddyss.clother.models.GalleryImage
 import com.t3ddyss.clother.models.Offer
 
 class OfferDiffCallback : DiffUtil.ItemCallback<Offer>() {
@@ -14,12 +14,16 @@ class OfferDiffCallback : DiffUtil.ItemCallback<Offer>() {
     }
 }
 
-class ImageDiffCallback : DiffUtil.ItemCallback<Uri>() {
-    override fun areItemsTheSame(oldItem: Uri, newItem: Uri): Boolean {
-        return oldItem == newItem
+class ImageDiffCallback : DiffUtil.ItemCallback<GalleryImage>() {
+    override fun areItemsTheSame(oldItem: GalleryImage, newItem: GalleryImage): Boolean {
+        return oldItem.uri == newItem.uri
     }
 
-    override fun areContentsTheSame(oldItem: Uri, newItem: Uri): Boolean {
-        return true
+    override fun areContentsTheSame(oldItem: GalleryImage, newItem: GalleryImage): Boolean {
+        if (oldItem.isSelected) {
+            newItem.isSelected = true
+        }
+
+        return oldItem == newItem
     }
 }

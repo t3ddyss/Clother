@@ -6,18 +6,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.GalleryImagesAdapter
 import com.t3ddyss.clother.databinding.FragmentGalleryBinding
+import com.t3ddyss.clother.utilities.SELECTED_IMAGES
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class GalleryFragment : Fragment() {
-    private val viewModel by viewModels<GalleryViewModel>()
+    private val viewModel by activityViewModels<GalleryViewModel>()
 
     private var _binding: FragmentGalleryBinding? = null
     private val binding get() = _binding!!
@@ -33,12 +36,11 @@ class GalleryFragment : Fragment() {
 
         binding.list.layoutManager = layoutManager
         binding.list.adapter = adapter
-        binding.list.setItemViewCacheSize(100)
+//        binding.list.setItemViewCacheSize(100)
 
         viewModel.images.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
-        lifecycle.addObserver(viewModel)
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 layoutManager.scrollToPositionWithOffset(positionStart, 0)
@@ -55,6 +57,8 @@ class GalleryFragment : Fragment() {
             binding.list.addItemDecoration(horizontalDecorator)
             binding.list.addItemDecoration(verticalDecorator)
         }
+
+        viewModel.getImages()
 
         return binding.root
     }

@@ -7,16 +7,17 @@
     <dimen name="fragment_horizontal_margin">16dp</dimen>
     <dimen name="fragment_vertical_margin">16dp</dimen>
 
-    <!-- Common -->
-    <dimen name="corner_radius">10dp</dimen>
-    <dimen name="divider_margin">5dp</dimen>
-
     <!-- Profile fragment avatar -->
     <dimen name="avatar_size">100dp</dimen>
     <dimen name="avatar_corner_radius">50dp</dimen>
 
     <!-- Offer editor fragment -->
     <dimen name="image_size_editor">150dp</dimen>
+
+    <!-- Other -->
+    <dimen name="corner_radius">10dp</dimen>
+    <dimen name="divider_margin">5dp</dimen>
+    <dimen name="check_margin">5dp</dimen>
 
     <!-- Margin & Padding, 8 dp baseline, https://material.io/design/layout/understanding-layout.html -->
     <dimen name="margin_padding_size_small">8dp</dimen>
