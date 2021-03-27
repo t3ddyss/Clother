@@ -19,6 +19,7 @@
 
         <!-- Navigation bar color. -->
         <item name="android:navigationBarColor">?attr/colorPrimaryVariant</item>
+        <!-- <item name="android:windowLightNavigationBar">true</item> -->
 
         <!-- Text color. -->
         <item name="android:textColor">?attr/colorOnPrimary</item>

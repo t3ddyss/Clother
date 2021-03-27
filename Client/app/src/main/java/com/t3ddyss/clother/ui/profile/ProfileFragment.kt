@@ -2,7 +2,6 @@ package com.t3ddyss.clother.ui.profile
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View

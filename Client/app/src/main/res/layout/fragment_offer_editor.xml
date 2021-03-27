@@ -13,12 +13,12 @@
         android:fillViewport="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout_offer_editor"
+            android:id="@+id/container_offer_editor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textInput_offer_title"
+                android:id="@+id/textInput_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/fragment_horizontal_margin"
@@ -28,16 +28,27 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editText_offer_title"
+                    android:id="@+id/editText_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/title"
                     android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <TextView
+                android:id="@+id/textView_pictures"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/fragment_horizontal_margin"
+                android:text="@string/pictures"
+                android:textColor="@color/green_500"
+                android:textStyle="bold"
+                android:textSize="@dimen/text_size_large"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textInput_title" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/list_offerEditor_images"
+                android:id="@+id/list_images"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/fragment_vertical_margin"
@@ -47,22 +58,22 @@
                 android:minHeight="@dimen/image_size_editor"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInput_offer_title"
+                app:layout_constraintTop_toBottomOf="@+id/textView_pictures"
                 tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/list_item_image_editor"/>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textInput_offer_description"
+                android:id="@+id/textInput_description"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/fragment_horizontal_margin"
                 app:hintAnimationEnabled="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/list_offerEditor_images">
+                app:layout_constraintTop_toBottomOf="@id/list_images">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editText_offer_description"
+                    android:id="@+id/editText_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="start|top"
@@ -73,11 +84,12 @@
                     android:inputType="textMultiLine"
                     android:scrollbars="vertical"/>
             </com.google.android.material.textfield.TextInputLayout>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
     <FrameLayout
-        android:id="@+id/frameLayout_sign_in_loading"
+        android:id="@+id/frameLayout_loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?attr/colorPrimary"

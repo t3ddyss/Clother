@@ -8,7 +8,7 @@
     <dimen name="fragment_vertical_margin">16dp</dimen>
 
     <!-- Common -->
-    <dimen name="button_corner_radius">10dp</dimen>
+    <dimen name="corner_radius">10dp</dimen>
     <dimen name="divider_margin">5dp</dimen>
 
     <!-- Profile fragment avatar -->

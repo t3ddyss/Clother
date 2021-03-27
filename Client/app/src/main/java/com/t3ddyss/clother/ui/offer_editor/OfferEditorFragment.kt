@@ -2,12 +2,10 @@ package com.t3ddyss.clother.ui.offer_editor
 
 import android.Manifest
 import android.os.Bundle
-import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Scroller
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -64,8 +62,8 @@ class OfferEditorFragment : Fragment() {
                     false
             )
 
-            binding.listOfferEditorImages.layoutManager = layoutManager
-            binding.listOfferEditorImages.adapter = adapter
+            binding.listImages.layoutManager = layoutManager
+            binding.listImages.adapter = adapter
         }
 
         return binding.root

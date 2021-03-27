@@ -54,18 +54,18 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         loadStateListener = {
-            val isRefreshInitiatedByUser = binding.swipeRefreshHome.isRefreshing
+            val isRefreshInitiatedByUser = binding.swipeRefresh.isRefreshing
 
             when (it.refresh) {
                 is LoadState.Loading -> {
-                    binding.shimmerHome.isVisible = true && !isRefreshInitiatedByUser
+                    binding.shimmer.isVisible = true && !isRefreshInitiatedByUser
                     binding.containerHome.isVisible = false || isRefreshInitiatedByUser
                 }
 
                 is LoadState.NotLoading -> {
-                    binding.shimmerHome.isVisible = false
+                    binding.shimmer.isVisible = false
                     binding.containerHome.isVisible = true
-                    binding.swipeRefreshHome.isRefreshing = false
+                    binding.swipeRefresh.isRefreshing = false
                 }
 
                 is LoadState.Error -> {
@@ -79,9 +79,9 @@ class HomeFragment : Fragment() {
                         prefs.edit().remove(IS_AUTHENTICATED).apply()
                     }
                     else {
-                        binding.shimmerHome.isVisible = false
+                        binding.shimmer.isVisible = false
                         binding.containerHome.isVisible = true
-                        binding.swipeRefreshHome.isRefreshing = false
+                        binding.swipeRefresh.isRefreshing = false
 
                         (activity as? MainActivity)
                             ?.showGenericError(error)
@@ -96,15 +96,15 @@ class HomeFragment : Fragment() {
 
                 // Disable bottom padding when end of pagination is reached
                 if (it.append.endOfPaginationReached) {
-                    binding.recyclerViewHomeOffers.setPadding(0, 0, 0, 0)
+                    binding.list.setPadding(0, 0, 0, 0)
                 }
             }
         }
         adapter.addLoadStateListener(loadStateListener)
-        binding.recyclerViewHomeOffers.adapter = adapter
+        binding.list.adapter = adapter
 
         // Show progressbar if reached end of current list
-        binding.recyclerViewHomeOffers.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 binding.progressBarFooter.isVisible =
@@ -115,13 +115,13 @@ class HomeFragment : Fragment() {
         })
 
         context?.getThemeColor(R.attr.colorPrimaryVariant)?.let {
-            binding.swipeRefreshHome.setProgressBackgroundColorSchemeColor(it)
+            binding.swipeRefresh.setProgressBackgroundColorSchemeColor(it)
         }
         context?.getThemeColor(R.attr.colorSecondary)?.let {
-            binding.swipeRefreshHome.setColorSchemeColors(it)
+            binding.swipeRefresh.setColorSchemeColors(it)
         }
 
-        binding.swipeRefreshHome.setOnRefreshListener {
+        binding.swipeRefresh.setOnRefreshListener {
             adapter.refresh()
         }
 

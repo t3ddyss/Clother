@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -31,26 +32,26 @@ class SignInFragment : Fragment() {
         _binding = FragmentSignInBinding.inflate(inflater, container, false)
 
         signInViewModel.email.observe(viewLifecycleOwner, {
-            binding.editTextSignInEmail.text = it.toEditable()
+            binding.editTextEmail.text = it.toEditable()
         })
 
         signInViewModel.password.observe(viewLifecycleOwner, {
-            binding.editTextSignInPassword.text = it.toEditable()
+            binding.editTextPassword.text = it.toEditable()
         })
 
         signInViewModel.authTokens.observe(viewLifecycleOwner, {
             when(it) {
                 is Loading<AuthTokens> ->
-                    binding.frameLayoutSignInLoading.visibility = View.VISIBLE
+                    binding.frameLayoutLoading.isVisible = true
                 is Success<AuthTokens> -> {
                     navController.navigate(R.id.action_signInFragment_to_homeFragment)
                 }
                 is Error<AuthTokens> -> {
-                    binding.frameLayoutSignInLoading.visibility = View.GONE
+                    binding.frameLayoutLoading.isVisible = false
                     (activity as? MainActivity)?.showGenericError(it.message)
                 }
                 is Failed<AuthTokens> -> {
-                    binding.frameLayoutSignInLoading.visibility = View.GONE
+                    binding.frameLayoutLoading.isVisible = false
                     (activity as? MainActivity)?.showConnectionError()
                 }
             }
@@ -63,14 +64,14 @@ class SignInFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.buttonSignIn.setOnClickListener {
-            val email = binding.editTextSignInEmail.text()
-            val password = binding.editTextSignInPassword.text()
+            val email = binding.editTextEmail.text()
+            val password = binding.editTextPassword.text()
 
             if (!email.validateEmail()) {
-                binding.textInputSignInEmail.error = getString(R.string.email_invalid)
+                binding.textInputEmail.error = getString(R.string.email_invalid)
                 return@setOnClickListener
             }
-            binding.textInputSignInEmail.isErrorEnabled = false
+            binding.textInputEmail.isErrorEnabled = false
 
             signInViewModel.signInWithCredentials(email, password)
         }
@@ -82,8 +83,8 @@ class SignInFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        signInViewModel.saveEmail(binding.editTextSignInEmail.text())
-        signInViewModel.savePassword(binding.editTextSignInPassword.text())
+        signInViewModel.saveEmail(binding.editTextEmail.text())
+        signInViewModel.savePassword(binding.editTextPassword.text())
     }
 
     override fun onDestroyView() {

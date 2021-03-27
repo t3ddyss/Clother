@@ -6,14 +6,11 @@ import com.t3ddyss.clother.utilities.ACCESS_TOKEN
 import com.t3ddyss.clother.utilities.DEBUG_TAG
 import com.t3ddyss.clother.utilities.REFRESH_TOKEN
 import dagger.Lazy
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
-import java.lang.Exception
-import java.lang.IllegalArgumentException
 import javax.inject.Inject
 
 class TokenAuthenticator @Inject constructor(

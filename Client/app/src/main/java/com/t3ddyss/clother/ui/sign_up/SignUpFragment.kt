@@ -4,10 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.snackbar.Snackbar
 import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.data.*
@@ -37,19 +37,19 @@ class SignUpFragment : Fragment() {
         signUpViewModel.name.observe(viewLifecycleOwner,
                 {
                     it?.let {
-                        binding.editTextSignUpName.text = it.toEditable()
+                        binding.editTextName.text = it.toEditable()
                     }
                 })
         signUpViewModel.email.observe(viewLifecycleOwner,
                 {
                     it?.let {
-                        binding.editTextSignUpEmail.text = it.toEditable()
+                        binding.editTextEmail.text = it.toEditable()
                     }
                 })
         signUpViewModel.password.observe(viewLifecycleOwner,
                 {
                     it?.let {
-                        binding.editTextSignUpPassword.text = it.toEditable()
+                        binding.editTextPassword.text = it.toEditable()
                     }
                 })
 
@@ -60,21 +60,21 @@ class SignUpFragment : Fragment() {
                     // TODO implement error messages localization on server side or in client
                     when(response){
                         is Loading<SignUpResponse> ->
-                            binding.frameLayoutSignUpLoading.visibility = View.VISIBLE
+                            binding.frameLayoutLoading.isVisible = true
                         is Success<SignUpResponse> -> {
                             navController.navigate(
                                 SignUpFragmentDirections.actionSignUpFragmentToEmailActionFragment(
                                         getString(R.string.email_activation),
                                         response.content?.email ?: getString(R.string.your_email)))
-                            binding.frameLayoutSignUpLoading.visibility = View.GONE
+                            binding.frameLayoutLoading.isVisible = false
                             signUpViewModel.clearCredentials()
                         }
                         is Error<SignUpResponse> -> {
-                            binding.frameLayoutSignUpLoading.visibility = View.GONE
+                            binding.frameLayoutLoading.isVisible = false
                             (activity as? MainActivity)?.showGenericError(response.message)
                         }
                         is Failed<SignUpResponse> -> {
-                            binding.frameLayoutSignUpLoading.visibility = View.GONE
+                            binding.frameLayoutLoading.isVisible = false
                             (activity as? MainActivity)?.showConnectionError()
                         }
                     }
@@ -87,27 +87,27 @@ class SignUpFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.buttonSignUp.setOnClickListener {
-            val name = binding.editTextSignUpName.text()
-            val email = binding.editTextSignUpEmail.text()
-            val password = binding.editTextSignUpPassword.text()
+            val name = binding.editTextName.text()
+            val email = binding.editTextEmail.text()
+            val password = binding.editTextPassword.text()
 
             if (!name.validateName()) {
-                binding.textInputSignUpName.error = getString(R.string.name_requirements)
+                binding.textInputName.error = getString(R.string.name_requirements)
                 return@setOnClickListener
             }
-            binding.textInputSignUpName.isErrorEnabled = false
+            binding.textInputName.isErrorEnabled = false
 
             if (!email.validateEmail()) {
-                binding.textInputSignUpEmail.error = getString(R.string.email_invalid)
+                binding.textInputEmail.error = getString(R.string.email_invalid)
                 return@setOnClickListener
             }
-            binding.textInputSignUpEmail.isErrorEnabled = false
+            binding.textInputEmail.isErrorEnabled = false
 
             if (!password.validatePassword()) {
-                binding.textInputSignUpPassword.error = getString(R.string.password_requirements)
+                binding.textInputPassword.error = getString(R.string.password_requirements)
                 return@setOnClickListener
             }
-            binding.textInputSignUpPassword.isErrorEnabled = false
+            binding.textInputPassword.isErrorEnabled = false
 
             signUpViewModel.createUserWithCredentials(name, email, password)
         }
@@ -119,9 +119,9 @@ class SignUpFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        signUpViewModel.saveName(binding.editTextSignUpName.text())
-        signUpViewModel.saveEmail(binding.editTextSignUpEmail.text())
-        signUpViewModel.savePassword(binding.editTextSignUpPassword.text())
+        signUpViewModel.saveName(binding.editTextName.text())
+        signUpViewModel.saveEmail(binding.editTextName.text())
+        signUpViewModel.savePassword(binding.editTextName.text())
     }
 
     override fun onDestroyView() {

@@ -29,13 +29,13 @@ class OffersAdapter : PagingDataAdapter<Offer, OffersAdapter.OfferViewHolder>(Of
 
             fun bind(offer: Offer) {
                 binding.apply {
-                    Glide.with(imageViewOffer.context)
+                    Glide.with(image.context)
                         .load(offer.image)
                         .placeholder(R.drawable.placeholder_offer_image)
                         .dontAnimate()
-                        .into(imageViewOffer)
+                        .into(image)
 
-                    textViewOfferTitle.text = offer.title
+                    textViewTitle.text = offer.title
                 }
             }
     }

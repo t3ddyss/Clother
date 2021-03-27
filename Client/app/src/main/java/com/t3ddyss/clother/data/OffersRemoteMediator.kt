@@ -18,7 +18,7 @@ import java.lang.Exception
 class OffersRemoteMediator(
     private val query: Map<String, String>,
     private val service: ClotherOffersService,
-    private val prefs: SharedPreferences,
+    prefs: SharedPreferences,
     private val db: AppDatabase,
     private val offerDao: OfferDao,
     private val remoteKeyDao: RemoteKeyDao,

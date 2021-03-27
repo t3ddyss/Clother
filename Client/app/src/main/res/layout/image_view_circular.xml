@@ -13,5 +13,6 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         app:srcCompat="@color/green_500"
-        tools:srcCompat="@tools:sample/avatars" />
+        tools:srcCompat="@tools:sample/avatars"
+        tools:ignore="ContentDescription" />
 </androidx.cardview.widget.CardView>

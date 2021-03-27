@@ -23,9 +23,8 @@ import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import com.google.android.material.snackbar.Snackbar
 import com.t3ddyss.clother.databinding.ActivityMainBinding
-import com.t3ddyss.clother.viewmodels.NetworkStateViewModel
 import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
-import com.t3ddyss.clother.utilities.USER_ID
+import com.t3ddyss.clother.viewmodels.NetworkStateViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -158,12 +157,11 @@ class MainActivity : AppCompatActivity() {
     class DestinationChangeListener(
         private val binding: ActivityMainBinding)
     : NavController.OnDestinationChangedListener {
-        private val fragmentsWithoutToolbar = setOf(R.id.signUpFragment,
-                R.id.offerEditorFragment)
+        private val fragmentsWithoutToolbar = setOf(R.id.signUpFragment)
 
         private val fragmentsWithoutBottomNav = setOf(R.id.emailActionFragment,
         R.id.offerEditorFragment, R.id.resetPasswordFragment, R.id.signInFragment,
-        R.id.signUpFragment)
+        R.id.signUpFragment, R.id.galleryFragment)
 
         private val fragmentsWithInvisibleToolbar = setOf(R.id.signUpFragment)
 

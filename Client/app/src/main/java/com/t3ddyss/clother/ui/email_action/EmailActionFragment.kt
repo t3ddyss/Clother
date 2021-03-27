@@ -35,9 +35,9 @@ class EmailActionFragment : Fragment() {
         val message = SpannableStringBuilder()
                 .append(args.emailActionMessage)
                 .bold { append(args.emailAddress) }
-        binding.textViewEmailActionMessage.text = message
+        binding.textViewMessage.text = message
 
-        binding.buttonEmailActionOk.setOnClickListener {
+        binding.buttonOkay.setOnClickListener {
             navController.navigate(R.id.action_emailActionFragment_to_signInFragment)
         }
     }
