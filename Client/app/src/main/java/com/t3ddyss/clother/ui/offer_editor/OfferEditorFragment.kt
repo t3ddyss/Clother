@@ -2,7 +2,6 @@ package com.t3ddyss.clother.ui.offer_editor
 
 import android.Manifest
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,11 +14,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OfferEditorImagesAdapter
 import com.t3ddyss.clother.databinding.FragmentOfferEditorBinding
 import com.t3ddyss.clother.ui.gallery.GalleryViewModel
-import com.t3ddyss.clother.utilities.DEBUG_TAG
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -41,17 +40,15 @@ class OfferEditorFragment : Fragment() {
     ): View {
         _binding = FragmentOfferEditorBinding.inflate(inflater, container, false)
 
-        val requestPermissionLauncher =
-            registerForActivityResult(
-                    ActivityResultContracts.RequestPermission()
-            ) { isGranted: Boolean ->
+        val requestGalleryPermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) {isGranted ->
                 if (isGranted) {
-                    Log.d(DEBUG_TAG, "Permission granted")
+                    findNavController().navigate(R.id.action_offerEditorFragment_to_galleryFragment)
                 } else {
-                    Log.d(DEBUG_TAG, "Permission denied")
+                    (activity as? MainActivity)
+                            ?.showGenericError(getString(R.string.no_gallery_access))
                 }
             }
-        requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
 
         layoutManager = LinearLayoutManager(
                 context,
@@ -61,22 +58,20 @@ class OfferEditorFragment : Fragment() {
         binding.listImages.layoutManager = layoutManager
 
         galleryViewModel.images.observe(viewLifecycleOwner) { images ->
-            adapter = OfferEditorImagesAdapter(images.filter { it.isSelected }.toMutableList(), {
-                Log.d(DEBUG_TAG, "Detach image $it")
-            },
-                    {
-                        findNavController().navigate(R.id.action_offerEditorFragment_to_galleryFragment)
-                    })
+            adapter = OfferEditorImagesAdapter(images.filter { it.isSelected }.toMutableList()
+            ) {
+                requestGalleryPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+            }
             binding.listImages.adapter = adapter
         }
 
         val horizontalDecorator = DividerItemDecoration(activity, DividerItemDecoration.HORIZONTAL)
 
-        ContextCompat.getDrawable(requireContext(), R.drawable.divider)?.apply {
+        ContextCompat.getDrawable(requireContext(), R.drawable.divider_large)?.apply {
             horizontalDecorator.setDrawable(this)
-
-            binding.listImages.addItemDecoration(horizontalDecorator)
         }
+
+        binding.listImages.addItemDecoration(horizontalDecorator)
 
         return binding.root
     }

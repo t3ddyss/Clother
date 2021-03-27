@@ -26,11 +26,15 @@
     <string name="check_inbox">Check your inbox</string>
     <string name="your_email">your email address</string>
     <string name="no_connection">You are offline</string>
-    <string name="unknown_error">Unknown error</string>
     <string name="retry">Retry</string>
     <string name="session_expired">Your session has expired</string>
+
+    <!-- Other -->
+    <string name="unknown_error">Unknown error</string>
     <string name="create_new_offer">Create new offer</string>
     <string name="description">Description</string>
     <string name="title">Title</string>
     <string name="pictures">Pictures</string>
+    <string name="no_gallery_access">Cannot add pictures without access to gallery</string>
+    <string name="attach_limit_exceeded">Cannot attach more than 10 pictures</string>
 </resources>

@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.GalleryImagesAdapter
 import com.t3ddyss.clother.databinding.FragmentGalleryBinding
@@ -25,14 +26,17 @@ class GalleryFragment : Fragment() {
     private var _binding: FragmentGalleryBinding? = null
     private val binding get() = _binding!!
 
-    private val adapter = GalleryImagesAdapter()
-    private val layoutManager by lazy {
-        GridLayoutManager(context, 3)
-    }
+    private lateinit var adapter: GalleryImagesAdapter
+    private lateinit var layoutManager: GridLayoutManager
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         _binding = FragmentGalleryBinding.inflate(inflater, container, false)
+
+        layoutManager = GridLayoutManager(context, 3)
+        adapter = GalleryImagesAdapter {
+            (activity as? MainActivity)?.showGenericError(getString(R.string.attach_limit_exceeded))
+        }
 
         binding.list.layoutManager = layoutManager
         binding.list.adapter = adapter
@@ -41,6 +45,7 @@ class GalleryFragment : Fragment() {
         viewModel.images.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
+
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 layoutManager.scrollToPositionWithOffset(positionStart, 0)

@@ -68,6 +68,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/fragment_horizontal_margin"
                 app:hintAnimationEnabled="false"
+                app:counterEnabled="true"
+                app:counterMaxLength="50"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_images">
@@ -77,10 +79,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="start|top"
-                    android:minLines="5"
+                    android:minLines="3"
                     android:maxLines="10"
                     android:nestedScrollingEnabled="false"
                     android:hint="@string/description"
+                    android:maxLength="50"
                     android:inputType="textMultiLine"
                     android:scrollbars="vertical"/>
             </com.google.android.material.textfield.TextInputLayout>

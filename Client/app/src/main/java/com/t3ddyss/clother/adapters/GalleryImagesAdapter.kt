@@ -9,7 +9,7 @@ import com.bumptech.glide.Glide
 import com.t3ddyss.clother.databinding.ListItemImageGalleryBinding
 import com.t3ddyss.clother.models.GalleryImage
 
-class GalleryImagesAdapter :
+class GalleryImagesAdapter(private val selectedLimitExceeded: () -> Unit) :
         ListAdapter<GalleryImage, GalleryImagesAdapter.ImageViewHolder>(ImageDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
@@ -23,6 +23,7 @@ class GalleryImagesAdapter :
         holder.bind(getItem(position))
     }
 
+
     override fun getItemCount(): Int = currentList.size
 
     inner class ImageViewHolder(
@@ -34,8 +35,13 @@ class GalleryImagesAdapter :
                 val image = getItem(absoluteAdapterPosition)
 
                 if (!image.isSelected) {
-                    binding.imageViewChecked.isVisible = true
-                    image.isSelected = true
+                    if (currentList.count {it.isSelected} >= 10) {
+                        selectedLimitExceeded.invoke()
+                    }
+                    else {
+                        binding.imageViewChecked.isVisible = true
+                        image.isSelected = true
+                    }
                 }
                 else {
                     binding.imageViewChecked.isVisible = false
