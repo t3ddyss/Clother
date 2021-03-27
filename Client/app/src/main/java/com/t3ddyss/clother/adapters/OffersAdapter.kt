@@ -31,7 +31,7 @@ class OffersAdapter : PagingDataAdapter<Offer, OffersAdapter.OfferViewHolder>(Of
                 binding.apply {
                     Glide.with(imageViewOffer.context)
                         .load(offer.image)
-                        .placeholder(R.drawable.glide_placeholder)
+                        .placeholder(R.drawable.placeholder_offer_image)
                         .dontAnimate()
                         .into(imageViewOffer)
 

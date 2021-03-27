@@ -25,6 +25,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.t3ddyss.clother.databinding.ActivityMainBinding
 import com.t3ddyss.clother.viewmodels.NetworkStateViewModel
 import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
+import com.t3ddyss.clother.utilities.USER_ID
 import dagger.hilt.android.AndroidEntryPoint
 import java.net.ConnectException
 import java.net.SocketTimeoutException

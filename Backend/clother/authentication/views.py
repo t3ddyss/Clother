@@ -36,7 +36,8 @@ def refresh_tokens():
     db.session.add(TokenBlocklist(jti=jti, created_at=now))
     db.session.commit()
 
-    return {'access_token': create_access_token(user_id),
+    return {'user_id': user_id,
+            'access_token': create_access_token(user_id),
             'refresh_token': create_refresh_token(user_id)
             }
 
@@ -133,7 +134,8 @@ def login():
     if not user.email_verified:
         return {"message": "You haven't verified your email address"}, 403
     if user and user.check_password(password):
-        return {'access_token': create_access_token(user.id),
+        return {'user_id': user.id,
+                'access_token': create_access_token(user.id),
                 'refresh_token': create_refresh_token(user.id)
                 }
     else:

@@ -1,7 +1,6 @@
 package com.t3ddyss.clother.data
 
 import android.content.SharedPreferences
-import android.util.Log
 import com.t3ddyss.clother.api.ClotherAuthService
 import com.t3ddyss.clother.models.*
 import com.t3ddyss.clother.utilities.*
@@ -50,9 +49,10 @@ class UsersRepository @Inject constructor(
         }
     }
 
-    private fun saveTokens(response: AuthTokens) {
-        prefs.edit().putString(ACCESS_TOKEN, response.accessToken).apply()
-        prefs.edit().putString(REFRESH_TOKEN, response.refreshToken).apply()
+    private fun saveTokens(tokens: AuthTokens) {
+        prefs.edit().putInt(USER_ID, tokens.userId).apply()
+        prefs.edit().putString(ACCESS_TOKEN, tokens.accessToken).apply()
+        prefs.edit().putString(REFRESH_TOKEN, tokens.refreshToken).apply()
         prefs.edit().putBoolean(IS_AUTHENTICATED, true).apply()
     }
 

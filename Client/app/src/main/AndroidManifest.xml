@@ -3,6 +3,7 @@
     package="com.t3ddyss.clother">
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <!-- TODO Remove android:usesCleartextTraffic="true" after deployment -->
     <application
         android:name=".ClotherApplication"

@@ -112,5 +112,14 @@
         android:id="@+id/offerEditorFragment"
         android:name="com.t3ddyss.clother.ui.offer_editor.OfferEditorFragment"
         android:label="fragment_offer_editor"
-        tools:layout="@layout/fragment_offer_editor" />
+        tools:layout="@layout/fragment_offer_editor" >
+        <action
+            android:id="@+id/action_offerEditorFragment_to_galleryFragment"
+            app:destination="@id/galleryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/galleryFragment"
+        android:name="com.t3ddyss.clother.ui.gallery.GalleryFragment"
+        android:label="fragment_gallery"
+        tools:layout="@layout/fragment_gallery" />
 </navigation>
