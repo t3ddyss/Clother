@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 
 from clother import db
 from clother.users.models import User
-from clother.offers.models import Offer
+from clother.offers.models import Offer, Category
 
 blueprint = Blueprint('admin', __name__)
 
@@ -37,10 +37,24 @@ def demote(email):
         print(f"Admin with email {email} doesn't exist")
 
 
+@blueprint.cli.command('populate_categories')
+def populate_categories():
+    Category.__table__.create(db.engine)
+
+    categories = json.load(open("./categories.json", 'r'))
+    for item in categories:
+        category = Category(parent_id=None, title="First category")
+
+
+    db.session.add(category)
+    db.session.commit()
+
+
 @blueprint.cli.command('populate_offers')
 def populate_offers():
-    offers = json.load(open("./instance./offers.json", 'r'))
+    Offer.__table__.create(db.engine)
 
+    offers = json.load(open("./instance./offers.json", 'r'))
     for item in offers:
         offer = Offer(title=item['title'], image=item['image'], address=item['address'])
 

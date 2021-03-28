@@ -12,3 +12,9 @@ class Offer(db.Model):
                 'title': self.title,
                 'image': self.image,
                 'address': self.address}
+
+
+class Category(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    parent_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=True)
+    title = db.Column(db.String, nullable=False)
