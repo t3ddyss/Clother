@@ -52,7 +52,7 @@ class SignInFragment : Fragment() {
                 }
                 is Failed<AuthTokens> -> {
                     binding.frameLayoutLoading.isVisible = false
-                    (activity as? MainActivity)?.showConnectionError()
+                    (activity as? MainActivity)?.showGenericError(getString(R.string.no_connection))
                 }
             }
         })

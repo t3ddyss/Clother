@@ -1,7 +1,10 @@
 package com.t3ddyss.clother.ui.profile
 
+import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -28,19 +31,15 @@ class ProfileFragment : Fragment() {
     @Inject lateinit var prefs: SharedPreferences
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
 
         binding.buttonNewOffer.setOnClickListener {
             findNavController().navigate(R.id.action_profileFragment_to_offerEditorFragment)
         }
-
-        Log.d(DEBUG_TAG, "User_id = ${prefs.getInt(USER_ID, 0)}")
-
-//        binding.cardViewAvatar.imageViewAvatar.setColorFilter(Color.RED)
 
         return binding.root
     }

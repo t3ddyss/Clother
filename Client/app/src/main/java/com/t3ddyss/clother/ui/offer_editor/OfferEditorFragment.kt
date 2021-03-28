@@ -1,7 +1,10 @@
 package com.t3ddyss.clother.ui.offer_editor
 
 import android.Manifest
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,13 +43,24 @@ class OfferEditorFragment : Fragment() {
     ): View {
         _binding = FragmentOfferEditorBinding.inflate(inflater, container, false)
 
+        val openSettingsAction = {
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            val uri = Uri.fromParts("package", context?.packageName, null)
+            intent.data = uri
+            startActivity(intent)
+        }
+
         val requestGalleryPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) {isGranted ->
                 if (isGranted) {
                     findNavController().navigate(R.id.action_offerEditorFragment_to_galleryFragment)
                 } else {
                     (activity as? MainActivity)
-                            ?.showGenericError(getString(R.string.no_gallery_access))
+                            ?.showSnackbarWithAction(
+                                    message = getString(R.string.no_gallery_access),
+                                    actionText = getString(R.string.grant_access),
+                                    action = openSettingsAction
+                            )
                 }
             }
 

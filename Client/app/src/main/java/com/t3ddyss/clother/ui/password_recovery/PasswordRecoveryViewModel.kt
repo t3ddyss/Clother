@@ -1,4 +1,4 @@
-package com.t3ddyss.clother.ui.password_reset
+package com.t3ddyss.clother.ui.password_recovery
 
 import androidx.lifecycle.*
 import com.t3ddyss.clother.data.*
@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ResetPasswordViewModel @Inject constructor(
+class PasswordRecoveryViewModel @Inject constructor(
         private val repository: UsersRepository,
         private val savedStateHandle: SavedStateHandle): ViewModel() {
     private val _email = savedStateHandle.getLiveData(EMAIL, DEFAULT_STRING_VALUE)

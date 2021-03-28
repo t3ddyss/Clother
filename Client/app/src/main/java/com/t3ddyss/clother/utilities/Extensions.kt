@@ -1,10 +1,15 @@
 package com.t3ddyss.clother.utilities
 
 import android.content.Context
+import android.graphics.Color
 import android.text.Editable
 import android.util.Patterns
 import android.util.TypedValue
 import androidx.annotation.AttrRes
+import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.BlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
 import com.google.android.material.textfield.TextInputEditText
 
 val name_regex = """\p{L}{2,50}""".toRegex()
@@ -30,3 +35,6 @@ fun Context.convertDpToPx(dp: Int): Int {
     val scale = resources.displayMetrics.density
     return (dp * scale + 0.5f).toInt()
 }
+
+fun Int.toColorFilter() = BlendModeColorFilterCompat
+    .createBlendModeColorFilterCompat(this, BlendModeCompat.SRC_ATOP)

@@ -1,4 +1,4 @@
-package com.t3ddyss.clother.ui.email_action
+package com.t3ddyss.clother.ui.email_confirmation
 
 import android.os.Bundle
 import android.text.SpannableStringBuilder
@@ -10,21 +10,20 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.t3ddyss.clother.R
-import com.t3ddyss.clother.databinding.FragmentEmailActionBinding
+import com.t3ddyss.clother.databinding.FragmentEmailConfirmationBinding
 
-class EmailActionFragment : Fragment() {
-
-    private var _binding: FragmentEmailActionBinding? = null
+class EmailConfirmationFragment : Fragment() {
+    private var _binding: FragmentEmailConfirmationBinding? = null
     private val binding get() = _binding!!
 
     private val navController by lazy { findNavController() }
-    private val args: EmailActionFragmentArgs by navArgs()
+    private val args: EmailConfirmationFragmentArgs by navArgs()
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentEmailActionBinding.inflate(inflater, container, false)
+        _binding = FragmentEmailConfirmationBinding.inflate(inflater, container, false)
 
         return binding.root
     }

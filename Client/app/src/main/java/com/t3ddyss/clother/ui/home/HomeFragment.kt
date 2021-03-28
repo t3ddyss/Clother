@@ -130,7 +130,7 @@ class HomeFragment : Fragment() {
                 if (it.second) {
                     adapter.retry()
                 } else {
-                    (activity as? MainActivity)?.showConnectionError()
+                    (activity as? MainActivity)?.showGenericError(getString(R.string.no_connection))
                 }
             }
         })

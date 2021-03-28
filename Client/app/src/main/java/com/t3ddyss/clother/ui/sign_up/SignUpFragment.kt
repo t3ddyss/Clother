@@ -75,7 +75,7 @@ class SignUpFragment : Fragment() {
                         }
                         is Failed<SignUpResponse> -> {
                             binding.frameLayoutLoading.isVisible = false
-                            (activity as? MainActivity)?.showConnectionError()
+                            (activity as? MainActivity)?.showGenericError(getString(R.string.no_connection))
                         }
                     }
                 })

@@ -1,4 +1,4 @@
-package com.t3ddyss.clother.ui.password_reset
+package com.t3ddyss.clother.ui.password_recovery
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.data.*
-import com.t3ddyss.clother.databinding.FragmentResetPasswordBinding
+import com.t3ddyss.clother.databinding.FragmentPasswordRecoveryBinding
 import com.t3ddyss.clother.models.*
 import com.t3ddyss.clother.utilities.text
 import com.t3ddyss.clother.utilities.toEditable
@@ -19,10 +19,10 @@ import com.t3ddyss.clother.utilities.validateEmail
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ResetPasswordFragment : Fragment() {
-    private val resetPasswordViewModel by viewModels<ResetPasswordViewModel>()
+class PasswordRecoveryFragment : Fragment() {
+    private val resetPasswordViewModel by viewModels<PasswordRecoveryViewModel>()
 
-    private var _binding: FragmentResetPasswordBinding? = null
+    private var _binding: FragmentPasswordRecoveryBinding? = null
     private val binding get() = _binding!!
 
     private val navController by lazy { findNavController() }
@@ -31,7 +31,7 @@ class ResetPasswordFragment : Fragment() {
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentResetPasswordBinding.inflate(inflater, container, false)
+        _binding = FragmentPasswordRecoveryBinding.inflate(inflater, container, false)
 
         resetPasswordViewModel.email.observe(viewLifecycleOwner) {
             binding.editTextEmail.text = it.toEditable()
@@ -45,7 +45,7 @@ class ResetPasswordFragment : Fragment() {
                     binding.frameLayoutLoading.isVisible = true
                 is Success<PasswordResetResponse> -> {
                     navController
-                            .navigate(ResetPasswordFragmentDirections
+                            .navigate(PasswordRecoveryFragmentDirections
                             .actionResetPasswordFragmentToEmailActionFragment(
                                     getString(R.string.password_reset_message),
                                     response.content?.email ?: getString(R.string.your_email)))
@@ -57,7 +57,7 @@ class ResetPasswordFragment : Fragment() {
                 }
                 is Failed<PasswordResetResponse> -> {
                     binding.frameLayoutLoading.isVisible = false
-                    (activity as? MainActivity)?.showConnectionError()
+                    (activity as? MainActivity)?.showGenericError(getString(R.string.no_connection))
                 }
             }
         }

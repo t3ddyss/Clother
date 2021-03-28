@@ -19,6 +19,18 @@
     </fragment>
 
     <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.t3ddyss.clother.ui.search.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" />
+
+    <fragment
+        android:id="@+id/addOfferFragment"
+        android:name="com.t3ddyss.clother.ui.offer_add.AddOfferFragment"
+        android:label="fragment_category"
+        tools:layout="@layout/fragment_offer_add" />
+
+    <fragment
         android:id="@+id/messagesFragment"
         android:name="com.t3ddyss.clother.ui.messages.MessagesFragment"
         android:label="@string/messages"
@@ -59,9 +71,9 @@
     </fragment>
     <fragment
         android:id="@+id/emailActionFragment"
-        android:name="com.t3ddyss.clother.ui.email_action.EmailActionFragment"
+        android:name="com.t3ddyss.clother.ui.email_confirmation.EmailConfirmationFragment"
         android:label="@string/check_inbox"
-        tools:layout="@layout/fragment_email_action">
+        tools:layout="@layout/fragment_email_confirmation">
         <argument
             android:name="email_action_message"
             app:argType="string" />
@@ -99,9 +111,9 @@
     </fragment>
     <fragment
         android:id="@+id/resetPasswordFragment"
-        android:name="com.t3ddyss.clother.ui.password_reset.ResetPasswordFragment"
+        android:name="com.t3ddyss.clother.ui.password_recovery.PasswordRecoveryFragment"
         android:label="@string/reset_password"
-        tools:layout="@layout/fragment_reset_password">
+        tools:layout="@layout/fragment_password_recovery">
         <action
             android:id="@+id/action_resetPasswordFragment_to_emailActionFragment"
             app:destination="@id/emailActionFragment"

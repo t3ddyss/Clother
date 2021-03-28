@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Clother</string>
     <string name="home">Home</string>
+    <string name="search">Search</string>
+    <string name="new_offer">New offer</string>
     <string name="messages">Messages</string>
     <string name="profile">Profile</string>
 
@@ -29,7 +31,7 @@
     <string name="retry">Retry</string>
     <string name="session_expired">Your session has expired</string>
 
-    <!-- Other -->
+    <!-- Main -->
     <string name="unknown_error">Unknown error</string>
     <string name="create_new_offer">Create new offer</string>
     <string name="description">Description</string>
@@ -37,4 +39,9 @@
     <string name="pictures">Pictures</string>
     <string name="no_gallery_access">Cannot add pictures without access to gallery</string>
     <string name="attach_limit_exceeded">Cannot attach more than 10 pictures</string>
+    <string name="confirmation">Confirmation</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="discard_changes_warning">The changes you made will be lost. Are you sure?</string>
+    <string name="grant_access">Grant access</string>
 </resources>

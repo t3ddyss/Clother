@@ -1,13 +1,19 @@
 package com.t3ddyss.clother
 
 import android.content.SharedPreferences
+import android.graphics.ColorFilter
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.toColor
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.navigation.NavController
@@ -23,9 +29,13 @@ import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import com.google.android.material.snackbar.Snackbar
 import com.t3ddyss.clother.databinding.ActivityMainBinding
+import com.t3ddyss.clother.utilities.DEBUG_TAG
 import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
+import com.t3ddyss.clother.utilities.getThemeColor
+import com.t3ddyss.clother.utilities.toColorFilter
 import com.t3ddyss.clother.viewmodels.NetworkStateViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import javax.inject.Inject
@@ -75,15 +85,44 @@ class MainActivity : AppCompatActivity() {
         setupNetworkStateListener()
     }
 
+    override fun onBackPressed() {
+        if (navController.currentBackStackEntry?.destination?.id == R.id.offerEditorFragment) {
+            showGenericDialog(getString(R.string.discard_changes_warning))
+        }
+        else {
+            super.onBackPressed()
+        }
+    }
+
     override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    private fun showGenericDialog(message: String?) {
+        AlertDialog.Builder(this)
+                .setTitle(getString(R.string.confirmation))
+                .setMessage(message)
+                .setPositiveButton(getString(R.string.yes)) { _, _ ->
+                    super.onBackPressed()
+                }
+                .setNegativeButton(getString(R.string.no), null)
+                .show()
+    }
+
+    fun showSnackbarWithAction(message: String, actionText: String, action: (() -> Unit)) {
+        Snackbar.make(binding.container,
+                message,
+                Snackbar.LENGTH_SHORT)
+                .setAction(actionText) {
+                    action.invoke()
+                }
+                .show()
     }
 
     fun showGenericError(throwable: Throwable) {
         when (throwable) {
             is SocketTimeoutException -> showGenericError(null)
-            !is ConnectException -> showConnectionError()
+            !is ConnectException -> showGenericError(getString(R.string.no_connection))
         }
     }
 
@@ -91,13 +130,8 @@ class MainActivity : AppCompatActivity() {
         Snackbar.make(binding.container,
                 message ?:
                 getString(R.string.unknown_error),
-                Snackbar.LENGTH_SHORT).show()
-    }
-
-    fun showConnectionError() {
-        Snackbar.make(binding.container,
-                getString(R.string.no_connection),
-                Snackbar.LENGTH_SHORT).show()
+                Snackbar.LENGTH_SHORT)
+                .show()
     }
 
     private fun setupNetworkStateListener() {
@@ -137,7 +171,7 @@ class MainActivity : AppCompatActivity() {
                     second = false
                 ))
 
-                showConnectionError()
+                showGenericError(getString(R.string.no_connection))
             }
         })
     }
@@ -154,7 +188,25 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    class DestinationChangeListener(
+    private fun animateBottomNav(gravity: Int = Gravity.BOTTOM) {
+        TransitionManager
+                .beginDelayedTransition(
+                        binding.navView,
+                        Slide(gravity),
+//                        AutoTransition()
+                )
+    }
+
+    private fun animateToolbar(gravity: Int = Gravity.TOP) {
+        TransitionManager
+                .beginDelayedTransition(
+                        binding.toolbar,
+//                            Slide(gravity),
+                        AutoTransition()
+                )
+    }
+
+    inner class DestinationChangeListener(
         private val binding: ActivityMainBinding)
     : NavController.OnDestinationChangedListener {
         private val fragmentsWithoutToolbar = setOf(R.id.signUpFragment)
@@ -165,61 +217,63 @@ class MainActivity : AppCompatActivity() {
 
         private val fragmentsWithInvisibleToolbar = setOf(R.id.signUpFragment)
 
+        private val fragmentsWithoutNavIcon = setOf(R.id.homeFragment,
+                R.id.messagesFragment, R.id.profileFragment)
+
+        private val fragmentsWithCustomUpIcon = setOf(R.id.offerEditorFragment,
+        R.id.galleryFragment)
+
         override fun onDestinationChanged(
             controller: NavController,
             destination: NavDestination,
             arguments: Bundle?
         ) {
             with (binding) {
-                if (destination.id !in fragmentsWithoutBottomNav) {
-                    if (!navView.isVisible) {
-                        animateBottomNav()
-                        navView.isVisible = true
-                    }
-                }
-                else {
-                    if (navView.isVisible) {
-                        animateBottomNav()
-                        navView.isVisible = false
-                    }
+                if (destination.id !in fragmentsWithoutBottomNav && !navView.isVisible) {
+                    animateBottomNav()
+                    navView.isVisible = true
                 }
 
-                if (destination.id !in fragmentsWithoutToolbar) {
-                    if (!toolbar.isVisible) {
-                        animateToolbar()
-                        toolbar.isVisible = true
-                    }
+                else if (destination.id in fragmentsWithoutBottomNav && navView.isVisible) {
+                    animateBottomNav()
+                    navView.isVisible = false
                 }
-                else {
-                    if (toolbar.isVisible) {
-                        if (destination.id !in fragmentsWithInvisibleToolbar){
+
+
+                if (destination.id !in fragmentsWithoutToolbar && !toolbar.isVisible) {
+                    animateToolbar()
+                    toolbar.isVisible = true
+                }
+
+                else if (destination.id in fragmentsWithoutToolbar && toolbar.isVisible) {
+                    when (destination.id) {
+                        !in fragmentsWithInvisibleToolbar -> {
                             animateToolbar()
                             toolbar.isVisible = false
                         }
-                        else {
-                            toolbar.isInvisible = true
-                        }
+                        else -> toolbar.isInvisible = true
                     }
+                }
+
+                if (destination.id !in fragmentsWithoutNavIcon
+                        && destination.id in fragmentsWithCustomUpIcon) {
+                    setIconClose(toolbar)
+                }
+
+                else if (destination.id !in fragmentsWithoutNavIcon){
+                    setIconUp(toolbar)
                 }
             }
         }
 
-        private fun animateBottomNav(gravity: Int = Gravity.BOTTOM) {
-            TransitionManager
-                .beginDelayedTransition(
-                        binding.navView,
-                        Slide(gravity),
-//                        AutoTransition()
-                )
+        private fun setIconClose(toolbar: Toolbar) {
+            toolbar.setNavigationIcon(R.drawable.ic_close)
+            toolbar.navigationIcon?.colorFilter = getThemeColor(R.attr.colorOnPrimary).toColorFilter()
         }
 
-        private fun animateToolbar(gravity: Int = Gravity.TOP) {
-            TransitionManager
-                    .beginDelayedTransition(
-                            binding.toolbar,
-//                            Slide(gravity),
-                            AutoTransition()
-                    )
+        private fun setIconUp(toolbar: Toolbar) {
+            toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
+            toolbar.navigationIcon?.colorFilter = getThemeColor(R.attr.colorOnPrimary).toColorFilter()
         }
     }
 }

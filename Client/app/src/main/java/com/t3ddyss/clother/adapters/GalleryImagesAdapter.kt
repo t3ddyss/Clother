@@ -23,7 +23,6 @@ class GalleryImagesAdapter(private val selectedLimitExceeded: () -> Unit) :
         holder.bind(getItem(position))
     }
 
-
     override fun getItemCount(): Int = currentList.size
 
     inner class ImageViewHolder(
