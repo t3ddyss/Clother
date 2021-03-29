@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -14,6 +15,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
@@ -52,6 +55,7 @@ class HomeFragment : Fragment() {
             savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        val layoutManager = GridLayoutManager(context, 2)
 
         loadStateListener = {
             val isRefreshInitiatedByUser = binding.swipeRefresh.isRefreshing
@@ -101,7 +105,20 @@ class HomeFragment : Fragment() {
             }
         }
         adapter.addLoadStateListener(loadStateListener)
+
+        binding.list.layoutManager = layoutManager
         binding.list.adapter = adapter
+
+        val horizontalDecorator = DividerItemDecoration(activity, DividerItemDecoration.HORIZONTAL)
+        val verticalDecorator = DividerItemDecoration(activity, DividerItemDecoration.VERTICAL)
+
+        ContextCompat.getDrawable(requireContext(), R.drawable.divider)?.apply {
+            verticalDecorator.setDrawable(this)
+            horizontalDecorator.setDrawable(this)
+
+            binding.list.addItemDecoration(horizontalDecorator)
+            binding.list.addItemDecoration(verticalDecorator)
+        }
 
         // Show progressbar if reached end of current list
         binding.list.addOnScrollListener(object : RecyclerView.OnScrollListener() {

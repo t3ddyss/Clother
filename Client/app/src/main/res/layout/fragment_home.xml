@@ -23,13 +23,12 @@
                 android:layout_height="0dp"
                 android:clipToPadding="false"
                 android:paddingBottom="64dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toTopOf="@id/progressBar_footer"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:listitem="@layout/list_item_offer"/>
+                tools:listitem="@layout/list_item_offer" />
 
             <ProgressBar
                 android:id="@+id/progressBar_footer"
@@ -53,8 +52,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-                <include layout="@layout/list_item_offer_shimmer"/>
-                <include layout="@layout/list_item_offer_shimmer"/>
                 <include layout="@layout/list_item_offer_shimmer"/>
                 <include layout="@layout/list_item_offer_shimmer"/>
                 <include layout="@layout/list_item_offer_shimmer"/>

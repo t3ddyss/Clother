@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 
 from clother import db
 from clother.users.models import User
-from clother.offers.models import Offer, Category
+from clother.offers.models import Offer, Category, Image
 
 blueprint = Blueprint('admin', __name__)
 
@@ -42,24 +42,39 @@ def populate_categories():
     Category.__table__.create(db.engine)
 
     categories = json.load(open("./categories.json", 'r'))
-    for item in categories:
-        category = Category(parent_id=None, title="First category")
+    for entry in categories:
+        category = Category(parent_id=entry['parent_id'], title=entry['title'])
 
-
-    db.session.add(category)
-    db.session.commit()
+        db.session.add(category)
+        db.session.commit()
 
 
 @blueprint.cli.command('populate_offers')
 def populate_offers():
     Offer.__table__.create(db.engine)
+    Image.__table__.create(db.engine)
 
-    offers = json.load(open("./instance./offers.json", 'r'))
+    offers = json.load(open("./offers.json", 'r'))
     for item in offers:
-        offer = Offer(title=item['title'], image=item['image'], address=item['address'])
+        offer = Offer(title=item['title'],
+                      category_id=item['category_id'])
+        for uri in item['images']:
+            offer.images.append(Image(uri="https:" + uri))
 
         try:
             db.session.add(offer)
             db.session.commit()
         except IntegrityError:
             db.session.rollback()
+
+
+@blueprint.cli.command('get_first_offer')
+def get_first_offer():
+    print(Offer.query.first().to_dict())
+
+
+@blueprint.cli.command('get_subcats')
+def get_subcats():
+    print([x.to_dict() for x in Category.query.filter_by(id=4).first().subcategories])
+    print([x.parent.to_dict() for x in Category.query.filter_by(id=4).first().subcategories])
+
