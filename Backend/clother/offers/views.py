@@ -1,7 +1,7 @@
 import time
 
 from flask import Blueprint, request, jsonify
-from .models import Offer
+from .models import Offer, Category
 from flask_jwt_extended import jwt_required
 
 from ..utils import response_delay, base_prefix
@@ -29,6 +29,12 @@ def get_offers():
         offers.reverse()
 
     return jsonify([offer.to_dict() for offer in offers])
+
+
+@blueprint.route('/categories')
+@jwt_required()
+def get_categories():
+    return jsonify([category.to_dict() for category in Category.query.order_by(Category.id.asc())])
 
 
 # Simulate response delay while testing app on localhost

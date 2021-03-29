@@ -65,7 +65,7 @@ class OffersRemoteMediator(
 
         return try {
             val items = service.getOffers(
-                accessToken = "Bearer $accessToken",
+                accessToken = accessToken,
                 afterKey = key,
                 beforeKey = null,
                 size = when (loadType) {
@@ -87,7 +87,6 @@ class OffersRemoteMediator(
             MediatorResult.Success(endOfPaginationReached = items.isEmpty())
         } catch (ex: Exception) {
             Log.d(DEBUG_TAG, "Mediator $ex")
-            Log.d(DEBUG_TAG, "Mediator ${Log.getStackTraceString(ex)}")
             MediatorResult.Error(ex)
         }
     }

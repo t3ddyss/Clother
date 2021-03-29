@@ -27,7 +27,7 @@ class TokenAuthenticator @Inject constructor(
 
         val refreshResponse = try {
             runBlocking {
-                service.refreshTokens("Bearer $refreshToken")
+                service.refreshTokens(refreshToken)
             }
         }
         catch (ex: Exception) {
@@ -35,8 +35,8 @@ class TokenAuthenticator @Inject constructor(
         }
 
         val tokens = refreshResponse?.body() ?: return null
-        prefs.edit().putString(ACCESS_TOKEN, tokens.accessToken).apply()
-        prefs.edit().putString(REFRESH_TOKEN, tokens.refreshToken).apply()
+        prefs.edit().putString(ACCESS_TOKEN, "Bearer ${tokens.accessToken}").apply()
+        prefs.edit().putString(REFRESH_TOKEN, "Bearer ${tokens.refreshToken}").apply()
 
         Log.d(DEBUG_TAG, "Retrying request...")
 

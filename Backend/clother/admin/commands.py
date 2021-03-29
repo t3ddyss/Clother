@@ -48,6 +48,16 @@ def populate_categories():
         db.session.add(category)
         db.session.commit()
 
+    delete_query = Category.__table__.delete().where(Category.title.ilike("view all"))
+    db.session.execute(delete_query)
+    db.session.commit()
+
+    categories = Category.query.all()
+    for category in categories:
+        if len(category.subcategories) > 0:
+            category.last_level = False
+            db.session.commit()
+
 
 @blueprint.cli.command('populate_offers')
 def populate_offers():

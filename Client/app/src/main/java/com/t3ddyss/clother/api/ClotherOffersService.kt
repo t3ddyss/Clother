@@ -1,5 +1,6 @@
 package com.t3ddyss.clother.api
 
+import com.t3ddyss.clother.models.Category
 import com.t3ddyss.clother.models.Offer
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -13,4 +14,7 @@ interface ClotherOffersService {
                           @Query("before") beforeKey: Int? = null,
                           @Query("size") size: Int = 10,
                           @QueryMap filters: Map<String, String>? = null): List<Offer>
+
+    @GET("api/offers/categories")
+    suspend fun getCategories(@Header("Authorization") accessToken: String?): List<Category>
 }

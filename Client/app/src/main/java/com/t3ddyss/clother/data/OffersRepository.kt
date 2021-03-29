@@ -8,9 +8,12 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.t3ddyss.clother.api.ClotherOffersService
 import com.t3ddyss.clother.db.AppDatabase
+import com.t3ddyss.clother.db.CategoryDao
 import com.t3ddyss.clother.db.OfferDao
 import com.t3ddyss.clother.db.RemoteKeyDao
+import com.t3ddyss.clother.models.Category
 import com.t3ddyss.clother.models.Offer
+import com.t3ddyss.clother.utilities.ACCESS_TOKEN
 import com.t3ddyss.clother.utilities.CLOTHER_PAGE_SIZE
 import com.t3ddyss.clother.utilities.DEBUG_TAG
 import kotlinx.coroutines.flow.Flow
@@ -22,8 +25,9 @@ class OffersRepository @Inject constructor(
     private val prefs: SharedPreferences,
     private val db: AppDatabase,
     private val offerDao: OfferDao,
-    private val remoteKeyDao: RemoteKeyDao)
-{
+    private val remoteKeyDao: RemoteKeyDao,
+    private val categoryDao: CategoryDao
+) {
 
     fun getOffersStream(query: Map<String, String>): Flow<PagingData<Offer>> {
         val pagingSourceFactory = { Log.d(DEBUG_TAG, "Retrieving offers from db")
@@ -41,5 +45,14 @@ class OffersRepository @Inject constructor(
                     remoteKeyDao = remoteKeyDao),
                 pagingSourceFactory = pagingSourceFactory
         ).flow
+    }
+
+    suspend fun getCategories(parentId: Int? = null): List<Category> {
+        if (db.categoryDao().getCategoriesCount() == 0) {
+            val categories = service.getCategories(prefs.getString(ACCESS_TOKEN, null))
+            db.categoryDao().insertAll(categories)
+        }
+
+        return db.categoryDao().getSubcategories(parentId)
     }
 }

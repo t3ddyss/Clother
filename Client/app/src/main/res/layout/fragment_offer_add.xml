@@ -5,9 +5,10 @@
     android:layout_height="match_parent"
     tools:context=".ui.offer_add.AddOfferFragment">
 
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list_categories"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="Category fragment" />
+        tools:layoutManager="LinearLayoutManager"
+        tools:listitem="@layout/list_item_category"/>
 </FrameLayout>
