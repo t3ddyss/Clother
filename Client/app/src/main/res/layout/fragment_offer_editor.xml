@@ -17,36 +17,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textInput_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/fragment_horizontal_margin"
-                app:hintAnimationEnabled="false"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editText_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/title"
-                    android:inputType="text" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <TextView
-                android:id="@+id/textView_pictures"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/fragment_horizontal_margin"
-                android:text="@string/pictures"
-                android:textColor="@color/green_500"
-                android:textStyle="bold"
-                android:textSize="@dimen/text_size_large"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInput_title" />
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list_images"
                 android:layout_width="match_parent"
@@ -58,15 +28,16 @@
                 android:minHeight="@dimen/image_size_editor"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView_pictures"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/list_item_image_editor"/>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textInput_description"
+                android:id="@+id/textInput_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/fragment_horizontal_margin"
+                android:layout_marginTop="@dimen/fragment_vertical_margin"
+                style="@style/Widget.Design.TextInputLayout"
                 app:hintAnimationEnabled="false"
                 app:counterEnabled="true"
                 app:counterMaxLength="50"
@@ -75,19 +46,43 @@
                 app:layout_constraintTop_toBottomOf="@id/list_images">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editText_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLength="50"
+                    android:paddingStart="@dimen/fragment_horizontal_margin"
+                    android:paddingEnd="@dimen/fragment_horizontal_margin"
+                    android:hint="@string/title"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInput_description"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fragment_vertical_margin"
+                style="@style/Widget.Design.TextInputLayout"
+                app:hintAnimationEnabled="false"
+                app:counterEnabled="true"
+                app:counterMaxLength="500"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textInput_title">
+
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editText_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="start|top"
-                    android:minLines="3"
-                    android:maxLines="10"
+                    android:paddingStart="@dimen/fragment_horizontal_margin"
+                    android:paddingEnd="@dimen/fragment_horizontal_margin"
+                    android:minLines="1"
                     android:nestedScrollingEnabled="false"
                     android:hint="@string/description"
-                    android:maxLength="50"
+                    android:maxLength="500"
                     android:inputType="textMultiLine"
                     android:scrollbars="vertical"/>
             </com.google.android.material.textfield.TextInputLayout>
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 

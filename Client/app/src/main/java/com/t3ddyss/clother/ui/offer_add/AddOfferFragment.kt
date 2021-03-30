@@ -1,5 +1,6 @@
 package com.t3ddyss.clother.ui.offer_add
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +18,9 @@ import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.CategoryAdapter
 import com.t3ddyss.clother.databinding.FragmentOfferAddBinding
+import com.t3ddyss.clother.utilities.IS_CATEGORIES_LOADED
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 @ExperimentalPagingApi
@@ -29,6 +32,8 @@ class AddOfferFragment : Fragment() {
     private val binding get() = _binding!!
     private val args by navArgs<AddOfferFragmentArgs>()
 
+    @Inject lateinit var prefs: SharedPreferences
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -36,6 +41,10 @@ class AddOfferFragment : Fragment() {
         _binding = FragmentOfferAddBinding.inflate(inflater, container, false)
         val parentId = args.parentId.let { if (it == 0) null else it }
         (activity as? MainActivity)?.setNavIconVisibility(parentId != null)
+
+        if (!prefs.getBoolean(IS_CATEGORIES_LOADED, false)) {
+            binding.shimmer.isVisible = true
+        }
 
         val layoutManager = LinearLayoutManager(
                 context,
@@ -60,6 +69,7 @@ class AddOfferFragment : Fragment() {
         viewModel.categories.observe(viewLifecycleOwner) {
             binding.shimmer.isVisible = false
             adapter.submitList(it)
+            prefs.edit().putBoolean(IS_CATEGORIES_LOADED, true).apply()
         }
 
         val verticalDecorator = DividerItemDecoration(activity, DividerItemDecoration.VERTICAL)

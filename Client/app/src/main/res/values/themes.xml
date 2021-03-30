@@ -19,6 +19,7 @@
 
         <!-- Navigation bar color. -->
         <item name="android:navigationBarColor">?attr/colorPrimaryVariant</item>
+        <!-- TODO override theme for API 27+ -->
         <!-- <item name="android:windowLightNavigationBar">true</item> -->
 
         <!-- Text color. -->

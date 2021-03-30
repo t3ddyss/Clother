@@ -20,6 +20,4 @@ class OfferEditorViewModel
         private val repository: OffersRepository,
         private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    val images get() = savedStateHandle
-            .getLiveData<List<GalleryImage>>(SELECTED_IMAGES, listOf())
 }

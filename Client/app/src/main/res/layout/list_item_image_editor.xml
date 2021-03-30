@@ -16,8 +16,8 @@
 
     <ImageView
         android:id="@+id/button_remove"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_margin="4dp"
         android:layout_gravity="top|end"
         app:tint="@color/green_500"

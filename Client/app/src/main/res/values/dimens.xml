@@ -12,7 +12,7 @@
     <dimen name="avatar_corner_radius">50dp</dimen>
 
     <!-- Offer editor fragment -->
-    <dimen name="image_size_editor">150dp</dimen>
+    <dimen name="image_size_editor">100dp</dimen>
 
     <!-- Other -->
     <dimen name="corner_radius">10dp</dimen>

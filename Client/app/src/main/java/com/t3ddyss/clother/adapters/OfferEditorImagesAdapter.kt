@@ -16,7 +16,7 @@ class OfferEditorImagesAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     init {
-        images.add(null)
+        images.addAll(MutableList<GalleryImage?>(10 - images.size) { null })
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
