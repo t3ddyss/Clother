@@ -4,6 +4,7 @@ plugins {
     id 'androidx.navigation.safeargs.kotlin'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'com.google.secrets_gradle_plugin' version '0.5'
 }
 
 android {
@@ -16,6 +17,8 @@ android {
         targetSdkVersion rootProject.targetSdkVersion
         versionCode 1
         versionName "0.1.0"
+//        buildConfigField("String", "GOOGLE_MAPS_API_KEY", GOOGLE_MAPS_API_KEY)
+        resValue "string", "google_maps_api_key", GOOGLE_MAPS_API_KEY
     }
 
     buildTypes {
@@ -60,6 +63,7 @@ dependencies {
     implementation "androidx.room:room-ktx:$room_version"
     implementation "com.facebook.shimmer:shimmer:$shimmer_version"
     implementation "com.github.bumptech.glide:glide:$glide_version"
+    implementation "com.google.android.gms:play-services-maps:$google_maps_version"
     implementation "com.google.android.material:material:$material_version"
     implementation "com.google.dagger:hilt-android:$hilt_version"
     implementation "com.squareup.okhttp3:okhttp:$ok_http_version"

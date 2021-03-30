@@ -15,10 +15,18 @@
         <action
             android:id="@+id/action_offerEditorFragment_to_galleryFragment"
             app:destination="@id/galleryFragment" />
+        <action
+            android:id="@+id/action_offerEditorFragment_to_locationFragment"
+            app:destination="@id/locationFragment" />
     </fragment>
     <fragment
         android:id="@+id/galleryFragment"
         android:name="com.t3ddyss.clother.ui.gallery.GalleryFragment"
         android:label="@string/select_images"
         tools:layout="@layout/fragment_gallery" />
+    <fragment
+        android:id="@+id/locationFragment"
+        android:name="com.t3ddyss.clother.ui.location.LocationFragment"
+        android:label="fragment_location"
+        tools:layout="@layout/fragment_location" />
 </navigation>

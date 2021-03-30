@@ -86,12 +86,14 @@ class OfferEditorFragment : Fragment() {
         }
 
         val horizontalDecorator = DividerItemDecoration(activity, DividerItemDecoration.HORIZONTAL)
-
         ContextCompat.getDrawable(requireContext(), R.drawable.divider_large)?.apply {
             horizontalDecorator.setDrawable(this)
         }
-
         binding.listImages.addItemDecoration(horizontalDecorator)
+
+        binding.location.setOnClickListener {
+            findNavController().navigate(R.id.action_offerEditorFragment_to_locationFragment)
+        }
 
         return binding.root
     }

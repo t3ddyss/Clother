@@ -35,7 +35,11 @@
             app:argType="integer"/>
         <action
             android:id="@+id/openSubcategoriesAction"
-            app:destination="@id/offerCategoryFragment">
+            app:destination="@id/offerCategoryFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right">
         </action>
         <action
             android:id="@+id/offerCategory_to_offerEditorGraph"
