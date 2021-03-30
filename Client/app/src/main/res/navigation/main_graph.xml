@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_graph"
-    tools:ignore="InvalidNavigation"
-    app:startDestination="@id/offerEditorFragment">
+    tools:ignore="InvalidNavigation">
 
     <fragment
         android:id="@+id/homeFragment"
@@ -25,17 +24,17 @@
         tools:layout="@layout/fragment_search" />
 
     <fragment
-        android:id="@+id/addOfferFragment"
-        android:name="com.t3ddyss.clother.ui.offer_add.AddOfferFragment"
+        android:id="@+id/offerCategoryFragment"
+        android:name="com.t3ddyss.clother.ui.offer_category.OfferCategoryFragment"
         android:label="fragment_category"
-        tools:layout="@layout/fragment_offer_add" >
+        tools:layout="@layout/fragment_offer_category" >
         <argument
             android:name="parent_id"
             android:defaultValue="0"
             app:argType="integer"/>
         <action
             android:id="@+id/openSubcategoriesAction"
-            app:destination="@id/addOfferFragment">
+            app:destination="@id/offerCategoryFragment">
         </action>
         <action
             android:id="@+id/action_addOfferFragment_to_offerEditorFragment"
@@ -137,6 +136,9 @@
         android:name="com.t3ddyss.clother.ui.offer_editor.OfferEditorFragment"
         android:label="fragment_offer_editor"
         tools:layout="@layout/fragment_offer_editor" >
+        <argument
+            android:name="category"
+            app:argType="com.t3ddyss.clother.models.Category"/>
         <action
             android:id="@+id/action_offerEditorFragment_to_galleryFragment"
             app:destination="@id/galleryFragment" />

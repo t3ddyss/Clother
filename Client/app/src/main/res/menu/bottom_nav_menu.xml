@@ -12,7 +12,7 @@
         android:menuCategory="secondary"/>
 
     <item
-        android:id="@+id/addOfferFragment"
+        android:id="@+id/offerCategoryFragment"
         android:icon="@drawable/ic_add_offer"
         android:title="@string/new_offer"
         android:menuCategory="secondary" />

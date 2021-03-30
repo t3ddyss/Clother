@@ -10,10 +10,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,8 +32,10 @@ import dagger.hilt.android.AndroidEntryPoint
 class OfferEditorFragment : Fragment() {
     private val offerEditorViewModel by viewModels<OfferEditorViewModel>()
     private val galleryViewModel by activityViewModels<GalleryViewModel>()
+
     private var _binding: FragmentOfferEditorBinding? = null
     private val binding get() = _binding!!
+    private val args by navArgs<OfferEditorFragmentArgs>()
 
     private lateinit var adapter: OfferEditorImagesAdapter
     private lateinit var layoutManager: LinearLayoutManager
@@ -42,6 +46,11 @@ class OfferEditorFragment : Fragment() {
             savedInstanceState: Bundle?
     ): View {
         _binding = FragmentOfferEditorBinding.inflate(inflater, container, false)
+
+        val category = args.category
+        binding.category.icon.isVisible = false
+        binding.category.textViewTitle.text = category.title
+        binding.textViewLocation.text = getString(R.string.select_location)
 
         val openSettingsAction = {
             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)

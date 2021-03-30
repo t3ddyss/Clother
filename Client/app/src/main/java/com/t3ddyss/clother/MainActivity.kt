@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         if (navController.currentBackStackEntry?.destination?.id == R.id.offerEditorFragment) {
-            showGenericDialog(getString(R.string.discard_changes_warning))
+//            showGenericDialog(getString(R.string.discard_changes_warning))
         }
         else {
             super.onBackPressed()

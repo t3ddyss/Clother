@@ -1,4 +1,4 @@
-package com.t3ddyss.clother.ui.offer_add
+package com.t3ddyss.clother.ui.offer_category
 
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -17,20 +17,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.CategoryAdapter
-import com.t3ddyss.clother.databinding.FragmentOfferAddBinding
+import com.t3ddyss.clother.databinding.FragmentOfferCategoryBinding
 import com.t3ddyss.clother.utilities.IS_CATEGORIES_LOADED
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
 @ExperimentalPagingApi
-class AddOfferFragment : Fragment() {
+class OfferCategoryFragment : Fragment() {
 
-    private val viewModel by viewModels<AddOfferViewModel>()
+    private val viewModel by viewModels<OfferCategoryViewModel>()
 
-    private var _binding: FragmentOfferAddBinding? = null
+    private var _binding: FragmentOfferCategoryBinding? = null
     private val binding get() = _binding!!
-    private val args by navArgs<AddOfferFragmentArgs>()
+    private val args by navArgs<OfferCategoryFragmentArgs>()
 
     @Inject lateinit var prefs: SharedPreferences
 
@@ -38,7 +38,7 @@ class AddOfferFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentOfferAddBinding.inflate(inflater, container, false)
+        _binding = FragmentOfferCategoryBinding.inflate(inflater, container, false)
         val parentId = args.parentId.let { if (it == 0) null else it }
         (activity as? MainActivity)?.setNavIconVisibility(parentId != null)
 
@@ -53,13 +53,15 @@ class AddOfferFragment : Fragment() {
 
         val adapter = CategoryAdapter {
             if (!it.isLastLevel) {
-                val action = AddOfferFragmentDirections
+                val action = OfferCategoryFragmentDirections
                     .openSubcategoriesAction(it.id)
                 findNavController().navigate(action)
             }
 
             else {
-                findNavController().navigate(R.id.action_addOfferFragment_to_offerEditorFragment)
+                val action = OfferCategoryFragmentDirections
+                        .actionAddOfferFragmentToOfferEditorFragment(it)
+                findNavController().navigate(action)
             }
         }
 

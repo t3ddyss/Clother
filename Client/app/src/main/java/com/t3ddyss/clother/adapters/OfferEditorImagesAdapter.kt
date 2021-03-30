@@ -60,6 +60,9 @@ class OfferEditorImagesAdapter(
                 images[position]?.isSelected = false
                 images.removeAt(position)
                 notifyItemRemoved(position)
+
+                images.add(null)
+                notifyItemInserted(images.size - 1)
             }
         }
 
