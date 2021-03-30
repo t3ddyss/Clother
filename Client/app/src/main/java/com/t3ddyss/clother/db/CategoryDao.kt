@@ -14,9 +14,6 @@ interface CategoryDao {
     @Query("SELECT COUNT(*) FROM categories")
     suspend fun getCategoriesCount(): Int
 
-    @Query("SELECT COUNT(*) FROM categories WHERE parent_id == :parentId")
-    suspend fun getSubcategoriesCount(parentId: Int?): Int
-
-    @Query("SELECT * FROM categories WHERE parent_id == :parentId")
+    @Query("SELECT * FROM categories WHERE (:parentId IS NULL AND parent_id IS NULL) OR (:parentId IS NOT NULL AND parent_id == :parentId)")
     suspend fun getSubcategories(parentId: Int?): List<Category>
 }

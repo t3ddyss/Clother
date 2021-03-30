@@ -28,7 +28,19 @@
         android:id="@+id/addOfferFragment"
         android:name="com.t3ddyss.clother.ui.offer_add.AddOfferFragment"
         android:label="fragment_category"
-        tools:layout="@layout/fragment_offer_add" />
+        tools:layout="@layout/fragment_offer_add" >
+        <argument
+            android:name="parent_id"
+            android:defaultValue="0"
+            app:argType="integer"/>
+        <action
+            android:id="@+id/openSubcategoriesAction"
+            app:destination="@id/addOfferFragment">
+        </action>
+        <action
+            android:id="@+id/action_addOfferFragment_to_offerEditorFragment"
+            app:destination="@id/offerEditorFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/messagesFragment"

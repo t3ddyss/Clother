@@ -1,6 +1,7 @@
 package com.t3ddyss.clother.adapters
 
 import androidx.recyclerview.widget.DiffUtil
+import com.t3ddyss.clother.models.Category
 import com.t3ddyss.clother.models.GalleryImage
 import com.t3ddyss.clother.models.Offer
 
@@ -24,6 +25,16 @@ class ImageDiffCallback : DiffUtil.ItemCallback<GalleryImage>() {
             newItem.isSelected = true
         }
 
+        return oldItem == newItem
+    }
+}
+
+class CategoryDiffCallback : DiffUtil.ItemCallback<Category>() {
+    override fun areItemsTheSame(oldItem: Category, newItem: Category): Boolean {
+        return oldItem.id == newItem.id
+    }
+
+    override fun areContentsTheSame(oldItem: Category, newItem: Category): Boolean {
         return oldItem == newItem
     }
 }

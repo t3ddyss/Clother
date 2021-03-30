@@ -13,6 +13,9 @@ import com.google.gson.annotations.SerializedName
                 childColumns = arrayOf("parent_id"))])
 data class Category(@PrimaryKey val id: Int,
                     @SerializedName("parent_id")
-                    @ColumnInfo(name="parent_id")
+                    @ColumnInfo(name="parent_id", index = true)
                     val parentId: Int?,
-                    val title: String)
+                    val title: String,
+                    @SerializedName("last_level")
+                    @ColumnInfo(name = "last_level")
+                    val isLastLevel: Boolean)

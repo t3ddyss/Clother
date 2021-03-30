@@ -31,7 +31,7 @@ class OffersRepository @Inject constructor(
 
     fun getOffersStream(query: Map<String, String>): Flow<PagingData<Offer>> {
         val pagingSourceFactory = { Log.d(DEBUG_TAG, "Retrieving offers from db")
-            db.offerDao().getAllOffers() }
+            offerDao.getAllOffers() }
         return Pager(
                 config = PagingConfig(
                     pageSize = CLOTHER_PAGE_SIZE,
@@ -48,11 +48,11 @@ class OffersRepository @Inject constructor(
     }
 
     suspend fun getCategories(parentId: Int? = null): List<Category> {
-        if (db.categoryDao().getCategoriesCount() == 0) {
+        if (categoryDao.getCategoriesCount() == 0) {
             val categories = service.getCategories(prefs.getString(ACCESS_TOKEN, null))
-            db.categoryDao().insertAll(categories)
+            categoryDao.insertAll(categories)
         }
 
-        return db.categoryDao().getSubcategories(parentId)
+        return categoryDao.getSubcategories(parentId)
     }
 }

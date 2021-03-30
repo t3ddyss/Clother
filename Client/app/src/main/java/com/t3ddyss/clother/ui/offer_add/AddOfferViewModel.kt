@@ -17,12 +17,14 @@ class AddOfferViewModel @Inject constructor(
 ): ViewModel() {
     private val _categories = MutableLiveData<List<Category>>()
     val categories: LiveData<List<Category>> = _categories
+    private var currentParentId: Int? = -1 // Since null indicates root categories
 
     fun getCategories(parentId: Int?) {
+        if (parentId == currentParentId) return
+
         viewModelScope.launch {
-            val categories = async { repository.getCategories() }
-            
             _categories.postValue(repository.getCategories(parentId))
         }
+        currentParentId = parentId
     }
 }

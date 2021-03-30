@@ -2,14 +2,14 @@ package com.t3ddyss.clother.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.databinding.ListItemCategoryBinding
 import com.t3ddyss.clother.models.Category
 
 class CategoryAdapter(
-        private val categories: List<Category>,
         private val clickListener: (Category) -> Unit
-) : RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
+) : ListAdapter<Category, CategoryAdapter.CategoryViewHolder>(CategoryDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
         return CategoryViewHolder(ListItemCategoryBinding.inflate(
@@ -20,10 +20,10 @@ class CategoryAdapter(
     }
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
-        holder.bind(categories[position].title)
+        holder.bind(getItem(position).title)
     }
 
-    override fun getItemCount() = categories.size
+    override fun getItemCount() = currentList.size
 
     inner class CategoryViewHolder(
             val binding:ListItemCategoryBinding
@@ -31,7 +31,7 @@ class CategoryAdapter(
 
         init {
             binding.root.setOnClickListener {
-                clickListener.invoke(categories[absoluteAdapterPosition])
+                clickListener.invoke(getItem(absoluteAdapterPosition))
             }
         }
 

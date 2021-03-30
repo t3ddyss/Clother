@@ -206,7 +206,16 @@ class MainActivity : AppCompatActivity() {
                 )
     }
 
-    inner class DestinationChangeListener(
+    fun setNavIconVisibility(isVisible: Boolean) {
+        if (!isVisible) {
+            binding.toolbar.navigationIcon = null
+        }
+        else {
+            destinationChangeListener?.setIconUp(binding.toolbar)
+        }
+    }
+
+    open inner class DestinationChangeListener(
         private val binding: ActivityMainBinding)
     : NavController.OnDestinationChangedListener {
         private val fragmentsWithoutToolbar = setOf(R.id.signUpFragment)
@@ -271,7 +280,7 @@ class MainActivity : AppCompatActivity() {
             toolbar.navigationIcon?.colorFilter = getThemeColor(R.attr.colorOnPrimary).toColorFilter()
         }
 
-        private fun setIconUp(toolbar: Toolbar) {
+        fun setIconUp(toolbar: Toolbar) {
             toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
             toolbar.navigationIcon?.colorFilter = getThemeColor(R.attr.colorOnPrimary).toColorFilter()
         }
