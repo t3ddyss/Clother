@@ -1,23 +1,78 @@
 package com.t3ddyss.clother.ui.offer_editor
 
+import android.app.Application
+import android.database.ContentObserver
 import android.net.Uri
-import android.widget.Gallery
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.paging.ExperimentalPagingApi
-import com.t3ddyss.clother.data.OffersRepository
+import android.os.Handler
+import android.provider.MediaStore
+import androidx.lifecycle.*
 import com.t3ddyss.clother.models.GalleryImage
-import com.t3ddyss.clother.utilities.SELECTED_IMAGES
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-@ExperimentalPagingApi
-class OfferEditorViewModel
-@Inject constructor(
-        private val repository: OffersRepository,
+class OfferEditorViewModel @Inject constructor(
+        application: Application,
         private val savedStateHandle: SavedStateHandle
-) : ViewModel() {
+) : AndroidViewModel(application) {
+
+    private val _images = MutableLiveData<List<GalleryImage>>(listOf())
+    val images: LiveData<List<GalleryImage>> = _images
+
+    private val uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+    private val imagesObserver = object : ContentObserver(
+            Handler(getApplication<Application>().applicationContext.mainLooper)) {
+        override fun onChange(selfChange: Boolean) {
+            if (selfChange) return
+            loadImages()
+        }
+    }
+
+    init {
+        getApplication<Application>().contentResolver.registerContentObserver(
+                uri,
+                true,
+                imagesObserver)
+    }
+
+    fun getImages() {
+        loadImages()
+    }
+
+    private fun loadImages() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val imagesList = mutableListOf<Uri>()
+
+            val projection = arrayOf(
+                    MediaStore.Images.Media._ID,
+                    MediaStore.Images.Media.DATE_ADDED)
+
+            val cursor = getApplication<Application>().contentResolver.query(
+                    uri,
+                    projection,
+                    null,
+                    null,
+                    "DATE_ADDED DESC"
+            )
+
+            cursor?.use {
+                val columnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
+
+                while (it.moveToNext()) {
+                    val imageId = it.getLong(columnIndex)
+                    val imageUri = Uri.withAppendedPath(uri, imageId.toString())
+                    imagesList.add(imageUri)
+                }
+            }
+
+            _images.postValue(imagesList.map { GalleryImage(it) })
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        getApplication<Application>().contentResolver.unregisterContentObserver(imagesObserver)
+    }
 }
