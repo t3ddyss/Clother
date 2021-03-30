@@ -225,6 +225,8 @@ class MainActivity : AppCompatActivity() {
         R.id.signUpFragment, R.id.galleryFragment)
 
         private val fragmentsWithInvisibleToolbar = setOf(R.id.signUpFragment)
+        private val fragmentsWithToolbarLabel = setOf(R.id.offerCategoryFragment,
+            R.id.offerEditorFragment, R.id.galleryFragment)
 
         private val fragmentsWithoutNavIcon = setOf(R.id.homeFragment,
                 R.id.messagesFragment, R.id.profileFragment)
@@ -238,6 +240,7 @@ class MainActivity : AppCompatActivity() {
             arguments: Bundle?
         ) {
             with (binding) {
+                // NavView visibility
                 if (destination.id !in fragmentsWithoutBottomNav && !navView.isVisible) {
                     animateBottomNav()
                     navView.isVisible = true
@@ -249,6 +252,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
 
+                // Toolbar visibility
                 if (destination.id !in fragmentsWithoutToolbar && !toolbar.isVisible) {
                     animateToolbar()
                     toolbar.isVisible = true
@@ -264,6 +268,8 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
+
+                // Toolbar icon
                 if (destination.id !in fragmentsWithoutNavIcon
                         && destination.id in fragmentsWithCustomUpIcon) {
                     setIconClose(toolbar)
@@ -271,6 +277,14 @@ class MainActivity : AppCompatActivity() {
 
                 else if (destination.id !in fragmentsWithoutNavIcon){
                     setIconUp(toolbar)
+                }
+
+                // Toolbar title
+                if (destination.id in fragmentsWithToolbarLabel) {
+                    supportActionBar?.setDisplayShowTitleEnabled(true)
+                }
+                else {
+                    supportActionBar?.setDisplayShowTitleEnabled(false)
                 }
             }
         }

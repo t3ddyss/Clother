@@ -51,4 +51,6 @@
     <string name="size_l">L</string>
     <string name="size_m">M</string>
     <string name="size_s">S</string>
+    <string name="select_category">Select category</string>
+    <string name="select_images">Select images</string>
 </resources>

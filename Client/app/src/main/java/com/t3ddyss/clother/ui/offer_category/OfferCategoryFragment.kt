@@ -60,7 +60,7 @@ class OfferCategoryFragment : Fragment() {
 
             else {
                 val action = OfferCategoryFragmentDirections
-                        .actionAddOfferFragmentToOfferEditorFragment(it)
+                    .offerCategoryToOfferEditorGraph(it)
                 findNavController().navigate(action)
             }
         }
