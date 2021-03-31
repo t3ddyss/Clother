@@ -16,6 +16,7 @@ const val NAME = "name"
 const val EMAIL = "email"
 const val PASSWORD = "password"
 const val SELECTED_IMAGES = "selected_images"
+const val MAPVIEW_BUNDLE = "mapview_bundle"
 
 // Various parameters
 const val CLOTHER_PAGE_SIZE = 10

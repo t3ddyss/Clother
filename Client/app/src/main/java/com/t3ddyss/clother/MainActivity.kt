@@ -1,5 +1,7 @@
 package com.t3ddyss.clother
 
+import android.app.Activity
+import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.ColorFilter
 import android.net.ConnectivityManager
@@ -16,6 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColor
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
@@ -27,6 +30,8 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.transition.AutoTransition
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.maps.MapView
 import com.google.android.material.snackbar.Snackbar
 import com.t3ddyss.clother.databinding.ActivityMainBinding
 import com.t3ddyss.clother.utilities.DEBUG_TAG
@@ -35,7 +40,10 @@ import com.t3ddyss.clother.utilities.getThemeColor
 import com.t3ddyss.clother.utilities.toColorFilter
 import com.t3ddyss.clother.viewmodels.NetworkStateViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.lang.Exception
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import javax.inject.Inject
@@ -83,6 +91,17 @@ class MainActivity : AppCompatActivity() {
         }
 
         setupNetworkStateListener()
+
+        lifecycleScope.launch(Dispatchers.Default) {
+            try {
+                val mapView = MapView(applicationContext);
+                mapView.onCreate(null);
+                mapView.onPause()
+                mapView.onDestroy()
+            } catch (ex: Exception) {
+
+            }
+        }
     }
 
     override fun onBackPressed() {
@@ -97,6 +116,19 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            LocationRequest.PRIORITY_HIGH_ACCURACY -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    Log.e(DEBUG_TAG,"On")
+                } else {
+                    Log.e(DEBUG_TAG,"Off")
+                }
+            }
+        }
     }
 
     private fun showGenericDialog(message: String?) {
@@ -223,7 +255,7 @@ class MainActivity : AppCompatActivity() {
 
         private val fragmentsWithoutBottomNav = setOf(R.id.emailActionFragment,
         R.id.offerEditorFragment, R.id.resetPasswordFragment, R.id.signInFragment,
-        R.id.signUpFragment, R.id.galleryFragment)
+        R.id.signUpFragment, R.id.galleryFragment, R.id.locationFragment)
 
         private val fragmentsWithInvisibleToolbar = setOf(R.id.signUpFragment)
         private val fragmentsWithToolbarLabel = setOf(R.id.offerCategoryFragment,

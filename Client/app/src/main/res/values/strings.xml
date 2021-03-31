@@ -53,4 +53,6 @@
     <string name="size_s">S</string>
     <string name="select_category">Select category</string>
     <string name="select_images">Select images</string>
+    <string name="no_location_access">We cannot determine your location automatically without a permission</string>
+    <string name="grant_permission">Grant permission</string>
 </resources>
