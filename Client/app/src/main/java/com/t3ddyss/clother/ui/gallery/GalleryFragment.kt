@@ -15,11 +15,14 @@ import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.GalleryImagesAdapter
 import com.t3ddyss.clother.databinding.FragmentGalleryBinding
+import com.t3ddyss.clother.models.GalleryImage
 import com.t3ddyss.clother.ui.offer_editor.OfferEditorViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @AndroidEntryPoint
 @ExperimentalPagingApi
+@ExperimentalCoroutinesApi
 class GalleryFragment : Fragment() {
     private val viewModel by viewModels<GalleryViewModel>()
     private val editorViewModel by hiltNavGraphViewModels<OfferEditorViewModel>(R.id.offer_editor_graph)
@@ -52,12 +55,13 @@ class GalleryFragment : Fragment() {
             }.forEach {
                 it.isSelected = true
             }
+
             adapter.submitList(images)
         }
 
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                layoutManager.scrollToPositionWithOffset(positionStart, 0)
+//                layoutManager.scrollToPositionWithOffset(positionStart, 0)
             }
         })
 
