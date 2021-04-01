@@ -18,12 +18,14 @@
         <item name="android:windowLightStatusBar">false</item>
 
         <!-- Navigation bar color. -->
-        <item name="android:navigationBarColor">@android:color/black</item>
+<!--        <item name="android:navigationBarColor">@android:color/black</item>-->
 
         <!-- TextColor. -->
         <item name="android:textColor">?attr/colorOnPrimary</item>
 
         <!-- TextInput style. -->
         <item name="textInputStyle">@style/AppTheme.TextInputLayoutStyle</item>
+
+        <item name="android:itemTextAppearance">@style/AppTheme.ToolbarMenuItemTextStyle</item>
     </style>
 </resources>

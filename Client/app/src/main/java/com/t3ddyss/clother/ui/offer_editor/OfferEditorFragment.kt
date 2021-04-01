@@ -1,10 +1,7 @@
 package com.t3ddyss.clother.ui.offer_editor
 
 import android.Manifest
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,13 +19,15 @@ import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OfferEditorImagesAdapter
 import com.t3ddyss.clother.databinding.FragmentOfferEditorBinding
+import com.t3ddyss.clother.ui.gallery.GalleryViewModel
+import com.t3ddyss.clother.utilities.toCoordinatesString
 import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
 @ExperimentalPagingApi
 class OfferEditorFragment : Fragment() {
-    private val galleryViewModel by hiltNavGraphViewModels<OfferEditorViewModel>(R.id.offer_editor_graph)
+    private val viewModel by hiltNavGraphViewModels<OfferEditorViewModel>(R.id.offer_editor_graph)
 
     private var _binding: FragmentOfferEditorBinding? = null
     private val binding get() = _binding!!
@@ -49,13 +48,6 @@ class OfferEditorFragment : Fragment() {
         binding.category.textViewTitle.text = category.title
         binding.textViewLocation.text = getString(R.string.select_location)
 
-        val openSettingsAction = {
-            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-            val uri = Uri.fromParts("package", context?.packageName, null)
-            intent.data = uri
-            startActivity(intent)
-        }
-
         val requestGalleryPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) {isGranted ->
                 if (isGranted) {
@@ -64,8 +56,7 @@ class OfferEditorFragment : Fragment() {
                     (activity as? MainActivity)
                             ?.showSnackbarWithAction(
                                     message = getString(R.string.no_gallery_access),
-                                    actionText = getString(R.string.grant_access),
-                                    action = openSettingsAction
+                                    actionText = getString(R.string.grant_access)
                             )
                 }
             }
@@ -77,12 +68,15 @@ class OfferEditorFragment : Fragment() {
         )
         binding.listImages.layoutManager = layoutManager
 
-        galleryViewModel.images.observe(viewLifecycleOwner) { images ->
-            adapter = OfferEditorImagesAdapter(images.filter { it.isSelected }.toMutableList()
-            ) {
+        viewModel.images.observe(viewLifecycleOwner) { images ->
+            adapter = OfferEditorImagesAdapter(images) {
                 requestGalleryPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
             }
             binding.listImages.adapter = adapter
+        }
+
+        viewModel.location.observe(viewLifecycleOwner) {
+            binding.textViewLocation.text = it.toCoordinatesString()
         }
 
         val horizontalDecorator = DividerItemDecoration(activity, DividerItemDecoration.HORIZONTAL)

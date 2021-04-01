@@ -11,13 +11,9 @@ import com.t3ddyss.clother.databinding.ListItemImageEditorBinding
 import com.t3ddyss.clother.models.GalleryImage
 
 class OfferEditorImagesAdapter(
-        private val images: MutableList<GalleryImage?>,
+        private val images: MutableList<Uri>,
         private val attachImageListener: () -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-    init {
-        images.addAll(MutableList<GalleryImage?>(10 - images.size) { null })
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == R.layout.list_item_image_add) {
@@ -37,18 +33,16 @@ class OfferEditorImagesAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is AttachImageViewHolder -> { }
-            is ImageViewHolder -> images[position]?.let { holder.bind(it) }
+            is ImageViewHolder -> holder.bind(images[position])
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        val image = images[position]
-
-        return if (image == null) R.layout.list_item_image_add
+        return if (position >= images.size) R.layout.list_item_image_add
         else R.layout.list_item_image_editor
     }
 
-    override fun getItemCount() = images.size
+    override fun getItemCount() = MAX_SIZE
 
     inner class ImageViewHolder(
             val binding: ListItemImageEditorBinding
@@ -57,18 +51,16 @@ class OfferEditorImagesAdapter(
         init {
             binding.buttonRemove.setOnClickListener {
                 val position = absoluteAdapterPosition
-                images[position]?.isSelected = false
                 images.removeAt(position)
-                notifyItemRemoved(position)
 
-                images.add(null)
-                notifyItemInserted(images.size - 1)
+                notifyItemRemoved(position)
+                notifyItemInserted(MAX_SIZE - 1)
             }
         }
 
-        fun bind(image: GalleryImage) {
+        fun bind(imageUri: Uri) {
             Glide.with(binding.image)
-                    .load(image.uri)
+                    .load(imageUri)
                     .into(binding.image)
         }
     }
@@ -83,5 +75,9 @@ class OfferEditorImagesAdapter(
                 clickListener.invoke()
             }
         }
+    }
+
+    companion object {
+        const val MAX_SIZE = 10
     }
 }

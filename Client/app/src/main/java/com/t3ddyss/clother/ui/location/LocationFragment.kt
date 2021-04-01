@@ -2,35 +2,45 @@ package com.t3ddyss.clother.ui.location
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Intent
+import android.app.Activity
 import android.location.Location
-import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
-import android.provider.Settings
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.Toast
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
+import androidx.navigation.fragment.findNavController
+import androidx.paging.ExperimentalPagingApi
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentLocationBinding
+import com.t3ddyss.clother.models.LatLngWrapper
+import com.t3ddyss.clother.ui.gallery.GalleryViewModel
 import com.t3ddyss.clother.ui.offer_editor.OfferEditorViewModel
 import com.t3ddyss.clother.utilities.DEBUG_TAG
 import com.t3ddyss.clother.utilities.MAPVIEW_BUNDLE
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
+@ExperimentalPagingApi
 class LocationFragment : Fragment() {
 
-    private val viewModel by hiltNavGraphViewModels<OfferEditorViewModel>(R.id.offer_editor_graph)
+    private val viewModel by viewModels<LocationViewModel>()
+    private val editorViewModel by hiltNavGraphViewModels<OfferEditorViewModel>(R.id.offer_editor_graph)
+
     private var _binding: FragmentLocationBinding? = null
     private val binding get() = _binding!!
 
@@ -38,118 +48,165 @@ class LocationFragment : Fragment() {
     private lateinit var map: GoogleMap
     private lateinit var locationProviderClient: FusedLocationProviderClient
 
+    private val locationCallback = LocationListener()
+    private val enableLocationDialogLauncher = registerForActivityResult(
+            ActivityResultContracts.StartIntentSenderForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            getLocation()
+        }
+        else {
+            (activity as? MainActivity)?.showGenericError(
+                    message = getString(R.string.no_location_access)
+            )
+            map.setOnMapLongClickListener {
+                viewModel.location.value = LatLngWrapper(
+                        latLng = it,
+                        isInitialValue = false,
+                        isManuallySelected = true,
+                )
+            }
+        }}
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentLocationBinding.inflate(inflater, container, false)
+        setHasOptionsMenu(true)
 
         locationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
-
-        val openSettingsAction = {
-            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-            val uri = Uri.fromParts("package", context?.packageName, null)
-            intent.data = uri
-            startActivity(intent)
-        }
-
-        val requestLocationPermissionsLauncher =
-                registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { isGranted ->
-                    if (isGranted[Manifest.permission.ACCESS_FINE_LOCATION] == true
-                            && isGranted[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
-                        getLocation()
-                    }
-                    else {
-                        (activity as? MainActivity)
-                                ?.showSnackbarWithAction(
-                                    message = getString(R.string.no_location_access),
-                                    actionText = getString(R.string.grant_permission),
-                                    action = openSettingsAction
-                                )
-                    }
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { isGranted ->
+            if (isGranted[Manifest.permission.ACCESS_FINE_LOCATION] == true
+                    && isGranted[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
+                checkIfLocationEnabled()
+            }
+            else {
+                (activity as? MainActivity)
+                        ?.showSnackbarWithAction(
+                            message = getString(R.string.no_location_access),
+                            actionText = getString(R.string.grant_permission)
+                        )
+                map.setOnMapLongClickListener {
+                    viewModel.location.value = LatLngWrapper(
+                            latLng = it,
+                            isInitialValue = false,
+                            isManuallySelected = true,
+                    )
                 }
+            }
+        }.launch(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION))
 
         mapView = binding.mapView
         mapView?.onCreate(savedInstanceState?.getBundle(MAPVIEW_BUNDLE))
-        mapView?.getMapAsync {
-            map = it
+        mapView?.getMapAsync { googleMap ->
+            map = googleMap
+            map.uiSettings?.isMyLocationButtonEnabled = false
+
+            viewModel.location.observe(viewLifecycleOwner) {
+                when {
+                    it.isInitialValue -> {
+                        setInitialLocation(it.latLng)
+                    }
+                    it.isManuallySelected -> {
+                        setLocationWithMarker(it.latLng)
+                    }
+                    else -> {
+                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(it.latLng, DEFAULT_CAMERA_ZOOM))
+                    }
+                }
+            }
         }
 
-        requestLocationPermissionsLauncher.launch(
-                arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.ACCESS_FINE_LOCATION))
-
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.toolbar_apply_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.apply) {
+            val location = viewModel.location.value!!
+            if (!location.isInitialValue) {
+                editorViewModel.location.value = location.latLng
+                findNavController().popBackStack()
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 
     @SuppressLint("MissingPermission")
     private fun getLocation() {
         map.isMyLocationEnabled = true
+
         val locationRequest = LocationRequest.create()
-        locationRequest.interval =  5000
+        locationRequest.interval =  5_000
         locationRequest.fastestInterval = 1000
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-
-        val locationCallback = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult?) {
-                Log.d(DEBUG_TAG, "Got location result $locationResult")
-
-                locationResult?.let {
-                    for (location: Location? in it.locations) {
-                        Log.d(DEBUG_TAG, "Got location in onLocationResult $location")
-                        location?.apply {
-                            setLocation(this)
-                        }
-                    }
-                }
-            }
-        }
 
         locationProviderClient.lastLocation.addOnSuccessListener {
             Log.d(DEBUG_TAG, "Got location in last location $it")
 
             if (it != null) {
-                setLocation(it)
+                viewModel.location.postValue(LatLngWrapper(
+                        latLng = LatLng(it.latitude, it.longitude),
+                        isInitialValue = false,
+                        isManuallySelected = false
+                ))
             }
             else {
+                Toast.makeText(context, getString(R.string.updating_location), Toast.LENGTH_LONG).show()
                 locationProviderClient
                     .requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
             }
         }
-
-//        val locationListener = LocationListener {
-//            Log.d(DEBUG_TAG, "Got new location $it")
-//
-//            setLocation(it)
-//        }
-//        val locationManager = context?.getSystemService(LOCATION_SERVICE) as? LocationManager
-//
-//        if (ActivityCompat.checkSelfPermission(
-//                requireContext(),
-//                Manifest.permission.ACCESS_FINE_LOCATION
-//            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-//                requireContext(),
-//                Manifest.permission.ACCESS_COARSE_LOCATION
-//            ) != PackageManager.PERMISSION_GRANTED
-//        ) {
-//            return
-//        }
-//
-//        Log.d(DEBUG_TAG, "Requesting location")
-//
-//        locationManager?.requestLocationUpdates(
-//            LocationManager.NETWORK_PROVIDER,
-//            0,
-//            0f,
-//            locationListener
-//        )
     }
 
-    private fun setLocation(location: Location) {
-        Log.d(DEBUG_TAG, "Setting location...")
+    private fun setInitialLocation(latLng: LatLng) {
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, INITIAL_CAMERA_ZOOM))
+    }
 
-        val latLng = LatLng(location.latitude, location.longitude)
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_CAMERA_ZOOM))
+    private fun setLocationWithMarker(latLng: LatLng) {
+        map.clear()
+        map.addMarker(
+                MarkerOptions()
+                        .position(latLng)
+                        .draggable(false)
+                        .visible(true))
+    }
+
+    private fun checkIfLocationEnabled() {
+        if (viewModel.isEnablingLocationRequested) return
+        viewModel.isEnablingLocationRequested = true
+
+        val locationRequest = LocationRequest.create().also {
+            it.priority = LocationRequest.PRIORITY_HIGH_ACCURACY }
+        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
+        val result = LocationServices
+                .getSettingsClient(requireActivity())
+                .checkLocationSettings(builder.build())
+
+        result.addOnCompleteListener {
+            try {
+                it.getResult(ApiException::class.java)
+                getLocation()
+            }
+            catch (exception: ApiException) {
+                when (exception.statusCode) {
+                    LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> {
+                        try {
+                            if (exception is ResolvableApiException) {
+                                enableLocationDialogLauncher.launch(
+                                        IntentSenderRequest.Builder(exception.resolution).build())
+                            }
+                        } catch (ex: Exception) { }
+                    }
+                    LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> { }
+                }
+            }
+        }
     }
 
     override fun onLowMemory() {
@@ -189,6 +246,7 @@ class LocationFragment : Fragment() {
         super.onDestroy()
         mapView?.onDestroy()
         mapView = null
+        locationProviderClient.removeLocationUpdates(locationCallback)
     }
 
     override fun onDestroyView() {
@@ -198,38 +256,24 @@ class LocationFragment : Fragment() {
 
     companion object {
         const val DEFAULT_CAMERA_ZOOM = 15f
+        const val INITIAL_CAMERA_ZOOM = 3.5f
     }
 
-    //    private fun showLocationPrompt() {
-//        val locationRequest = LocationRequest.create().also {
-//            it.priority = LocationRequest.PRIORITY_HIGH_ACCURACY }
-//        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
-//        val result = LocationServices
-//            .getSettingsClient(requireActivity())
-//            .checkLocationSettings(builder.build())
-//
-//        result.addOnCompleteListener {
-//            try {
-//                it.getResult(ApiException::class.java)
-//                getLocation()
-//            } catch (ex: ApiException) {
-//                when (ex.statusCode) {
-//                    LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> {
-//                        try {
-//                            val resolvable = ex as ResolvableApiException
-//
-//                            // Show the dialog by calling startResolutionForResult(),
-//                            // and check the result in onActivityResult().
-//                            resolvable.startResolutionForResult(
-//                                requireActivity(), LocationRequest.PRIORITY_HIGH_ACCURACY)
-//                        } catch (ex: Exception) {
-//
-//                        }
-//                    }
-//                    LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
-//                    }
-//                }
-//            }
-//        }
-//    }
+    inner class LocationListener : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult?) {
+            locationResult?.let {
+                for (location: Location? in it.locations) {
+                    Log.d(DEBUG_TAG, "Got location in onLocationResult $location")
+
+                    location?.apply {
+                        viewModel.location.postValue(LatLngWrapper(
+                                latLng = LatLng(this.latitude, this.longitude),
+                                isInitialValue = false,
+                                isManuallySelected = false,
+                        ))
+                    }
+                }
+            }
+        }
+    }
 }

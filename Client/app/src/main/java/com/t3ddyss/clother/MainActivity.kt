@@ -7,7 +7,9 @@ import android.graphics.ColorFilter
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.Gravity
 import androidx.activity.viewModels
@@ -61,6 +63,13 @@ class MainActivity : AppCompatActivity() {
 
     @Inject lateinit var prefs: SharedPreferences
 
+    private val openSettingsAction = {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+        val uri = Uri.fromParts("package", packageName, null)
+        intent.data = uri
+        startActivity(intent)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
@@ -94,8 +103,8 @@ class MainActivity : AppCompatActivity() {
 
         lifecycleScope.launch(Dispatchers.Default) {
             try {
-                val mapView = MapView(applicationContext);
-                mapView.onCreate(null);
+                val mapView = MapView(applicationContext)
+                mapView.onCreate(null)
                 mapView.onPause()
                 mapView.onDestroy()
             } catch (ex: Exception) {
@@ -118,19 +127,6 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            LocationRequest.PRIORITY_HIGH_ACCURACY -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    Log.e(DEBUG_TAG,"On")
-                } else {
-                    Log.e(DEBUG_TAG,"Off")
-                }
-            }
-        }
-    }
-
     private fun showGenericDialog(message: String?) {
         AlertDialog.Builder(this)
                 .setTitle(getString(R.string.confirmation))
@@ -142,7 +138,9 @@ class MainActivity : AppCompatActivity() {
                 .show()
     }
 
-    fun showSnackbarWithAction(message: String, actionText: String, action: (() -> Unit)) {
+    fun showSnackbarWithAction(message: String,
+                               actionText: String,
+                               action: (() -> Unit) = openSettingsAction) {
         Snackbar.make(binding.container,
                 message,
                 Snackbar.LENGTH_SHORT)
@@ -259,13 +257,13 @@ class MainActivity : AppCompatActivity() {
 
         private val fragmentsWithInvisibleToolbar = setOf(R.id.signUpFragment)
         private val fragmentsWithToolbarLabel = setOf(R.id.offerCategoryFragment,
-            R.id.offerEditorFragment, R.id.galleryFragment)
+            R.id.offerEditorFragment, R.id.galleryFragment, R.id.locationFragment)
 
         private val fragmentsWithoutNavIcon = setOf(R.id.homeFragment,
                 R.id.messagesFragment, R.id.profileFragment)
 
         private val fragmentsWithCustomUpIcon = setOf(R.id.offerEditorFragment,
-        R.id.galleryFragment)
+        R.id.galleryFragment, R.id.locationFragment)
 
         override fun onDestinationChanged(
             controller: NavController,

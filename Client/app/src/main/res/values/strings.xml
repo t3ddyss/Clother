@@ -53,6 +53,10 @@
     <string name="size_s">S</string>
     <string name="select_category">Select category</string>
     <string name="select_images">Select images</string>
-    <string name="no_location_access">We cannot determine your location automatically without a permission</string>
     <string name="grant_permission">Grant permission</string>
+    <string name="enable_location">Choose your location manually or enable location services in settings</string>
+    <string name="enable">Enable</string>
+    <string name="no_location_access">Cannot find your location automatically, please select it manually</string>
+    <string name="updating_location">Updating your location…</string>
+    <string name="apply">Apply</string>
 </resources>

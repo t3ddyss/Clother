@@ -1,12 +1,13 @@
 package com.t3ddyss.clother.ui.gallery
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
+import androidx.navigation.fragment.findNavController
+import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,8 +19,10 @@ import com.t3ddyss.clother.ui.offer_editor.OfferEditorViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
+@ExperimentalPagingApi
 class GalleryFragment : Fragment() {
-    private val viewModel by hiltNavGraphViewModels<OfferEditorViewModel>(R.id.offer_editor_graph)
+    private val viewModel by viewModels<GalleryViewModel>()
+    private val editorViewModel by hiltNavGraphViewModels<OfferEditorViewModel>(R.id.offer_editor_graph)
 
     private var _binding: FragmentGalleryBinding? = null
     private val binding get() = _binding!!
@@ -30,6 +33,7 @@ class GalleryFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         _binding = FragmentGalleryBinding.inflate(inflater, container, false)
+        setHasOptionsMenu(true)
 
         layoutManager = GridLayoutManager(context, 3)
         adapter = GalleryImagesAdapter {
@@ -38,10 +42,17 @@ class GalleryFragment : Fragment() {
 
         binding.list.layoutManager = layoutManager
         binding.list.adapter = adapter
-//        binding.list.setItemViewCacheSize(100)
+        binding.list.setItemViewCacheSize(100)
 
-        viewModel.images.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
+        viewModel.images.observe(viewLifecycleOwner) { images ->
+            val previouslySelectedImages = editorViewModel.images.value!!
+
+            images.filter {
+                 it.uri in previouslySelectedImages
+            }.forEach {
+                it.isSelected = true
+            }
+            adapter.submitList(images)
         }
 
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
@@ -64,6 +75,27 @@ class GalleryFragment : Fragment() {
         viewModel.getImages()
 
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.toolbar_apply_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.apply) {
+            val selectedImages = adapter.currentList.filter {
+                it.isSelected
+            }.map {
+                it.uri
+            }.toMutableList()
+
+            if (selectedImages.isNotEmpty()) {
+                editorViewModel.images.value = selectedImages
+                findNavController().popBackStack()
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onDestroyView() {

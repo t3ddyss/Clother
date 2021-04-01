@@ -1,4 +1,10 @@
 <resources>
+    <!-- Splash screen. -->
+    <style name="SplashScreenTheme" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/layout_splash_screen</item>
+        <item name="android:navigationBarColor">?attr/colorPrimary</item>
+    </style>
+
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
@@ -18,7 +24,7 @@
         <item name="android:windowLightStatusBar">true</item>
 
         <!-- Navigation bar color. -->
-        <item name="android:navigationBarColor">?attr/colorPrimaryVariant</item>
+<!--        <item name="android:navigationBarColor">?attr/colorPrimaryVariant</item>-->
         <!-- TODO override theme for API 27+ -->
         <!-- <item name="android:windowLightNavigationBar">true</item> -->
 
@@ -27,12 +33,9 @@
 
         <!-- TextInput style. -->
         <item name="textInputStyle">@style/AppTheme.TextInputLayoutStyle</item>
-    </style>
 
-    <!-- Splash screen. -->
-    <style name="SplashScreenTheme" parent="AppTheme">
-        <item name="android:windowBackground">@drawable/layout_splash_screen</item>
-        <item name="android:navigationBarColor">?attr/colorPrimary</item>
+        <!-- Toolbar menu item text style -->
+        <item name="android:itemTextAppearance">@style/AppTheme.ToolbarMenuItemTextStyle</item>
     </style>
 
     <!-- EditText style -->
@@ -49,5 +52,11 @@
 
     <style name="AppTheme.TextInputEditTextStyle" parent="@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox">
         <item name="android:textCursorDrawable">@drawable/textinput_cursor</item>
+    </style>
+
+    <!-- Toolbar menu item text style -->
+    <style name="AppTheme.ToolbarMenuItemTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Menu">
+        <item name="android:textColor">@color/green_500</item>
+        <item name="android:textAllCaps">true</item>
     </style>
 </resources>

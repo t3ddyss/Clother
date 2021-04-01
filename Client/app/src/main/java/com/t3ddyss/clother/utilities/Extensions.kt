@@ -10,6 +10,7 @@ import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.textfield.TextInputEditText
 
 val name_regex = """\p{L}{2,50}""".toRegex()
@@ -38,3 +39,10 @@ fun Context.convertDpToPx(dp: Int): Int {
 
 fun Int.toColorFilter() = BlendModeColorFilterCompat
     .createBlendModeColorFilterCompat(this, BlendModeCompat.SRC_ATOP)
+
+fun LatLng.toCoordinatesString(precision: Int = 4): String {
+    return "${this.latitude.format(precision)}° N, " +
+            "${this.longitude.format(precision)}° E"
+}
+
+fun Double.format(digits: Int) = "%.${digits}f".format(this)

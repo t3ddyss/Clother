@@ -27,6 +27,6 @@
     <fragment
         android:id="@+id/locationFragment"
         android:name="com.t3ddyss.clother.ui.location.LocationFragment"
-        android:label="fragment_location"
+        android:label="@string/select_location"
         tools:layout="@layout/fragment_location" />
 </navigation>
