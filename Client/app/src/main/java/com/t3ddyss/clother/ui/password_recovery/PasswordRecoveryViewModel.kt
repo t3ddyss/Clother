@@ -2,8 +2,8 @@ package com.t3ddyss.clother.ui.password_recovery
 
 import androidx.lifecycle.*
 import com.t3ddyss.clother.data.*
+import com.t3ddyss.clother.models.AuthResponse
 import com.t3ddyss.clother.models.Loading
-import com.t3ddyss.clother.models.PasswordResetResponse
 import com.t3ddyss.clother.models.ResponseState
 import com.t3ddyss.clother.models.User
 import com.t3ddyss.clother.utilities.DEFAULT_STRING_VALUE
@@ -20,8 +20,8 @@ class PasswordRecoveryViewModel @Inject constructor(
     private val _email = savedStateHandle.getLiveData(EMAIL, DEFAULT_STRING_VALUE)
     val email: LiveData<String> = _email
 
-    private val _passwordResetResponse = MutableLiveData<Event<ResponseState<PasswordResetResponse>>>()
-    val passwordResetResponse: LiveData<Event<ResponseState<PasswordResetResponse>>> = _passwordResetResponse
+    private val _passwordResetResponse = MutableLiveData<Event<ResponseState<AuthResponse>>>()
+    val passwordResetResponse: LiveData<Event<ResponseState<AuthResponse>>> = _passwordResetResponse
 
     fun saveEmail(email: String) {
         savedStateHandle.set(EMAIL, email)

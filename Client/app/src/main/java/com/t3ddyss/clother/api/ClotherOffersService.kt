@@ -1,8 +1,6 @@
 package com.t3ddyss.clother.api
 
-import com.t3ddyss.clother.models.Category
-import com.t3ddyss.clother.models.NewOfferResponse
-import com.t3ddyss.clother.models.Offer
+import com.t3ddyss.clother.models.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.*

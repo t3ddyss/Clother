@@ -2,7 +2,6 @@ package com.t3ddyss.clother.ui.offer_editor
 
 import android.Manifest
 import android.os.Bundle
-import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,16 +15,15 @@ import androidx.navigation.fragment.navArgs
 import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
 import com.google.gson.JsonObject
 import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OfferEditorImagesAdapter
 import com.t3ddyss.clother.databinding.FragmentOfferEditorBinding
+import com.t3ddyss.clother.models.*
 import com.t3ddyss.clother.utilities.toCoordinatesString
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import java.io.File
 
 
 @AndroidEntryPoint
@@ -82,6 +80,25 @@ class OfferEditorFragment : Fragment() {
 
         viewModel.location.observe(viewLifecycleOwner) {
             binding.textViewLocation.text = it.toCoordinatesString()
+        }
+
+        viewModel.newNewOfferResponse.observe(viewLifecycleOwner) {
+            when(it) {
+                is Loading<NewOfferResponse> ->
+                    (activity as? MainActivity)?.setLoadingVisibility(true)
+                is Success<NewOfferResponse> -> {
+//                    navController.navigate(R.id.action_signInFragment_to_homeFragment) // TODO
+                    (activity as? MainActivity)?.setLoadingVisibility(false)
+                }
+                is Error<NewOfferResponse> -> {
+                    (activity as? MainActivity)?.setLoadingVisibility(false)
+                    (activity as? MainActivity)?.showGenericError(it.message)
+                }
+                is Failed<NewOfferResponse> -> {
+                    (activity as? MainActivity)?.setLoadingVisibility(false)
+                    (activity as? MainActivity)?.showGenericError(getString(R.string.no_connection))
+                }
+            }
         }
 
         val horizontalDecorator = DividerItemDecoration(activity, DividerItemDecoration.HORIZONTAL)

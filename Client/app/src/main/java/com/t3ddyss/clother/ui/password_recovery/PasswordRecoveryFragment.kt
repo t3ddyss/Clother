@@ -41,22 +41,22 @@ class PasswordRecoveryFragment : Fragment() {
             val response = it.getContentIfNotHandled() ?: return@observe
 
             when (response) {
-                is Loading<PasswordResetResponse> ->
-                    binding.frameLayoutLoading.isVisible = true
-                is Success<PasswordResetResponse> -> {
+                is Loading<AuthResponse> ->
+                    (activity as? MainActivity)?.setLoadingVisibility(true)
+                is Success<AuthResponse> -> {
                     navController
                             .navigate(PasswordRecoveryFragmentDirections
                             .actionResetPasswordFragmentToEmailActionFragment(
                                     getString(R.string.password_reset_message),
                                     response.content?.email ?: getString(R.string.your_email)))
-                    binding.frameLayoutLoading.isVisible = false
+                    (activity as? MainActivity)?.setLoadingVisibility(false)
                 }
-                is Error<PasswordResetResponse> -> {
-                    binding.frameLayoutLoading.isVisible = false
+                is Error<AuthResponse> -> {
+                    (activity as? MainActivity)?.setLoadingVisibility(false)
                     (activity as? MainActivity)?.showGenericError(response.message)
                 }
-                is Failed<PasswordResetResponse> -> {
-                    binding.frameLayoutLoading.isVisible = false
+                is Failed<AuthResponse> -> {
+                    (activity as? MainActivity)?.setLoadingVisibility(false)
                     (activity as? MainActivity)?.showGenericError(getString(R.string.no_connection))
                 }
             }

@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
-import com.t3ddyss.clother.adapters.CategoryAdapter
+import com.t3ddyss.clother.adapters.CategoriesAdapter
 import com.t3ddyss.clother.databinding.FragmentOfferCategoryBinding
 import com.t3ddyss.clother.utilities.IS_CATEGORIES_LOADED
 import dagger.hilt.android.AndroidEntryPoint
@@ -51,7 +51,7 @@ class OfferCategoryFragment : Fragment() {
                 LinearLayoutManager.VERTICAL,
                 false)
 
-        val adapter = CategoryAdapter {
+        val adapter = CategoriesAdapter {
             if (!it.isLastLevel) {
                 val action = OfferCategoryFragmentDirections
                     .openSubcategoriesAction(it.id)

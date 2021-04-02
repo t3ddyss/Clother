@@ -4,7 +4,7 @@ import androidx.lifecycle.*
 import com.t3ddyss.clother.data.UsersRepository
 import com.t3ddyss.clother.models.Loading
 import com.t3ddyss.clother.models.ResponseState
-import com.t3ddyss.clother.models.SignUpResponse
+import com.t3ddyss.clother.models.AuthResponse
 import com.t3ddyss.clother.models.User
 import com.t3ddyss.clother.utilities.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,8 +26,8 @@ class SignUpViewModel @Inject constructor(
     private val _password = savedStateHandle.getLiveData(PASSWORD, DEFAULT_STRING_VALUE)
     val password: LiveData<String> = _password
 
-    private val _signUpResponse = MutableLiveData<Event<ResponseState<SignUpResponse>>>()
-    val signUpResponse: LiveData<Event<ResponseState<SignUpResponse>>> = _signUpResponse
+    private val _signUpResponse = MutableLiveData<Event<ResponseState<AuthResponse>>>()
+    val authResponse: LiveData<Event<ResponseState<AuthResponse>>> = _signUpResponse
 
     fun saveName(name: String) {
         savedStateHandle.set(NAME, name)

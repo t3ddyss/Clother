@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.databinding.ListItemCategoryBinding
 import com.t3ddyss.clother.models.Category
 
-class CategoryAdapter(
+class CategoriesAdapter(
         private val clickListener: (Category) -> Unit
-) : ListAdapter<Category, CategoryAdapter.CategoryViewHolder>(CategoryDiffCallback()) {
+) : ListAdapter<Category, CategoriesAdapter.CategoryViewHolder>(CategoryDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
         return CategoryViewHolder(ListItemCategoryBinding.inflate(

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -53,28 +52,28 @@ class SignUpFragment : Fragment() {
                     }
                 })
 
-        signUpViewModel.signUpResponse.observe(viewLifecycleOwner,
+        signUpViewModel.authResponse.observe(viewLifecycleOwner,
                 {
                     val response = it.getContentIfNotHandled() ?: return@observe
 
                     // TODO implement error messages localization on server side or in client
                     when(response){
-                        is Loading<SignUpResponse> ->
-                            binding.frameLayoutLoading.isVisible = true
-                        is Success<SignUpResponse> -> {
+                        is Loading<AuthResponse> ->
+                            (activity as? MainActivity)?.setLoadingVisibility(true)
+                        is Success<AuthResponse> -> {
                             navController.navigate(
                                 SignUpFragmentDirections.actionSignUpFragmentToEmailActionFragment(
                                         getString(R.string.email_activation),
                                         response.content?.email ?: getString(R.string.your_email)))
-                            binding.frameLayoutLoading.isVisible = false
+                            (activity as? MainActivity)?.setLoadingVisibility(false)
                             signUpViewModel.clearCredentials()
                         }
-                        is Error<SignUpResponse> -> {
-                            binding.frameLayoutLoading.isVisible = false
+                        is Error<AuthResponse> -> {
+                            (activity as? MainActivity)?.setLoadingVisibility(false)
                             (activity as? MainActivity)?.showGenericError(response.message)
                         }
-                        is Failed<SignUpResponse> -> {
-                            binding.frameLayoutLoading.isVisible = false
+                        is Failed<AuthResponse> -> {
+                            (activity as? MainActivity)?.setLoadingVisibility(false)
                             (activity as? MainActivity)?.showGenericError(getString(R.string.no_connection))
                         }
                     }

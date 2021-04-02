@@ -1,29 +1,23 @@
 package com.t3ddyss.clother
 
-import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.ColorFilter
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.Gravity
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.toColor
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -32,20 +26,16 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.transition.AutoTransition
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
-import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.maps.MapView
 import com.google.android.material.snackbar.Snackbar
 import com.t3ddyss.clother.databinding.ActivityMainBinding
-import com.t3ddyss.clother.utilities.DEBUG_TAG
 import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
 import com.t3ddyss.clother.utilities.getThemeColor
 import com.t3ddyss.clother.utilities.toColorFilter
 import com.t3ddyss.clother.viewmodels.NetworkStateViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import javax.inject.Inject
@@ -115,7 +105,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         if (navController.currentBackStackEntry?.destination?.id == R.id.offerEditorFragment) {
-//            showGenericDialog(getString(R.string.discard_changes_warning))
             super.onBackPressed()
         }
         else {
@@ -138,18 +127,6 @@ class MainActivity : AppCompatActivity() {
                 .show()
     }
 
-    fun showSnackbarWithAction(message: String,
-                               actionText: String,
-                               action: (() -> Unit) = openSettingsAction) {
-        Snackbar.make(binding.container,
-                message,
-                Snackbar.LENGTH_SHORT)
-                .setAction(actionText) {
-                    action.invoke()
-                }
-                .show()
-    }
-
     fun showGenericError(throwable: Throwable) {
         when (throwable) {
             is SocketTimeoutException -> showGenericError(null)
@@ -158,10 +135,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun showGenericError(message: String?) {
-        Snackbar.make(binding.container,
+        Snackbar.make(binding.navHostFragment,
                 message ?:
                 getString(R.string.unknown_error),
                 Snackbar.LENGTH_SHORT)
+                .setAnchorView(binding.navView)
+                .show()
+    }
+
+    fun showSnackbarWithAction(message: String,
+                               actionText: String,
+                               action: (() -> Unit) = openSettingsAction) {
+        Snackbar.make(binding.navHostFragment,
+                message,
+                Snackbar.LENGTH_SHORT)
+                .setAction(actionText) {
+                    action.invoke()
+                }
+                .setAnchorView(binding.navView)
                 .show()
     }
 
@@ -244,6 +235,10 @@ class MainActivity : AppCompatActivity() {
         else {
             destinationChangeListener?.setIconUp(binding.toolbar)
         }
+    }
+
+    fun setLoadingVisibility(isVisible: Boolean) {
+        binding.layoutLoading.isVisible = isVisible
     }
 
     open inner class DestinationChangeListener(

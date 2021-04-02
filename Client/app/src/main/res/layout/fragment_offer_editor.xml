@@ -1,279 +1,259 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.offer_editor.OfferEditorFragment"
-    tools:ignore="ContentDescription">
+    android:fillViewport="true">
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_offer_editor"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_height="wrap_content">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/container_offer_editor"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list_images"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/fragment_vertical_margin"
+            android:paddingHorizontal="@dimen/fragment_horizontal_margin"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            android:minHeight="@dimen/image_size_editor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/list_item_image_editor"/>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/list_images"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInput_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/fragment_vertical_margin"
+            style="@style/Widget.Design.TextInputLayout"
+            app:hintAnimationEnabled="false"
+            app:counterEnabled="true"
+            app:counterMaxLength="50"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/list_images">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editText_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/fragment_vertical_margin"
-                android:paddingHorizontal="@dimen/fragment_horizontal_margin"
-                android:clipToPadding="false"
-                android:orientation="horizontal"
-                android:minHeight="@dimen/image_size_editor"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/list_item_image_editor"/>
+                android:maxLength="50"
+                android:paddingStart="@dimen/fragment_horizontal_margin"
+                android:paddingEnd="@dimen/fragment_horizontal_margin"
+                android:hint="@string/title"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textInput_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/fragment_vertical_margin"
-                style="@style/Widget.Design.TextInputLayout"
-                app:hintAnimationEnabled="false"
-                app:counterEnabled="true"
-                app:counterMaxLength="50"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/list_images">
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInput_description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/fragment_vertical_margin"
+            style="@style/Widget.Design.TextInputLayout"
+            app:hintAnimationEnabled="false"
+            app:counterEnabled="true"
+            app:counterMaxLength="500"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textInput_title">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editText_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:maxLength="50"
-                    android:paddingStart="@dimen/fragment_horizontal_margin"
-                    android:paddingEnd="@dimen/fragment_horizontal_margin"
-                    android:hint="@string/title"
-                    android:inputType="text" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textInput_description"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/fragment_vertical_margin"
-                style="@style/Widget.Design.TextInputLayout"
-                app:hintAnimationEnabled="false"
-                app:counterEnabled="true"
-                app:counterMaxLength="500"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textInput_title">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editText_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="start|top"
-                    android:paddingStart="@dimen/fragment_horizontal_margin"
-                    android:paddingEnd="@dimen/fragment_horizontal_margin"
-                    android:minLines="1"
-                    android:nestedScrollingEnabled="false"
-                    android:hint="@string/description"
-                    android:maxLength="500"
-                    android:inputType="textMultiLine"
-                    android:scrollbars="vertical"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <View
-                android:id="@+id/divider1"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="?android:attr/listDivider"
-                app:layout_constraintTop_toTopOf="@+id/category" />
-
-            <include
-                android:id="@+id/category"
-                layout="@layout/list_item_category"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/fragment_vertical_margin"
-                android:layout_marginStart="@dimen/fragment_horizontal_margin"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/imageView_category"
-                app:layout_constraintTop_toBottomOf="@+id/textInput_description" />
-
-            <View
-                android:id="@+id/divider2"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="?android:attr/listDivider"
-                app:layout_constraintTop_toBottomOf="@+id/category" />
-
-            <ImageView
-                android:id="@+id/imageView_category"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_category"
-                android:layout_marginStart="@dimen/fragment_horizontal_margin"
-                app:layout_constraintBottom_toBottomOf="@+id/category"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/category"
-                app:tint="@color/green_500" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/location"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:background="?selectableItemBackground"
-                android:clickable="true"
-                android:focusable="true"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/category">
-
-                <ImageView
-                    android:id="@+id/imageView_location"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/fragment_horizontal_margin"
-                    android:src="@drawable/ic_location"
-                    app:layout_constraintBottom_toBottomOf="@+id/location"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/location"
-                    app:tint="@color/green_500" />
-
-                <TextView
-                    android:id="@+id/textView_location"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/fragment_horizontal_margin"
-                    android:paddingStart="@dimen/fragment_horizontal_margin"
-                    android:paddingEnd="@dimen/fragment_horizontal_margin"
-                    android:textSize="@dimen/text_size_medium"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/imageView2"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toEndOf="@id/imageView_location"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="Select location" />
-
-                <ImageView
-                    android:id="@+id/imageView2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/fragment_horizontal_margin"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_arrow_right"
-                    app:tint="?attr/colorOnPrimary" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <ImageView
-                android:id="@+id/imageView_ruler"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/fragment_horizontal_margin"
-                android:src="@drawable/ic_ruler"
-                app:layout_constraintBottom_toBottomOf="@+id/chip_group_size"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/chip_group_size"
-                app:tint="@color/green_500" />
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chip_group_size"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/fragment_horizontal_margin"
-                android:layout_marginBottom="@dimen/margin_padding_size_xxlarge"
-                app:layout_constraintBottom_toTopOf="@+id/button_publish"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/imageView_ruler"
-                app:layout_constraintTop_toBottomOf="@+id/divider4"
-                app:layout_constraintVertical_bias="0.0"
-                app:singleSelection="true"
-                app:selectionRequired="true"
-                app:singleLine="true">
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/size_XS"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minWidth="@dimen/chip_min_width"
-                    android:text="@string/size_xs"
-                    android:textAlignment="center"
-                    android:checkable="true"/>
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/size_S"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minWidth="@dimen/chip_min_width"
-                    android:text="@string/size_s"
-                    android:textAlignment="center"
-                    android:checkable="true"/>
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/size_M"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minWidth="@dimen/chip_min_width"
-                    android:text="@string/size_m"
-                    android:textAlignment="center"
-                    android:checkable="true"/>
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/size_L"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minWidth="@dimen/chip_min_width"
-                    android:text="@string/size_l"
-                    android:textAlignment="center"
-                    android:checkable="true"/>
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/size_XL"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minWidth="@dimen/chip_min_width"
-                    android:text="@string/size_xl"
-                    android:textAlignment="center"
-                    android:checkable="true"/>
-
-            </com.google.android.material.chip.ChipGroup>
-
-            <View
-                android:id="@+id/divider4"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="?android:attr/listDivider"
-                app:layout_constraintTop_toBottomOf="@+id/location" />
-
-            <Button
-                android:id="@+id/button_publish"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editText_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_margin="@dimen/fragment_horizontal_margin"
-                android:background="@drawable/button_rounded"
-                android:text="@string/publish"
-                app:backgroundTint="@null"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+                android:gravity="start|top"
+                android:paddingStart="@dimen/fragment_horizontal_margin"
+                android:paddingEnd="@dimen/fragment_horizontal_margin"
+                android:minLines="1"
+                android:nestedScrollingEnabled="false"
+                android:hint="@string/description"
+                android:maxLength="500"
+                android:inputType="textMultiLine"
+                android:scrollbars="vertical"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <FrameLayout
-        android:id="@+id/frameLayout_loading"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="?attr/colorPrimary"
-        android:visibility="gone">
+        <View
+            android:id="@+id/divider1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintTop_toTopOf="@+id/category" />
 
-        <ProgressBar
+        <include
+            android:id="@+id/category"
+            layout="@layout/list_item_category"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/fragment_vertical_margin"
+            android:layout_marginStart="@dimen/fragment_horizontal_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/imageView_category"
+            app:layout_constraintTop_toBottomOf="@+id/textInput_description" />
+
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintTop_toBottomOf="@+id/category" />
+
+        <ImageView
+            android:id="@+id/imageView_category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center" />
-    </FrameLayout>
-</FrameLayout>
+            android:src="@drawable/ic_category"
+            android:layout_marginStart="@dimen/fragment_horizontal_margin"
+            app:layout_constraintBottom_toBottomOf="@+id/category"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/category"
+            app:tint="@color/green_500" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/location"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/category">
+
+            <ImageView
+                android:id="@+id/imageView_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/fragment_horizontal_margin"
+                android:src="@drawable/ic_location"
+                app:layout_constraintBottom_toBottomOf="@+id/location"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/location"
+                app:tint="@color/green_500" />
+
+            <TextView
+                android:id="@+id/textView_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/fragment_horizontal_margin"
+                android:paddingStart="@dimen/fragment_horizontal_margin"
+                android:paddingEnd="@dimen/fragment_horizontal_margin"
+                android:textSize="@dimen/text_size_medium"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/imageView2"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@id/imageView_location"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Select location" />
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/fragment_horizontal_margin"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_arrow_right"
+                app:tint="?attr/colorOnPrimary" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageView
+            android:id="@+id/imageView_ruler"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fragment_horizontal_margin"
+            android:src="@drawable/ic_ruler"
+            app:layout_constraintBottom_toBottomOf="@+id/chip_group_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/chip_group_size"
+            app:tint="@color/green_500" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chip_group_size"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fragment_horizontal_margin"
+            android:layout_marginBottom="@dimen/margin_padding_size_xxlarge"
+            app:layout_constraintBottom_toTopOf="@+id/button_publish"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/imageView_ruler"
+            app:layout_constraintTop_toBottomOf="@+id/divider4"
+            app:layout_constraintVertical_bias="0.0"
+            app:singleSelection="true"
+            app:selectionRequired="true"
+            app:singleLine="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/size_XS"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="@dimen/chip_min_width"
+                android:text="@string/size_xs"
+                android:textAlignment="center"
+                android:checkable="true"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/size_S"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="@dimen/chip_min_width"
+                android:text="@string/size_s"
+                android:textAlignment="center"
+                android:checkable="true"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/size_M"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="@dimen/chip_min_width"
+                android:text="@string/size_m"
+                android:textAlignment="center"
+                android:checkable="true"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/size_L"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="@dimen/chip_min_width"
+                android:text="@string/size_l"
+                android:textAlignment="center"
+                android:checkable="true"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/size_XL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="@dimen/chip_min_width"
+                android:text="@string/size_xl"
+                android:textAlignment="center"
+                android:checkable="true"/>
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <View
+            android:id="@+id/divider4"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintTop_toBottomOf="@+id/location" />
+
+        <Button
+            android:id="@+id/button_publish"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_margin="@dimen/fragment_horizontal_margin"
+            android:background="@drawable/button_rounded"
+            android:text="@string/publish"
+            app:backgroundTint="@null"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

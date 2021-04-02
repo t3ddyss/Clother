@@ -42,16 +42,16 @@ class SignInFragment : Fragment() {
         signInViewModel.authTokens.observe(viewLifecycleOwner, {
             when(it) {
                 is Loading<AuthTokens> ->
-                    binding.frameLayoutLoading.isVisible = true
+                    (activity as? MainActivity)?.setLoadingVisibility(true)
                 is Success<AuthTokens> -> {
                     navController.navigate(R.id.action_signInFragment_to_homeFragment)
                 }
                 is Error<AuthTokens> -> {
-                    binding.frameLayoutLoading.isVisible = false
+                    (activity as? MainActivity)?.setLoadingVisibility(false)
                     (activity as? MainActivity)?.showGenericError(it.message)
                 }
                 is Failed<AuthTokens> -> {
-                    binding.frameLayoutLoading.isVisible = false
+                    (activity as? MainActivity)?.setLoadingVisibility(false)
                     (activity as? MainActivity)?.showGenericError(getString(R.string.no_connection))
                 }
             }

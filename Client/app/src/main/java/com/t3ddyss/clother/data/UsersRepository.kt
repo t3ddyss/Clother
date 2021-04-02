@@ -15,7 +15,7 @@ class UsersRepository @Inject constructor(
         private val prefs: SharedPreferences
 ) {
 
-    suspend fun createUser(user: User): ResponseState<SignUpResponse> {
+    suspend fun createUser(user: User): ResponseState<AuthResponse> {
         return try {
             val response = service.createUserWithCredentials(user)
             Success(response.also { it.email = user.email })
@@ -49,14 +49,7 @@ class UsersRepository @Inject constructor(
         }
     }
 
-    private fun saveTokens(tokens: AuthTokens) {
-        prefs.edit().putInt(USER_ID, tokens.userId).apply()
-        prefs.edit().putString(ACCESS_TOKEN, "Bearer ${tokens.accessToken}").apply()
-        prefs.edit().putString(REFRESH_TOKEN, "Bearer ${tokens.refreshToken}").apply()
-        prefs.edit().putBoolean(IS_AUTHENTICATED, true).apply()
-    }
-
-    suspend fun resetPassword(user: User): ResponseState<PasswordResetResponse> {
+    suspend fun resetPassword(user: User): ResponseState<AuthResponse> {
         return try {
             val response = service.resetPassword(user)
             Success(response.also { it.email = user.email })
@@ -70,5 +63,12 @@ class UsersRepository @Inject constructor(
         } catch (ex: SocketTimeoutException) {
             Error(null)
         }
+    }
+
+    private fun saveTokens(tokens: AuthTokens) {
+        prefs.edit().putInt(USER_ID, tokens.userId).apply()
+        prefs.edit().putString(ACCESS_TOKEN, "Bearer ${tokens.accessToken}").apply()
+        prefs.edit().putString(REFRESH_TOKEN, "Bearer ${tokens.refreshToken}").apply()
+        prefs.edit().putBoolean(IS_AUTHENTICATED, true).apply()
     }
 }

@@ -226,3 +226,4 @@ pip-selfcheck.json
 
 # Coverage reports
 *,cover
+/clother/static/images/
