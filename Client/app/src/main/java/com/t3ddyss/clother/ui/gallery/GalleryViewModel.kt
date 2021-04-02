@@ -1,7 +1,7 @@
 package com.t3ddyss.clother.ui.gallery
 
 import androidx.lifecycle.*
-import com.t3ddyss.clother.data.ImagesRepository
+import com.t3ddyss.clother.data.ImageProvider
 import com.t3ddyss.clother.models.GalleryImage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -14,7 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 @ExperimentalCoroutinesApi
 class GalleryViewModel @Inject constructor(
-        private val repository: ImagesRepository,
+        private val repository: ImageProvider,
         private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _images = MutableLiveData<List<GalleryImage>>()

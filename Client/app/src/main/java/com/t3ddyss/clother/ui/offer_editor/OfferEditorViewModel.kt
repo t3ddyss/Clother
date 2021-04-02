@@ -8,14 +8,11 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.JsonObject
-import com.t3ddyss.clother.data.ImagesRepository
+import com.t3ddyss.clother.data.ImageProvider
 import com.t3ddyss.clother.data.OffersRepository
-import com.t3ddyss.clother.models.GalleryImage
-import com.t3ddyss.clother.models.Offer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
-import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,7 +21,7 @@ import javax.inject.Inject
 class OfferEditorViewModel
 @Inject constructor(
         private val repository: OffersRepository,
-        private val imagesRepository: ImagesRepository,
+        private val imageProvider: ImageProvider,
         private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     val images = MutableLiveData<MutableList<Uri>>(mutableListOf())

@@ -16,6 +16,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.google.gson.JsonObject
 import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R

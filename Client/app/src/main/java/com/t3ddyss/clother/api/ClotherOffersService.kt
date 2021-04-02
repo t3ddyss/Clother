@@ -22,5 +22,5 @@ interface ClotherOffersService {
     @POST("api/offers/new")
     suspend fun postOffer(@Header("Authorization") accessToken: String?,
                           @Part("request") body: RequestBody,
-                          @Part files: MultipartBody.Part): NewOfferResponse
+                          @Part files: List<MultipartBody.Part>): NewOfferResponse
 }

@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Handler
 import android.provider.MediaStore
 import android.util.Log
+import com.bumptech.glide.Glide
 import com.t3ddyss.clother.utilities.DEBUG_TAG
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -21,7 +22,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
-class ImagesRepository @Inject constructor(
+class ImageProvider @Inject constructor(
         private val application: Application) {
     private val uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 
@@ -35,8 +36,8 @@ class ImagesRepository @Inject constructor(
         val newImagesObserver = object : ContentObserver(Handler(application.applicationContext.mainLooper)) {
             override fun onChange(selfChange: Boolean) {
                 if (selfChange) return
-
                 Log.d(DEBUG_TAG, "Going to offer new images")
+
                 offer(loadImagesFromGallery())
             }
         }
@@ -49,33 +50,6 @@ class ImagesRepository @Inject constructor(
         }
     }
 
-    suspend fun getAbsolutePath(uri: Uri) = withContext(Dispatchers.IO) {
-        val filePath = (application.applicationInfo.dataDir + File.separator
-                + System.currentTimeMillis())
-        val file = File(filePath)
-
-        // These methods don't block anything because they are wrapped by withContext(Dispatchers.IO)
-        try {
-            val inputStream= application.contentResolver.openInputStream(uri)
-            inputStream ?: return@withContext null
-
-            val outputStream = FileOutputStream(file)
-            val buf = ByteArray(1024)
-            var len: Int
-
-            while (inputStream.read(buf).also { len = it } > 0) {
-                outputStream.write(buf, 0, len)
-            }
-
-            outputStream.close()
-            inputStream.close()
-        } catch (ex: IOException) {
-            return@withContext null
-        }
-
-        return@withContext file.absolutePath
-    }
-
     private fun loadImagesFromGallery(): List<Uri> {
         val images = mutableListOf<Uri>()
 
@@ -83,12 +57,15 @@ class ImagesRepository @Inject constructor(
                 MediaStore.Images.Media._ID,
                 MediaStore.Images.Media.DATE_ADDED,
         )
+        val query = (MediaStore.Images.Media.MIME_TYPE + "='image/jpeg'"+ " OR "
+                + MediaStore.Images.Media.MIME_TYPE + "='image/png'"+ " OR "
+                + MediaStore.Images.Media.MIME_TYPE + "='image/jpg'")
         val sortOrder = "${MediaStore.Images.Media.DATE_ADDED} DESC"
 
         val cursor = application.contentResolver.query(
                 uri,
                 projection,
-                null,
+                query,
                 null,
                 sortOrder
         )
@@ -104,5 +81,9 @@ class ImagesRepository @Inject constructor(
         }
 
         return images
+    }
+
+    suspend fun getFileFromGlideCache(uri: Uri): File = withContext(Dispatchers.IO) {
+        return@withContext Glide.with(application).asFile().load(uri).submit().get()
     }
 }

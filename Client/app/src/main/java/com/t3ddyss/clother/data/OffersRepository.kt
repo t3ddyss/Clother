@@ -20,13 +20,10 @@ import com.t3ddyss.clother.utilities.CLOTHER_PAGE_SIZE
 import com.t3ddyss.clother.utilities.DEBUG_TAG
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import java.io.File
 import javax.inject.Inject
 
 
@@ -35,7 +32,7 @@ import javax.inject.Inject
 class OffersRepository
 @Inject constructor(
         private val service: ClotherOffersService,
-        private val imagesRepository: ImagesRepository,
+        private val imageProvider: ImageProvider,
         private val prefs: SharedPreferences,
         private val db: AppDatabase,
         private val offerDao: OfferDao,
@@ -73,12 +70,17 @@ class OffersRepository
     suspend fun postOffer(offer: JsonObject, images: List<Uri>) {
         val body = offer.toString()
                 .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
-        val absolutePath = imagesRepository.getAbsolutePath(images[0])
-        val requestFile = File(absolutePath!!)
-                .asRequestBody("multipart/form-data".toMediaTypeOrNull())
+        val imageFiles: MutableList<MultipartBody.Part> = mutableListOf()
 
-        val image = MultipartBody.Part
-                .createFormData("file", "myfile123", requestFile)
-        service.postOffer(prefs.getString(ACCESS_TOKEN, null), body, image)
+        for (uri in images) {
+            val imageFile = imageProvider.getFileFromGlideCache(uri)
+            imageFiles.add(MultipartBody.Part.createFormData(
+                    name = "file",
+                    imageFile.name,
+                    imageFile.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+            ))
+        }
+
+        service.postOffer(prefs.getString(ACCESS_TOKEN, null), body, imageFiles)
     }
 }

@@ -8,7 +8,6 @@ import com.bumptech.glide.Glide
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.ListItemImageAddBinding
 import com.t3ddyss.clother.databinding.ListItemImageEditorBinding
-import com.t3ddyss.clother.models.GalleryImage
 
 class OfferEditorImagesAdapter(
         private val images: MutableList<Uri>,
@@ -78,6 +77,6 @@ class OfferEditorImagesAdapter(
     }
 
     companion object {
-        const val MAX_SIZE = 10
+        const val MAX_SIZE = 5
     }
 }

@@ -34,7 +34,7 @@ class GalleryImagesAdapter(private val selectedLimitExceeded: () -> Unit) :
                 val image = getItem(absoluteAdapterPosition)
 
                 if (!image.isSelected) {
-                    if (currentList.count {it.isSelected} >= 10) {
+                    if (currentList.count { it.isSelected } >= 5) {
                         selectedLimitExceeded.invoke()
                     }
                     else {

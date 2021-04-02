@@ -50,7 +50,7 @@ def post_offer():
     if not title or not category_id:
         return {"message": "Please specify title and category"}, 400
 
-    files = request.files.get('file')
+    files = request.files.getlist('file')
     if not files:
         return {"message": "Missing images in request"}, 400
     # if len(files) > 10:
@@ -74,18 +74,18 @@ def post_offer():
             size = Size(size=size['size'], type=size['type'])
             offer.size = size
 
-        # for file in files:
-        #     filename = secrets.token_urlsafe(10) + secure_filename(file.filename)
-        #     image = Image(uri=filename)  # TODO fix later
+        for file in files:
+            filename = secrets.token_urlsafe(10) + secure_filename(file.filename)
+            image = Image(uri=filename)  # TODO fix later
+
+            file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+            offer.images.append(image)
+
+        # filename = secrets.token_urlsafe(10) + secure_filename(files.filename)
+        # image = Image(uri=filename)  # TODO fix later
         #
-        #     file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
-        #     offer.images.append(image)
-
-        filename = secrets.token_urlsafe(10) + secure_filename(files.filename)
-        image = Image(uri=filename)  # TODO fix later
-
-        files.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
-        offer.images.append(image)
+        # files.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+        # offer.images.append(image)
 
         db.session.add(offer)
         db.session.commit()
