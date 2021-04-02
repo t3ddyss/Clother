@@ -59,4 +59,6 @@
     <string name="no_location_access">Cannot find your location automatically, please select it manually</string>
     <string name="updating_location">Updating your location…</string>
     <string name="apply">Apply</string>
+    <string name="provide_title">Offer must have a title</string>
+    <string name="provide_image">Please select at least 1 image</string>
 </resources>

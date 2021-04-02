@@ -1,11 +1,12 @@
 import json
 import os
-import time
 import secrets
+import time
 
 from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename
+
 from .models import Offer, Category, Location, Size, Image
 from .. import db
 from ..utils import response_delay, base_prefix, allowed_file
@@ -45,7 +46,7 @@ def post_offer():
     title = data.get('title', None)
     description = data.get('description', None)
     coordinates = data.get('location', None)
-    size = data.get('size', None)
+    size_dict = data.get('size', None)
 
     if not title or not category_id:
         return {"message": "Please specify title and category"}, 400
@@ -53,12 +54,11 @@ def post_offer():
     files = request.files.getlist('file')
     if not files:
         return {"message": "Missing images in request"}, 400
-    # if len(files) > 10:
-    #     return {"message": "You cannot upload more than 10 images"}, 400
-
-    # for file in files:
-    #     if not (file and allowed_file(file.filename)):
-    #         return {"message": "This file type is not allowed"}, 400
+    if len(files) > 10:
+        return {"message": "You cannot upload more than 10 images"}, 400
+    for file in files:
+        if not (file and allowed_file(file.filename)):
+            return {"message": "This file type is not allowed"}, 400
 
     try:
         offer = Offer(user_id=user_id, category_id=category_id, title=title)
@@ -67,30 +67,26 @@ def post_offer():
 
         if coordinates:
             lat, lng = coordinates.split(',')
-            location = Location(latitude=lat, longitued=lng)
+            location = Location(latitude=lat, longitude=lng)
             offer.location = location
 
-        if size and size['size'] and size['type']:
-            size = Size(size=size['size'], type=size['type'])
+        if size_dict and isinstance(size_dict, dict) and 'size' in size_dict:
+            size = Size(size=size_dict['size'])
+            if 'type' in size_dict:
+                size_dict.type = size_dict['type']
             offer.size = size
 
         for file in files:
             filename = secrets.token_urlsafe(10) + secure_filename(file.filename)
-            image = Image(uri=filename)  # TODO fix later
+            image = Image(uri="api/images/" + filename)
 
             file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
             offer.images.append(image)
 
-        # filename = secrets.token_urlsafe(10) + secure_filename(files.filename)
-        # image = Image(uri=filename)  # TODO fix later
-        #
-        # files.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
-        # offer.images.append(image)
-
         db.session.add(offer)
         db.session.commit()
 
-    except Exception:
+    except Exception as ex:
         db.session.rollback()
         return {"message": "Unknown error"}, 400
 

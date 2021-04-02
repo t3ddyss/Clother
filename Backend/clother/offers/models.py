@@ -18,14 +18,20 @@ class Offer(db.Model):
     location = db.relationship('Location', uselist=False)
 
     def to_dict(self):
-        return {'id': self.id,
-                'user_id': self.user_id,
-                'category_id': self.category_id,
-                'title': self.title,
-                'description': self.description,
-                'images': [image.uri for image in self.images],
-                'size': self.size,
-                'location': self.location.to_string()}
+        offer = {'id': self.id,
+                 'user_id': self.user_id,
+                 'category_id': self.category_id,
+                 'created_at': self.created_at,
+                 'title': self.title,
+                 'description': self.description,
+                 'user_name': self.user.name,
+                 'category': self.category.title,
+                 'images': [image.uri for image in self.images]}
+        if self.size.size:
+            offer['size'] = {'size': self.size.size, 'type': self.size.type}
+        if self.location:
+            offer['location'] = self.location.to_string()
+        return offer
 
 
 class Category(db.Model):

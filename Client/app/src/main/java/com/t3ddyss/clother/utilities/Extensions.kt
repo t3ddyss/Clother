@@ -1,13 +1,11 @@
 package com.t3ddyss.clother.utilities
 
 import android.content.Context
-import android.graphics.Color
+import android.os.Build.FINGERPRINT
 import android.text.Editable
 import android.util.Patterns
 import android.util.TypedValue
 import androidx.annotation.AttrRes
-import androidx.annotation.ColorRes
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import com.google.android.gms.maps.model.LatLng
@@ -46,3 +44,12 @@ fun LatLng.toCoordinatesString(precision: Int = 4): String {
 }
 
 fun Double.format(digits: Int) = "%.${digits}f".format(this)
+
+fun String.getImageUrlForCurrentDevice(): String {
+    return if (this.startsWith("https://lp2.hm.com")) this
+    else getBaseUrlForCurrentDevice() + this
+}
+
+fun isEmulator() = FINGERPRINT.contains("generic")
+
+fun getBaseUrlForCurrentDevice() = if (isEmulator()) BASE_URL_EMULATOR else BASE_URL_DEVICE

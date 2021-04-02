@@ -21,6 +21,7 @@ import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OfferEditorImagesAdapter
 import com.t3ddyss.clother.databinding.FragmentOfferEditorBinding
 import com.t3ddyss.clother.models.*
+import com.t3ddyss.clother.utilities.text
 import com.t3ddyss.clother.utilities.toCoordinatesString
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -112,23 +113,56 @@ class OfferEditorFragment : Fragment() {
         }
 
         binding.buttonPublish.setOnClickListener {
-            val offer = JsonObject()
-
-            val title = binding.editTextTitle.text.toString()
-            val description = binding.editTextDescription.text.toString()
-//            val location = viewModel.location.value!!
-//            val coordinates = "${location.latitude},${location.longitude}"
-            val images = viewModel.images.value!!.toList()
-
-            offer.addProperty("category_id", category.id)
-            offer.addProperty("title", title)
-            offer.addProperty("description", description)
-//            json.addProperty("location", coordinates)
-
-            viewModel.postOffer(offer, images)
+            postOffer(category)
         }
 
         return binding.root
+    }
+
+    private fun postOffer(category: Category) {
+        val offer = JsonObject()
+        offer.addProperty("category_id", category.id)
+
+        val title = binding.editTextTitle.text()
+        if (title.isEmpty()) {
+            binding.textInputTitle.error = getString(R.string.provide_title)
+            return
+        }
+        offer.addProperty("title", title)
+        binding.textInputTitle.isErrorEnabled = false
+
+        val images = viewModel.images.value!!.toList()
+        if (images.isEmpty()) {
+            (activity as? MainActivity)?.showGenericError(getString(R.string.provide_image))
+            return
+        }
+
+        val description = binding.editTextDescription.text()
+        if (description.isNotEmpty()) {
+            offer.addProperty("description", description)
+        }
+
+        val location = viewModel.location.value
+        if (location != null) {
+            offer.addProperty("location", "${location.latitude},${location.longitude}")
+        }
+
+        val clothingSize = when (binding.chipGroupSize.checkedChipId) {
+            R.id.size_XS -> "XS"
+            R.id.size_S -> "S"
+            R.id.size_M -> "M"
+            R.id.size_L -> "L"
+            R.id.size_XL -> "XL"
+            else -> null // View.NO_ID
+        }
+
+        if (clothingSize != null) {
+            val size = JsonObject()
+            size.addProperty("size", clothingSize)
+            offer.add("size", size)
+        }
+
+        viewModel.postOffer(offer, images)
     }
 
     override fun onDestroyView() {
