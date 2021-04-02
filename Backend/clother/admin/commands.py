@@ -37,6 +37,11 @@ def demote(email):
         print(f"Admin with email {email} doesn't exist")
 
 
+@blueprint.cli.command('create_db')
+def create_database():
+    db.create_all()
+
+
 @blueprint.cli.command('populate_categories')
 def populate_categories():
     Category.__table__.create(db.engine)

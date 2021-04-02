@@ -2,6 +2,7 @@ package com.t3ddyss.clother.ui.offer_editor
 
 import android.Manifest
 import android.os.Bundle
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,17 +16,20 @@ import androidx.navigation.fragment.navArgs
 import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.JsonObject
 import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OfferEditorImagesAdapter
 import com.t3ddyss.clother.databinding.FragmentOfferEditorBinding
-import com.t3ddyss.clother.ui.gallery.GalleryViewModel
 import com.t3ddyss.clother.utilities.toCoordinatesString
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import java.io.File
 
 
 @AndroidEntryPoint
 @ExperimentalPagingApi
+@ExperimentalCoroutinesApi
 class OfferEditorFragment : Fragment() {
     private val viewModel by hiltNavGraphViewModels<OfferEditorViewModel>(R.id.offer_editor_graph)
 
@@ -87,6 +91,23 @@ class OfferEditorFragment : Fragment() {
 
         binding.location.setOnClickListener {
             findNavController().navigate(R.id.action_offerEditorFragment_to_locationFragment)
+        }
+
+        binding.buttonPublish.setOnClickListener {
+            val offer = JsonObject()
+
+            val title = binding.editTextTitle.text.toString()
+            val description = binding.editTextDescription.text.toString()
+//            val location = viewModel.location.value!!
+//            val coordinates = "${location.latitude},${location.longitude}"
+            val images = viewModel.images.value!!.toList()
+
+            offer.addProperty("category_id", category.id)
+            offer.addProperty("title", title)
+            offer.addProperty("description", description)
+//            json.addProperty("location", coordinates)
+
+            viewModel.postOffer(offer, images)
         }
 
         return binding.root

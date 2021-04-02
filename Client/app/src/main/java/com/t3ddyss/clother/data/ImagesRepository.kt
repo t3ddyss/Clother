@@ -1,6 +1,7 @@
 package com.t3ddyss.clother.data
 
 import android.app.Application
+import android.content.Context
 import android.database.ContentObserver
 import android.net.Uri
 import android.os.Handler
@@ -13,6 +14,10 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
@@ -44,12 +49,40 @@ class ImagesRepository @Inject constructor(
         }
     }
 
+    suspend fun getAbsolutePath(uri: Uri) = withContext(Dispatchers.IO) {
+        val filePath = (application.applicationInfo.dataDir + File.separator
+                + System.currentTimeMillis())
+        val file = File(filePath)
+
+        // These methods don't block anything because they are wrapped by withContext(Dispatchers.IO)
+        try {
+            val inputStream= application.contentResolver.openInputStream(uri)
+            inputStream ?: return@withContext null
+
+            val outputStream = FileOutputStream(file)
+            val buf = ByteArray(1024)
+            var len: Int
+
+            while (inputStream.read(buf).also { len = it } > 0) {
+                outputStream.write(buf, 0, len)
+            }
+
+            outputStream.close()
+            inputStream.close()
+        } catch (ex: IOException) {
+            return@withContext null
+        }
+
+        return@withContext file.absolutePath
+    }
+
     private fun loadImagesFromGallery(): List<Uri> {
         val images = mutableListOf<Uri>()
 
         val projection = arrayOf(
                 MediaStore.Images.Media._ID,
-                MediaStore.Images.Media.DATE_ADDED)
+                MediaStore.Images.Media.DATE_ADDED,
+        )
         val sortOrder = "${MediaStore.Images.Media.DATE_ADDED} DESC"
 
         val cursor = application.contentResolver.query(

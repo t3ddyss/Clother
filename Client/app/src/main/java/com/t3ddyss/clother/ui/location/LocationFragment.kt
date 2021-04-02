@@ -28,14 +28,13 @@ import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentLocationBinding
 import com.t3ddyss.clother.models.LatLngWrapper
-import com.t3ddyss.clother.ui.gallery.GalleryViewModel
 import com.t3ddyss.clother.ui.offer_editor.OfferEditorViewModel
 import com.t3ddyss.clother.utilities.DEBUG_TAG
 import com.t3ddyss.clother.utilities.MAPVIEW_BUNDLE
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-@ExperimentalPagingApi
+@ExperimentalPagingApi // TODO encapsulate location detection logic in a separate class
 class LocationFragment : Fragment() {
 
     private val viewModel by viewModels<LocationViewModel>()

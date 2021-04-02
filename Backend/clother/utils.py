@@ -6,6 +6,7 @@ from .extensions import mail
 
 base_prefix = '/api'
 response_delay = 1.5
+allowed_extensions = {'png', 'jpg', 'jpeg'}
 
 
 def send_email_async(app, message):
@@ -26,4 +27,9 @@ def validate_password(password):
 # at least 1 special character
 def get_password_regex():
     return re.compile(r'^(?=\S{8,25}$)(?=.*?\d)(?=.*?[a-z])(?=.*?[A-Z])(?=\S+$)(?=.*?[^A-Za-z\s0-9])')
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in allowed_extensions
 

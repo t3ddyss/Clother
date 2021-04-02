@@ -1,10 +1,14 @@
+import json
+import os
 import time
+import secrets
 
-from flask import Blueprint, request, jsonify
-from .models import Offer, Category
-from flask_jwt_extended import jwt_required
-
-from ..utils import response_delay, base_prefix
+from flask import Blueprint, request, jsonify, current_app
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from werkzeug.utils import secure_filename
+from .models import Offer, Category, Location, Size, Image
+from .. import db
+from ..utils import response_delay, base_prefix, allowed_file
 
 blueprint = Blueprint('offers', __name__, url_prefix=(base_prefix + '/offers'))
 
@@ -29,6 +33,68 @@ def get_offers():
         offers.reverse()
 
     return jsonify([offer.to_dict() for offer in offers])
+
+
+@blueprint.route('/new', methods=['POST'])
+@jwt_required()
+def post_offer():
+    data = json.loads(request.form['request'])
+
+    user_id = get_jwt_identity()
+    category_id = data.get('category_id', None)
+    title = data.get('title', None)
+    description = data.get('description', None)
+    coordinates = data.get('location', None)
+    size = data.get('size', None)
+
+    if not title or not category_id:
+        return {"message": "Please specify title and category"}, 400
+
+    files = request.files.get('file')
+    if not files:
+        return {"message": "Missing images in request"}, 400
+    # if len(files) > 10:
+    #     return {"message": "You cannot upload more than 10 images"}, 400
+
+    # for file in files:
+    #     if not (file and allowed_file(file.filename)):
+    #         return {"message": "This file type is not allowed"}, 400
+
+    try:
+        offer = Offer(user_id=user_id, category_id=category_id, title=title)
+        if description:
+            offer.description = description
+
+        if coordinates:
+            lat, lng = coordinates.split(',')
+            location = Location(latitude=lat, longitued=lng)
+            offer.location = location
+
+        if size and size['size'] and size['type']:
+            size = Size(size=size['size'], type=size['type'])
+            offer.size = size
+
+        # for file in files:
+        #     filename = secrets.token_urlsafe(10) + secure_filename(file.filename)
+        #     image = Image(uri=filename)  # TODO fix later
+        #
+        #     file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+        #     offer.images.append(image)
+
+        filename = secrets.token_urlsafe(10) + secure_filename(files.filename)
+        image = Image(uri=filename)  # TODO fix later
+
+        files.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+        offer.images.append(image)
+
+        db.session.add(offer)
+        db.session.commit()
+
+    except Exception:
+        db.session.rollback()
+        return {"message": "Unknown error"}, 400
+
+    return {'message': 'Successfully created a new offer'}
 
 
 @blueprint.route('/categories')

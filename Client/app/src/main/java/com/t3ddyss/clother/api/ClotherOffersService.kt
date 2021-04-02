@@ -1,11 +1,11 @@
 package com.t3ddyss.clother.api
 
 import com.t3ddyss.clother.models.Category
+import com.t3ddyss.clother.models.NewOfferResponse
 import com.t3ddyss.clother.models.Offer
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.Query
-import retrofit2.http.QueryMap
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.http.*
 
 interface ClotherOffersService {
     @GET("api/offers")
@@ -17,4 +17,10 @@ interface ClotherOffersService {
 
     @GET("api/offers/categories")
     suspend fun getCategories(@Header("Authorization") accessToken: String?): List<Category>
+
+    @Multipart
+    @POST("api/offers/new")
+    suspend fun postOffer(@Header("Authorization") accessToken: String?,
+                          @Part("request") body: RequestBody,
+                          @Part files: MultipartBody.Part): NewOfferResponse
 }
