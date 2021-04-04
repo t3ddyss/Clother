@@ -130,30 +130,35 @@ class MainActivity : AppCompatActivity() {
     fun showGenericError(throwable: Throwable) {
         when (throwable) {
             is SocketTimeoutException -> showGenericError(null)
-            !is ConnectException -> showGenericError(getString(R.string.no_connection))
+            !is ConnectException -> showGenericError(getString(R.string.no_connection)) // Fix
         }
     }
 
     fun showGenericError(message: String?) {
-        Snackbar.make(binding.navHostFragment,
-                message ?:
-                getString(R.string.unknown_error),
+        val snackbar = Snackbar.make(binding.container,
+                message ?: getString(R.string.unknown_error),
                 Snackbar.LENGTH_SHORT)
-                .setAnchorView(binding.navView)
-                .show()
+        if (binding.navView.isVisible) {
+            snackbar.anchorView = binding.navView
+        }
+
+        snackbar.show()
     }
 
     fun showSnackbarWithAction(message: String,
                                actionText: String,
                                action: (() -> Unit) = openSettingsAction) {
-        Snackbar.make(binding.navHostFragment,
+        val snackbar = Snackbar.make(binding.navHostFragment,
                 message,
                 Snackbar.LENGTH_SHORT)
                 .setAction(actionText) {
                     action.invoke()
                 }
-                .setAnchorView(binding.navView)
-                .show()
+        if (binding.navView.isVisible) {
+            snackbar.anchorView = binding.navView
+        }
+
+        snackbar.show()
     }
 
     private fun setupNetworkStateListener() {
@@ -163,34 +168,34 @@ class MainActivity : AppCompatActivity() {
         val isNetworkAvailable = isNetworkAvailable(connectivityManager)
         if (isNetworkAvailable) {
             networkStateViewModel.isNetworkAvailable.value = Pair(
-                first = false,
-                second = true
+                    first = false,
+                    second = true
             )
         }
         else {
             networkStateViewModel.isNetworkAvailable.value = Pair(
-                first = true,
-                second = false
+                    first = true,
+                    second = false
             )
         }
 
         connectivityManager.registerDefaultNetworkCallback(object :
-            ConnectivityManager.NetworkCallback() {
+                ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 val wasNetworkAvailable = networkStateViewModel.isNetworkAvailable.value!!.second
 
                 if (!wasNetworkAvailable) {
                     networkStateViewModel.isNetworkAvailable.postValue(Pair(
-                        first = true,
-                        second = true
+                            first = true,
+                            second = true
                     ))
                 }
             }
 
             override fun onLost(network: Network) {
                 networkStateViewModel.isNetworkAvailable.postValue(Pair(
-                    first = true,
-                    second = false
+                        first = true,
+                        second = false
                 ))
 
                 showGenericError(getString(R.string.no_connection))
@@ -242,30 +247,30 @@ class MainActivity : AppCompatActivity() {
     }
 
     open inner class DestinationChangeListener(
-        private val binding: ActivityMainBinding)
+            private val binding: ActivityMainBinding)
     : NavController.OnDestinationChangedListener {
         private val fragmentsWithoutToolbar = setOf(R.id.signUpFragment)
 
         private val fragmentsWithoutBottomNav = setOf(R.id.emailActionFragment,
-        R.id.offerEditorFragment, R.id.resetPasswordFragment, R.id.signInFragment,
-        R.id.signUpFragment, R.id.galleryFragment, R.id.locationFragment)
+                R.id.offerEditorFragment, R.id.resetPasswordFragment, R.id.signInFragment,
+                R.id.signUpFragment, R.id.galleryFragment, R.id.locationFragment)
 
         private val fragmentsWithInvisibleToolbar = setOf(R.id.signUpFragment)
         private val fragmentsWithToolbarLabel = setOf(R.id.offerCategoryFragment,
-            R.id.offerEditorFragment, R.id.galleryFragment, R.id.locationFragment)
+                R.id.offerEditorFragment, R.id.galleryFragment, R.id.locationFragment)
 
         private val fragmentsWithoutNavIcon = setOf(R.id.homeFragment,
                 R.id.messagesFragment, R.id.profileFragment)
 
         private val fragmentsWithCustomUpIcon = setOf(R.id.offerEditorFragment,
-        R.id.galleryFragment, R.id.locationFragment)
+                R.id.galleryFragment, R.id.locationFragment)
 
         override fun onDestinationChanged(
-            controller: NavController,
-            destination: NavDestination,
-            arguments: Bundle?
+                controller: NavController,
+                destination: NavDestination,
+                arguments: Bundle?
         ) {
-            with (binding) {
+            with(binding) {
                 // NavView visibility
                 if (destination.id !in fragmentsWithoutBottomNav && !navView.isVisible) {
                     animateBottomNav()

@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
-@Entity(tableName = "remote_keys")
+@Entity(tableName = "remote_key")
 class RemoteKey(
         @PrimaryKey
         @ColumnInfo(collate = ColumnInfo.NOCASE)

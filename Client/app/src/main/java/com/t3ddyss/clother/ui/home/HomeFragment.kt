@@ -27,6 +27,7 @@ import com.t3ddyss.clother.utilities.getThemeColor
 import com.t3ddyss.clother.viewmodels.NetworkStateViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -155,6 +156,14 @@ class HomeFragment : Fragment() {
         getOffers()
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        lifecycleScope.launchWhenStarted {
+            delay(500)
+            (activity as? MainActivity)?.setLoadingVisibility(false)
+        }
     }
 
     override fun onDestroyView() {

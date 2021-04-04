@@ -9,7 +9,7 @@ import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import com.t3ddyss.clother.utilities.DEFAULT_STRING_VALUE
 
-@Entity(tableName = "categories",
+@Entity(tableName = "category",
         foreignKeys = [ForeignKey(
                 entity = Category::class,
                 parentColumns = arrayOf("id"),

@@ -44,10 +44,6 @@ class OfferCategoryFragment : Fragment() {
         val parentId = args.parentId.let { if (it == 0) null else it }
         (activity as? MainActivity)?.setNavIconVisibility(parentId != null)
 
-        if (!prefs.getBoolean(IS_CATEGORIES_LOADED, false)) {
-            binding.shimmer.isVisible = true
-        }
-
         val layoutManager = LinearLayoutManager(
                 context,
                 LinearLayoutManager.VERTICAL,
@@ -71,9 +67,7 @@ class OfferCategoryFragment : Fragment() {
         binding.listCategories.adapter = adapter
 
         viewModel.categories.observe(viewLifecycleOwner) {
-            binding.shimmer.isVisible = false
             adapter.submitList(it)
-            prefs.edit().putBoolean(IS_CATEGORIES_LOADED, true).apply()
         }
 
         val verticalDecorator = DividerItemDecoration(activity, DividerItemDecoration.VERTICAL)

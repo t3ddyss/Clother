@@ -83,6 +83,7 @@ class ImageProvider @Inject constructor(
         return images
     }
 
+    // TODO compress image before uploading it to server
     suspend fun getFileFromGlideCache(uri: Uri): File = withContext(Dispatchers.IO) {
         return@withContext Glide.with(application).asFile().load(uri).submit().get()
     }

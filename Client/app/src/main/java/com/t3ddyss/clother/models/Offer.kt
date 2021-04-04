@@ -1,23 +1,36 @@
 package com.t3ddyss.clother.models
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
+import androidx.room.*
 import com.google.gson.annotations.SerializedName
 
-@Entity(tableName = "offers",
+@Entity(tableName = "offer",
         foreignKeys = [ForeignKey(
                 entity = Category::class,
                 parentColumns = arrayOf("id"),
                 childColumns = arrayOf("category_id"))])
-data class Offer(@SerializedName("user_id") val userId: Int,
+data class Offer(@PrimaryKey var id: Int = 0,
+
+                 @SerializedName("user_id")
+                 @ColumnInfo(name = "user_id" )
+                 var userId: Int = 0,
+
                  @SerializedName("category_id")
-                 @ColumnInfo(name  = "category_id")
-                 val categoryId: Int,
-                 val title: String,
-                 val description: String? = null,
-                 val location: String? = null,
-                 val image: String?) {
-    @PrimaryKey var id = 0 // To exclude this property from equals() method
-}
+                 @ColumnInfo(name = "category_id", index = true)
+                 var categoryId: Int = 0,
+
+                 @SerializedName("created_at")
+                 @ColumnInfo(name = "created_at")
+                 var createdAt: String = "",
+
+                 var title: String = "",
+                 var description: String? = null,
+
+                 @SerializedName("user_name")
+                 @ColumnInfo(name = "user_name")
+                 var userName: String = "",
+
+                 var category: String = "",
+                 var images: List<String> = listOf(),
+                 @Ignore val size: Map<String, String>? = null,
+                 var location: String? = null
+)

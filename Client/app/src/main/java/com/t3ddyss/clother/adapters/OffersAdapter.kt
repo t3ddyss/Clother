@@ -30,7 +30,7 @@ class OffersAdapter : PagingDataAdapter<Offer, OffersAdapter.OfferViewHolder>(Of
             fun bind(offer: Offer) {
                 binding.apply {
                     Glide.with(image.context)
-                            .load(offer.image?.getImageUrlForCurrentDevice())
+                            .load(offer.images.firstOrNull()?.getImageUrlForCurrentDevice())
                             .centerCrop()
                             .placeholder(R.drawable.placeholder_offer_image)
                             .dontAnimate()

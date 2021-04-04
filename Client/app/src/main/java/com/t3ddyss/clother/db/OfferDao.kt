@@ -14,9 +14,9 @@ interface OfferDao {
 
     // No suspend modifier because this function is called from repository's function
     // which is always called within the coroutine
-    @Query("SELECT * FROM offers ORDER BY id DESC")
+    @Query("SELECT * FROM offer ORDER BY id DESC")
     fun getAllOffers(): PagingSource<Int, Offer>
 
-    @Query("DELETE FROM offers")
+    @Query("DELETE FROM offer")
     suspend fun deleteAllOffers()
 }

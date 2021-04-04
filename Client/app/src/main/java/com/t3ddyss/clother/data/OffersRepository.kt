@@ -13,6 +13,7 @@ import com.t3ddyss.clother.db.CategoryDao
 import com.t3ddyss.clother.db.OfferDao
 import com.t3ddyss.clother.db.RemoteKeyDao
 import com.t3ddyss.clother.models.*
+import com.t3ddyss.clother.models.NewOfferResponse
 import com.t3ddyss.clother.utilities.ACCESS_TOKEN
 import com.t3ddyss.clother.utilities.CLOTHER_PAGE_SIZE
 import com.t3ddyss.clother.utilities.handleError
@@ -59,10 +60,10 @@ class OffersRepository
     }
 
     suspend fun getCategories(parentId: Int? = null): List<Category> {
-        if (categoryDao.getCategoriesCount() == 0) {
-            val categories = service.getCategories(prefs.getString(ACCESS_TOKEN, null))
-            categoryDao.insertAll(categories)
-        }
+//        if (categoryDao.getCategoriesCount() == 0) {
+//            val categories = service.getCategories(prefs.getString(ACCESS_TOKEN, null))
+//            categoryDao.insertAll(categories)
+//        }
 
         return categoryDao.getSubcategories(parentId)
     }
