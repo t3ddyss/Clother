@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.ExperimentalPagingApi
@@ -47,8 +48,8 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
     @Inject lateinit var prefs: SharedPreferences
 
-    private val adapter = OffersAdapter {
-        val action = HomeFragmentDirections.actionHomeFragmentToOfferFragment(it)
+    private val adapter = OffersAdapter {id ->
+        val action = HomeFragmentDirections.actionHomeFragmentToOfferFragment(id)
         findNavController().navigate(action)
     }
     private lateinit var loadStateListener: (CombinedLoadStates) -> Unit

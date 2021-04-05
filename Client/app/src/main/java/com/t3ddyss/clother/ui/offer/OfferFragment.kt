@@ -6,10 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.ui.setupWithNavController
 import androidx.paging.ExperimentalPagingApi
+import androidx.transition.TransitionInflater
 import com.google.android.material.tabs.TabLayoutMediator
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OfferImagesAdapter

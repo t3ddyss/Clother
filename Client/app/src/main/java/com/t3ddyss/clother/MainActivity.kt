@@ -2,6 +2,7 @@ package com.t3ddyss.clother
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
@@ -9,10 +10,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.Gravity
+import android.view.Window
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -65,6 +68,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
@@ -246,7 +250,7 @@ class MainActivity : AppCompatActivity() {
         binding.layoutLoading.isVisible = isVisible
     }
 
-    open inner class DestinationChangeListener(
+    inner class DestinationChangeListener(
             private val binding: ActivityMainBinding)
     : NavController.OnDestinationChangedListener {
         private val fragmentsWithoutToolbar = setOf(R.id.signUpFragment)
@@ -297,6 +301,19 @@ class MainActivity : AppCompatActivity() {
                         }
                         else -> toolbar.isInvisible = true
                     }
+                }
+
+                if (destination.id == R.id.offerFragment) {
+                    binding.navHostFragmentMarginTop.isVisible = false
+                    TransitionManager
+                            .beginDelayedTransition(
+                                    binding.navHostFragment,
+                                    Slide(Gravity.TOP)
+                            )
+                }
+
+                else {
+                    binding.navHostFragmentMarginTop.isVisible = true
                 }
 
 

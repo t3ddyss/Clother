@@ -20,9 +20,12 @@ class OfferViewModel @Inject constructor(
 ) : ViewModel() {
     private val _offer = MutableLiveData<Offer>()
     val offer: LiveData<Offer> = _offer
+    private var isOfferLoaded = false
 
     fun getOffer(id: Int) {
+        if (isOfferLoaded) return
         viewModelScope.launch {
+            isOfferLoaded = true
             _offer.postValue(repository.getOfferById(id))
         }
     }

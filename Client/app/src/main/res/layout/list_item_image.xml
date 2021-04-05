@@ -8,6 +8,8 @@
 
     <ImageView
         android:id="@+id/image"
+        android:transitionName="offerMainImage"
+        app:layout_collapseMode="parallax"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
