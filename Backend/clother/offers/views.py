@@ -7,7 +7,7 @@ from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename
 
-from .models import Offer, Category, Location, Size, Image
+from .models import Offer, Category, Location, Image
 from .. import db
 from ..utils import response_delay, base_prefix, allowed_file
 
@@ -46,7 +46,7 @@ def post_offer():
     title = data.get('title', None)
     description = data.get('description', None)
     coordinates = data.get('location', None)
-    size_dict = data.get('size', None)
+    size = data.get('size', None)
 
     if not title or not category_id:
         return {"message": "Please specify title and category"}, 400
@@ -70,10 +70,7 @@ def post_offer():
             location = Location(latitude=lat, longitude=lng)
             offer.location = location
 
-        if size_dict and isinstance(size_dict, dict) and 'size' in size_dict:
-            size = Size(size=size_dict['size'])
-            if 'type' in size_dict:
-                size_dict.type = size_dict['type']
+        if size:
             offer.size = size
 
         for file in files:

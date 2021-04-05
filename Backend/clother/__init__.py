@@ -21,8 +21,8 @@ def register_extensions(app):
 
 
 def register_blueprints(app):
+    app.register_blueprint(admin.commands.blueprint)
     app.register_blueprint(authentication.views.blueprint)
     app.register_blueprint(users.views.blueprint)
     app.register_blueprint(offers.views.blueprint)
     app.register_blueprint(images.views.blueprint)
-    app.register_blueprint(admin.commands.blueprint)

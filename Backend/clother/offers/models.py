@@ -10,11 +10,11 @@ class Offer(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     title = db.Column(db.String, nullable=False)
     description = db.Column(db.String)
+    size = db.Column(db.String)
 
     user = db.relationship('User', uselist=False, backref=db.backref('offers', lazy=True))
     category = db.relationship('Category', uselist=False, backref=db.backref('offers', lazy=True))
     images = db.relationship('Image', cascade="all,delete")
-    size = db.relationship('Size', uselist=False, cascade="all,delete")
     location = db.relationship('Location', uselist=False, cascade="all,delete")
 
     def to_dict(self):
@@ -24,11 +24,10 @@ class Offer(db.Model):
                  'created_at': self.created_at,
                  'title': self.title,
                  'description': self.description,
+                 'size': self.size,
                  'user_name': self.user.name,
                  'category': self.category.title,
                  'images': [image.uri for image in self.images]}
-        if self.size:
-            offer['size'] = {'size': self.size.size, 'type': self.size.type}
         if self.location:
             offer['location'] = self.location.to_string()
         return offer
@@ -55,13 +54,6 @@ class Image(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     offer_id = db.Column(db.Integer, db.ForeignKey('offer.id', ondelete='CASCADE'))
     uri = db.Column(db.String, unique=True, nullable=False)
-
-
-class Size(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    offer_id = db.Column(db.Integer, db.ForeignKey('offer.id', ondelete='CASCADE'))
-    type = db.Column(db.String, default='clothes')
-    size = db.Column(db.String)
 
 
 class Location(db.Model):

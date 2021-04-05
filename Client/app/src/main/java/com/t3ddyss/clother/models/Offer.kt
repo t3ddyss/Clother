@@ -32,6 +32,6 @@ data class Offer(@PrimaryKey var id: Int = 0,
 
                  var category: String = "",
                  var images: List<String> = listOf(),
-                 @Ignore val size: Map<String, String>? = null,
+                 val size: String? = null,
                  var location: String? = null
 )

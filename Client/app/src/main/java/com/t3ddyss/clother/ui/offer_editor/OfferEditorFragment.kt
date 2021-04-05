@@ -15,6 +15,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.chip.Chip
 import com.google.gson.JsonObject
 import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
@@ -148,19 +149,10 @@ class OfferEditorFragment : Fragment() {
             offer.addProperty("location", "${location.latitude},${location.longitude}")
         }
 
-        val clothingSize = when (binding.chipGroupSize.checkedChipId) {
-            R.id.size_XS -> "XS"
-            R.id.size_S -> "S"
-            R.id.size_M -> "M"
-            R.id.size_L -> "L"
-            R.id.size_XL -> "XL"
-            else -> null // View.NO_ID
-        }
-
-        if (clothingSize != null) {
-            val size = JsonObject()
-            size.addProperty("size", clothingSize)
-            offer.add("size", size)
+        val checkedChipId = binding.chipGroupSize.checkedChipId
+        if (checkedChipId != View.NO_ID) {
+            val size = binding.chipGroupSize.findViewById<Chip>(checkedChipId).text.toString()
+            offer.addProperty("size", size)
         }
 
         viewModel.postOffer(offer, images)

@@ -26,7 +26,7 @@ object DatabaseModule {
     @Provides
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
         return Room.databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME)
-                .createFromAsset("clother.db")
+                .createFromAsset("clother_category.db")
                 .fallbackToDestructiveMigration()
                 .build()
     }

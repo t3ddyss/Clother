@@ -9,7 +9,7 @@ import com.t3ddyss.clother.models.RemoteKey
 
 @Database(
         entities = [Offer::class, RemoteKey::class, Category::class],
-        version = 1,
+        version = 2,
         exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
