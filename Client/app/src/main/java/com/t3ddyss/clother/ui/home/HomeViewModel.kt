@@ -9,11 +9,13 @@ import androidx.paging.cachedIn
 import com.t3ddyss.clother.data.OffersRepository
 import com.t3ddyss.clother.models.Offer
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 @HiltViewModel
 @ExperimentalPagingApi
+@ExperimentalCoroutinesApi
 class HomeViewModel
 @Inject constructor(
         private val repository: OffersRepository,

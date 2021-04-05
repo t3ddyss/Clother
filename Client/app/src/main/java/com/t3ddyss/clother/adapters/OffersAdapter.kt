@@ -10,7 +10,9 @@ import com.t3ddyss.clother.databinding.ListItemOfferBinding
 import com.t3ddyss.clother.models.Offer
 import com.t3ddyss.clother.utilities.getImageUrlForCurrentDevice
 
-class OffersAdapter : PagingDataAdapter<Offer, OffersAdapter.OfferViewHolder>(OfferDiffCallback()) {
+class OffersAdapter(
+        private val clickListener: (Int) -> Unit
+) : PagingDataAdapter<Offer, OffersAdapter.OfferViewHolder>(OfferDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OfferViewHolder {
         return OfferViewHolder(ListItemOfferBinding.inflate(
@@ -23,21 +25,26 @@ class OffersAdapter : PagingDataAdapter<Offer, OffersAdapter.OfferViewHolder>(Of
         getItem(position)?.let { holder.bind(it) }
     }
 
-    class OfferViewHolder(
+    inner class OfferViewHolder(
         private val binding: ListItemOfferBinding
-        ) : RecyclerView.ViewHolder(binding.root) {
-
-            fun bind(offer: Offer) {
-                binding.apply {
-                    Glide.with(image.context)
-                            .load(offer.images.firstOrNull()?.getImageUrlForCurrentDevice())
-                            .centerCrop()
-                            .placeholder(R.drawable.placeholder_offer_image)
-                            .dontAnimate()
-                            .into(image)
-
-                    textViewTitle.text = offer.title
-                }
+    ) : RecyclerView.ViewHolder(binding.root) {
+        init {
+            binding.root.setOnClickListener {
+                clickListener.invoke(getItem(absoluteAdapterPosition)?.id ?: 0)
             }
+        }
+
+        fun bind(offer: Offer) {
+            binding.apply {
+                Glide.with(image.context)
+                        .load(offer.images.firstOrNull()?.getImageUrlForCurrentDevice())
+                        .centerCrop()
+                        .placeholder(R.drawable.placeholder_offer_image)
+                        .dontAnimate()
+                        .into(image)
+
+                textViewTitle.text = offer.title
+            }
+        }
     }
 }

@@ -16,6 +16,13 @@
             app:destination="@id/signUpFragment"
             app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_homeFragment_to_offerFragment"
+            app:destination="@id/offerFragment" >
+            <argument
+                android:name="offer_id"
+                android:defaultValue="0" />
+        </action>
     </fragment>
 
     <fragment
@@ -143,4 +150,15 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
     </fragment>
+    <fragment
+        android:id="@+id/offerFragment"
+        android:name="com.t3ddyss.clother.ui.offer.OfferFragment"
+        android:label="fragment_offer"
+        tools:layout="@layout/fragment_offer">
+        <argument
+            android:name="offer_id"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
+
 </navigation>

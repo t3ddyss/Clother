@@ -3,6 +3,7 @@ package com.t3ddyss.clother.models
 import androidx.room.*
 import com.google.gson.annotations.SerializedName
 
+// TODO store images in a separate table like on server-side
 @Entity(tableName = "offer",
         foreignKeys = [ForeignKey(
                 entity = Category::class,

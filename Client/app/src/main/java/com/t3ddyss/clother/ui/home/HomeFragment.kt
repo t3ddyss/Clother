@@ -26,6 +26,7 @@ import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
 import com.t3ddyss.clother.utilities.getThemeColor
 import com.t3ddyss.clother.viewmodels.NetworkStateViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -36,6 +37,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 @ExperimentalPagingApi
+@ExperimentalCoroutinesApi
 class HomeFragment : Fragment() {
 
     private val homeViewModel by viewModels<HomeViewModel>()
@@ -45,7 +47,10 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
     @Inject lateinit var prefs: SharedPreferences
 
-    private val adapter = OffersAdapter()
+    private val adapter = OffersAdapter {
+        val action = HomeFragmentDirections.actionHomeFragmentToOfferFragment(it)
+        findNavController().navigate(action)
+    }
     private lateinit var loadStateListener: (CombinedLoadStates) -> Unit
 
     private var offersJob: Job? = null

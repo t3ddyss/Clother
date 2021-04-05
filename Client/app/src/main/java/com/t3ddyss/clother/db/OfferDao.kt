@@ -17,6 +17,9 @@ interface OfferDao {
     @Query("SELECT * FROM offer ORDER BY id DESC")
     fun getAllOffers(): PagingSource<Int, Offer>
 
+    @Query("SELECT * FROM offer WHERE id == :id")
+    suspend fun getOfferById(id: Int): Offer
+
     @Query("DELETE FROM offer")
     suspend fun deleteAllOffers()
 }

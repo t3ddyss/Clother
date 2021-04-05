@@ -9,6 +9,9 @@ import android.provider.MediaStore
 import android.util.Log
 import com.bumptech.glide.Glide
 import com.t3ddyss.clother.utilities.DEBUG_TAG
+import id.zelory.compressor.Compressor
+import id.zelory.compressor.constraint.quality
+import id.zelory.compressor.constraint.size
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
@@ -83,8 +86,12 @@ class ImageProvider @Inject constructor(
         return images
     }
 
-    // TODO compress image before uploading it to server
-    suspend fun getFileFromGlideCache(uri: Uri): File = withContext(Dispatchers.IO) {
-        return@withContext Glide.with(application).asFile().load(uri).submit().get()
+    suspend fun getCompressedFileFromGlideCache(uri: Uri) = withContext(Dispatchers.IO) {
+        compressImage(Glide.with(application).asFile().load(uri).submit().get())
     }
+
+    private suspend fun compressImage(image: File) = Compressor.compress(
+        application.applicationContext,
+        image,
+        Dispatchers.IO)
 }

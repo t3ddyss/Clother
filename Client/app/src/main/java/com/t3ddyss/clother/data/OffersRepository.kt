@@ -17,7 +17,7 @@ import com.t3ddyss.clother.models.NewOfferResponse
 import com.t3ddyss.clother.utilities.ACCESS_TOKEN
 import com.t3ddyss.clother.utilities.CLOTHER_PAGE_SIZE
 import com.t3ddyss.clother.utilities.handleError
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -59,27 +59,25 @@ class OffersRepository
         ).flow
     }
 
-    suspend fun getCategories(parentId: Int? = null): List<Category> {
-//        if (categoryDao.getCategoriesCount() == 0) {
-//            val categories = service.getCategories(prefs.getString(ACCESS_TOKEN, null))
-//            categoryDao.insertAll(categories)
-//        }
+    suspend fun getOfferById(id: Int) = offerDao.getOfferById(id)
 
-        return categoryDao.getSubcategories(parentId)
-    }
+    suspend fun getCategories(parentId: Int? = null) = categoryDao.getSubcategories(parentId)
 
     suspend fun postOffer(offer: JsonObject, images: List<Uri>): ResponseState<NewOfferResponse> {
         val body = offer.toString()
                 .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
-        val imageFiles: MutableList<MultipartBody.Part> = mutableListOf()
-
-        for (uri in images) {
-            val imageFile = imageProvider.getFileFromGlideCache(uri)
-            imageFiles.add(MultipartBody.Part.createFormData(
+        val imageFiles = images.map {
+            coroutineScope {
+                async {
+                    imageProvider.getCompressedFileFromGlideCache(it)
+                }
+            }
+        }.awaitAll().map {
+                MultipartBody.Part.createFormData(
                     name = "file",
-                    imageFile.name,
-                    imageFile.asRequestBody("multipart/form-data".toMediaTypeOrNull())
-            ))
+                    it.name,
+                    it.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+                )
         }
 
         return try {

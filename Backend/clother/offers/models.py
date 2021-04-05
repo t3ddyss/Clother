@@ -13,9 +13,9 @@ class Offer(db.Model):
 
     user = db.relationship('User', uselist=False, backref=db.backref('offers', lazy=True))
     category = db.relationship('Category', uselist=False, backref=db.backref('offers', lazy=True))
-    images = db.relationship('Image')
-    size = db.relationship('Size', uselist=False)
-    location = db.relationship('Location', uselist=False)
+    images = db.relationship('Image', cascade="all,delete")
+    size = db.relationship('Size', uselist=False, cascade="all,delete")
+    location = db.relationship('Location', uselist=False, cascade="all,delete")
 
     def to_dict(self):
         offer = {'id': self.id,
@@ -27,7 +27,7 @@ class Offer(db.Model):
                  'user_name': self.user.name,
                  'category': self.category.title,
                  'images': [image.uri for image in self.images]}
-        if self.size.size:
+        if self.size:
             offer['size'] = {'size': self.size.size, 'type': self.size.type}
         if self.location:
             offer['location'] = self.location.to_string()
