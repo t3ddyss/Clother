@@ -61,4 +61,7 @@
     <string name="apply">Apply</string>
     <string name="provide_title">Offer must have a title</string>
     <string name="provide_image">Please select at least 1 image</string>
+    <string name="category">Category</string>
+    <string name="location">Location</string>
+    <string name="size">Size</string>
 </resources>

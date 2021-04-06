@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -42,11 +43,39 @@ class OfferFragment : Fragment() {
 
         viewModel.offer.observe(viewLifecycleOwner) {
             with (binding) {
-                images.adapter = OfferImagesAdapter(it.images) {num->
-                    Log.d(DEBUG_TAG, it.images[num].getImageUrlForCurrentDevice())
+                images.adapter = OfferImagesAdapter(it.images) {
+                }
+                TabLayoutMediator(dots, images) {_, _ -> }.attach()
+
+                textViewTitle.text = it.title
+
+                if (!it.description.isNullOrEmpty()) {
+                    textViewDescription.text = it.description
+                }
+                else {
+                    textViewDescription.isVisible = false
                 }
 
-                TabLayoutMediator(dots, images) {_, _ -> }.attach()
+                if (it.category.isNotEmpty()) {
+                    textViewCategory.text = it.category
+                }
+                else {
+                    groupCategory.isVisible = false
+                }
+
+                if (!it.location.isNullOrEmpty()) {
+                    textViewLocation.text = it.location
+                }
+                else {
+                    groupLocation.isVisible = false
+                }
+
+                if (!it.size.isNullOrEmpty()) {
+                    textViewSize.text = it.size
+                }
+                else {
+                    groupSize.isVisible = false
+                }
             }
         }
         viewModel.getOffer(offerId)

@@ -9,9 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.ExperimentalPagingApi
@@ -41,7 +39,8 @@ import javax.inject.Inject
 @ExperimentalCoroutinesApi
 class HomeFragment : Fragment() {
 
-    private val homeViewModel by viewModels<HomeViewModel>()
+    // Using activityViewModels delegate here to save data across different instances of HomeFragment
+    private val viewModel by activityViewModels<HomeViewModel>()
     private val networkStateViewModel by activityViewModels<NetworkStateViewModel>()
 
     private var _binding: FragmentHomeBinding? = null
@@ -103,7 +102,7 @@ class HomeFragment : Fragment() {
             // Hide footer with progress bar
             if (it.append !is LoadState.Loading) {
                 binding.progressBarFooter.isVisible = false
-                homeViewModel.endOfPaginationReachedBottom = it.append.endOfPaginationReached
+                viewModel.endOfPaginationReachedBottom = it.append.endOfPaginationReached
 
                 // Disable bottom padding when end of pagination is reached
                 if (it.append.endOfPaginationReached) {
@@ -134,7 +133,7 @@ class HomeFragment : Fragment() {
                 binding.progressBarFooter.isVisible =
                         (!recyclerView.canScrollVertically(1)
                         && newState==RecyclerView.SCROLL_STATE_IDLE
-                        && !homeViewModel.endOfPaginationReachedBottom)
+                        && !viewModel.endOfPaginationReachedBottom)
             }
         })
 
@@ -182,7 +181,7 @@ class HomeFragment : Fragment() {
         offersJob?.cancel()
 
         offersJob = lifecycleScope.launch {
-            homeViewModel.getOffers(query).collectLatest {
+            viewModel.getOffers(query).collectLatest {
                 adapter.submitData(it)
             }
         }
