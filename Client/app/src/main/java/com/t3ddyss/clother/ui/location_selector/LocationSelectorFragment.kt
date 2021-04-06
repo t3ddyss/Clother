@@ -1,4 +1,4 @@
-package com.t3ddyss.clother.ui.location
+package com.t3ddyss.clother.ui.location_selector
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -26,7 +26,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
-import com.t3ddyss.clother.databinding.FragmentLocationBinding
+import com.t3ddyss.clother.databinding.FragmentLocationSelectorBinding
 import com.t3ddyss.clother.models.LatLngWrapper
 import com.t3ddyss.clother.ui.offer_editor.OfferEditorViewModel
 import com.t3ddyss.clother.utilities.DEBUG_TAG
@@ -37,12 +37,12 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @AndroidEntryPoint
 @ExperimentalPagingApi
 @ExperimentalCoroutinesApi// TODO encapsulate location detection logic in a separate class
-class LocationFragment : Fragment() {
+class LocationSelectorFragment : Fragment() {
 
-    private val viewModel by viewModels<LocationViewModel>()
+    private val viewModel by viewModels<LocationSelectorViewModel>()
     private val editorViewModel by hiltNavGraphViewModels<OfferEditorViewModel>(R.id.offer_editor_graph)
 
-    private var _binding: FragmentLocationBinding? = null
+    private var _binding: FragmentLocationSelectorBinding? = null
     private val binding get() = _binding!!
 
     private var mapView: MapView? = null
@@ -72,7 +72,7 @@ class LocationFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentLocationBinding.inflate(inflater, container, false)
+        _binding = FragmentLocationSelectorBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
 
         locationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())

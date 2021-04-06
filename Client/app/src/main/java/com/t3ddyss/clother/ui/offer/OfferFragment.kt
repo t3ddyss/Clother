@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -45,7 +46,8 @@ class OfferFragment : Fragment() {
             with (binding) {
                 images.adapter = OfferImagesAdapter(it.images) {
                 }
-                TabLayoutMediator(dots, images) {_, _ -> }.attach()
+                TabLayoutMediator(dots, images) { _, _ ->
+                }.attach()
 
                 textViewTitle.text = it.title
 
@@ -64,7 +66,11 @@ class OfferFragment : Fragment() {
                 }
 
                 if (!it.location.isNullOrEmpty()) {
-                    textViewLocation.text = it.location
+                    location.setOnClickListener { _ ->
+                        val action = OfferFragmentDirections
+                            .actionOfferFragmentToLocationViewerFragment(it.location!!)
+                        findNavController().navigate(action)
+                    }
                 }
                 else {
                     groupLocation.isVisible = false

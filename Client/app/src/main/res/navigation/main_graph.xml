@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_graph"
-    tools:ignore="InvalidNavigation">
+    tools:ignore="InvalidNavigation"
+    app:startDestination="@id/locationViewerFragment">
 
     <include app:graph="@navigation/offer_editor_graph"/>
     <fragment
@@ -159,6 +160,17 @@
             android:name="offer_id"
             app:argType="integer"
             android:defaultValue="0" />
+        <action
+            android:id="@+id/action_offerFragment_to_locationViewerFragment"
+            app:destination="@id/locationViewerFragment" />
     </fragment>
-
+    <fragment
+        android:id="@+id/locationViewerFragment"
+        android:name="com.t3ddyss.clother.ui.location_viewer.LocationViewerFragment"
+        android:label="@string/location" >
+        <argument
+            android:name="coordinates"
+            app:argType="string"
+            android:defaultValue="0,0" />
+    </fragment>
 </navigation>

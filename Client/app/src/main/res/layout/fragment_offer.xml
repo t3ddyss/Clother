@@ -23,8 +23,8 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/dots"
             android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:background="@null"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
             app:tabBackground="@drawable/dots_selector"
             app:tabGravity="center"
             app:tabIndicatorHeight="0dp"
@@ -97,7 +97,48 @@
             android:id="@+id/group_category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:constraint_referenced_ids="divider5,textView_category,textView5" />
+            app:constraint_referenced_ids="divider5,textView_category,textView5,location,textView_location" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/location"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider5">
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/fragment_horizontal_margin"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_arrow_right"
+                app:tint="?attr/colorOnPrimary" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/fragment_horizontal_margin"
+                android:text="@string/location"
+                android:textColor="@color/grey_500"
+                android:textSize="@dimen/text_size_medium"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <View
+                android:id="@+id/divider6"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintBottom_toBottomOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
             android:id="@+id/textView_location"
@@ -107,44 +148,14 @@
             android:textSize="@dimen/text_size_medium"
             app:layout_constraintStart_toEndOf="@id/barier"
             app:layout_constraintTop_toBottomOf="@+id/divider5"
+            android:visibility="gone"
             tools:text="Moscow, Russia" />
-
-        <ImageView
-            android:id="@+id/icon_location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/fragment_horizontal_margin"
-            android:layout_marginBottom="32dp"
-            app:layout_constraintBottom_toTopOf="@+id/divider6"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider5"
-            app:srcCompat="@drawable/ic_arrow_right"
-            app:tint="?attr/colorOnPrimary" />
-
-        <View
-            android:id="@+id/divider6"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="@dimen/fragment_vertical_margin"
-            android:background="?android:attr/listDivider"
-            app:layout_constraintTop_toBottomOf="@+id/textView_location" />
-
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/fragment_horizontal_margin"
-            android:text="@string/location"
-            android:textColor="@color/grey_500"
-            android:textSize="@dimen/text_size_medium"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider5" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/group_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:constraint_referenced_ids="icon_location,textView6,divider6,textView_location" />
+            app:constraint_referenced_ids="location,textView_location" />
 
         <TextView
             android:id="@+id/textView_size"
@@ -153,7 +164,7 @@
             android:layout_margin="@dimen/fragment_horizontal_margin"
             android:textSize="@dimen/text_size_medium"
             app:layout_constraintStart_toEndOf="@id/barier"
-            app:layout_constraintTop_toBottomOf="@+id/divider6"
+            app:layout_constraintTop_toBottomOf="@+id/location"
             tools:text="M" />
 
         <TextView
@@ -165,7 +176,7 @@
             android:textColor="@color/grey_500"
             android:textSize="@dimen/text_size_medium"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider6" />
+            app:layout_constraintTop_toBottomOf="@id/location" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/group_size"
@@ -178,10 +189,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="end"
-            app:constraint_referenced_ids="textView6,textView5,textView7"
-            tools:layout_editor_absoluteX="79dp"
-            tools:layout_editor_absoluteY="574dp" />
-
+            app:constraint_referenced_ids="textView5,textView7" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
 

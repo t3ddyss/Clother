@@ -257,11 +257,13 @@ class MainActivity : AppCompatActivity() {
 
         private val fragmentsWithoutBottomNav = setOf(R.id.emailActionFragment,
                 R.id.offerEditorFragment, R.id.resetPasswordFragment, R.id.signInFragment,
-                R.id.signUpFragment, R.id.galleryFragment, R.id.locationFragment)
+                R.id.signUpFragment, R.id.galleryFragment, R.id.locationFragment,
+            R.id.offerFragment, R.id.locationViewerFragment)
 
         private val fragmentsWithInvisibleToolbar = setOf(R.id.signUpFragment)
         private val fragmentsWithToolbarLabel = setOf(R.id.offerCategoryFragment,
-                R.id.offerEditorFragment, R.id.galleryFragment, R.id.locationFragment)
+                R.id.offerEditorFragment, R.id.galleryFragment, R.id.locationFragment,
+            R.id.locationViewerFragment)
 
         private val fragmentsWithoutNavIcon = setOf(R.id.homeFragment,
                 R.id.messagesFragment, R.id.profileFragment)
@@ -280,7 +282,6 @@ class MainActivity : AppCompatActivity() {
                     animateBottomNav()
                     navView.isVisible = true
                 }
-
                 else if (destination.id in fragmentsWithoutBottomNav && navView.isVisible) {
                     animateBottomNav()
                     navView.isVisible = false
@@ -292,7 +293,6 @@ class MainActivity : AppCompatActivity() {
                     animateToolbar()
                     toolbar.isVisible = true
                 }
-
                 else if (destination.id in fragmentsWithoutToolbar && toolbar.isVisible) {
                     when (destination.id) {
                         !in fragmentsWithInvisibleToolbar -> {
@@ -302,27 +302,13 @@ class MainActivity : AppCompatActivity() {
                         else -> toolbar.isInvisible = true
                     }
                 }
-
-                if (destination.id == R.id.offerFragment) {
-                    binding.navHostFragmentMarginTop.isVisible = false
-                    TransitionManager
-                            .beginDelayedTransition(
-                                    binding.navHostFragment,
-                                    Slide(Gravity.TOP)
-                            )
-                }
-
-                else {
-                    binding.navHostFragmentMarginTop.isVisible = true
-                }
-
+                binding.navHostFragmentMarginTop.isVisible = destination.id != R.id.offerFragment
 
                 // Toolbar icon
                 if (destination.id !in fragmentsWithoutNavIcon
                         && destination.id in fragmentsWithCustomUpIcon) {
                     setIconClose(toolbar)
                 }
-
                 else if (destination.id !in fragmentsWithoutNavIcon){
                     setIconUp(toolbar)
                 }
