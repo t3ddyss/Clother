@@ -16,12 +16,13 @@ import java.lang.Exception
 
 @ExperimentalPagingApi
 class OffersRemoteMediator(
-    private val query: Map<String, String>,
     private val service: ClotherOffersService,
     prefs: SharedPreferences,
     private val db: AppDatabase,
     private val offerDao: OfferDao,
     private val remoteKeyDao: RemoteKeyDao,
+    private val remoteKeyList: String,
+    private val query: Map<String, String>
 ) : RemoteMediator<Int, Offer>() {
     private var accessToken: String? = null
     private var changeListener =
@@ -54,7 +55,7 @@ class OffersRemoteMediator(
 
             LoadType.APPEND -> {
                 val afterKey = db.withTransaction {
-                    remoteKeyDao.remoteKeyByList("offers_home").afterKey
+                    remoteKeyDao.remoteKeyByList(remoteKeyList).afterKey
                 }
 
                 Log.d(DEBUG_TAG, "APPEND ${afterKey ?: "NULL"}")
@@ -77,11 +78,11 @@ class OffersRemoteMediator(
             db.withTransaction {
                 if (loadType == LoadType.REFRESH) {
                     offerDao.deleteAllOffers()
-                    remoteKeyDao.removeByList("offers_home")
+                    remoteKeyDao.removeByList(remoteKeyList)
                 }
 
                 offerDao.insertAll(items)
-                remoteKeyDao.insert(RemoteKey("offers_home", items.lastOrNull()?.id))
+                remoteKeyDao.insert(RemoteKey(remoteKeyList, items.lastOrNull()?.id))
             }
 
             MediatorResult.Success(endOfPaginationReached = items.isEmpty())

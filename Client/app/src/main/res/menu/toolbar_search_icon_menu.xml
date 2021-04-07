@@ -6,5 +6,6 @@
         android:id="@+id/search"
         android:title="@string/search"
         app:showAsAction="always"
+        app:iconTint="?attr/colorOnPrimary"
         android:icon="@drawable/ic_search" />
 </menu>

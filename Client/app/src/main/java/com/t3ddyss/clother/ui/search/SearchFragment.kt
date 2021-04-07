@@ -1,11 +1,12 @@
 package com.t3ddyss.clother.ui.search
 
+import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentSearchBinding
 
 class SearchFragment : Fragment() {
@@ -34,6 +35,14 @@ class SearchFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        binding.editTextSearch.requestFocus()
+        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.showSoftInput(binding.editTextSearch, InputMethodManager.SHOW_IMPLICIT)
     }
 
     override fun onDestroyView() {

@@ -50,6 +50,7 @@ class Category(db.Model):
                 'last_level': self.last_level}
 
 
+# TODO add event for deleting images from folder when image object is deleted
 class Image(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     offer_id = db.Column(db.Integer, db.ForeignKey('offer.id', ondelete='CASCADE'))

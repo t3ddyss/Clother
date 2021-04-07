@@ -22,15 +22,25 @@ def get_offers():
     after = request.args.get('after', default=None, type=int)
     before = request.args.get('before', default=None, type=int)
     limit = request.args.get('size', default=default_page_size, type=int)
+    category = request.args.get('category', default=None, type=int)
+    query = request.args.get('query', default=None, type=str)
+
+    offers_query = Offer.query
+
+    if category:
+        offers_query = offers_query.filter(Offer.category_id == category)
+    if query:
+        query = f'%{query}%'
+        offers_query = offers_query.filter(Offer.title.ilike(query))
 
     if after is None and before is None:  # initial request
-        offers = Offer.query.order_by(Offer.id.desc()).limit(limit).all()
+        offers = offers_query.order_by(Offer.id.desc()).limit(limit).all()
 
     elif before is None:  # append
-        offers = Offer.query.order_by(Offer.id.desc()).filter(Offer.id < after).limit(limit).all()
+        offers = offers_query.order_by(Offer.id.desc()).filter(Offer.id < after).limit(limit).all()
 
     else:  # prepend
-        offers = Offer.query.order_by(Offer.id.asc()).filter(Offer.id > before).limit(limit).all()
+        offers = offers_query.order_by(Offer.id.asc()).filter(Offer.id > before).limit(limit).all()
         offers.reverse()
 
     return jsonify([offer.to_dict() for offer in offers])

@@ -86,7 +86,7 @@ class ImageProvider @Inject constructor(
         return images
     }
 
-    suspend fun getCompressedFileFromGlideCache(uri: Uri) = withContext(Dispatchers.IO) {
+    suspend fun getCompressedImageFile(uri: Uri) = withContext(Dispatchers.IO) {
         compressImage(Glide.with(application).asFile().load(uri).submit().get())
     }
 

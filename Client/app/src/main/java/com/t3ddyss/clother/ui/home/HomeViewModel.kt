@@ -34,7 +34,7 @@ class HomeViewModel
 
         currentQuery = query
         val newResult = repository
-                .getOffersStream(query)
+                .getOffers(query, "home")
                 .cachedIn(viewModelScope)
         currentResult = newResult
         return newResult

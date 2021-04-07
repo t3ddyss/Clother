@@ -133,7 +133,8 @@ class HomeFragment : Fragment() {
                 binding.progressBarFooter.isVisible =
                         (!recyclerView.canScrollVertically(1)
                         && newState==RecyclerView.SCROLL_STATE_IDLE
-                        && !viewModel.endOfPaginationReachedBottom)
+                        && !viewModel.endOfPaginationReachedBottom
+                        && (recyclerView.adapter?.itemCount ?: 0) > 0)
             }
         })
 

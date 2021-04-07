@@ -38,7 +38,7 @@
     <string name="title">Title</string>
     <string name="pictures">Pictures</string>
     <string name="no_gallery_access">Cannot add pictures without access to gallery</string>
-    <string name="attach_limit_exceeded">Cannot attach more than 10 pictures</string>
+    <string name="attach_limit_exceeded">Cannot attach more than 5 pictures</string>
     <string name="confirmation">Confirmation</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
@@ -65,7 +65,6 @@
     <string name="location">Location</string>
     <string name="size">Size</string>
     <string name="error_showing_location">Error showing location</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="search_hint">Search on Clother</string>
+    <string name="nothing_found">Nothing found</string>
 </resources>

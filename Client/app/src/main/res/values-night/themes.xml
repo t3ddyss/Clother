@@ -25,7 +25,5 @@
 
         <!-- TextInput style. -->
         <item name="textInputStyle">@style/AppTheme.TextInputLayoutStyle</item>
-
-        <item name="android:itemTextAppearance">@style/AppTheme.ToolbarMenuItemTextStyle</item>
     </style>
 </resources>

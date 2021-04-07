@@ -82,14 +82,3 @@ def populate_offers():
         except IntegrityError:
             db.session.rollback()
 
-
-@blueprint.cli.command('get_first_offer')
-def get_first_offer():
-    print(Offer.query.first().to_dict())
-
-
-@blueprint.cli.command('get_subcats')
-def get_subcats():
-    print([x.to_dict() for x in Category.query.filter_by(id=4).first().subcategories])
-    print([x.parent.to_dict() for x in Category.query.filter_by(id=4).first().subcategories])
-

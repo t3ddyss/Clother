@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Splash screen. -->
     <style name="SplashScreenTheme" parent="AppTheme">
         <item name="android:windowBackground">@drawable/layout_splash_screen</item>
@@ -34,8 +34,9 @@
         <!-- TextInput style. -->
         <item name="textInputStyle">@style/AppTheme.TextInputLayoutStyle</item>
 
-        <!-- Toolbar menu item text style -->
-        <item name="android:itemTextAppearance">@style/AppTheme.ToolbarMenuItemTextStyle</item>
+        <item name="actionOverflowButtonStyle">@style/MyOverflowButtonStyle</item>
+
+        <item name="android:colorControlNormal">@color/green_500</item>
     </style>
 
     <!-- EditText style -->
@@ -54,9 +55,7 @@
         <item name="android:textCursorDrawable">@drawable/textinput_cursor</item>
     </style>
 
-    <!-- Toolbar menu item text style -->
-    <style name="AppTheme.ToolbarMenuItemTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Menu">
-        <item name="android:textColor">@color/green_500</item>
-        <item name="android:textAllCaps">true</item>
+    <style name="MyOverflowButtonStyle" parent="Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:tint">#62ff00</item>
     </style>
 </resources>

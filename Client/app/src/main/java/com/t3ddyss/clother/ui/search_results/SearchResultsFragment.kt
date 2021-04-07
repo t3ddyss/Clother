@@ -1,19 +1,37 @@
 package com.t3ddyss.clother.ui.search_results
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.paging.CombinedLoadStates
 import androidx.paging.ExperimentalPagingApi
+import androidx.paging.LoadState
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
+import com.t3ddyss.clother.adapters.OffersAdapter
 import com.t3ddyss.clother.databinding.FragmentSearchResultsBinding
+import com.t3ddyss.clother.ui.home.HomeFragmentDirections
 import com.t3ddyss.clother.utilities.DEBUG_TAG
+import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
+import com.t3ddyss.clother.utilities.getThemeColor
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import javax.inject.Inject
 
 @AndroidEntryPoint
 @ExperimentalCoroutinesApi
@@ -21,23 +39,122 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 class SearchResultsFragment : Fragment() {
 
     private val viewModel by hiltNavGraphViewModels<SearchResultsViewModel>(
-            R.navigation.search_results_graph)
+            R.id.search_results_graph)
     private var _binding: FragmentSearchResultsBinding? = null
     private val binding get() = _binding!!
     private val args by navArgs<SearchResultsFragmentArgs>()
+    @Inject lateinit var prefs: SharedPreferences
+
+    private val adapter = OffersAdapter {id ->
+        val action = SearchResultsFragmentDirections
+                .actionSearchResultsToOfferFragment(id)
+        findNavController().navigate(action)
+    }
+    private lateinit var loadStateListener: (CombinedLoadStates) -> Unit
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         _binding = FragmentSearchResultsBinding.inflate(inflater, container, false)
 
-        Log.d(DEBUG_TAG, (args.category == null).toString())
-        Log.d(DEBUG_TAG, (args.query == null).toString())
+        val query = mutableMapOf<String, String>()
+        args.category?.let {
+            query["category"] = it.id.toString()
+        }
+        args.query?.let {
+            query["query"] = it
+        }
+
+        loadStateListener = {
+            when (it.refresh) {
+                is LoadState.Loading -> {
+                    binding.shimmer.isVisible = true
+                    binding.containerSearch.isVisible = false
+                }
+
+                is LoadState.NotLoading -> {
+                    binding.shimmer.isVisible = false
+
+                    if (it.append.endOfPaginationReached && adapter.itemCount < 1) {
+                        binding.emptyState.isVisible = true
+                    }
+                    else {
+                        binding.containerSearch.isVisible = true
+                    }
+                }
+
+                is LoadState.Error -> {
+                    val error = (it.refresh as LoadState.Error).error
+
+                    if (error is HttpException && error.code() == 401) {
+                        findNavController().navigate(R.id.action_searchResults_to_signUpFragment)
+
+                        (activity as? MainActivity)
+                                ?.showGenericError(getString(R.string.session_expired))
+                        prefs.edit().remove(IS_AUTHENTICATED).apply()
+                    }
+                    else {
+                        binding.shimmer.isVisible = false
+                        binding.containerSearch.isVisible = true
+
+                        (activity as? MainActivity)
+                                ?.showGenericError(error)
+                    }
+                }
+            }
+
+            // Hide footer with progress bar
+            if (it.append !is LoadState.Loading) {
+                binding.progressBarFooter.isVisible = false
+                viewModel.endOfPaginationReachedBottom = it.append.endOfPaginationReached
+
+                // Disable bottom padding when end of pagination is reached
+                if (it.append.endOfPaginationReached) {
+                    binding.list.setPadding(0, 0, 0, 0)
+                }
+            }
+        }
+        adapter.addLoadStateListener(loadStateListener)
+
+        val layoutManager = GridLayoutManager(context, 2)
+        binding.list.layoutManager = layoutManager
+        binding.list.adapter = adapter
+
+        val horizontalDecorator = DividerItemDecoration(activity, DividerItemDecoration.HORIZONTAL)
+        val verticalDecorator = DividerItemDecoration(activity, DividerItemDecoration.VERTICAL)
+
+        ContextCompat.getDrawable(requireContext(), R.drawable.divider)?.apply {
+            verticalDecorator.setDrawable(this)
+            horizontalDecorator.setDrawable(this)
+
+            binding.list.addItemDecoration(horizontalDecorator)
+            binding.list.addItemDecoration(verticalDecorator)
+        }
+
+        // Show progressbar if reached end of current list
+        binding.list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                binding.progressBarFooter.isVisible =
+                        (!recyclerView.canScrollVertically(1)
+                                && newState== RecyclerView.SCROLL_STATE_IDLE
+                                && !viewModel.endOfPaginationReachedBottom
+                                && (recyclerView.adapter?.itemCount ?: 0) > 0)
+            }
+        })
+
+        viewModel.offers.observe(viewLifecycleOwner) {
+            lifecycleScope.launch {
+                adapter.submitData(it)
+            }
+        }
+        viewModel.getOffers(query)
 
         return binding.root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        adapter.removeLoadStateListener(loadStateListener)
         _binding = null
     }
 }

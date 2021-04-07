@@ -8,13 +8,12 @@ import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.Gravity
+import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -30,8 +29,8 @@ import androidx.transition.TransitionManager
 import com.google.android.gms.maps.MapView
 import com.google.android.material.snackbar.Snackbar
 import com.t3ddyss.clother.databinding.ActivityMainBinding
-import com.t3ddyss.clother.utilities.DEBUG_TAG
 import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
+import com.t3ddyss.clother.utilities.convertDpToPx
 import com.t3ddyss.clother.utilities.getThemeColor
 import com.t3ddyss.clother.utilities.toColorFilter
 import com.t3ddyss.clother.viewmodels.NetworkStateViewModel
@@ -107,15 +106,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onBackPressed() {
-        if (navController.currentBackStackEntry?.destination?.id == R.id.offerEditorFragment) {
-            super.onBackPressed()
-        }
-        else {
-            super.onBackPressed()
-        }
-    }
-
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
@@ -142,11 +132,8 @@ class MainActivity : AppCompatActivity() {
         val snackbar = Snackbar.make(binding.container,
                 message ?: getString(R.string.unknown_error),
                 Snackbar.LENGTH_SHORT)
-        if (binding.navView.isVisible) {
-            snackbar.anchorView = binding.navView
-        }
 
-        snackbar.show()
+        showSnackbarWithMargin(snackbar)
     }
 
     fun showSnackbarWithAction(message: String,
@@ -158,10 +145,13 @@ class MainActivity : AppCompatActivity() {
                 .setAction(actionText) {
                     action.invoke()
                 }
-        if (binding.navView.isVisible) {
-            snackbar.anchorView = binding.navView
-        }
 
+        showSnackbarWithMargin(snackbar)
+    }
+
+    private fun showSnackbarWithMargin(snackbar: Snackbar) {
+        val snackBarView = snackbar.view
+        snackBarView.translationY = (-1) * this.convertDpToPx(60).toFloat()
         snackbar.show()
     }
 

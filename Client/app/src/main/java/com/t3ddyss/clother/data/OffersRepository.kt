@@ -42,8 +42,7 @@ class OffersRepository
         private val categoryDao: CategoryDao
 ) {
 
-    fun getOffersStream(query: Map<String, String>): Flow<PagingData<Offer>> {
-        val pagingSourceFactory = { offerDao.getAllOffers() }
+    fun getOffers(query: Map<String, String>, remoteKeyList: String): Flow<PagingData<Offer>> {
         return Pager(
                 config = PagingConfig(
                         pageSize = CLOTHER_PAGE_SIZE,
@@ -54,8 +53,23 @@ class OffersRepository
                         prefs = prefs,
                         db = db,
                         offerDao = offerDao,
-                        remoteKeyDao = remoteKeyDao),
-                pagingSourceFactory = pagingSourceFactory
+                        remoteKeyDao = remoteKeyDao,
+                        remoteKeyList = remoteKeyList),
+                pagingSourceFactory = { offerDao.getAllOffers() }
+        ).flow
+    }
+
+    fun getOffers(query: Map<String, String>): Flow<PagingData<Offer>> {
+        return Pager(
+                config = PagingConfig(
+                        pageSize = CLOTHER_PAGE_SIZE,
+                        enablePlaceholders = false),
+                pagingSourceFactory = {
+                    OffersPagingSource(service,
+                            prefs,
+                            query
+                    )
+                }
         ).flow
     }
 
@@ -69,7 +83,7 @@ class OffersRepository
         val imageFiles = images.map {
             coroutineScope {
                 async {
-                    imageProvider.getCompressedFileFromGlideCache(it)
+                    imageProvider.getCompressedImageFile(it)
                 }
             }
         }.awaitAll().map {
