@@ -53,8 +53,6 @@ class HomeFragment : Fragment() {
     }
     private lateinit var loadStateListener: (CombinedLoadStates) -> Unit
 
-    private var offersJob: Job? = null
-
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -159,7 +157,12 @@ class HomeFragment : Fragment() {
             }
         })
 
-        getOffers()
+        viewModel.offers.observe(viewLifecycleOwner) {
+            lifecycleScope.launch {
+                adapter.submitData(it)
+            }
+        }
+        viewModel.getOffers()
 
         return binding.root
     }
@@ -167,7 +170,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         lifecycleScope.launchWhenStarted {
-            delay(500)
+            delay(250) // Bad practice, add loading state layout to Login fragment layout itself
             (activity as? MainActivity)?.setLoadingVisibility(false)
         }
     }
@@ -176,15 +179,5 @@ class HomeFragment : Fragment() {
         super.onDestroyView()
         adapter.removeLoadStateListener(loadStateListener)
         _binding = null
-    }
-
-    private fun getOffers(query: Map<String, String> = HashMap()) {
-        offersJob?.cancel()
-
-        offersJob = lifecycleScope.launch {
-            viewModel.getOffers(query).collectLatest {
-                adapter.submitData(it)
-            }
-        }
     }
 }

@@ -8,7 +8,7 @@ import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.paging.ExperimentalPagingApi
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.t3ddyss.clother.R
-import com.t3ddyss.clother.databinding.FragmentFilterDialogBinding
+import com.t3ddyss.clother.databinding.FragmentFiltersDialogBinding
 import com.t3ddyss.clother.ui.search_results.SearchResultsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -19,12 +19,12 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 class FilterDialogFragment : BottomSheetDialogFragment() {
     private val viewModel by hiltNavGraphViewModels<SearchResultsViewModel>(
             R.id.search_results_graph)
-    private var _binding: FragmentFilterDialogBinding? = null
+    private var _binding: FragmentFiltersDialogBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
-        _binding = FragmentFilterDialogBinding.inflate(inflater, container, false)
+        _binding = FragmentFiltersDialogBinding.inflate(inflater, container, false)
 
         return binding.root
     }

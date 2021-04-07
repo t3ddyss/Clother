@@ -8,7 +8,7 @@
 
     <include
         android:id="@+id/cardView_avatar"
-        layout="@layout/image_view_circular"
+        layout="@layout/item_circular_image_view"
         android:layout_width="@dimen/avatar_size"
         android:layout_height="@dimen/avatar_size"
         android:layout_margin="@dimen/fragment_horizontal_margin"

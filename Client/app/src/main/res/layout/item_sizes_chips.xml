@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.chip.ChipGroup xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/chip_group_size"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/fragment_horizontal_margin"
+    android:layout_marginBottom="@dimen/margin_padding_size_xxlarge"
+    app:layout_constraintBottom_toTopOf="@+id/button_publish"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toEndOf="@id/imageView_ruler"
+    app:layout_constraintTop_toBottomOf="@+id/divider4"
+    app:layout_constraintVertical_bias="0.0"
+    app:singleLine="true"
+    app:singleSelection="true"
+    tools:ignore="HardcodedText">
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/size_XS"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checkable="true"
+        android:minWidth="@dimen/chip_min_width"
+        android:text="@string/size_xs"
+        android:textAlignment="center" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/size_S"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checkable="true"
+        android:minWidth="@dimen/chip_min_width"
+        android:text="@string/size_s"
+        android:textAlignment="center" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/size_M"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checkable="true"
+        android:minWidth="@dimen/chip_min_width"
+        android:text="@string/size_m"
+        android:textAlignment="center" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/size_L"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checkable="true"
+        android:minWidth="@dimen/chip_min_width"
+        android:text="@string/size_l"
+        android:textAlignment="center" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/size_XL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checkable="true"
+        android:minWidth="@dimen/chip_min_width"
+        android:text="@string/size_xl"
+        android:textAlignment="center" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/size_6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checkable="true"
+        android:minWidth="@dimen/chip_min_width"
+        android:text="6"
+        android:textAlignment="center" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/size_7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checkable="true"
+        android:minWidth="@dimen/chip_min_width"
+        android:text="7"
+        android:textAlignment="center" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/size_8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checkable="true"
+        android:minWidth="@dimen/chip_min_width"
+        android:text="8"
+        android:textAlignment="center" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/size_9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checkable="true"
+        android:minWidth="@dimen/chip_min_width"
+        android:text="9"
+        android:textAlignment="center" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/size_10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checkable="true"
+        android:minWidth="@dimen/chip_min_width"
+        android:text="10"
+        android:textAlignment="center" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/size_11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checkable="true"
+        android:minWidth="@dimen/chip_min_width"
+        android:text="11"
+        android:textAlignment="center" />
+</com.google.android.material.chip.ChipGroup>

@@ -149,9 +149,10 @@ class OfferEditorFragment : Fragment() {
             offer.addProperty("location", "${location.latitude},${location.longitude}")
         }
 
-        val checkedChipId = binding.chipGroupSize.checkedChipId
+        val checkedChipId = binding.chipGroupSize.chipGroupSize.checkedChipId
         if (checkedChipId != View.NO_ID) {
-            val size = binding.chipGroupSize.findViewById<Chip>(checkedChipId).text.toString()
+            val size = binding.chipGroupSize.chipGroupSize
+                    .findViewById<Chip>(checkedChipId).text.toString()
             offer.addProperty("size", size)
         }
 

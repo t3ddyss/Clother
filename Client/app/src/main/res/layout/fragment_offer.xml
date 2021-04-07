@@ -28,8 +28,9 @@
             app:tabBackground="@drawable/dots_selector"
             app:tabGravity="center"
             app:tabIndicatorHeight="0dp"
-            app:tabPaddingStart="7dp"
-            app:tabPaddingEnd="7dp"
+            app:tabIndicatorGravity="bottom"
+            app:tabPaddingStart="6dp"
+            app:tabPaddingEnd="6dp"
             app:layout_constraintBottom_toBottomOf="@id/images"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">

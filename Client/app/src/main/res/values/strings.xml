@@ -67,4 +67,5 @@
     <string name="error_showing_location">Error showing location</string>
     <string name="search_hint">Search on Clother</string>
     <string name="nothing_found">Nothing found</string>
+    <string name="filters">Filters</string>
 </resources>

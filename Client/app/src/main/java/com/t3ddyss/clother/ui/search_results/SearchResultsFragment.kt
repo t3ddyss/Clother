@@ -3,9 +3,7 @@ package com.t3ddyss.clother.ui.search_results
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -55,6 +53,7 @@ class SearchResultsFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         _binding = FragmentSearchResultsBinding.inflate(inflater, container, false)
+        setHasOptionsMenu(true)
 
         val query = mutableMapOf<String, String>()
         args.category?.let {
@@ -150,6 +149,19 @@ class SearchResultsFragment : Fragment() {
         viewModel.getOffers(query)
 
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.toolbar_search_results_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.filters -> {
+                findNavController().navigate(R.id.action_searchResultsFragment_to_filterDialogFragment)
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onDestroyView() {

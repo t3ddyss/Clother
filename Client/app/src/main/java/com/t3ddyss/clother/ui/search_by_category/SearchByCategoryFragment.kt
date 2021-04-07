@@ -14,7 +14,6 @@ import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.CategoriesAdapter
 import com.t3ddyss.clother.databinding.FragmentSearchByCategoryBinding
-import com.t3ddyss.clother.ui.offer_category.OfferCategoryFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -77,7 +76,7 @@ class SearchByCategoryFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.toolbar_search_icon_menu, menu)
+        inflater.inflate(R.menu.toolbar_search_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

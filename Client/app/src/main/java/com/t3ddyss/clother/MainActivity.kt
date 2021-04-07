@@ -124,7 +124,7 @@ class MainActivity : AppCompatActivity() {
     fun showGenericError(throwable: Throwable) {
         when (throwable) {
             is SocketTimeoutException -> showGenericError(null)
-            !is ConnectException -> showGenericError(getString(R.string.no_connection)) // Fix
+            is ConnectException -> showGenericError(getString(R.string.no_connection)) // Fix
         }
     }
 
@@ -132,8 +132,6 @@ class MainActivity : AppCompatActivity() {
         val snackbar = Snackbar.make(binding.container,
                 message ?: getString(R.string.unknown_error),
                 Snackbar.LENGTH_SHORT)
-
-        showSnackbarWithMargin(snackbar)
     }
 
     fun showSnackbarWithAction(message: String,
@@ -145,13 +143,12 @@ class MainActivity : AppCompatActivity() {
                 .setAction(actionText) {
                     action.invoke()
                 }
-
-        showSnackbarWithMargin(snackbar)
     }
 
     private fun showSnackbarWithMargin(snackbar: Snackbar) {
+        val margin = if (binding.navView.isVisible) 60 else 8
         val snackBarView = snackbar.view
-        snackBarView.translationY = (-1) * this.convertDpToPx(60).toFloat()
+        snackBarView.translationY = (-1) * this.convertDpToPx(margin).toFloat()
         snackbar.show()
     }
 
