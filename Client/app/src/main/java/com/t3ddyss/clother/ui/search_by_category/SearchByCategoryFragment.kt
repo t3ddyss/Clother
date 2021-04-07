@@ -1,12 +1,8 @@
-package com.t3ddyss.clother.ui.offer_category
+package com.t3ddyss.clother.ui.search_by_category
 
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -17,30 +13,29 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.CategoriesAdapter
-import com.t3ddyss.clother.databinding.FragmentOfferCategoryBinding
-import com.t3ddyss.clother.utilities.IS_CATEGORIES_LOADED
+import com.t3ddyss.clother.databinding.FragmentSearchByCategoryBinding
+import com.t3ddyss.clother.ui.offer_category.OfferCategoryFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import javax.inject.Inject
 
 @AndroidEntryPoint
 @ExperimentalPagingApi
 @ExperimentalCoroutinesApi
-class OfferCategoryFragment : Fragment() {
+class SearchByCategoryFragment : Fragment() {
 
-    private val viewModel by viewModels<OfferCategoryViewModel>()
+    private val viewModel by viewModels<SearchByCategoryViewModel>()
 
-    private var _binding: FragmentOfferCategoryBinding? = null
+    private var _binding: FragmentSearchByCategoryBinding? = null
     private val binding get() = _binding!!
-    private val args by navArgs<OfferCategoryFragmentArgs>()
+    private val args by navArgs<SearchByCategoryFragmentArgs>()
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentOfferCategoryBinding.inflate(inflater, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View {
+        _binding = FragmentSearchByCategoryBinding.inflate(inflater, container, false)
+
         val parentId = args.parentId.let { if (it == 0) null else it }
         (activity as? MainActivity)?.setNavIconVisibility(parentId != null)
+        setHasOptionsMenu(parentId == null)
 
         val layoutManager = LinearLayoutManager(
                 context,
@@ -49,14 +44,14 @@ class OfferCategoryFragment : Fragment() {
 
         val adapter = CategoriesAdapter {
             if (!it.isLastLevel) {
-                val action = OfferCategoryFragmentDirections
-                    .openSubcategoriesAction(it.id)
+                val action = SearchByCategoryFragmentDirections
+                        .openSubcategoriesAction(it.id)
                 findNavController().navigate(action)
             }
 
             else {
-                val action = OfferCategoryFragmentDirections
-                    .offerCategoryToOfferEditorGraph(it)
+                val action = SearchByCategoryFragmentDirections
+                    .searchByCategoryToSearchResultsGraph(it)
                 findNavController().navigate(action)
             }
         }
@@ -79,6 +74,15 @@ class OfferCategoryFragment : Fragment() {
         viewModel.getCategories(parentId)
 
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.toolbar_search_icon_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        findNavController().navigate(R.id.action_searchByCategoryFragment_to_searchFragment)
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onDestroyView() {

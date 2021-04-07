@@ -6,7 +6,7 @@
         android:title="@string/home"
         android:menuCategory="secondary"/>
     <item
-        android:id="@+id/searchFragment"
+        android:id="@+id/searchByCategoryFragment"
         android:icon="@drawable/ic_search"
         android:title="@string/search"
         android:menuCategory="secondary"/>

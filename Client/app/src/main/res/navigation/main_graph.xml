@@ -3,10 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_graph"
-    tools:ignore="InvalidNavigation"
-    app:startDestination="@id/locationViewerFragment">
+    tools:ignore="InvalidNavigation">
 
     <include app:graph="@navigation/offer_editor_graph"/>
+    <include app:graph="@navigation/search_results_graph"/>
+
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.t3ddyss.clother.ui.home.HomeFragment"
@@ -27,10 +28,34 @@
     </fragment>
 
     <fragment
-        android:id="@+id/searchFragment"
-        android:name="com.t3ddyss.clother.ui.search.SearchFragment"
-        android:label="fragment_search"
-        tools:layout="@layout/fragment_search" />
+        android:id="@+id/searchByCategoryFragment"
+        android:name="com.t3ddyss.clother.ui.search_by_category.SearchByCategoryFragment"
+        android:label="@string/search"
+        tools:layout="@layout/fragment_search_by_category" >
+        <argument
+            android:name="parent_id"
+            android:defaultValue="0"
+            app:argType="integer"/>
+        <action
+            android:id="@+id/openSubcategoriesAction"
+            app:destination="@id/searchByCategoryFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_searchByCategoryFragment_to_searchFragment"
+            app:destination="@id/searchFragment"
+            app:enterAnim="@anim/slide_in_bottom"
+            app:popExitAnim="@anim/slide_out_bottom"/>
+        <action
+            android:id="@+id/searchByCategory_to_searchResultsGraph"
+            app:destination="@id/search_results_graph">
+            <argument
+                android:name="category"
+                app:argType="com.t3ddyss.clother.models.Category"/>
+        </action>
+    </fragment>
 
     <fragment
         android:id="@+id/offerCategoryFragment"
@@ -172,5 +197,18 @@
             android:name="coordinates"
             app:argType="string"
             android:defaultValue="0,0" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.t3ddyss.clother.ui.search.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/searchFragment_to_searchResultsGraph"
+            app:destination="@id/search_results_graph">
+            <argument
+                android:name="query"
+                app:argType="string"/>
+        </action>
     </fragment>
 </navigation>

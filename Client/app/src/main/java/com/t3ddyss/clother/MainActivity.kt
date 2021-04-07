@@ -2,20 +2,18 @@ package com.t3ddyss.clother
 
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.Gravity
-import android.view.Window
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -32,6 +30,7 @@ import androidx.transition.TransitionManager
 import com.google.android.gms.maps.MapView
 import com.google.android.material.snackbar.Snackbar
 import com.t3ddyss.clother.databinding.ActivityMainBinding
+import com.t3ddyss.clother.utilities.DEBUG_TAG
 import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
 import com.t3ddyss.clother.utilities.getThemeColor
 import com.t3ddyss.clother.utilities.toColorFilter
@@ -84,8 +83,9 @@ class MainActivity : AppCompatActivity() {
         }
         navController.graph = navGraph
 
+        // Do not represent actual top-level destinations, just for UP navigation purposes
         appBarConfiguration = AppBarConfiguration(setOf(
-                R.id.homeFragment, R.id.messagesFragment, R.id.profileFragment))
+                R.id.homeFragment, R.id.messagesFragment, R.id.profileFragment, R.id.searchFragment))
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
 
@@ -253,23 +253,26 @@ class MainActivity : AppCompatActivity() {
     inner class DestinationChangeListener(
             private val binding: ActivityMainBinding)
     : NavController.OnDestinationChangedListener {
-        private val fragmentsWithoutToolbar = setOf(R.id.signUpFragment)
-
         private val fragmentsWithoutBottomNav = setOf(R.id.emailActionFragment,
                 R.id.offerEditorFragment, R.id.resetPasswordFragment, R.id.signInFragment,
                 R.id.signUpFragment, R.id.galleryFragment, R.id.locationFragment,
-            R.id.offerFragment, R.id.locationViewerFragment)
+            R.id.offerFragment, R.id.locationViewerFragment, R.id.searchFragment)
 
-        private val fragmentsWithInvisibleToolbar = setOf(R.id.signUpFragment)
+        private val fragmentsWithoutToolbar = setOf(R.id.signUpFragment,
+        R.id.searchFragment)
+
         private val fragmentsWithToolbarLabel = setOf(R.id.offerCategoryFragment,
                 R.id.offerEditorFragment, R.id.galleryFragment, R.id.locationFragment,
-            R.id.locationViewerFragment)
+            R.id.locationViewerFragment, R.id.searchByCategoryFragment)
 
         private val fragmentsWithoutNavIcon = setOf(R.id.homeFragment,
-                R.id.messagesFragment, R.id.profileFragment)
+                R.id.messagesFragment, R.id.profileFragment, R.id.searchByCategoryFragment,
+        R.id.searchFragment)
 
         private val fragmentsWithCustomUpIcon = setOf(R.id.offerEditorFragment,
                 R.id.galleryFragment, R.id.locationFragment)
+
+        private val fragmentsOverlayingToolbar = setOf(R.id.offerFragment)
 
         override fun onDestinationChanged(
                 controller: NavController,
@@ -279,30 +282,26 @@ class MainActivity : AppCompatActivity() {
             with(binding) {
                 // NavView visibility
                 if (destination.id !in fragmentsWithoutBottomNav && !navView.isVisible) {
-                    animateBottomNav()
+//                    animateBottomNav()
                     navView.isVisible = true
                 }
                 else if (destination.id in fragmentsWithoutBottomNav && navView.isVisible) {
-                    animateBottomNav()
+//                    animateBottomNav()
                     navView.isVisible = false
                 }
 
-
                 // Toolbar visibility
                 if (destination.id !in fragmentsWithoutToolbar && !toolbar.isVisible) {
-                    animateToolbar()
+//                    animateToolbar()
                     toolbar.isVisible = true
                 }
                 else if (destination.id in fragmentsWithoutToolbar && toolbar.isVisible) {
-                    when (destination.id) {
-                        !in fragmentsWithInvisibleToolbar -> {
-                            animateToolbar()
-                            toolbar.isVisible = false
-                        }
-                        else -> toolbar.isInvisible = true
-                    }
+//                    animateToolbar()
+                    toolbar.isVisible = false
                 }
-                binding.navHostFragmentMarginTop.isVisible = destination.id != R.id.offerFragment
+                binding.navHostFragmentMarginTop.isVisible =
+                        destination.id !in fragmentsOverlayingToolbar
+                                && destination.id !in fragmentsWithoutToolbar
 
                 // Toolbar icon
                 if (destination.id !in fragmentsWithoutNavIcon

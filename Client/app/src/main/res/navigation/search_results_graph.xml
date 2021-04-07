@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/search_results_graph"
+    app:startDestination="@id/searchResultsFragment">
+    <fragment
+        android:id="@+id/searchResultsFragment"
+        android:name="com.t3ddyss.clother.ui.search_results.SearchResultsFragment"
+        android:label="fragment_search_results"
+        tools:layout="@layout/fragment_search_results" >
+        <argument
+            android:name="category"
+            android:defaultValue="@null"
+            app:argType="com.t3ddyss.clother.models.Category"
+            app:nullable="true" />
+        <argument
+            android:name="query"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
+</navigation>
