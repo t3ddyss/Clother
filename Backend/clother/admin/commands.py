@@ -44,8 +44,6 @@ def create_database():
 
 @blueprint.cli.command('populate_categories')
 def populate_categories():
-    Category.__table__.create(db.engine)
-
     categories = json.load(open("./categories.json", 'r'))
     for entry in categories:
         category = Category(parent_id=entry['parent_id'], title=entry['title'])
@@ -66,9 +64,6 @@ def populate_categories():
 
 @blueprint.cli.command('populate_offers')
 def populate_offers():
-    Offer.__table__.create(db.engine)
-    Image.__table__.create(db.engine)
-
     offers = json.load(open("./offers.json", 'r'))
     for item in offers:
         offer = Offer(title=item['title'],

@@ -69,7 +69,7 @@ class OffersRemoteMediator(
                 accessToken = accessToken,
                 afterKey = key,
                 beforeKey = null,
-                size = when (loadType) {
+                limit = when (loadType) {
                     LoadType.REFRESH -> state.config.initialLoadSize
                     else -> state.config.pageSize
                 },

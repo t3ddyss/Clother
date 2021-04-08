@@ -1,3 +1,4 @@
+import math
 from datetime import datetime
 
 from clother import db
@@ -65,3 +66,8 @@ class Location(db.Model):
 
     def to_string(self):
         return f'{self.latitude},{self.longitude}'
+
+
+def distance(lat1, lat2, lon1, lon2, func=math):
+    return func.acos(func.sin(func.radians(lat1)) * func.sin(func.radians(lat2)) + func.cos(func.radians(lat1))
+                     * func.cos(func.radians(lat2)) * func.cos(func.radians(lon2) - func.radians(lon1))) * 6371

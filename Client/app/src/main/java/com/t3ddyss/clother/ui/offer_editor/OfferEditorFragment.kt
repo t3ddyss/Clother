@@ -111,7 +111,10 @@ class OfferEditorFragment : Fragment() {
         binding.listImages.addItemDecoration(horizontalDecorator)
 
         binding.location.setOnClickListener {
-            findNavController().navigate(R.id.action_offerEditorFragment_to_locationFragment)
+            val action = OfferEditorFragmentDirections
+                    .actionOfferEditorFragmentToLocationFragment(
+                            calledFromId = R.id.offer_editor_graph)
+            findNavController().navigate(action)
         }
 
         binding.buttonPublish.setOnClickListener {

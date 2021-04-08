@@ -3,18 +3,15 @@ package com.t3ddyss.clother.ui.location_selector
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.location.Location
 import android.os.Bundle
-import android.os.Looper
-import android.util.Log
 import android.view.*
-import android.widget.Toast
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.paging.ExperimentalPagingApi
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
@@ -27,45 +24,41 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentLocationSelectorBinding
-import com.t3ddyss.clother.models.LatLngWrapper
+import com.t3ddyss.clother.ui.filters.FiltersViewModel
 import com.t3ddyss.clother.ui.offer_editor.OfferEditorViewModel
-import com.t3ddyss.clother.utilities.DEBUG_TAG
+import com.t3ddyss.clother.ui.search_results.SearchResultsViewModel
 import com.t3ddyss.clother.utilities.MAPVIEW_BUNDLE
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @AndroidEntryPoint
 @ExperimentalPagingApi
-@ExperimentalCoroutinesApi// TODO encapsulate location detection logic in a separate class
+@ExperimentalCoroutinesApi
 class LocationSelectorFragment : Fragment() {
 
     private val viewModel by viewModels<LocationSelectorViewModel>()
-    private val editorViewModel by hiltNavGraphViewModels<OfferEditorViewModel>(R.id.offer_editor_graph)
+    private val editorViewModel by hiltNavGraphViewModels<OfferEditorViewModel>(
+            R.id.offer_editor_graph)
+    private val filtersViewModel by hiltNavGraphViewModels<FiltersViewModel>(
+            R.id.search_results_graph)
 
     private var _binding: FragmentLocationSelectorBinding? = null
     private val binding get() = _binding!!
+    private val args by navArgs<LocationSelectorFragmentArgs>()
 
     private var mapView: MapView? = null
     private lateinit var map: GoogleMap
-    private lateinit var locationProviderClient: FusedLocationProviderClient
 
-    private val locationCallback = LocationListener()
     private val enableLocationDialogLauncher = registerForActivityResult(
             ActivityResultContracts.StartIntentSenderForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             getLocation()
         }
         else {
+            setOnMapLongClickListener()
             (activity as? MainActivity)?.showGenericError(
                     message = getString(R.string.no_location_access)
             )
-            map.setOnMapLongClickListener {
-                viewModel.location.value = LatLngWrapper(
-                        latLng = it,
-                        isInitialValue = false,
-                        isManuallySelected = true,
-                )
-            }
         }}
 
     override fun onCreateView(
@@ -75,7 +68,6 @@ class LocationSelectorFragment : Fragment() {
         _binding = FragmentLocationSelectorBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
 
-        locationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { isGranted ->
             if (isGranted[Manifest.permission.ACCESS_FINE_LOCATION] == true
                     && isGranted[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
@@ -87,13 +79,7 @@ class LocationSelectorFragment : Fragment() {
                             message = getString(R.string.no_location_access),
                             actionText = getString(R.string.grant_permission)
                         )
-                map.setOnMapLongClickListener {
-                    viewModel.location.value = LatLngWrapper(
-                            latLng = it,
-                            isInitialValue = false,
-                            isManuallySelected = true,
-                    )
-                }
+                setOnMapLongClickListener()
             }
         }.launch(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION))
@@ -103,20 +89,7 @@ class LocationSelectorFragment : Fragment() {
         mapView?.getMapAsync { googleMap ->
             map = googleMap
             map.uiSettings?.isMyLocationButtonEnabled = false
-
-            viewModel.location.observe(viewLifecycleOwner) {
-                when {
-                    it.isInitialValue -> {
-                        setInitialLocation(it.latLng)
-                    }
-                    it.isManuallySelected -> {
-                        setLocationWithMarker(it.latLng)
-                    }
-                    else -> {
-                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(it.latLng, DEFAULT_CAMERA_ZOOM))
-                    }
-                }
-            }
+            subscribeToLocationUpdates()
         }
 
         return binding.root
@@ -130,7 +103,12 @@ class LocationSelectorFragment : Fragment() {
         if (item.itemId == R.id.apply) {
             val location = viewModel.location.value!!
             if (!location.isInitialValue) {
-                editorViewModel.location.value = location.latLng
+                when (args.calledFromId) {
+                    R.id.offer_editor_graph -> editorViewModel.location.value = location.latLng
+                    R.id.search_results_graph -> filtersViewModel.location.value = location.latLng
+                    else -> { }
+                }
+
                 findNavController().popBackStack()
             }
         }
@@ -138,31 +116,26 @@ class LocationSelectorFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
+    private fun subscribeToLocationUpdates() {
+        viewModel.location.observe(viewLifecycleOwner) {
+            when {
+                it.isInitialValue -> {
+                    setInitialLocation(it.latLng)
+                }
+                it.isManuallySelected -> {
+                    setLocationWithMarker(it.latLng)
+                }
+                else -> {
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(it.latLng, DEFAULT_CAMERA_ZOOM))
+                }
+            }
+        }
+    }
+
     @SuppressLint("MissingPermission")
     private fun getLocation() {
         map.isMyLocationEnabled = true
-
-        val locationRequest = LocationRequest.create()
-        locationRequest.interval =  5_000
-        locationRequest.fastestInterval = 1000
-        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-
-        locationProviderClient.lastLocation.addOnSuccessListener {
-            Log.d(DEBUG_TAG, "Got location in last location $it")
-
-            if (it != null) {
-                viewModel.location.postValue(LatLngWrapper(
-                        latLng = LatLng(it.latitude, it.longitude),
-                        isInitialValue = false,
-                        isManuallySelected = false
-                ))
-            }
-            else {
-                Toast.makeText(context, getString(R.string.updating_location), Toast.LENGTH_LONG).show()
-                locationProviderClient
-                    .requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
-            }
-        }
+        viewModel.getLocation()
     }
 
     private fun setInitialLocation(latLng: LatLng) {
@@ -176,6 +149,12 @@ class LocationSelectorFragment : Fragment() {
                         .position(latLng)
                         .draggable(false)
                         .visible(true))
+    }
+
+    private fun setOnMapLongClickListener() {
+        map.setOnMapLongClickListener {
+            viewModel.setLocationManually(it)
+        }
     }
 
     private fun checkIfLocationEnabled() {
@@ -247,7 +226,6 @@ class LocationSelectorFragment : Fragment() {
         super.onDestroy()
         mapView?.onDestroy()
         mapView = null
-        locationProviderClient.removeLocationUpdates(locationCallback)
     }
 
     override fun onDestroyView() {
@@ -258,23 +236,5 @@ class LocationSelectorFragment : Fragment() {
     companion object {
         const val DEFAULT_CAMERA_ZOOM = 15f
         const val INITIAL_CAMERA_ZOOM = 3.5f
-    }
-
-    inner class LocationListener : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult?) {
-            locationResult?.let {
-                for (location: Location? in it.locations) {
-                    Log.d(DEBUG_TAG, "Got location in onLocationResult $location")
-
-                    location?.apply {
-                        viewModel.location.postValue(LatLngWrapper(
-                                latLng = LatLng(this.latitude, this.longitude),
-                                isInitialValue = false,
-                                isManuallySelected = false,
-                        ))
-                    }
-                }
-            }
-        }
     }
 }

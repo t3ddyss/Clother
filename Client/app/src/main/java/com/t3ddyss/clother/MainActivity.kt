@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navController: NavController
-    private var destinationChangeListener: DestinationChangeListener? = null
+    private lateinit var destinationChangeListener: DestinationChangeListener
 
     @Inject lateinit var prefs: SharedPreferences
 
@@ -106,6 +106,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        navController.removeOnDestinationChangedListener(destinationChangeListener)
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
@@ -132,6 +137,7 @@ class MainActivity : AppCompatActivity() {
         val snackbar = Snackbar.make(binding.container,
                 message ?: getString(R.string.unknown_error),
                 Snackbar.LENGTH_SHORT)
+        showSnackbarWithMargin(snackbar)
     }
 
     fun showSnackbarWithAction(message: String,
@@ -143,6 +149,7 @@ class MainActivity : AppCompatActivity() {
                 .setAction(actionText) {
                     action.invoke()
                 }
+        showSnackbarWithMargin(snackbar)
     }
 
     private fun showSnackbarWithMargin(snackbar: Snackbar) {
@@ -229,7 +236,7 @@ class MainActivity : AppCompatActivity() {
             binding.toolbar.navigationIcon = null
         }
         else {
-            destinationChangeListener?.setIconUp(binding.toolbar)
+            destinationChangeListener.setIconUp(binding.toolbar)
         }
     }
 

@@ -34,7 +34,7 @@ class OffersPagingSource(private val service: ClotherOffersService,
                     accessToken = accessToken,
                     afterKey = if (params is Append) params.key else null,
                     beforeKey = if (params is Prepend) params.key else null,
-                    size = params.loadSize,
+                    limit = params.loadSize,
                     filters = query)
 
             LoadResult.Page(

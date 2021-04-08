@@ -1,4 +1,8 @@
+import math
+
 from flask import Flask
+from sqlalchemy import event
+
 from clother.extensions import db, migrate, cache, jwt, mail
 from clother import admin, authentication, users, offers, images
 
@@ -10,6 +14,16 @@ def create_app(config_filename):
 
     register_extensions(app)
     register_blueprints(app)
+
+    with app.app_context():
+        @event.listens_for(db.engine, 'connect')
+        def on_connect(dbapi_con, connection_record):
+            print("On connect called")
+            dbapi_con.create_function('sin', 1, math.sin)
+            dbapi_con.create_function('cos', 1, math.cos)
+            dbapi_con.create_function('acos', 1, math.acos)
+            dbapi_con.create_function('radians', 1, math.radians)
+
     return app
 
 

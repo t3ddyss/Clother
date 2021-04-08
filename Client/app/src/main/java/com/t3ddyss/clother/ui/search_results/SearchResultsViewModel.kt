@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.google.android.gms.maps.model.LatLng
 import com.t3ddyss.clother.data.OffersRepository
 import com.t3ddyss.clother.models.Offer
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,6 +24,10 @@ class SearchResultsViewModel @Inject constructor(
 ) : ViewModel() {
     private val _offers = MutableLiveData<PagingData<Offer>>()
     val offers: LiveData<PagingData<Offer>> = _offers
+
+    // Location and maximum distance
+    val location = MutableLiveData<Pair<LatLng, Int>>()
+    val size = MutableLiveData<String>()
 
     private var currentQuery: Map<String, String>? = null
     var endOfPaginationReachedBottom = false

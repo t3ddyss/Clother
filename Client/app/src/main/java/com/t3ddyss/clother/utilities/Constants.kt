@@ -20,11 +20,9 @@ const val USER_ID = "user_id"
 const val ACCESS_TOKEN = "access_token"
 const val REFRESH_TOKEN = "refresh_token"
 const val IS_AUTHENTICATED = "is_authenticated"
-const val IS_CATEGORIES_LOADED = "is_categories_loaded"
 
 // SavedStateHandle keys
 const val NAME = "name"
 const val EMAIL = "email"
 const val PASSWORD = "password"
-const val SELECTED_IMAGES = "selected_images"
 const val MAPVIEW_BUNDLE = "mapview_bundle"

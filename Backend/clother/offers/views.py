@@ -7,7 +7,7 @@ from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename
 
-from .models import Offer, Category, Location, Image
+from .models import Offer, Category, Location, Image, distance
 from .. import db
 from ..utils import response_delay, base_prefix, allowed_file
 
@@ -21,17 +21,30 @@ default_page_size = 10
 def get_offers():
     after = request.args.get('after', default=None, type=int)
     before = request.args.get('before', default=None, type=int)
-    limit = request.args.get('size', default=default_page_size, type=int)
+    limit = request.args.get('limit', default=default_page_size, type=int)
     category = request.args.get('category', default=None, type=int)
     query = request.args.get('query', default=None, type=str)
+    size = request.args.get('size', default=None, type=str)
+    coordinates = request.args.get('location', default=None, type=str)
+    radius = float(request.args.get('radius', default=None, type=int))
 
     offers_query = Offer.query
 
     if category:
         offers_query = offers_query.filter(Offer.category_id == category)
     if query:
-        query = f'%{query}%'
-        offers_query = offers_query.filter(Offer.title.ilike(query))
+        offers_query = offers_query.filter(Offer.title.ilike(f'%{query}%'))
+    if size:
+        offers_query = offers_query.filter(Offer.size.ilike(f'%{size}%'))
+    if coordinates and radius:
+        lat, lng = [float(x) for x in coordinates.split(',')]
+        offers_query = offers_query.join(Location).filter(
+            distance(Location.latitude,
+                     lat,
+                     Location.longitude,
+                     lng,
+                     db.func) <= radius
+        )
 
     if after is None and before is None:  # initial request
         offers = offers_query.order_by(Offer.id.desc()).limit(limit).all()

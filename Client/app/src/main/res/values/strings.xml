@@ -68,4 +68,11 @@
     <string name="search_hint">Search on Clother</string>
     <string name="nothing_found">Nothing found</string>
     <string name="filters">Filters</string>
+    <string name="apply_filters">Apply filters</string>
+    <string name="my_location">Set my location</string>
+    <string name="max_distance">Maximum distance</string>
+    <string name="km_5">5 km</string>
+    <string name="km_10">10 km</string>
+    <string name="km_25">25 km</string>
+    <string name="km_50">50 km</string>
 </resources>

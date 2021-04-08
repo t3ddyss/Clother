@@ -1,0 +1,47 @@
+<com.google.android.material.chip.ChipGroup xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/chip_group_distance"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/fragment_horizontal_margin"
+    app:singleLine="true"
+    app:singleSelection="true"
+    tools:ignore="HardcodedText">
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/dist_5km"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checkable="true"
+        android:minWidth="@dimen/chip_min_width"
+        android:text="@string/km_5"
+        android:textAlignment="center" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/dist_10km"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checkable="true"
+        android:minWidth="@dimen/chip_min_width"
+        android:text="@string/km_10"
+        android:textAlignment="center" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/dist_25km"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checkable="true"
+        android:minWidth="@dimen/chip_min_width"
+        android:text="@string/km_25"
+        android:textAlignment="center" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/dist_50km"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checkable="true"
+        android:minWidth="@dimen/chip_min_width"
+        android:text="@string/km_50"
+        android:textAlignment="center" />
+</com.google.android.material.chip.ChipGroup>

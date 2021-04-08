@@ -38,5 +38,19 @@
     <dialog
         android:id="@+id/filterDialogFragment"
         android:name="com.t3ddyss.clother.ui.filters.FilterDialogFragment"
-        android:label="FilterDialogFragment" />
+        android:label="FilterDialogFragment" >
+        <action
+            android:id="@+id/action_filterDialogFragment_to_locationFragment"
+            app:destination="@id/locationFragment" />
+    </dialog>
+    <fragment
+        android:id="@+id/locationFragment"
+        android:name="com.t3ddyss.clother.ui.location_selector.LocationSelectorFragment"
+        android:label="@string/select_location"
+        tools:layout="@layout/fragment_location_selector" >
+        <argument
+            android:name="called_from_id"
+            android:defaultValue="0"
+            app:argType="integer" />
+    </fragment>
 </navigation>

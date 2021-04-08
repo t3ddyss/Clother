@@ -1,12 +1,10 @@
 package com.t3ddyss.clother.ui.offer_category
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -18,10 +16,8 @@ import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.CategoriesAdapter
 import com.t3ddyss.clother.databinding.FragmentOfferCategoryBinding
-import com.t3ddyss.clother.utilities.IS_CATEGORIES_LOADED
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import javax.inject.Inject
 
 @AndroidEntryPoint
 @ExperimentalPagingApi

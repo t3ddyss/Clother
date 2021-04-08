@@ -34,6 +34,7 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+        incremental = true
     }
     kotlinOptions {
         jvmTarget = '1.8'
@@ -42,6 +43,7 @@ android {
 }
 
 dependencies {
+    kapt "androidx.hilt:hilt-compiler:$hilt_compiler_version"
     kapt "androidx.room:room-compiler:$room_version"
     kapt "com.github.bumptech.glide:compiler:$glide_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
@@ -66,6 +68,7 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:$glide_version"
     implementation "com.google.android.gms:play-services-location:$google_location_version"
     implementation "com.google.android.gms:play-services-maps:$google_maps_version"
+    implementation "com.google.android.gms:play-services-tasks:$google_tasks_version"
     implementation "com.google.android.material:material:$material_version"
     implementation "com.google.dagger:hilt-android:$hilt_version"
     implementation "com.squareup.okhttp3:okhttp:$ok_http_version"

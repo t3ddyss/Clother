@@ -153,7 +153,7 @@
                 tools:text="Select location" />
 
             <ImageView
-                android:id="@+id/imageView2"
+                android:id="@+id/imageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/fragment_horizontal_margin"
@@ -181,9 +181,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/fragment_horizontal_margin"
+            android:layout_marginBottom="@dimen/margin_padding_size_xlarge"
+            android:layout_marginTop="@dimen/fragment_vertical_margin"
             android:paddingHorizontal="@dimen/fragment_horizontal_margin"
             android:clipToPadding="false"
-            android:layout_marginBottom="@dimen/margin_padding_size_xlarge"
             android:scrollbars="none"
             app:layout_constraintBottom_toTopOf="@+id/button_publish"
             app:layout_constraintEnd_toEndOf="parent"
@@ -193,7 +194,7 @@
             tools:ignore="RtlSymmetry">
             <include
                 android:id="@+id/chip_group_size"
-                layout="@layout/item_sizes_chips"
+                layout="@layout/item_size_chips"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </HorizontalScrollView>

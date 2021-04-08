@@ -51,7 +51,7 @@ class ImageProvider @Inject constructor(
         awaitClose {
             application.contentResolver.unregisterContentObserver(newImagesObserver)
         }
-    }
+    }.flowOn(Dispatchers.IO) // Problem?
 
     private fun loadImagesFromGallery(): List<Uri> {
         val images = mutableListOf<Uri>()

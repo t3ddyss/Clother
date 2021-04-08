@@ -6,12 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/fragment_horizontal_margin"
-    android:layout_marginBottom="@dimen/margin_padding_size_xxlarge"
-    app:layout_constraintBottom_toTopOf="@+id/button_publish"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toEndOf="@id/imageView_ruler"
-    app:layout_constraintTop_toBottomOf="@+id/divider4"
-    app:layout_constraintVertical_bias="0.0"
     app:singleLine="true"
     app:singleSelection="true"
     tools:ignore="HardcodedText">

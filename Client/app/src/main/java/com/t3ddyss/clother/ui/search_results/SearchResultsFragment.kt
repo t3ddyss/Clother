@@ -21,6 +21,7 @@ import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OffersAdapter
 import com.t3ddyss.clother.databinding.FragmentSearchResultsBinding
+import com.t3ddyss.clother.ui.filters.FiltersViewModel
 import com.t3ddyss.clother.ui.home.HomeFragmentDirections
 import com.t3ddyss.clother.utilities.DEBUG_TAG
 import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
@@ -37,6 +38,8 @@ import javax.inject.Inject
 class SearchResultsFragment : Fragment() {
 
     private val viewModel by hiltNavGraphViewModels<SearchResultsViewModel>(
+            R.id.search_results_graph)
+    private val filtersViewModel by hiltNavGraphViewModels<FiltersViewModel>(
             R.id.search_results_graph)
     private var _binding: FragmentSearchResultsBinding? = null
     private val binding get() = _binding!!
@@ -55,13 +58,7 @@ class SearchResultsFragment : Fragment() {
         _binding = FragmentSearchResultsBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
 
-        val query = mutableMapOf<String, String>()
-        args.category?.let {
-            query["category"] = it.id.toString()
-        }
-        args.query?.let {
-            query["query"] = it
-        }
+        val query = getQuery()
 
         loadStateListener = {
             when (it.refresh) {
@@ -155,6 +152,7 @@ class SearchResultsFragment : Fragment() {
         inflater.inflate(R.menu.toolbar_search_results_menu, menu)
     }
 
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.filters -> {
@@ -168,5 +166,28 @@ class SearchResultsFragment : Fragment() {
         super.onDestroyView()
         adapter.removeLoadStateListener(loadStateListener)
         _binding = null
+    }
+
+    private fun getQuery(): Map<String, String> {
+        val query = mutableMapOf<String, String>()
+
+        args.category?.let {
+            query["category"] = it.id.toString()
+        }
+
+        args.query?.let {
+            query["query"] = it
+        }
+
+        viewModel.size.value?.let {
+            query["size"] = it
+        }
+
+        viewModel.location.value?.let {
+            query["location"] = "${it.first.latitude},${it.first.longitude}"
+            query["radius"] = it.second.toString()
+        }
+
+        return query
     }
 }

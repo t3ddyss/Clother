@@ -11,7 +11,7 @@ interface ClotherOffersService {
     suspend fun getOffers(@Header("Authorization") accessToken: String?,
                           @Query("after") afterKey: Int? = null,
                           @Query("before") beforeKey: Int? = null,
-                          @Query("size") size: Int = 10,
+                          @Query("limit") limit: Int = 10,
                           @QueryMap filters: Map<String, String>? = null): List<Offer>
 
     @GET("api/offers/categories")
