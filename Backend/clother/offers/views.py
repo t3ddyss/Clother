@@ -26,7 +26,7 @@ def get_offers():
     query = request.args.get('query', default=None, type=str)
     size = request.args.get('size', default=None, type=str)
     coordinates = request.args.get('location', default=None, type=str)
-    radius = float(request.args.get('radius', default=None, type=int))
+    radius = request.args.get('radius', default=None, type=int)
 
     offers_query = Offer.query
 

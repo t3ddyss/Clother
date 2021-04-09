@@ -1,9 +1,6 @@
 package com.t3ddyss.clother.ui.search_results
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
@@ -28,6 +25,12 @@ class SearchResultsViewModel @Inject constructor(
     // Location and maximum distance
     val location = MutableLiveData<Pair<LatLng, Int>>()
     val size = MutableLiveData<String>()
+    val filters = MediatorLiveData<String>().apply { value = "initial" }
+
+    init {
+        filters.addSource(location) { filters.value = "location" }
+        filters.addSource(size) { filters.value = "size" }
+    }
 
     private var currentQuery: Map<String, String>? = null
     var endOfPaginationReachedBottom = false

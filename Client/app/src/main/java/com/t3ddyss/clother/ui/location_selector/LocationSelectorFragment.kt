@@ -4,12 +4,14 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.ExperimentalPagingApi
@@ -27,9 +29,12 @@ import com.t3ddyss.clother.databinding.FragmentLocationSelectorBinding
 import com.t3ddyss.clother.ui.filters.FiltersViewModel
 import com.t3ddyss.clother.ui.offer_editor.OfferEditorViewModel
 import com.t3ddyss.clother.ui.search_results.SearchResultsViewModel
+import com.t3ddyss.clother.utilities.DEBUG_TAG
 import com.t3ddyss.clother.utilities.MAPVIEW_BUNDLE
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 @ExperimentalPagingApi
@@ -49,6 +54,8 @@ class LocationSelectorFragment : Fragment() {
     private var mapView: MapView? = null
     private lateinit var map: GoogleMap
 
+    private val channel = Channel<Boolean>()
+
     private val enableLocationDialogLauncher = registerForActivityResult(
             ActivityResultContracts.StartIntentSenderForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -61,6 +68,7 @@ class LocationSelectorFragment : Fragment() {
             )
         }}
 
+    @SuppressLint("MissingPermission")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -71,6 +79,11 @@ class LocationSelectorFragment : Fragment() {
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { isGranted ->
             if (isGranted[Manifest.permission.ACCESS_FINE_LOCATION] == true
                     && isGranted[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
+                lifecycleScope.launch {
+                    channel.receive()
+                    map.isMyLocationEnabled = true
+                    Log.d(DEBUG_TAG, "Received message from channel")
+                }
                 checkIfLocationEnabled()
             }
             else {
@@ -89,6 +102,7 @@ class LocationSelectorFragment : Fragment() {
         mapView?.getMapAsync { googleMap ->
             map = googleMap
             map.uiSettings?.isMyLocationButtonEnabled = false
+            channel.offer(true)
             subscribeToLocationUpdates()
         }
 
@@ -132,9 +146,7 @@ class LocationSelectorFragment : Fragment() {
         }
     }
 
-    @SuppressLint("MissingPermission")
     private fun getLocation() {
-        map.isMyLocationEnabled = true
         viewModel.getLocation()
     }
 

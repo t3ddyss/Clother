@@ -58,8 +58,6 @@ class SearchResultsFragment : Fragment() {
         _binding = FragmentSearchResultsBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
 
-        val query = getQuery()
-
         loadStateListener = {
             when (it.refresh) {
                 is LoadState.Loading -> {
@@ -143,7 +141,11 @@ class SearchResultsFragment : Fragment() {
                 adapter.submitData(it)
             }
         }
-        viewModel.getOffers(query)
+
+        viewModel.filters.observe(viewLifecycleOwner) {
+            val query = getQuery()
+            viewModel.getOffers(query)
+        }
 
         return binding.root
     }
