@@ -43,6 +43,10 @@ fun LatLng.toCoordinatesString(precision: Int = 4): String {
             "${this.longitude.format(precision)}° E"
 }
 
+fun convertDecimalDegreesToDms(coordinate: Float) {
+    
+}
+
 fun Double.format(digits: Int) = "%.${digits}f".format(this)
 
 fun String.getImageUrlForCurrentDevice(): String {

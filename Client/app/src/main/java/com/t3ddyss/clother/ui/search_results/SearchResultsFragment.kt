@@ -39,8 +39,6 @@ class SearchResultsFragment : Fragment() {
 
     private val viewModel by hiltNavGraphViewModels<SearchResultsViewModel>(
             R.id.search_results_graph)
-    private val filtersViewModel by hiltNavGraphViewModels<FiltersViewModel>(
-            R.id.search_results_graph)
     private var _binding: FragmentSearchResultsBinding? = null
     private val binding get() = _binding!!
     private val args by navArgs<SearchResultsFragmentArgs>()
@@ -158,7 +156,17 @@ class SearchResultsFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.filters -> {
-                findNavController().navigate(R.id.action_searchResultsFragment_to_filterDialogFragment)
+                val navController = findNavController()
+                if (navController.currentBackStackEntry?.destination?.id
+                        != R.id.filterDialogFragment) {
+                    navController.navigate(R.id.action_searchResultsFragment_to_filterDialogFragment)
+                }
+            }
+
+            R.id.search -> {
+                val action = SearchResultsFragmentDirections.actionSearchResultsToSearchFragment(
+                        args.query ?: "")
+                findNavController().navigate(action)
             }
         }
         return super.onOptionsItemSelected(item)

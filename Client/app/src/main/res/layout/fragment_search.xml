@@ -6,18 +6,27 @@
     android:layout_height="match_parent"
     tools:context=".ui.search.SearchFragment">
 
-    <EditText
-        android:id="@+id/editText_search"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInput_search"
+        style="@style/Widget.Design.TextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fragment_horizontal_margin"
-        android:padding="10dp"
-        android:inputType="text"
-        android:imeOptions="actionSearch"
-        android:textSize="@dimen/text_size_medium"
-        android:hint="@string/search_hint"
-        android:background="@drawable/edit_text_rounded"
+        android:layout_margin="@dimen/fragment_vertical_margin"
+        app:endIconMode="clear_text"
+        app:hintEnabled="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editText_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/search_hint"
+            android:inputType="text"
+            android:imeOptions="actionSearch"
+            android:background="@drawable/edit_text_rounded"
+            android:padding="12dp"
+            android:textSize="@dimen/text_size_medium" />
+    </com.google.android.material.textfield.TextInputLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -47,7 +47,12 @@
             android:id="@+id/action_searchByCategoryFragment_to_searchFragment"
             app:destination="@id/searchFragment"
             app:enterAnim="@anim/slide_in_bottom"
-            app:popExitAnim="@anim/slide_out_bottom"/>
+            app:popExitAnim="@anim/slide_out_bottom">
+            <argument
+                android:name="query"
+                app:argType="string"
+                android:defaultValue=""/>
+        </action>
         <action
             android:id="@+id/searchByCategory_to_searchResultsGraph"
             app:destination="@id/search_results_graph">
@@ -210,5 +215,9 @@
                 android:name="query"
                 app:argType="string"/>
         </action>
+        <argument
+            android:name="query"
+            app:argType="string"
+            android:defaultValue=""/>
     </fragment>
 </navigation>
