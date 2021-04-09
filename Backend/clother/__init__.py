@@ -2,9 +2,8 @@ import math
 
 from flask import Flask
 from sqlalchemy import event
-
-from clother.extensions import db, migrate, cache, jwt, mail
-from clother import admin, authentication, users, offers, images
+from clother.extensions import db, migrate, cache, jwt, mail, socketio
+from clother import admin, authentication, users, offers, images, chat
 
 
 def create_app(config_filename):
@@ -18,7 +17,6 @@ def create_app(config_filename):
     with app.app_context():
         @event.listens_for(db.engine, 'connect')
         def on_connect(dbapi_con, connection_record):
-            print("On connect called")
             dbapi_con.create_function('sin', 1, math.sin)
             dbapi_con.create_function('cos', 1, math.cos)
             dbapi_con.create_function('acos', 1, math.acos)
@@ -32,6 +30,7 @@ def register_extensions(app):
     migrate.init_app(app, db)
     jwt.init_app(app)
     mail.init_app(app)
+    socketio.init_app(app)
 
 
 def register_blueprints(app):

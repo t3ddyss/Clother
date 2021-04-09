@@ -6,10 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".ui.messages.MessagesFragment">
 
-    <TextView
-        android:id="@+id/text_dashboard"
+    <Button
+        android:id="@+id/button_connect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Connect"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

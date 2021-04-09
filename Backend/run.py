@@ -1,8 +1,8 @@
 from flask.helpers import get_debug_flag
-from clother import create_app
+from clother import create_app, socketio
 
 config = 'config.py' if get_debug_flag() else 'config.py'
 app = create_app(config)
 
 if __name__ == '__main__':
-    app.run()
+    socketio.run(app, debug=True)

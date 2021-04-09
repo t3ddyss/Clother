@@ -72,8 +72,14 @@ class HomeFragment : Fragment() {
 
                 is LoadState.NotLoading -> {
                     binding.shimmer.isVisible = false
-                    binding.containerHome.isVisible = true
                     binding.swipeRefresh.isRefreshing = false
+
+                    if (it.append.endOfPaginationReached && adapter.itemCount < 1) {
+                        binding.emptyState.isVisible = true
+                    }
+                    else {
+                        binding.containerHome.isVisible = true
+                    }
                 }
 
                 is LoadState.Error -> {

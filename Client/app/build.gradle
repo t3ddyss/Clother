@@ -66,9 +66,11 @@ dependencies {
     implementation "androidx.room:room-ktx:$room_version"
     implementation "com.facebook.shimmer:shimmer:$shimmer_version"
     implementation "com.github.bumptech.glide:glide:$glide_version"
-    implementation "com.google.android.gms:play-services-location:$google_location_version"
     implementation "com.google.android.gms:play-services-maps:$google_maps_version"
+    //noinspection GradleDependency gms versions should be the same
     implementation "com.google.android.gms:play-services-tasks:$google_tasks_version"
+    //noinspection GradleDependency gms versions should be the same
+    implementation "com.google.android.gms:play-services-location:$google_location_version"
     implementation "com.google.android.material:material:$material_version"
     implementation "com.google.dagger:hilt-android:$hilt_version"
     implementation "com.squareup.okhttp3:okhttp:$ok_http_version"
@@ -76,6 +78,9 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation "id.zelory:compressor:$compressor_version"
+    implementation("io.socket:socket.io-client:$socket_io_version") {
+        exclude group: 'org.json', module: 'json'
+    }
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"

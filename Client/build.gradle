@@ -34,6 +34,7 @@ buildscript {
         retrofit_version = '2.9.0'
         room_version = '2.3.0-rc01'
         shimmer_version = '0.5.0'
+        socket_io_version = '2.0.0'
     }
 
     repositories {
