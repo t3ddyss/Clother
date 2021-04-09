@@ -46,8 +46,10 @@ class OfferFragment : Fragment() {
             with (binding) {
                 images.adapter = OfferImagesAdapter(it.images) {
                 }
-                TabLayoutMediator(dots, images) { _, _ ->
-                }.attach()
+                if (it.images.size > 1) {
+                    TabLayoutMediator(dots, images) { _, _ ->
+                    }.attach()
+                }
 
                 textViewTitle.text = it.title
 

@@ -147,10 +147,9 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/fragment_horizontal_margin"
             android:textSize="@dimen/text_size_medium"
+            android:text="@string/tap_to_view"
             app:layout_constraintStart_toEndOf="@id/barier"
-            app:layout_constraintTop_toBottomOf="@+id/divider5"
-            android:visibility="gone"
-            tools:text="Moscow, Russia" />
+            app:layout_constraintTop_toBottomOf="@+id/divider5" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/group_location"
