@@ -26,6 +26,12 @@ class MessagesViewModel @Inject constructor(
         }
     }
 
+    fun sendMessage(message: String, to: Int = 137) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.sendMessage(to, message)
+        }
+    }
+
     override fun onCleared() {
         super.onCleared()
         repository.disconnectFromServer()

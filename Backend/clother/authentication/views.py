@@ -31,14 +31,16 @@ def check_if_token_revoked(jwt_header, jwt_payload):
 @jwt_required(refresh=True)
 def refresh_tokens():
     user_id = get_jwt_identity()
+
     jti = get_jwt()["jti"]
     now = datetime.now(timezone.utc)
     db.session.add(TokenBlocklist(jti=jti, created_at=now))
     db.session.commit()
 
+    additional_claims = {"user_id": user_id}
     return {'user_id': user_id,
-            'access_token': create_access_token(user_id),
-            'refresh_token': create_refresh_token(user_id)
+            'access_token': create_access_token(user_id, additional_claims=additional_claims),
+            'refresh_token': create_refresh_token(user_id, additional_claims=additional_claims)
             }
 
 
@@ -134,9 +136,10 @@ def login():
     if not user.email_verified:
         return {"message": "You haven't verified your email address"}, 403
     if user and user.check_password(password):
+        additional_claims = {"user_id": user.id}
         return {'user_id': user.id,
-                'access_token': create_access_token(user.id),
-                'refresh_token': create_refresh_token(user.id)
+                'access_token': create_access_token(user.id, additional_claims=additional_claims),
+                'refresh_token': create_refresh_token(user.id, additional_claims=additional_claims)
                 }
     else:
         return {"message": "Wrong email or password"}, 403

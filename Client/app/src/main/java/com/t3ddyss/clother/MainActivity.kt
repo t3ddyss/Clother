@@ -9,7 +9,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.Gravity
-import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -29,6 +28,7 @@ import androidx.transition.TransitionManager
 import com.google.android.gms.maps.MapView
 import com.google.android.material.snackbar.Snackbar
 import com.t3ddyss.clother.databinding.ActivityMainBinding
+import com.t3ddyss.clother.services.OnClearFromRecentService
 import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
 import com.t3ddyss.clother.utilities.convertDpToPx
 import com.t3ddyss.clother.utilities.getThemeColor
@@ -36,6 +36,7 @@ import com.t3ddyss.clother.utilities.toColorFilter
 import com.t3ddyss.clother.viewmodels.NetworkStateViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -43,6 +44,7 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
+@ExperimentalCoroutinesApi
 class MainActivity : AppCompatActivity() {
 
     private val networkStateViewModel by viewModels<NetworkStateViewModel>()
@@ -53,6 +55,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var destinationChangeListener: DestinationChangeListener
 
     @Inject lateinit var prefs: SharedPreferences
+    @Inject lateinit var onClearFromRecentService: OnClearFromRecentService
 
     private val openSettingsAction = {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
@@ -104,6 +107,8 @@ class MainActivity : AppCompatActivity() {
 
             }
         }
+
+        startService(Intent(applicationContext, OnClearFromRecentService::class.java))
     }
 
     override fun onDestroy() {

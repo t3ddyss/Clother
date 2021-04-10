@@ -1,4 +1,6 @@
 import math
+import eventlet
+from eventlet import wsgi
 
 from flask import Flask
 from sqlalchemy import event
@@ -13,6 +15,8 @@ def create_app(config_filename):
 
     register_extensions(app)
     register_blueprints(app)
+
+    wsgi.server(eventlet.listen(('', 5000)), app)
 
     with app.app_context():
         @event.listens_for(db.engine, 'connect')

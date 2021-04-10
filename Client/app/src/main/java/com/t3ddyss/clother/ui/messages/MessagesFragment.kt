@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -31,13 +32,17 @@ class MessagesFragment : Fragment() {
     ): View {
         _binding = FragmentMessagesBinding.inflate(inflater, container, false)
 
-        binding.buttonConnect.setOnClickListener {
-            viewModel.getMessages()
+        binding.buttonSend.setOnClickListener {
+            viewModel.sendMessage(
+                    binding.editTextMessage.text.toString(),
+                    binding.editTextUserId.text.toString().toInt()
+            )
         }
 
         viewModel.messages.observe(viewLifecycleOwner) {
-            Log.d(DEBUG_TAG, it)
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
         }
+        viewModel.getMessages()
 
         return binding.root
     }

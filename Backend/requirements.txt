@@ -13,3 +13,4 @@ Flask_Migrate==2.6.0
 Flask_SQLAlchemy==2.5.1
 Flask_SocketIO==5.0.1
 secrets==1.0.2
+eventlet~=0.30.2
