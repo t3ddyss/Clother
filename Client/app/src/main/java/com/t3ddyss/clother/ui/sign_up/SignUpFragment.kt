@@ -15,6 +15,7 @@ import com.t3ddyss.clother.models.*
 import com.t3ddyss.clother.models.AuthResponse
 import com.t3ddyss.clother.utilities.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @AndroidEntryPoint
 class SignUpFragment : Fragment() {
@@ -28,6 +29,7 @@ class SignUpFragment : Fragment() {
         findNavController()
     }
 
+    @ExperimentalCoroutinesApi
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
@@ -120,8 +122,8 @@ class SignUpFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         signUpViewModel.saveName(binding.editTextName.text())
-        signUpViewModel.saveEmail(binding.editTextName.text())
-        signUpViewModel.savePassword(binding.editTextName.text())
+        signUpViewModel.saveEmail(binding.editTextEmail.text())
+        signUpViewModel.savePassword(binding.editTextPassword.text())
     }
 
     override fun onDestroyView() {

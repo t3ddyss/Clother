@@ -15,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentProfileBinding
 import com.t3ddyss.clother.utilities.DEBUG_TAG
-import com.t3ddyss.clother.utilities.USER_ID
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

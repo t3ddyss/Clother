@@ -1,35 +1,36 @@
 package com.t3ddyss.clother.data
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
-import com.google.gson.Gson
-import com.google.gson.JsonObject
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import com.t3ddyss.clother.R
 import com.t3ddyss.clother.utilities.ACCESS_TOKEN
-import com.t3ddyss.clother.utilities.BASE_URL_DEVICE
 import com.t3ddyss.clother.utilities.DEBUG_TAG
+import com.t3ddyss.clother.utilities.MESSAGES_CHANNEL_ID
 import com.t3ddyss.clother.utilities.getBaseUrlForCurrentDevice
 import dagger.Module
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import io.socket.client.IO
-import io.socket.client.Socket
-import io.socket.client.Socket.EVENT_CONNECT_ERROR
 import io.socket.emitter.Emitter
-import io.socket.engineio.client.EngineIOException
 import io.socket.engineio.client.transports.WebSocket
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
-import java.util.*
 import javax.inject.Inject
 
 @Module
 @InstallIn(SingletonComponent::class)
 @ExperimentalCoroutinesApi
 class MessagesRepository @Inject constructor(
-    private val prefs: SharedPreferences
+    private val prefs: SharedPreferences,
+    @ApplicationContext private val context: Context
 ) {
     private val options = IO.Options.builder()
             .setTransports(arrayOf(WebSocket.NAME))
@@ -38,6 +39,7 @@ class MessagesRepository @Inject constructor(
                           "Content-type" to listOf("application/json")))
             .build()
     private val socket = IO.socket(getBaseUrlForCurrentDevice(), options)
+    private var notificationId = 0
 
     suspend fun getMessagesStream(): Flow<String> = callbackFlow {
         val onConnectListener = Emitter.Listener {
@@ -46,6 +48,7 @@ class MessagesRepository @Inject constructor(
 
         val onNewMessageListener = Emitter.Listener {
             offer(it[0] as? String ?: "Error getting message")
+            showNotification(it[0] as? String ?: "Error getting message")
         }
 
         socket.on("connection", onConnectListener)
@@ -60,13 +63,25 @@ class MessagesRepository @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
-    fun sendMessage(to: Int = 137, message: String) {
-        socket.emit("new_message", message, to)
+    fun sendMessage(to: Int = 1, message: String) {
+        socket.emit("send_message", message, to)
     }
 
     fun disconnectFromServer() {
         Log.d(DEBUG_TAG, "Going to disconnect manually")
         socket.off()
         socket.disconnect()
+    }
+
+    private fun showNotification(message: String) {
+        val builder = NotificationCompat.Builder(context, MESSAGES_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_chat)
+                .setContentTitle("Received new message!")
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+
+        with(NotificationManagerCompat.from(context)) {
+            notify(notificationId++, builder.build())
+        }
     }
 }

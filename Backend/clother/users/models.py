@@ -12,6 +12,7 @@ class User(db.Model):
     name = db.Column(db.String(50), nullable=False)
     image = db.Column(db.String(50), default=None)
     admin = db.Column(db.Boolean, nullable=False, default=False)
+    is_connected = db.Column(db.Boolean, nullable=False, default=False)
 
     def set_password(self, password):
         self.password = generate_password_hash(password, method='sha256')

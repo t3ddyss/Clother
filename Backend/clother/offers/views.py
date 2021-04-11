@@ -9,11 +9,9 @@ from werkzeug.utils import secure_filename
 
 from .models import Offer, Category, Location, Image, distance
 from .. import db
-from ..utils import response_delay, base_prefix, allowed_file
+from ..utils import response_delay, base_prefix, allowed_file, default_page_size
 
 blueprint = Blueprint('offers', __name__, url_prefix=(base_prefix + '/offers'))
-
-default_page_size = 10
 
 
 @blueprint.route('')

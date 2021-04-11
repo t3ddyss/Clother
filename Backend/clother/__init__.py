@@ -3,8 +3,9 @@ import eventlet
 from eventlet import wsgi
 
 from flask import Flask
+from flask.helpers import get_debug_flag
 from sqlalchemy import event
-from clother.extensions import db, migrate, cache, jwt, mail, socketio
+from clother.extensions import db, migrate, jwt, mail, socketio
 from clother import admin, authentication, users, offers, images, chat
 
 
@@ -16,7 +17,8 @@ def create_app(config_filename):
     register_extensions(app)
     register_blueprints(app)
 
-    wsgi.server(eventlet.listen(('', 5000)), app)
+    if not get_debug_flag():
+        wsgi.server(eventlet.listen(('', 5000)), app)
 
     with app.app_context():
         @event.listens_for(db.engine, 'connect')

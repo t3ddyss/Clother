@@ -5,6 +5,7 @@ from flask_mail import Message
 from .extensions import mail
 
 base_prefix = '/api'
+default_page_size = 10
 response_delay = 1.5
 allowed_extensions = {'png', 'jpg', 'jpeg'}
 

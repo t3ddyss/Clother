@@ -257,8 +257,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.signUpFragment, R.id.galleryFragment, R.id.locationFragment,
             R.id.offerFragment, R.id.locationViewerFragment, R.id.searchFragment)
 
-        private val fragmentsWithoutToolbar = setOf(R.id.signUpFragment,
-        R.id.searchFragment)
+        private val fragmentsWithoutToolbar = setOf(R.id.searchFragment)
 
         private val fragmentsWithToolbarLabel = setOf(R.id.offerCategoryFragment,
                 R.id.offerEditorFragment, R.id.galleryFragment, R.id.locationFragment,
@@ -266,7 +265,7 @@ class MainActivity : AppCompatActivity() {
 
         private val fragmentsWithoutNavIcon = setOf(R.id.homeFragment,
                 R.id.messagesFragment, R.id.profileFragment, R.id.searchByCategoryFragment,
-        R.id.searchFragment)
+        R.id.searchFragment, R.id.signUpFragment)
 
         private val fragmentsWithCustomUpIcon = setOf(R.id.offerEditorFragment,
                 R.id.galleryFragment, R.id.locationFragment)

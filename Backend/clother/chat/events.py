@@ -1,14 +1,14 @@
-import json
 from functools import wraps
 
-from flask import request, g
-from flask_jwt_extended import jwt_required, decode_token
+from flask import request
+from flask_jwt_extended import decode_token
 from flask_jwt_extended.exceptions import JWTExtendedException
 from flask_socketio import emit, join_room, leave_room, send
+from sqlalchemy import func, distinct
 
-from .. import socketio
-
-rooms = dict()
+from .models import Chat, Message
+from .. import socketio, db
+from ..users.models import User
 
 
 def auth_required(f):
@@ -20,8 +20,7 @@ def auth_required(f):
         try:
             user_id = decode_token(token)['user_id']
         except JWTExtendedException:
-            emit("unauthorized", {"message": "Your token has expired",
-                                  "request_id": args[1]})
+            emit("unauthorized", {"message": "Your token has expired"})
 
         print("Authenticated " + str(user_id))
         return f(*args, user_id=user_id, **kwargs)
@@ -32,25 +31,47 @@ def auth_required(f):
 @socketio.on('connect')
 @auth_required
 def on_connect(*args, **kwargs):
-    user_id = kwargs['user_id']
-    join_room(user_id)
+    user = User.query.get(kwargs['user_id'])
+    join_room(user.id)
 
-    print(f'{request.sid} connected, id = {user_id}')
+    user.is_connected = True
+    db.session.commit()
+
+    print(f'{request.sid} connected, id = {user.id}')
 
 
-@socketio.on('new_message')
+@socketio.on('send_message')
 @auth_required
 def send_message(*args, **kwargs):
-    send(args[0], to=args[1])
+    user = User.query.get(kwargs['user_id'])
+    interlocutor = User.query.get(args[1])
 
-    print(f'Sent new message "{args[0]}" to {args[1]}')
+    chat = Chat.query.join(Chat.users).\
+        filter(User.id.in_([user.id, interlocutor.id])).\
+        group_by(Chat).\
+        having(func.count(distinct(User.id)) == 2).first()
+
+    if chat is None:
+        chat = Chat()
+        chat.users.extend([user, interlocutor])
+        db.session.add(chat)
+        db.session.commit()
+
+    send(args[0], to=interlocutor.id)
+    message = Message(user_id=user.id, chat_id=chat.id, body=args[0])
+    chat.messages.append(message)
+    db.session.commit()
+
+    print(f'Sent new message "{args[0]}" from {user.id} to {interlocutor.id}')
 
 
 @socketio.on('disconnect')
 @auth_required
 def on_disconnect(*args, **kwargs):
-    user_id = kwargs['user_id']
-    leave_room(user_id)
+    user = User.query.get(kwargs['user_id'])
+    leave_room(user.id)
 
-    print(f'{request.sid} disconnected')
+    user.is_connected = False
+    db.session.commit()
 
+    print(f'{request.sid} disconnected, id = {user.id}')

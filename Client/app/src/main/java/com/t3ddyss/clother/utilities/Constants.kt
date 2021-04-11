@@ -8,6 +8,7 @@ const val BASE_URL_DEVICE = "http://192.168.0.105:5000/"
 const val DATABASE_NAME = "Clother.db"
 
 // Various parameters
+const val MESSAGES_CHANNEL_ID = "Messages"
 const val CLOTHER_PAGE_SIZE = 10
 const val DEFAULT_STRING_VALUE = ""
 
@@ -16,7 +17,6 @@ const val DEBUG_TAG = "ClotherLogs"
 
 // Shared preferences keys
 const val AUTH = "auth"
-const val USER_ID = "user_id"
 const val ACCESS_TOKEN = "access_token"
 const val REFRESH_TOKEN = "refresh_token"
 const val IS_AUTHENTICATED = "is_authenticated"
