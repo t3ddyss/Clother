@@ -77,4 +77,6 @@
     <string name="km_50">50 km</string>
     <string name="tap_to_view">Tap to view</string>
     <string name="nothing_here">Nothing here yet</string>
+    <string name="posted_by">Posted by</string>
+    <string name="message">Message</string>
 </resources>

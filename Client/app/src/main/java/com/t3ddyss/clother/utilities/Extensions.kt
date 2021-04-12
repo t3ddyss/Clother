@@ -10,6 +10,8 @@ import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.textfield.TextInputEditText
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.math.abs
 import kotlin.math.floor
 
@@ -63,6 +65,14 @@ fun Double.format(digits: Int) = "%.${digits}f".format(this)
 fun String.getImageUrlForCurrentDevice(): String {
     return if (this.startsWith("https://lp2.hm.com")) this
     else getBaseUrlForCurrentDevice() + this
+}
+
+fun String.formatDate(): String {
+    var format = SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss Z", Locale.getDefault())
+    val date = format.parse(this)
+
+    format = SimpleDateFormat("MMM d, hh:mm a", Locale.ENGLISH)
+    return format.format(date!!)
 }
 
 fun isEmulator() = FINGERPRINT.contains("generic")

@@ -15,6 +15,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.t3ddyss.clother.adapters.OfferImagesAdapter
 import com.t3ddyss.clother.databinding.FragmentOfferBinding
 import com.t3ddyss.clother.utilities.DEBUG_TAG
+import com.t3ddyss.clother.utilities.formatDate
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -41,8 +42,6 @@ class OfferFragment : Fragment() {
                     TabLayoutMediator(dots, images) { _, _ ->
                     }.attach()
                 }
-
-                Log.d(DEBUG_TAG, it.images[0])
 
                 textViewTitle.text = it.title
 
@@ -77,6 +76,9 @@ class OfferFragment : Fragment() {
                 else {
                     groupSize.isVisible = false
                 }
+
+                textViewUser.text = it.userName
+                textViewTime.text = it.createdAt.formatDate()
             }
         }
 

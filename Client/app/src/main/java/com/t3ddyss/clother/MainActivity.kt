@@ -87,7 +87,8 @@ class MainActivity : AppCompatActivity() {
 
         // Do not represent actual top-level destinations, just for UP navigation purposes
         appBarConfiguration = AppBarConfiguration(setOf(
-                R.id.homeFragment, R.id.messagesFragment, R.id.profileFragment, R.id.searchFragment))
+                R.id.homeFragment, R.id.messagesFragment, R.id.profileFragment, R.id.searchFragment,
+        R.id.signUpFragment))
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
 
