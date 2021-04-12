@@ -11,7 +11,7 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.OnSuccessListener
-import com.t3ddyss.clother.models.LatLngWrapper
+import com.t3ddyss.clother.models.common.LatLngWrapper
 import com.t3ddyss.clother.utilities.DEBUG_TAG
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose

@@ -53,8 +53,7 @@ class LocationSelectorFragment : Fragment() {
 
     private var mapView: MapView? = null
     private lateinit var map: GoogleMap
-
-    private val channel = Channel<Boolean>()
+    private var isPermissionGranted = false
 
     private val enableLocationDialogLauncher = registerForActivityResult(
             ActivityResultContracts.StartIntentSenderForResult()) { result ->
@@ -78,12 +77,13 @@ class LocationSelectorFragment : Fragment() {
 
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { isGranted ->
             if (isGranted[Manifest.permission.ACCESS_FINE_LOCATION] == true
-                    && isGranted[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
-                lifecycleScope.launch {
-                    channel.receive()
+                && isGranted[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
+                isPermissionGranted = true
+
+                if (this::map.isInitialized) {
                     map.isMyLocationEnabled = true
-                    Log.d(DEBUG_TAG, "Received message from channel")
                 }
+
                 checkIfLocationEnabled()
             }
             else {
@@ -102,7 +102,11 @@ class LocationSelectorFragment : Fragment() {
         mapView?.getMapAsync { googleMap ->
             map = googleMap
             map.uiSettings?.isMyLocationButtonEnabled = false
-            channel.offer(true)
+
+            if (isPermissionGranted) {
+                map.isMyLocationEnabled = true
+            }
+
             subscribeToLocationUpdates()
         }
 

@@ -1,12 +1,13 @@
 package com.t3ddyss.clother.ui.sign_in
 
 import androidx.lifecycle.*
-import com.t3ddyss.clother.data.*
+import com.t3ddyss.clother.data.UsersRepository
+import com.t3ddyss.clother.models.auth.AuthTokens
 import com.t3ddyss.clother.models.Loading
 import com.t3ddyss.clother.models.ResponseState
-import com.t3ddyss.clother.models.AuthTokens
-import com.t3ddyss.clother.models.User
-import com.t3ddyss.clother.utilities.*
+import com.t3ddyss.clother.utilities.DEFAULT_STRING_VALUE
+import com.t3ddyss.clother.utilities.EMAIL
+import com.t3ddyss.clother.utilities.PASSWORD
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -37,8 +38,8 @@ class SignInViewModel @Inject constructor(
         _signInResponse.value = Loading()
         viewModelScope.launch {
             val response = repository.signInWithCredentials(
-                User(email = email,
-            password = password)
+                    email = email,
+                    password = password
             )
             _signInResponse.postValue(response)
         }

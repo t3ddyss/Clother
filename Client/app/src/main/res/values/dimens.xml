@@ -8,8 +8,8 @@
     <dimen name="fragment_vertical_margin">16dp</dimen>
 
     <!-- Profile fragment avatar -->
-    <dimen name="avatar_size">100dp</dimen>
-    <dimen name="avatar_corner_radius">50dp</dimen>
+    <dimen name="avatar_size">50dp</dimen>
+    <dimen name="avatar_corner_radius">25dp</dimen>
 
     <!-- Offer editor fragment -->
     <dimen name="image_size_editor">100dp</dimen>

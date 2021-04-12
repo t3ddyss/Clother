@@ -3,10 +3,7 @@ package com.t3ddyss.clother.di
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
-import com.t3ddyss.clother.db.AppDatabase
-import com.t3ddyss.clother.db.CategoryDao
-import com.t3ddyss.clother.db.OfferDao
-import com.t3ddyss.clother.db.RemoteKeyDao
+import com.t3ddyss.clother.db.*
 import com.t3ddyss.clother.utilities.AUTH
 import com.t3ddyss.clother.utilities.DATABASE_NAME
 import dagger.Module
@@ -20,7 +17,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
-
     // TODO implement migration
     @Singleton
     @Provides
@@ -42,10 +38,16 @@ object DatabaseModule {
         return appDatabase.remoteKeyDao()
     }
 
-    @Signed
+    @Singleton
     @Provides
     fun provideCategoryDao(appDatabase: AppDatabase): CategoryDao {
         return appDatabase.categoryDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideChatDao(appDatabase: AppDatabase): ChatDao {
+        return appDatabase.chatDao()
     }
 
     @Singleton

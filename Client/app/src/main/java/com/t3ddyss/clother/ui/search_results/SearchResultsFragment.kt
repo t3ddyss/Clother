@@ -7,6 +7,7 @@ import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -23,6 +24,7 @@ import com.t3ddyss.clother.adapters.OffersAdapter
 import com.t3ddyss.clother.databinding.FragmentSearchResultsBinding
 import com.t3ddyss.clother.ui.filters.FiltersViewModel
 import com.t3ddyss.clother.ui.home.HomeFragmentDirections
+import com.t3ddyss.clother.ui.offer.OfferViewModel
 import com.t3ddyss.clother.utilities.DEBUG_TAG
 import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
 import com.t3ddyss.clother.utilities.getThemeColor
@@ -39,14 +41,16 @@ class SearchResultsFragment : Fragment() {
 
     private val viewModel by hiltNavGraphViewModels<SearchResultsViewModel>(
             R.id.search_results_graph)
+    private val offerViewModel by activityViewModels<OfferViewModel>()
     private var _binding: FragmentSearchResultsBinding? = null
     private val binding get() = _binding!!
     private val args by navArgs<SearchResultsFragmentArgs>()
     @Inject lateinit var prefs: SharedPreferences
 
-    private val adapter = OffersAdapter {id ->
+    private val adapter = OffersAdapter {offer ->
+        offerViewModel.selectOffer(offer)
         val action = SearchResultsFragmentDirections
-                .actionSearchResultsToOfferFragment(id)
+                .actionSearchResultsToOfferFragment(offer.id)
         findNavController().navigate(action)
     }
     private lateinit var loadStateListener: (CombinedLoadStates) -> Unit

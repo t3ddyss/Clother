@@ -8,8 +8,8 @@ import com.t3ddyss.clother.api.ClotherOffersService
 import com.t3ddyss.clother.db.AppDatabase
 import com.t3ddyss.clother.db.OfferDao
 import com.t3ddyss.clother.db.RemoteKeyDao
-import com.t3ddyss.clother.models.Offer
-import com.t3ddyss.clother.models.RemoteKey
+import com.t3ddyss.clother.models.offers.Offer
+import com.t3ddyss.clother.models.common.RemoteKey
 import com.t3ddyss.clother.utilities.ACCESS_TOKEN
 import com.t3ddyss.clother.utilities.DEBUG_TAG
 import java.lang.Exception

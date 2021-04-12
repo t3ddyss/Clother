@@ -6,7 +6,7 @@ import androidx.paging.PagingSource.LoadParams.Append
 import androidx.paging.PagingSource.LoadParams.Prepend
 import androidx.paging.PagingState
 import com.t3ddyss.clother.api.ClotherOffersService
-import com.t3ddyss.clother.models.Offer
+import com.t3ddyss.clother.models.offers.Offer
 import com.t3ddyss.clother.utilities.ACCESS_TOKEN
 
 class OffersPagingSource(private val service: ClotherOffersService,

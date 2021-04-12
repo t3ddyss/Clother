@@ -1,6 +1,7 @@
 package com.t3ddyss.clother.di
 
 import com.t3ddyss.clother.api.ClotherAuthService
+import com.t3ddyss.clother.api.ClotherChatService
 import com.t3ddyss.clother.api.ClotherOffersService
 import com.t3ddyss.clother.api.TokenAuthenticator
 import com.t3ddyss.clother.utilities.getBaseUrlForCurrentDevice
@@ -64,4 +65,9 @@ object NetworkModule {
     @Provides
     fun provideClotherOffersService(retrofit: Retrofit): ClotherOffersService =
         retrofit.create(ClotherOffersService::class.java)
+
+    @Singleton
+    @Provides
+    fun provideClotherChatService(retrofit: Retrofit): ClotherChatService =
+        retrofit.create(ClotherChatService::class.java)
 }

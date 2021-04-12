@@ -21,6 +21,7 @@ import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OffersAdapter
 import com.t3ddyss.clother.databinding.FragmentHomeBinding
+import com.t3ddyss.clother.ui.offer.OfferViewModel
 import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
 import com.t3ddyss.clother.utilities.getThemeColor
 import com.t3ddyss.clother.viewmodels.NetworkStateViewModel
@@ -41,14 +42,18 @@ class HomeFragment : Fragment() {
 
     // Using activityViewModels delegate here to save data across different instances of HomeFragment
     private val viewModel by activityViewModels<HomeViewModel>()
+
+    private val offerViewModel by activityViewModels<OfferViewModel>()
     private val networkStateViewModel by activityViewModels<NetworkStateViewModel>()
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     @Inject lateinit var prefs: SharedPreferences
 
-    private val adapter = OffersAdapter {id ->
-        val action = HomeFragmentDirections.actionHomeFragmentToOfferFragment(id)
+    private val adapter = OffersAdapter {offer ->
+        offerViewModel.selectOffer(offer)
+        val action = HomeFragmentDirections
+                .actionHomeFragmentToOfferFragment(offer.id)
         findNavController().navigate(action)
     }
     private lateinit var loadStateListener: (CombinedLoadStates) -> Unit

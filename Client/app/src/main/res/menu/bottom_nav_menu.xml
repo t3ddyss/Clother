@@ -18,7 +18,7 @@
         android:menuCategory="secondary" />
 
     <item
-        android:id="@+id/messagesFragment"
+        android:id="@+id/chatsFragment"
         android:icon="@drawable/ic_chat"
         android:title="@string/messages"
         android:menuCategory="secondary"/>

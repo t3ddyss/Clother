@@ -1,4 +1,4 @@
-package com.t3ddyss.clother.models
+package com.t3ddyss.clother.models.common
 
 import com.google.android.gms.maps.model.LatLng
 

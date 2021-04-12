@@ -1,8 +1,7 @@
 package com.t3ddyss.clother.api
 
-import com.t3ddyss.clother.models.AuthTokens
-import com.t3ddyss.clother.models.AuthResponse
-import com.t3ddyss.clother.models.User
+import com.t3ddyss.clother.models.auth.AuthResponse
+import com.t3ddyss.clother.models.auth.AuthTokens
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -14,11 +13,11 @@ interface ClotherAuthService {
     suspend fun refreshTokens(@Header("Authorization") refreshToken: String): Response<AuthTokens>
 
     @POST("api/auth/register")
-    suspend fun createUserWithCredentials(@Body user: User): AuthResponse
+    suspend fun createUserWithCredentials(@Body user: Map<String, String>): AuthResponse
 
     @POST("api/auth/login")
-    suspend fun signInWithCredentials(@Body user: User): AuthTokens
+    suspend fun signInWithCredentials(@Body user: Map<String, String>): AuthTokens
 
     @POST("api/auth/forgot_password")
-    suspend fun resetPassword(@Body user: User): AuthResponse
+    suspend fun resetPassword(@Body user: Map<String, String>): AuthResponse
 }

@@ -3,7 +3,7 @@ package com.t3ddyss.clother.ui.offer_category
 import androidx.lifecycle.*
 import androidx.paging.ExperimentalPagingApi
 import com.t3ddyss.clother.data.OffersRepository
-import com.t3ddyss.clother.models.Category
+import com.t3ddyss.clother.models.offers.Category
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch

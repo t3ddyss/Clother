@@ -2,7 +2,7 @@ package com.t3ddyss.clother.ui.gallery
 
 import androidx.lifecycle.*
 import com.t3ddyss.clother.data.ImageProvider
-import com.t3ddyss.clother.models.GalleryImage
+import com.t3ddyss.clother.models.common.GalleryImage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest

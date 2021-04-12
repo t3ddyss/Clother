@@ -1,7 +1,6 @@
 package com.t3ddyss.clother.data
 
 import android.app.Application
-import android.content.Context
 import android.database.ContentObserver
 import android.net.Uri
 import android.os.Handler
@@ -10,8 +9,6 @@ import android.util.Log
 import com.bumptech.glide.Glide
 import com.t3ddyss.clother.utilities.DEBUG_TAG
 import id.zelory.compressor.Compressor
-import id.zelory.compressor.constraint.quality
-import id.zelory.compressor.constraint.size
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
@@ -20,8 +17,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
@@ -51,7 +46,7 @@ class ImageProvider @Inject constructor(
         awaitClose {
             application.contentResolver.unregisterContentObserver(newImagesObserver)
         }
-    }.flowOn(Dispatchers.IO) // Problem?
+    }.flowOn(Dispatchers.IO)
 
     private fun loadImagesFromGallery(): List<Uri> {
         val images = mutableListOf<Uri>()

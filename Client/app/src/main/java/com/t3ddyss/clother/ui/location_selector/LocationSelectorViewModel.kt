@@ -3,7 +3,7 @@ package com.t3ddyss.clother.ui.location_selector
 import androidx.lifecycle.*
 import com.google.android.gms.maps.model.LatLng
 import com.t3ddyss.clother.data.LocationProvider
-import com.t3ddyss.clother.models.LatLngWrapper
+import com.t3ddyss.clother.models.common.LatLngWrapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest

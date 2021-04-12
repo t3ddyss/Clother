@@ -22,7 +22,8 @@ import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OfferEditorImagesAdapter
 import com.t3ddyss.clother.databinding.FragmentOfferEditorBinding
 import com.t3ddyss.clother.models.*
-import com.t3ddyss.clother.models.NewOfferResponse
+import com.t3ddyss.clother.models.offers.Category
+import com.t3ddyss.clother.models.offers.NewOfferResponse
 import com.t3ddyss.clother.utilities.text
 import com.t3ddyss.clother.utilities.toCoordinatesString
 import dagger.hilt.android.AndroidEntryPoint

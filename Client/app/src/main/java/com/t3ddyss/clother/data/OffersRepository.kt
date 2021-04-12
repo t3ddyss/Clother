@@ -13,7 +13,8 @@ import com.t3ddyss.clother.db.CategoryDao
 import com.t3ddyss.clother.db.OfferDao
 import com.t3ddyss.clother.db.RemoteKeyDao
 import com.t3ddyss.clother.models.*
-import com.t3ddyss.clother.models.NewOfferResponse
+import com.t3ddyss.clother.models.offers.NewOfferResponse
+import com.t3ddyss.clother.models.offers.Offer
 import com.t3ddyss.clother.utilities.ACCESS_TOKEN
 import com.t3ddyss.clother.utilities.CLOTHER_PAGE_SIZE
 import com.t3ddyss.clother.utilities.handleError

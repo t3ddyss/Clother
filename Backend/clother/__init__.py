@@ -17,8 +17,7 @@ def create_app(config_filename):
     register_extensions(app)
     register_blueprints(app)
 
-    if not get_debug_flag():
-        wsgi.server(eventlet.listen(('', 5000)), app)
+    # wsgi.server(eventlet.listen(('', 5000)), app)
 
     with app.app_context():
         @event.listens_for(db.engine, 'connect')
@@ -45,3 +44,4 @@ def register_blueprints(app):
     app.register_blueprint(users.views.blueprint)
     app.register_blueprint(offers.views.blueprint)
     app.register_blueprint(images.views.blueprint)
+    app.register_blueprint(chat.views.blueprint)

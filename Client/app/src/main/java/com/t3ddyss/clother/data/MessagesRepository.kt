@@ -10,10 +10,7 @@ import com.t3ddyss.clother.utilities.ACCESS_TOKEN
 import com.t3ddyss.clother.utilities.DEBUG_TAG
 import com.t3ddyss.clother.utilities.MESSAGES_CHANNEL_ID
 import com.t3ddyss.clother.utilities.getBaseUrlForCurrentDevice
-import dagger.Module
-import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
 import io.socket.client.IO
 import io.socket.emitter.Emitter
 import io.socket.engineio.client.transports.WebSocket
@@ -24,9 +21,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
+import javax.inject.Singleton
 
-@Module
-@InstallIn(SingletonComponent::class)
+
+@Singleton
 @ExperimentalCoroutinesApi
 class MessagesRepository @Inject constructor(
     private val prefs: SharedPreferences,

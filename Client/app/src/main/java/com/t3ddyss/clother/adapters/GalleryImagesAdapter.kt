@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.t3ddyss.clother.databinding.ListItemImageGalleryBinding
-import com.t3ddyss.clother.models.GalleryImage
+import com.t3ddyss.clother.models.common.GalleryImage
 
 class GalleryImagesAdapter(private val selectedLimitExceeded: () -> Unit) :
         ListAdapter<GalleryImage, GalleryImagesAdapter.ImageViewHolder>(ImageDiffCallback()) {

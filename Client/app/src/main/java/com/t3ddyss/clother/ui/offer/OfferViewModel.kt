@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
 import com.t3ddyss.clother.data.OffersRepository
-import com.t3ddyss.clother.models.Offer
+import com.t3ddyss.clother.models.offers.Offer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -20,13 +20,8 @@ class OfferViewModel @Inject constructor(
 ) : ViewModel() {
     private val _offer = MutableLiveData<Offer>()
     val offer: LiveData<Offer> = _offer
-    private var isOfferLoaded = false
 
-    fun getOffer(id: Int) {
-        if (isOfferLoaded) return
-        viewModelScope.launch {
-            isOfferLoaded = true
-            _offer.postValue(repository.getOfferById(id))
-        }
+    fun selectOffer(offer: Offer) {
+        _offer.value = offer
     }
 }

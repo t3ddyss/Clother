@@ -12,7 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        app:srcCompat="@color/green_500"
-        tools:srcCompat="@tools:sample/avatars"
+        android:src="@drawable/ic_person"
+        app:tint="@color/green_500"
+        android:background="?attr/colorPrimaryVariant"
         tools:ignore="ContentDescription" />
 </androidx.cardview.widget.CardView>

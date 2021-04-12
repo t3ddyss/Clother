@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.t3ddyss.clother.models.RemoteKey
+import com.t3ddyss.clother.models.common.RemoteKey
 
 @Dao
 interface RemoteKeyDao {

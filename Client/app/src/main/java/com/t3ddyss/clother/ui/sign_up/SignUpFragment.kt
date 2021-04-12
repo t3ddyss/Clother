@@ -12,7 +12,7 @@ import com.t3ddyss.clother.R
 import com.t3ddyss.clother.data.*
 import com.t3ddyss.clother.databinding.FragmentSignUpBinding
 import com.t3ddyss.clother.models.*
-import com.t3ddyss.clother.models.AuthResponse
+import com.t3ddyss.clother.models.auth.AuthResponse
 import com.t3ddyss.clother.utilities.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi

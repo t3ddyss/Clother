@@ -1,4 +1,4 @@
-package com.t3ddyss.clother.models
+package com.t3ddyss.clother.models.auth
 
 import com.google.gson.annotations.SerializedName
 

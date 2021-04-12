@@ -1,4 +1,4 @@
-package com.t3ddyss.clother.models
+package com.t3ddyss.clother.models.offers
 
 import android.os.Parcel
 import android.os.Parcelable

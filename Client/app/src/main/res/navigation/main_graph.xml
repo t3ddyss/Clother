@@ -58,7 +58,7 @@
             app:destination="@id/search_results_graph">
             <argument
                 android:name="category"
-                app:argType="com.t3ddyss.clother.models.Category"/>
+                app:argType="com.t3ddyss.clother.models.offers.Category"/>
         </action>
     </fragment>
 
@@ -84,7 +84,7 @@
             app:destination="@id/offer_editor_graph">
             <argument
                 android:name="category"
-                app:argType="com.t3ddyss.clother.models.Category" />
+                app:argType="com.t3ddyss.clother.models.offers.Category" />
         </action>
     </fragment>
 
@@ -220,4 +220,8 @@
             app:argType="string"
             android:defaultValue=""/>
     </fragment>
+    <fragment
+        android:id="@+id/chatsFragment"
+        android:name="com.t3ddyss.clother.ui.chats.ChatsFragment"
+        android:label="@string/messages" />
 </navigation>

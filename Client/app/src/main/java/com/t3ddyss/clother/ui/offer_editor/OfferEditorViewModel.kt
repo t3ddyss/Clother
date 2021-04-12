@@ -7,7 +7,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.gson.JsonObject
 import com.t3ddyss.clother.data.OffersRepository
 import com.t3ddyss.clother.models.Loading
-import com.t3ddyss.clother.models.NewOfferResponse
+import com.t3ddyss.clother.models.offers.NewOfferResponse
 import com.t3ddyss.clother.models.ResponseState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi

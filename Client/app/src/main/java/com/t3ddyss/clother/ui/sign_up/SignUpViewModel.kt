@@ -2,10 +2,9 @@ package com.t3ddyss.clother.ui.sign_up
 
 import androidx.lifecycle.*
 import com.t3ddyss.clother.data.UsersRepository
+import com.t3ddyss.clother.models.auth.AuthResponse
 import com.t3ddyss.clother.models.Loading
 import com.t3ddyss.clother.models.ResponseState
-import com.t3ddyss.clother.models.AuthResponse
-import com.t3ddyss.clother.models.User
 import com.t3ddyss.clother.utilities.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -29,6 +28,14 @@ class SignUpViewModel @Inject constructor(
     private val _signUpResponse = MutableLiveData<Event<ResponseState<AuthResponse>>>()
     val authResponse: LiveData<Event<ResponseState<AuthResponse>>> = _signUpResponse
 
+    fun createUserWithCredentials(name: String, email: String, password: String) {
+        _signUpResponse.value = Event(Loading())
+        viewModelScope.launch {
+            val response = repository.createUser(name, email, password)
+            _signUpResponse.postValue(Event(response))
+        }
+    }
+
     fun saveName(name: String) {
         savedStateHandle.set(NAME, name)
     }
@@ -48,13 +55,5 @@ class SignUpViewModel @Inject constructor(
         _name.value = DEFAULT_STRING_VALUE
         _email.value = DEFAULT_STRING_VALUE
         _password.value = DEFAULT_STRING_VALUE
-    }
-
-    fun createUserWithCredentials(name: String, email: String, password: String) {
-        _signUpResponse.value = Event(Loading())
-        viewModelScope.launch {
-            val response = repository.createUser(User(name, email, password))
-            _signUpResponse.postValue(Event(response))
-        }
     }
 }

@@ -12,7 +12,7 @@ import com.t3ddyss.clother.R
 import com.t3ddyss.clother.data.*
 import com.t3ddyss.clother.databinding.FragmentSignInBinding
 import com.t3ddyss.clother.models.*
-import com.t3ddyss.clother.models.AuthTokens
+import com.t3ddyss.clother.models.auth.AuthTokens
 import com.t3ddyss.clother.utilities.*
 import dagger.hilt.android.AndroidEntryPoint
 

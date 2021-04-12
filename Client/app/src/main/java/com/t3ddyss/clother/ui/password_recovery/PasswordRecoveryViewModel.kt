@@ -1,11 +1,10 @@
 package com.t3ddyss.clother.ui.password_recovery
 
 import androidx.lifecycle.*
-import com.t3ddyss.clother.data.*
-import com.t3ddyss.clother.models.AuthResponse
+import com.t3ddyss.clother.data.UsersRepository
+import com.t3ddyss.clother.models.auth.AuthResponse
 import com.t3ddyss.clother.models.Loading
 import com.t3ddyss.clother.models.ResponseState
-import com.t3ddyss.clother.models.User
 import com.t3ddyss.clother.utilities.DEFAULT_STRING_VALUE
 import com.t3ddyss.clother.utilities.EMAIL
 import com.t3ddyss.clother.utilities.Event
@@ -30,7 +29,7 @@ class PasswordRecoveryViewModel @Inject constructor(
     fun resetPassword(email: String) {
         _passwordResetResponse.value = Event(Loading())
         viewModelScope.launch {
-            val response = repository.resetPassword(User(email = email))
+            val response = repository.resetPassword(email = email)
             _passwordResetResponse.postValue(Event(response))
         }
     }

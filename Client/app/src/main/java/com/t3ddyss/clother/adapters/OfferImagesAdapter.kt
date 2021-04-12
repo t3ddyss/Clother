@@ -37,11 +37,14 @@ class OfferImagesAdapter(
         }
 
         fun bind(url: String) {
-            Glide.with(binding.image)
-                    .load(url.getImageUrlForCurrentDevice())
-                    .placeholder(R.drawable.placeholder_offer_image)
-                    .dontAnimate()
-                    .into(binding.image)
+            binding.apply {
+                Glide.with(image)
+                        .load(url.getImageUrlForCurrentDevice())
+                        .centerCrop()
+                        .placeholder(R.drawable.placeholder_offer_image)
+                        .dontAnimate()
+                        .into(image)
+            }
         }
     }
 }

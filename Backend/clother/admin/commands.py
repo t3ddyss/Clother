@@ -1,4 +1,9 @@
+import math
 import json
+import random
+import datetime
+import time
+
 import click
 from flask import Blueprint
 
@@ -6,7 +11,7 @@ from sqlalchemy.exc import IntegrityError
 
 from clother import db
 from clother.users.models import User
-from clother.offers.models import Offer, Category, Image
+from clother.offers.models import Offer, Category, Image, Location
 
 blueprint = Blueprint('admin', __name__)
 
@@ -45,8 +50,9 @@ def create_database():
 @blueprint.cli.command('populate_categories')
 def populate_categories():
     categories = json.load(open("./categories.json", 'r'))
-    for entry in categories:
-        category = Category(parent_id=entry['parent_id'], title=entry['title'])
+
+    for item in categories:
+        category = Category(parent_id=item['parent_id'], title=item['title'])
 
         db.session.add(category)
         db.session.commit()
@@ -62,14 +68,37 @@ def populate_categories():
             db.session.commit()
 
 
-@blueprint.cli.command('populate_offers')
-def populate_offers():
+@blueprint.cli.command('mock_users')
+def mock_users():
+    users = json.load(open("./users.json", 'r'))
+
+    for item in users:
+        user = User(email=item['email'],
+                    name=item['first_name'] + ' ' + item['last_name'],
+                    email_verified=True)
+        user.set_password('qwerty')
+
+        db.session.add(user)
+        db.session.commit()
+
+    print("Finished mocking users")
+
+
+@blueprint.cli.command('mock_offers')
+def mock_offers():
     offers = json.load(open("./offers.json", 'r'))
+
     for item in offers:
         offer = Offer(title=item['title'],
-                      category_id=item['category_id'])
+                      category_id=item['category_id'],
+                      user_id=get_random_user(),
+                      created_at=generate_random_time(),
+                      size=get_random_size())
         for uri in item['images']:
             offer.images.append(Image(uri="https:" + uri))
+
+        lat, lng = generate_random_location()
+        offer.location = Location(latitude=lat, longitude=lng)
 
         try:
             db.session.add(offer)
@@ -77,3 +106,37 @@ def populate_offers():
         except IntegrityError:
             db.session.rollback()
 
+    print("Finished mocking offers")
+
+
+def generate_random_time():
+    min_time = datetime.datetime(year=2021, month=1, day=1)
+    max_time = datetime.datetime(year=2021, month=3, day=31)
+
+    min_time_ts = int(time.mktime(min_time.timetuple()))
+    max_time_ts = int(time.mktime(max_time.timetuple()))
+
+    random_ts = random.randint(min_time_ts, max_time_ts)
+    return datetime.datetime.fromtimestamp(random_ts)
+
+
+def generate_random_location(x0=55.7541, y0=37.62082, radius=17_500):
+    radius_in_degrees = radius / (111.32 * 1000 * math.cos(x0 * (math.pi / 180)))
+
+    u = random.uniform(0, 1)
+    v = random.uniform(0, 1)
+    w = radius_in_degrees * math.sqrt(u)
+    t = 2 * math.pi * v
+    x = w * math.cos(t)
+    y = w * math.sin(t)
+
+    return [x / math.cos(math.radians(y0)) + x0, y + y0]
+
+
+def get_random_size():
+    sizes = ["XS", "S", "M", "L", "XL"] + [str(x) for x in range(6, 12)]
+    return random.choice(sizes)
+
+
+def get_random_user():
+    return random.choice(User.query.all()).id
