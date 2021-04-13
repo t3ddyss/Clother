@@ -17,8 +17,9 @@ class UsersRepository @Inject constructor(
         private val prefs: SharedPreferences
 ) {
 
+    // TODO use generic function for handlign exceptions
     suspend fun createUser(name: String, email: String, password: String):
-            ResponseState<AuthResponse> {
+            Resource<AuthResponse> {
         val user = mapOf("name" to name, "email" to email, "password" to password)
         return try {
             val response = service.createUserWithCredentials(user)
@@ -35,7 +36,7 @@ class UsersRepository @Inject constructor(
         }
     }
 
-    suspend fun signInWithCredentials(email: String, password: String): ResponseState<AuthTokens> {
+    suspend fun signInWithCredentials(email: String, password: String): Resource<AuthTokens> {
         val user = mapOf("email" to email, "password" to password)
         return try {
             val response = service.signInWithCredentials(user)
@@ -54,7 +55,7 @@ class UsersRepository @Inject constructor(
         }
     }
 
-    suspend fun resetPassword(email: String): ResponseState<AuthResponse> {
+    suspend fun resetPassword(email: String): Resource<AuthResponse> {
         return try {
             val response = service.resetPassword(mapOf("email" to email))
             Success(response.also { it.email = email })

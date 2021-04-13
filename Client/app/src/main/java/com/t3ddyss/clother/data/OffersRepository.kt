@@ -78,7 +78,7 @@ class OffersRepository
 
     suspend fun getCategories(parentId: Int? = null) = categoryDao.getSubcategories(parentId)
 
-    suspend fun postOffer(offer: JsonObject, images: List<Uri>): ResponseState<NewOfferResponse> {
+    suspend fun postOffer(offer: JsonObject, images: List<Uri>): Resource<NewOfferResponse> {
         val body = offer.toString()
                 .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
         val imageFiles = images.map {

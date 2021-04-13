@@ -8,7 +8,7 @@ import com.google.gson.JsonObject
 import com.t3ddyss.clother.data.OffersRepository
 import com.t3ddyss.clother.models.Loading
 import com.t3ddyss.clother.models.offers.NewOfferResponse
-import com.t3ddyss.clother.models.ResponseState
+import com.t3ddyss.clother.models.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -22,8 +22,8 @@ class OfferEditorViewModel
         private val repository: OffersRepository,
         private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val _newOfferResponse = MutableLiveData<ResponseState<NewOfferResponse>>()
-    val newNewOfferResponse: LiveData<ResponseState<NewOfferResponse>> = _newOfferResponse
+    private val _newOfferResponse = MutableLiveData<Resource<NewOfferResponse>>()
+    val newNewOfferResponse: LiveData<Resource<NewOfferResponse>> = _newOfferResponse
     val images = MutableLiveData<MutableList<Uri>>(mutableListOf())
     val location = MutableLiveData<LatLng>()
 

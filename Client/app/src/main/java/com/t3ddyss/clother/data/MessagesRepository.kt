@@ -33,14 +33,11 @@ import javax.inject.Singleton
 
 @Singleton
 @ExperimentalCoroutinesApi
-@ExperimentalPagingApi
 class MessagesRepository @Inject constructor(
         private val service: ClotherChatService,
         private val prefs: SharedPreferences,
         private val db: AppDatabase,
         private val chatDao: ChatDao,
-        private val messageDao: MessageDao,
-        private val remoteKeyDao: RemoteKeyDao,
         @ApplicationContext
         private val context: Context
 ) {
@@ -53,23 +50,6 @@ class MessagesRepository @Inject constructor(
     private val socket = IO.socket(getBaseUrlForCurrentDevice(), options)
     private var notificationId = 0
 
-    fun getMessages(interlocutorId: Int, remoteKey: String): Flow<PagingData<Message>> {
-        return Pager(
-                config = PagingConfig(
-                        pageSize = CLOTHER_PAGE_SIZE_CHAT,
-                        enablePlaceholders = false),
-                remoteMediator = MessagesRemoteMediator(
-                        service = service,
-                        prefs = prefs,
-                        db = db,
-                        chatDao = chatDao,
-                        messageDao = messageDao,
-                        remoteKeyDao = remoteKeyDao,
-                        remoteKeyList = remoteKey,
-                        interlocutorId = interlocutorId),
-                pagingSourceFactory = { messageDao.getMessagesByInterlocutorId(interlocutorId) }
-        ).flow
-    }
 
     suspend fun getMessagesStream(): Flow<String> = callbackFlow {
         val onConnectListener = Emitter.Listener {

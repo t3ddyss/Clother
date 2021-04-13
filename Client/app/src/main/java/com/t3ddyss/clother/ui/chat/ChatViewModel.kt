@@ -17,7 +17,6 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-@ExperimentalPagingApi
 @ExperimentalCoroutinesApi
 class ChatViewModel
 @Inject constructor(
@@ -27,17 +26,6 @@ class ChatViewModel
     val offers: LiveData<PagingData<Message>> = _messages
 
     var endOfPaginationReachedBottom = false
-
-    fun getMessages(interlocutorId: Int) {
-        viewModelScope.launch {
-            repository
-                    .getMessages(interlocutorId, REMOTE_KEY_CHAT)
-                    .cachedIn(viewModelScope)
-                    .collectLatest {
-                        _messages.postValue(it)
-                    }
-        }
-    }
 
     companion object {
         const val REMOTE_KEY_CHAT = "chat"

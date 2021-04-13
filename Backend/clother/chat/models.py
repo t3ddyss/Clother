@@ -20,6 +20,7 @@ class Chat(db.Model):
         interlocutor = [x for x in self.users if x.id != user_id_to][0]
         last_message = self.messages[-1]
         return {'id': self.id,
+                'interlocutor_id': interlocutor.id,
                 'interlocutor': interlocutor.to_dict(),
                 'last_message': last_message.to_dict()}
 

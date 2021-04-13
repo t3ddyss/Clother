@@ -1,20 +1,12 @@
 package com.t3ddyss.clother.data
 
 import android.content.SharedPreferences
+import androidx.room.withTransaction
 import com.t3ddyss.clother.api.ClotherChatService
 import com.t3ddyss.clother.db.AppDatabase
 import com.t3ddyss.clother.db.ChatDao
-import com.t3ddyss.clother.models.Error
-import com.t3ddyss.clother.models.Failed
-import com.t3ddyss.clother.models.ResponseState
-import com.t3ddyss.clother.models.Success
-import com.t3ddyss.clother.models.chat.Chat
 import com.t3ddyss.clother.utilities.ACCESS_TOKEN
-import com.t3ddyss.clother.utilities.handleError
-import retrofit2.HttpException
-import retrofit2.Response
-import java.net.ConnectException
-import java.net.SocketTimeoutException
+import com.t3ddyss.clother.utilities.networkBoundResource
 import javax.inject.Inject
 
 class ChatsRepository @Inject constructor(
@@ -23,19 +15,12 @@ class ChatsRepository @Inject constructor(
     private val chatDao: ChatDao,
     private val prefs: SharedPreferences
 ) {
-    suspend fun getChats(): ResponseState<List<Chat>> {
-        return try {
-            val chats = service.getChats(prefs.getString(ACCESS_TOKEN, null))
-            Success(chats)
-
-        } catch (ex: HttpException) {
-            handleError(ex)
-
-        } catch (ex: ConnectException) {
-            Failed()
-
-        } catch (ex: SocketTimeoutException) {
-            Error(null)
-        }
-    }
+    fun getChats() = networkBoundResource(
+            query = { chatDao.getAllChats() },
+            fetch = { service.getChats(prefs.getString(ACCESS_TOKEN, null)) },
+            saveFetchResult = { db.withTransaction {
+                chatDao.deleteAllChats()
+                chatDao.insertAll(it)
+            } }
+    )
 }

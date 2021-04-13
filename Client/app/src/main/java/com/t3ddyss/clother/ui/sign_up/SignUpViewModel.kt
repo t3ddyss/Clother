@@ -4,7 +4,7 @@ import androidx.lifecycle.*
 import com.t3ddyss.clother.data.UsersRepository
 import com.t3ddyss.clother.models.auth.AuthResponse
 import com.t3ddyss.clother.models.Loading
-import com.t3ddyss.clother.models.ResponseState
+import com.t3ddyss.clother.models.Resource
 import com.t3ddyss.clother.utilities.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -25,8 +25,8 @@ class SignUpViewModel @Inject constructor(
     private val _password = savedStateHandle.getLiveData(PASSWORD, DEFAULT_STRING_VALUE)
     val password: LiveData<String> = _password
 
-    private val _signUpResponse = MutableLiveData<Event<ResponseState<AuthResponse>>>()
-    val authResponse: LiveData<Event<ResponseState<AuthResponse>>> = _signUpResponse
+    private val _signUpResponse = MutableLiveData<Event<Resource<AuthResponse>>>()
+    val authResponse: LiveData<Event<Resource<AuthResponse>>> = _signUpResponse
 
     fun createUserWithCredentials(name: String, email: String, password: String) {
         _signUpResponse.value = Event(Loading())
