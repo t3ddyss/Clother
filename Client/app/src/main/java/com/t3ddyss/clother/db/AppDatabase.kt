@@ -13,7 +13,7 @@ import com.t3ddyss.clother.models.user.User
 @Database(
         entities = [Offer::class, RemoteKey::class, Category::class, Chat::class,
                    Message::class, User::class],
-        version = 3,
+        version = 4,
         exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -21,4 +21,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun remoteKeyDao(): RemoteKeyDao
     abstract fun categoryDao(): CategoryDao
     abstract fun chatDao(): ChatDao
+    abstract fun messageDao(): MessageDao
 }

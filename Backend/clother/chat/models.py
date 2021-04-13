@@ -14,7 +14,7 @@ class Chat(db.Model):
     users = db.relationship('User',
                             secondary=user_chat,
                             backref=db.backref('chats', lazy=True))
-    messages = db.relationship('Message', cascade="all,delete")
+    messages = db.relationship('Message', cascade="all,delete", lazy='dynamic')
 
     def to_dict(self, user_id_to):
         interlocutor = [x for x in self.users if x.id != user_id_to][0]
@@ -38,7 +38,7 @@ class Message(db.Model):
         message = {'id': self.id,
                    'chat_id': self.chat_id,
                    'user_id': self.user_id,
-                   'user_name': self.user_name,
+                   'user_name': self.user.name,
                    'created_at': self.created_at,
                    'body': self.body}
         if self.image:

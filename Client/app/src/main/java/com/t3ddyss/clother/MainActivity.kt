@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity() {
 
         // Do not represent actual top-level destinations, just for UP navigation purposes
         appBarConfiguration = AppBarConfiguration(setOf(
-                R.id.homeFragment, R.id.messagesFragment, R.id.profileFragment, R.id.searchFragment,
+                R.id.homeFragment, R.id.searchFragment, R.id.chatsFragment, R.id.profileFragment,
         R.id.signUpFragment))
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
@@ -256,17 +256,18 @@ class MainActivity : AppCompatActivity() {
         private val fragmentsWithoutBottomNav = setOf(R.id.emailActionFragment,
                 R.id.offerEditorFragment, R.id.resetPasswordFragment, R.id.signInFragment,
                 R.id.signUpFragment, R.id.galleryFragment, R.id.locationFragment,
-            R.id.offerFragment, R.id.locationViewerFragment, R.id.searchFragment)
+            R.id.offerFragment, R.id.locationViewerFragment, R.id.searchFragment, R.id.chatFragment)
 
         private val fragmentsWithoutToolbar = setOf(R.id.searchFragment)
 
         private val fragmentsWithToolbarLabel = setOf(R.id.offerCategoryFragment,
                 R.id.offerEditorFragment, R.id.galleryFragment, R.id.locationFragment,
-            R.id.locationViewerFragment, R.id.searchByCategoryFragment)
+            R.id.locationViewerFragment, R.id.searchByCategoryFragment, R.id.chatFragment,
+        R.id.homeFragment, R.id.chatsFragment)
 
         private val fragmentsWithoutNavIcon = setOf(R.id.homeFragment,
                 R.id.messagesFragment, R.id.profileFragment, R.id.searchByCategoryFragment,
-        R.id.searchFragment, R.id.signUpFragment)
+        R.id.searchFragment, R.id.signUpFragment, R.id.chatsFragment)
 
         private val fragmentsWithCustomUpIcon = setOf(R.id.offerEditorFragment,
                 R.id.galleryFragment, R.id.locationFragment)

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.t3ddyss.clother.adapters.ChatsAdapter
 import com.t3ddyss.clother.databinding.FragmentChatsBinding
 import com.t3ddyss.clother.models.Success
@@ -20,7 +21,9 @@ class ChatsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val adapter = ChatsAdapter {
-        // TODO
+        val action = ChatsFragmentDirections
+                .actionChatsFragmentToChatFragment(it.interlocutor.id, it.interlocutor.name)
+        findNavController().navigate(action)
     }
 
     override fun onCreateView(

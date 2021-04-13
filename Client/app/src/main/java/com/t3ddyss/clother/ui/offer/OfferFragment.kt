@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.ExperimentalPagingApi
 import com.google.android.material.tabs.TabLayoutMediator
+import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OfferImagesAdapter
 import com.t3ddyss.clother.databinding.FragmentOfferBinding
 import com.t3ddyss.clother.utilities.DEBUG_TAG
@@ -79,6 +80,12 @@ class OfferFragment : Fragment() {
 
                 textViewUser.text = it.userName
                 textViewTime.text = it.createdAt.formatDate()
+
+                buttonMessage.setOnClickListener {_ ->
+                    val action = OfferFragmentDirections
+                        .actionOfferFragmentToChatFragment(it.userId, it.userName)
+                    findNavController().navigate(action)
+                }
             }
         }
 

@@ -16,6 +16,7 @@
     <color name="grey_200">#e0e0e0</color>
     <color name="grey_400">#bdbdbd</color>
     <color name="green_500_map">#4d8bc34a</color>
+    <color name="green_500_chat">#808bc34a</color>
 
     <color name="mtrl_textinput_default_box_stroke_color">@color/green_500</color>
 </resources>

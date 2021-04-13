@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.t3ddyss.clother.databinding.ListItemChatBinding
 import com.t3ddyss.clother.models.chat.Chat
+import com.t3ddyss.clother.utilities.formatDate
 import com.t3ddyss.clother.utilities.getImageUrlForCurrentDevice
 
 class ChatsAdapter(
@@ -38,7 +39,7 @@ class ChatsAdapter(
             with (binding) {
                 textViewName.text = chat.interlocutor.name
                 textViewMessage.text = chat.lastMessage.body
-                textViewTime.text = chat.lastMessage.createdAt
+                textViewTime.text = chat.lastMessage.createdAt.formatDate()
 
                 chat.interlocutor.image?.let {
                     Glide.with(cardViewAvatar.imageViewAvatar)

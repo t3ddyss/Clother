@@ -52,6 +52,12 @@ object DatabaseModule {
 
     @Singleton
     @Provides
+    fun provideMessageDao(appDatabase: AppDatabase): MessageDao {
+        return appDatabase.messageDao()
+    }
+
+    @Singleton
+    @Provides
     fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences =
         context.getSharedPreferences(AUTH, Context.MODE_PRIVATE)
 }

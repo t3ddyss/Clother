@@ -5,11 +5,18 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.t3ddyss.clother.R
-import com.t3ddyss.clother.utilities.ACCESS_TOKEN
-import com.t3ddyss.clother.utilities.DEBUG_TAG
-import com.t3ddyss.clother.utilities.MESSAGES_CHANNEL_ID
-import com.t3ddyss.clother.utilities.getBaseUrlForCurrentDevice
+import com.t3ddyss.clother.api.ClotherChatService
+import com.t3ddyss.clother.db.AppDatabase
+import com.t3ddyss.clother.db.ChatDao
+import com.t3ddyss.clother.db.MessageDao
+import com.t3ddyss.clother.db.RemoteKeyDao
+import com.t3ddyss.clother.models.chat.Message
+import com.t3ddyss.clother.utilities.*
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.socket.client.IO
 import io.socket.emitter.Emitter
@@ -26,9 +33,16 @@ import javax.inject.Singleton
 
 @Singleton
 @ExperimentalCoroutinesApi
+@ExperimentalPagingApi
 class MessagesRepository @Inject constructor(
-    private val prefs: SharedPreferences,
-    @ApplicationContext private val context: Context
+        private val service: ClotherChatService,
+        private val prefs: SharedPreferences,
+        private val db: AppDatabase,
+        private val chatDao: ChatDao,
+        private val messageDao: MessageDao,
+        private val remoteKeyDao: RemoteKeyDao,
+        @ApplicationContext
+        private val context: Context
 ) {
     private val options = IO.Options.builder()
             .setTransports(arrayOf(WebSocket.NAME))
@@ -38,6 +52,24 @@ class MessagesRepository @Inject constructor(
             .build()
     private val socket = IO.socket(getBaseUrlForCurrentDevice(), options)
     private var notificationId = 0
+
+    fun getMessages(interlocutorId: Int, remoteKey: String): Flow<PagingData<Message>> {
+        return Pager(
+                config = PagingConfig(
+                        pageSize = CLOTHER_PAGE_SIZE_CHAT,
+                        enablePlaceholders = false),
+                remoteMediator = MessagesRemoteMediator(
+                        service = service,
+                        prefs = prefs,
+                        db = db,
+                        chatDao = chatDao,
+                        messageDao = messageDao,
+                        remoteKeyDao = remoteKeyDao,
+                        remoteKeyList = remoteKey,
+                        interlocutorId = interlocutorId),
+                pagingSourceFactory = { messageDao.getMessagesByInterlocutorId(interlocutorId) }
+        ).flow
+    }
 
     suspend fun getMessagesStream(): Flow<String> = callbackFlow {
         val onConnectListener = Emitter.Listener {

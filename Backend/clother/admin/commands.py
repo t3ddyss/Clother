@@ -10,6 +10,7 @@ from flask import Blueprint
 from sqlalchemy.exc import IntegrityError
 
 from clother import db
+from clother.chat.models import Chat, Message
 from clother.users.models import User
 from clother.offers.models import Offer, Category, Image, Location
 
@@ -107,6 +108,37 @@ def mock_offers():
             db.session.rollback()
 
     print("Finished mocking offers")
+
+
+@blueprint.cli.command('mock_messages')
+def mock_messages():
+    messages = ["Hello!",
+                "Hi!",
+                "I would like to swap my T-shirt for your hat",
+                "Ok, fine",
+                "Are you free on Friday?",
+                "Yes"]
+    users = User.query.order_by(User.id.asc()).limit(3).all()
+
+    for i in range(len(users)):
+        for j in range(i, len(users)):
+
+            if users[i].id == users[j].id:
+                continue
+
+            chat = Chat()
+            chat.users.extend([users[i], users[j]])
+            db.session.add(chat)
+            db.session.commit()
+
+            for k in range(len(messages)):
+                sender_id = users[i].id if k % 2 == 0 else users[j].id
+                message = Message(user_id=sender_id, chat_id=chat.id, body=messages[k] + str(sender_id))
+                chat.messages.append(message)
+                db.session.commit()
+                time.sleep(0.25)
+
+    print("Finished mocking chats")
 
 
 def generate_random_time():

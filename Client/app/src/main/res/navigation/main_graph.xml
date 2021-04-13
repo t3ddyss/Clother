@@ -193,6 +193,14 @@
         <action
             android:id="@+id/action_offerFragment_to_locationViewerFragment"
             app:destination="@id/locationViewerFragment" />
+        <action
+            android:id="@+id/action_offerFragment_to_chatFragment"
+            app:destination="@id/chatFragment" >
+            <argument
+                android:name="user_id"
+                app:argType="integer"
+                android:defaultValue="0" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/locationViewerFragment"
@@ -223,5 +231,23 @@
     <fragment
         android:id="@+id/chatsFragment"
         android:name="com.t3ddyss.clother.ui.chats.ChatsFragment"
-        android:label="@string/messages" />
+        android:label="@string/messages" >
+        <action
+            android:id="@+id/action_chatsFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.t3ddyss.clother.ui.chat.ChatFragment"
+        android:label="{user_name}"
+        tools:layout="@layout/fragment_chat" >
+        <argument
+            android:name="user_id"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <argument
+            android:name="user_name"
+            app:argType="string"
+            android:defaultValue=""/>
+    </fragment>
 </navigation>

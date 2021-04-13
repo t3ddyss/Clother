@@ -10,6 +10,7 @@ const val DATABASE_NAME = "Clother.db"
 // Various parameters
 const val MESSAGES_CHANNEL_ID = "Messages"
 const val CLOTHER_PAGE_SIZE = 10
+const val CLOTHER_PAGE_SIZE_CHAT = 25
 const val DEFAULT_STRING_VALUE = ""
 
 // Debug
