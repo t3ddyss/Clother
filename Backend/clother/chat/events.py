@@ -1,6 +1,7 @@
+import json
 from functools import wraps
 
-from flask import request
+from flask import request, jsonify
 from flask_jwt_extended import decode_token
 from flask_jwt_extended.exceptions import JWTExtendedException
 from flask_socketio import emit, join_room, leave_room, send
@@ -46,9 +47,9 @@ def send_message(*args, **kwargs):
     user = User.query.get(kwargs['user_id'])
     interlocutor = User.query.get(args[1])
 
-    chat = Chat.query.join(Chat.users).\
-        filter(User.id.in_([user.id, interlocutor.id])).\
-        group_by(Chat).\
+    chat = Chat.query.join(Chat.users). \
+        filter(User.id.in_([user.id, interlocutor.id])). \
+        group_by(Chat). \
         having(func.count(distinct(User.id)) == 2).first()
 
     if chat is None:
@@ -57,10 +58,11 @@ def send_message(*args, **kwargs):
         db.session.add(chat)
         db.session.commit()
 
-    send(args[0], to=interlocutor.id)
     message = Message(user_id=user.id, chat_id=chat.id, body=args[0])
     chat.messages.append(message)
     db.session.commit()
+
+    send(json.dumps(message.to_dict(), default=str), to=interlocutor.id)
 
     print(f'Sent new message "{args[0]}" from {user.id} to {interlocutor.id}')
 

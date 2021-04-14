@@ -12,7 +12,10 @@ import com.t3ddyss.clother.db.AppDatabase
 import com.t3ddyss.clother.db.CategoryDao
 import com.t3ddyss.clother.db.OfferDao
 import com.t3ddyss.clother.db.RemoteKeyDao
-import com.t3ddyss.clother.models.*
+import com.t3ddyss.clother.models.common.Error
+import com.t3ddyss.clother.models.common.Failed
+import com.t3ddyss.clother.models.common.Resource
+import com.t3ddyss.clother.models.common.Success
 import com.t3ddyss.clother.models.offers.NewOfferResponse
 import com.t3ddyss.clother.models.offers.Offer
 import com.t3ddyss.clother.utilities.ACCESS_TOKEN

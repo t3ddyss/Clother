@@ -33,6 +33,7 @@ import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
 import com.t3ddyss.clother.utilities.convertDpToPx
 import com.t3ddyss.clother.utilities.getThemeColor
 import com.t3ddyss.clother.utilities.toColorFilter
+import com.t3ddyss.clother.viewmodels.MessagesViewModel
 import com.t3ddyss.clother.viewmodels.NetworkStateViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -47,6 +48,7 @@ import javax.inject.Inject
 @ExperimentalCoroutinesApi
 class MainActivity : AppCompatActivity() {
 
+    private val messagesViewModel by viewModels<MessagesViewModel>()
     private val networkStateViewModel by viewModels<NetworkStateViewModel>()
     private lateinit var binding: ActivityMainBinding
 
@@ -110,6 +112,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         startService(Intent(applicationContext, OnClearFromRecentService::class.java))
+    }
+
+    override fun onStart() {
+        super.onStart()
+        messagesViewModel.getMessages()
     }
 
     override fun onDestroy() {

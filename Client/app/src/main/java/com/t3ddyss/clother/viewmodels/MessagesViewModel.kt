@@ -1,10 +1,10 @@
-package com.t3ddyss.clother.ui.messages
+package com.t3ddyss.clother.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.t3ddyss.clother.data.MessagesRepository
+import com.t3ddyss.clother.data.LiveMessagesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
@@ -13,7 +13,7 @@ import javax.inject.Inject
 @HiltViewModel
 @ExperimentalCoroutinesApi
 class MessagesViewModel @Inject constructor(
-    private val repository: MessagesRepository
+    private val repository: LiveMessagesRepository
 ) : ViewModel() {
     private val _messages = MutableLiveData<String>()
     val messages: LiveData<String> = _messages
@@ -26,7 +26,7 @@ class MessagesViewModel @Inject constructor(
         }
     }
 
-    fun sendMessage(message: String, to: Int = 137) {
+    fun sendMessage(message: String, to: Int = 1) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.sendMessage(to, message)
         }

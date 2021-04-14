@@ -1,4 +1,5 @@
 import json
+import math
 import os
 import secrets
 import time
@@ -35,6 +36,7 @@ def get_offers():
     if size:
         offers_query = offers_query.filter(Offer.size.ilike(f'%{size}%'))
     if coordinates and radius:
+        create_math_functions()
         lat, lng = [float(x) for x in coordinates.split(',')]
         offers_query = offers_query.join(Location).filter(
             distance(Location.latitude,
@@ -115,6 +117,13 @@ def post_offer():
 @jwt_required()
 def get_categories():
     return jsonify([category.to_dict() for category in Category.query.order_by(Category.id.asc())])
+
+
+def create_math_functions():
+    db.session.connection().connection.create_function('sin', 1, math.sin)
+    db.session.connection().connection.create_function('cos', 1, math.cos)
+    db.session.connection().connection.create_function('acos', 1, math.acos)
+    db.session.connection().connection.create_function('radians', 1, math.radians)
 
 
 # Simulate response delay while testing app on localhost

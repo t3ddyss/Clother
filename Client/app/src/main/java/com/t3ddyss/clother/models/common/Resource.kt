@@ -1,4 +1,4 @@
-package com.t3ddyss.clother.models
+package com.t3ddyss.clother.models.common
 
 sealed class Resource<T>(
         val content: T? = null,

@@ -10,7 +10,8 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.t3ddyss.clother.adapters.ChatsAdapter
 import com.t3ddyss.clother.databinding.FragmentChatsBinding
-import com.t3ddyss.clother.models.Success
+import com.t3ddyss.clother.models.common.Loading
+import com.t3ddyss.clother.models.common.Success
 import com.t3ddyss.clother.utilities.DEBUG_TAG
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -34,14 +35,11 @@ class ChatsFragment : Fragment() {
         binding.listChats.adapter = adapter
 
         viewModel.chats.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    adapter.submitList(it.content)
-                }
-                else -> {
-                    Log.d(DEBUG_TAG, "Error getting chats")
-                }
-            }
+            adapter.submitList(it.content)
+
+//            progressBar.isVisible = result is Resource.Loading && result.data.isNullOrEmpty()
+//            textViewError.isVisible = result is Resource.Error && result.data.isNullOrEmpty()
+//            textViewError.text = result.error?.localizedMessage
         }
 
         return binding.root

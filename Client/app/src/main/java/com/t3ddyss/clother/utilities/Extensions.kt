@@ -75,6 +75,14 @@ fun String.formatDate(): String {
     return format.format(date!!)
 }
 
+fun String.formatTime(): String {
+    var format = SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss Z", Locale.getDefault())
+    val date = format.parse(this)
+
+    format = SimpleDateFormat("hh:mm a", Locale.ENGLISH)
+    return format.format(date!!)
+}
+
 fun isEmulator() = FINGERPRINT.contains("generic")
 
 fun getBaseUrlForCurrentDevice() = if (isEmulator()) BASE_URL_EMULATOR else BASE_URL_DEVICE

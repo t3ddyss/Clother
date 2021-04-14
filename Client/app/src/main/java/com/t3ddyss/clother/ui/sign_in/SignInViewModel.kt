@@ -3,8 +3,8 @@ package com.t3ddyss.clother.ui.sign_in
 import androidx.lifecycle.*
 import com.t3ddyss.clother.data.UsersRepository
 import com.t3ddyss.clother.models.auth.AuthTokens
-import com.t3ddyss.clother.models.Loading
-import com.t3ddyss.clother.models.Resource
+import com.t3ddyss.clother.models.common.Loading
+import com.t3ddyss.clother.models.common.Resource
 import com.t3ddyss.clother.utilities.DEFAULT_STRING_VALUE
 import com.t3ddyss.clother.utilities.EMAIL
 import com.t3ddyss.clother.utilities.PASSWORD

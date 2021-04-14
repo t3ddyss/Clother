@@ -3,7 +3,7 @@ package com.t3ddyss.clother.utilities
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
-import com.t3ddyss.clother.models.Error
+import com.t3ddyss.clother.models.common.Error
 import retrofit2.HttpException
 import java.lang.IllegalStateException
 

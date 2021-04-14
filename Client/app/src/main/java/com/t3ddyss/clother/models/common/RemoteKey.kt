@@ -10,5 +10,5 @@ class RemoteKey(
         @PrimaryKey
         @ColumnInfo(collate = ColumnInfo.NOCASE)
         val list: String,
-        @SerializedName("after_key")
+        @ColumnInfo(name = "after_key")
         val afterKey: Int?)

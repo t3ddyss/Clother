@@ -35,10 +35,13 @@
             android:src="@drawable/ic_send"
             app:tint="@color/green_500"
             android:translationZ="10dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintDimensionRatio="1:1"/>
+            app:layout_constraintDimensionRatio="1:1"
+            android:focusable="true" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInput_message"

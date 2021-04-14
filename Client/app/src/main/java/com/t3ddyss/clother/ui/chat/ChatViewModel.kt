@@ -1,16 +1,17 @@
 package com.t3ddyss.clother.ui.chat
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.ExperimentalPagingApi
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
+import com.t3ddyss.clother.data.LiveMessagesRepository
 import com.t3ddyss.clother.data.MessagesRepository
 import com.t3ddyss.clother.models.chat.Message
-import com.t3ddyss.clother.models.offers.Offer
+import com.t3ddyss.clother.models.common.LoadResult
+import com.t3ddyss.clother.utilities.DEBUG_TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -18,16 +19,32 @@ import javax.inject.Inject
 
 @HiltViewModel
 @ExperimentalCoroutinesApi
-class ChatViewModel
-@Inject constructor(
+class ChatViewModel @Inject constructor(
         private val repository: MessagesRepository,
+        private val liveRepository: LiveMessagesRepository,
 ): ViewModel() {
-    private val _messages = MutableLiveData<PagingData<Message>>()
-    val offers: LiveData<PagingData<Message>> = _messages
+    private val _messages = MutableLiveData<List<Message>>()
+    val messages: LiveData<List<Message>> = _messages
 
-    var endOfPaginationReachedBottom = false
+    private val _loadStatus = MutableLiveData<LoadResult>()
+    val loadStatus: LiveData<LoadResult> = _loadStatus
 
-    companion object {
-        const val REMOTE_KEY_CHAT = "chat"
+    fun getMessages(interlocutorId: Int) {
+        viewModelScope.launch {
+            repository.getMessages(interlocutorId).collectLatest {
+                Log.d(DEBUG_TAG, "Collected messages")
+                _messages.postValue(it)
+            }
+        }
+
+        viewModelScope.launch {
+            _loadStatus.postValue(repository.fetchMessages(interlocutorId))
+        }
+    }
+
+    fun sendMessage(message: String, to: Int = 1) {
+        viewModelScope.launch(Dispatchers.IO) {
+            liveRepository.sendMessage(to, message)
+        }
     }
 }

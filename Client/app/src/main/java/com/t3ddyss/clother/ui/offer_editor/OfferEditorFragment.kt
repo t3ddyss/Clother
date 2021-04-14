@@ -21,7 +21,10 @@ import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OfferEditorImagesAdapter
 import com.t3ddyss.clother.databinding.FragmentOfferEditorBinding
-import com.t3ddyss.clother.models.*
+import com.t3ddyss.clother.models.common.Error
+import com.t3ddyss.clother.models.common.Failed
+import com.t3ddyss.clother.models.common.Loading
+import com.t3ddyss.clother.models.common.Success
 import com.t3ddyss.clother.models.offers.Category
 import com.t3ddyss.clother.models.offers.NewOfferResponse
 import com.t3ddyss.clother.utilities.text

@@ -19,8 +19,8 @@ class ChatsRepository @Inject constructor(
             query = { chatDao.getAllChats() },
             fetch = { service.getChats(prefs.getString(ACCESS_TOKEN, null)) },
             saveFetchResult = { db.withTransaction {
-                chatDao.deleteAllChats()
                 chatDao.insertAll(it)
-            } }
+            }
+            }
     )
 }

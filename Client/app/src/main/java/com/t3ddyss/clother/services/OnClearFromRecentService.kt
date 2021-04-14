@@ -4,7 +4,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
-import com.t3ddyss.clother.data.MessagesRepository
+import com.t3ddyss.clother.data.LiveMessagesRepository
 import com.t3ddyss.clother.utilities.DEBUG_TAG
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -13,7 +13,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 @ExperimentalCoroutinesApi
 class OnClearFromRecentService @Inject constructor(): Service() {
-    @Inject lateinit var repository: MessagesRepository
+    @Inject lateinit var repository: LiveMessagesRepository
 
     override fun onBind(intent: Intent?): IBinder? {
         return null

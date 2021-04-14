@@ -3,8 +3,8 @@ package com.t3ddyss.clother.ui.sign_up
 import androidx.lifecycle.*
 import com.t3ddyss.clother.data.UsersRepository
 import com.t3ddyss.clother.models.auth.AuthResponse
-import com.t3ddyss.clother.models.Loading
-import com.t3ddyss.clother.models.Resource
+import com.t3ddyss.clother.models.common.Loading
+import com.t3ddyss.clother.models.common.Resource
 import com.t3ddyss.clother.utilities.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

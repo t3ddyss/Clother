@@ -2,9 +2,12 @@ package com.t3ddyss.clother.data
 
 import android.content.SharedPreferences
 import com.t3ddyss.clother.api.ClotherAuthService
-import com.t3ddyss.clother.models.*
 import com.t3ddyss.clother.models.auth.AuthResponse
 import com.t3ddyss.clother.models.auth.AuthTokens
+import com.t3ddyss.clother.models.common.Error
+import com.t3ddyss.clother.models.common.Failed
+import com.t3ddyss.clother.models.common.Resource
+import com.t3ddyss.clother.models.common.Success
 import com.t3ddyss.clother.utilities.*
 import retrofit2.HttpException
 import java.net.ConnectException

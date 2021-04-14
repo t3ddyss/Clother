@@ -1,98 +1,94 @@
 package com.t3ddyss.clother.ui.chat
 
-import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.paging.CombinedLoadStates
-import androidx.paging.LoadState
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.t3ddyss.clother.MainActivity
-import com.t3ddyss.clother.R
+import androidx.recyclerview.widget.RecyclerView
+import com.t3ddyss.clother.adapters.MessagesAdapter
 import com.t3ddyss.clother.databinding.FragmentChatBinding
-import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
+import com.t3ddyss.clother.models.common.LoadResult
+import com.t3ddyss.clother.utilities.DEBUG_TAG
+import com.t3ddyss.clother.utilities.text
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import retrofit2.HttpException
-import javax.inject.Inject
 
 @AndroidEntryPoint
 @ExperimentalCoroutinesApi
 class ChatFragment : Fragment() {
 
     private val viewModel by viewModels<ChatViewModel>()
+
     private var _binding: FragmentChatBinding? = null
     private val binding get() = _binding!!
-
-    @Inject lateinit var prefs: SharedPreferences
     private val args by navArgs<ChatFragmentArgs>()
 
-    private lateinit var loadStateListener: (CombinedLoadStates) -> Unit
+    private val adapter by lazy {
+        MessagesAdapter(args.userId)
+    }
 
+    private var isLoading = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         _binding = FragmentChatBinding.inflate(inflater, container, false)
 
-        val layoutManager = LinearLayoutManager(
-            context,
-            LinearLayoutManager.VERTICAL,
-            false)
+        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, true)
 
-        loadStateListener = {
-            when (it.refresh) {
-                is LoadState.Loading -> {
-                    binding.layoutLoading.isVisible = true
-                }
+        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                super.onItemRangeInserted(positionStart, itemCount)
 
-                is LoadState.NotLoading -> {
-                    binding.layoutLoading.isVisible = false
+                binding.listMessages.scrollToPosition(positionStart)
+            }
+        })
+        binding.listMessages.layoutManager = layoutManager
+        binding.listMessages.adapter = adapter
+        binding.listMessages.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
 
-//                    binding.emptyState.isVisible = it.append.endOfPaginationReached
-//                                                   && adapter.itemCount < 1
-                }
+                if (dy < 0) {
+                    val visibleItemCount = layoutManager.childCount
+                    val totalItemCount = layoutManager.itemCount
+                    val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
 
-                is LoadState.Error -> {
-                    val error = (it.refresh as LoadState.Error).error
+                    if (!isLoading) {
+                        if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount) {
+                            isLoading = true
 
-                    if (error is HttpException && error.code() == 401) {
-                        findNavController().navigate(R.id.action_searchResults_to_signUpFragment)
+                            // TODO fetch data
 
-                        (activity as? MainActivity)
-                                ?.showGenericError(getString(R.string.session_expired))
-                        prefs.edit().remove(IS_AUTHENTICATED).apply()
-                    }
-                    else {
-                        binding.layoutLoading.isVisible = false
-
-                        (activity as? MainActivity)
-                                ?.showGenericError(error)
+                            isLoading = false
+                        }
                     }
                 }
             }
+        })
 
-            // Hide footer with progress bar
-//            if (it.append !is LoadState.Loading) {
-//                binding.progressBarFooter.isVisible = false
-//                viewModel.endOfPaginationReachedBottom = it.append.endOfPaginationReached
-//
-//                // Disable bottom padding when end of pagination is reached
-//                if (it.append.endOfPaginationReached) {
-//                    binding.list.setPadding(0, 0, 0, 0)
-//                }
-//            }
+        binding.buttonSend.setOnClickListener {
+            viewModel.sendMessage(binding.editTextMessage.text(), args.userId)
         }
-//        adapter.addLoadStateListener(loadStateListener)
 
-        binding.listMessages.layoutManager = layoutManager
-//        binding.listMessages.adapter = adapter
+        viewModel.messages.observe(viewLifecycleOwner) {
+            adapter.submitList(it)
+        }
+
+        viewModel.loadStatus.observe(viewLifecycleOwner) {
+            when (it) {
+                is LoadResult.Success -> {
+                    Log.d(DEBUG_TAG, "Success")
+                }
+                else -> Log.d(DEBUG_TAG, "Error")
+            }
+        }
+
+        viewModel.getMessages(args.userId)
 
         return binding.root
     }
@@ -100,5 +96,9 @@ class ChatFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        const val RECYCLER_THRESHOLD = 5
     }
 }

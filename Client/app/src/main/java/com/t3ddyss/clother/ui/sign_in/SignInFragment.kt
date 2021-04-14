@@ -13,6 +13,10 @@ import com.t3ddyss.clother.data.*
 import com.t3ddyss.clother.databinding.FragmentSignInBinding
 import com.t3ddyss.clother.models.*
 import com.t3ddyss.clother.models.auth.AuthTokens
+import com.t3ddyss.clother.models.common.Error
+import com.t3ddyss.clother.models.common.Failed
+import com.t3ddyss.clother.models.common.Loading
+import com.t3ddyss.clother.models.common.Success
 import com.t3ddyss.clother.utilities.*
 import dagger.hilt.android.AndroidEntryPoint
 
