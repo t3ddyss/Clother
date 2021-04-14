@@ -1,6 +1,7 @@
 package com.t3ddyss.clother.db
 
 import androidx.room.TypeConverter
+import com.t3ddyss.clother.models.chat.MessageStatus
 import java.util.*
 
 class Converters {
@@ -20,4 +21,10 @@ class Converters {
     fun dateToTimestamp(date: Date?): Long? {
         return date?.time
     }
+
+    @TypeConverter
+    fun toMessageStatus(value: Int) = enumValues<MessageStatus>()[value]
+
+    @TypeConverter
+    fun fromMessageStatus(value: MessageStatus) = value.ordinal
 }

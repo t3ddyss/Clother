@@ -1,5 +1,6 @@
 import json
 from functools import wraps
+from time import sleep
 
 from flask import request, jsonify
 from flask_jwt_extended import decode_token
@@ -58,13 +59,17 @@ def send_message(*args, **kwargs):
         db.session.add(chat)
         db.session.commit()
 
-    message = Message(user_id=user.id, chat_id=chat.id, body=args[0])
+    new_message = json.loads(args[0])
+
+    message = Message(user_id=user.id, chat_id=chat.id, body=new_message['body'])
     chat.messages.append(message)
     db.session.commit()
 
-    send(json.dumps(message.to_dict(), default=str), to=interlocutor.id)
+    sleep(1)  # Remove
+    send(json.dumps(message.to_dict()), to=interlocutor.id)
+    emit(f'message{new_message["local_id"]}', json.dumps(message.to_dict()))
 
-    print(f'Sent new message "{args[0]}" from {user.id} to {interlocutor.id}')
+    print(f'Sent new message "{new_message}" from {user.id} to {interlocutor.id}')
 
 
 @socketio.on('disconnect')

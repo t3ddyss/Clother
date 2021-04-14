@@ -35,9 +35,10 @@ class Message(db.Model):
     user = db.relationship('User', uselist=False)
 
     def to_dict(self):
-        message = {'id': self.id,
+        message = {'server_id': self.id,
                    'chat_id': self.chat_id,
                    'user_id': self.user_id,
+                   'status': 1,  # MessageStatus.DELIVERED
                    'user_name': self.user.name,
                    'created_at': self.created_at.isoformat(' ', 'seconds'),
                    'body': self.body}

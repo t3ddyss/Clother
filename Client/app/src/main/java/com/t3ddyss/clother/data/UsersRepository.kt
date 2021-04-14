@@ -77,6 +77,7 @@ class UsersRepository @Inject constructor(
     private fun saveTokens(tokens: AuthTokens) {
         prefs.edit().putString(ACCESS_TOKEN, "Bearer ${tokens.accessToken}").apply()
         prefs.edit().putString(REFRESH_TOKEN, "Bearer ${tokens.refreshToken}").apply()
+        prefs.edit().putInt(USER_ID, tokens.userId).apply()
         prefs.edit().putBoolean(IS_AUTHENTICATED, true).apply()
     }
 }

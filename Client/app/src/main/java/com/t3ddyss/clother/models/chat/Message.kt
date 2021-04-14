@@ -1,11 +1,7 @@
 package com.t3ddyss.clother.models.chat
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
+import androidx.room.*
 import com.google.gson.annotations.SerializedName
-import java.time.OffsetDateTime
 import java.util.*
 
 @Entity(tableName = "message",
@@ -13,7 +9,11 @@ import java.util.*
                 entity = Chat::class,
                 parentColumns = arrayOf("id"),
                 childColumns = arrayOf("chat_id"))])
-data class Message(@PrimaryKey val id: Int,
+data class Message(@PrimaryKey(autoGenerate = true)
+                   @SerializedName("local_id")
+                   var id: Int = 0,
+
+                   val server_id: Int? = null,
 
                    @SerializedName("chat_id")
                    @ColumnInfo(name = "chat_id", index = true)
@@ -23,9 +23,7 @@ data class Message(@PrimaryKey val id: Int,
                    @ColumnInfo(name = "user_id", index = true)
                    val userId: Int,
 
-                   @SerializedName("user_name")
-                   @ColumnInfo(name = "user_name")
-                   val userName: String,
+                   var status: MessageStatus = MessageStatus.DELIVERED,
 
                    @SerializedName("created_at")
                    @ColumnInfo(name = "created_at")
@@ -33,4 +31,8 @@ data class Message(@PrimaryKey val id: Int,
 
                    val body: String?,
                    val image: String?
-)
+) {
+    @SerializedName("user_name")
+    @Ignore
+    lateinit var userName: String
+}

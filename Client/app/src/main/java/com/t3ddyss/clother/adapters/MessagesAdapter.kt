@@ -2,12 +2,14 @@ package com.t3ddyss.clother.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.ListItemMessageInBinding
 import com.t3ddyss.clother.databinding.ListItemMessageOutBinding
 import com.t3ddyss.clother.models.chat.Message
+import com.t3ddyss.clother.models.chat.MessageStatus
 import com.t3ddyss.clother.utilities.formatTime
 import java.lang.IllegalArgumentException
 
@@ -68,9 +70,30 @@ class MessagesAdapter(private val interlocutorId: Int
 
         fun bind(message: Message) {
             binding.textViewBody.requestLayout()
+            binding.textViewTime.requestLayout()
+            binding.imageViewStatus.requestLayout()
 
             binding.textViewBody.text = message.body
-            binding.textViewTime.text = message.createdAt.formatTime()
+
+            when (message.status) {
+                MessageStatus.DELIVERED -> {
+                    binding.textViewTime.text = message.createdAt.formatTime()
+                    binding.textViewTime.isVisible = true
+                    binding.imageViewStatus.isVisible = false
+                }
+
+                MessageStatus.DELIVERING -> {
+                    binding.imageViewStatus.setImageResource(R.drawable.ic_schedule)
+                    binding.imageViewStatus.isVisible = true
+                    binding.textViewTime.isVisible = false
+                }
+
+                MessageStatus.FAILED -> {
+                    binding.imageViewStatus.setImageResource(R.drawable.ic_error)
+                    binding.imageViewStatus.isVisible = true
+                    binding.textViewTime.isVisible = false
+                }
+            }
         }
     }
 }

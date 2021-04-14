@@ -13,6 +13,9 @@ interface MessageDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(messages: List<Message>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(message: Message): Long
+
     @Query("""SELECT message.* FROM chat, message
                     WHERE chat.interlocutor_id == :interlocutorId 
                     AND chat.id == message.chat_id

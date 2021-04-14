@@ -13,24 +13,20 @@ import com.t3ddyss.clother.db.ChatDao
 import com.t3ddyss.clother.db.MessageDao
 import com.t3ddyss.clother.db.RemoteKeyDao
 import com.t3ddyss.clother.models.chat.Message
-import com.t3ddyss.clother.utilities.ACCESS_TOKEN
-import com.t3ddyss.clother.utilities.DEBUG_TAG
-import com.t3ddyss.clother.utilities.MESSAGES_CHANNEL_ID
-import com.t3ddyss.clother.utilities.getBaseUrlForCurrentDevice
+import com.t3ddyss.clother.models.chat.MessageStatus
+import com.t3ddyss.clother.utilities.*
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.socket.client.IO
 import io.socket.emitter.Emitter
 import io.socket.engineio.client.transports.WebSocket
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
-import java.time.OffsetDateTime
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 
 @Singleton
@@ -42,6 +38,7 @@ class LiveMessagesRepository @Inject constructor(
         private val chatDao: ChatDao,
         private val messageDao: MessageDao,
         private val remoteKeyDao: RemoteKeyDao,
+        private val gson: Gson,
         @ApplicationContext
         private val context: Context,
 ) {
@@ -59,12 +56,11 @@ class LiveMessagesRepository @Inject constructor(
         }
 
         val onNewMessageListener = Emitter.Listener {
-            val gson = Gson()
             val message = gson.fromJson(it[0] as? String, Message::class.java)
             offer(message)
 
             launch {
-                messageDao.insertAll(listOf(message))
+                messageDao.insert(message)
             }
 
             showNotification(message)
@@ -80,20 +76,40 @@ class LiveMessagesRepository @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
-    suspend fun sendMessage(to: Int, message: String) {
-        socket.emit("send_message", message, to)
-        db.messageDao().insertAll(listOf())
+    suspend fun sendMessage(to: Int, messageBody: String) {
+        val message = Message(
+                id = 0,
+                chatId = chatDao.getChatByInterlocutorId(to)?.id ?: 0,
+                userId = prefs.getInt(USER_ID, 0),
+                status = MessageStatus.DELIVERING,
+                createdAt = Calendar.getInstance().time,
+                body = messageBody,
+                image = null)
 
-        withTimeout(10_000L) {
-            val result = getMessageResult(1)
+        message.id = messageDao.insert(message).toInt()
+        socket.emit("send_message", gson.toJson(message), to)
+
+        val sentMessage = withTimeoutOrNull(RESPONSE_TIMEOUT) {
+            getSentMessage(message.id)
+        }
+
+        if (sentMessage != null) {
+            messageDao.insert(sentMessage)
+        }
+        else {
+            message.status = MessageStatus.FAILED
+            messageDao.insert(message)
         }
     }
 
-    private suspend fun getMessageResult(messageId: Int) =
-            suspendCancellableCoroutine<String> { cont ->
+    private suspend fun getSentMessage(messageId: Int) =
+            suspendCancellableCoroutine<Message> { cont ->
         val onMessageSentListener = Emitter.Listener {
-            Log.d(DEBUG_TAG, "Message delivered")
-            cont.resume(it[0] as? String ?: "Error delivering message")
+            socket.off("message$messageId")
+            cont.resume(gson.fromJson(it[0] as String, Message::class.java).also { message ->
+                message.id = messageId
+                message.status = MessageStatus.DELIVERED
+            })
         }
 
         socket.on("message$messageId", onMessageSentListener)
@@ -101,6 +117,7 @@ class LiveMessagesRepository @Inject constructor(
 
     fun disconnectFromServer() {
         Log.d(DEBUG_TAG, "Going to disconnect manually")
+
         socket.off()
         socket.disconnect()
     }
@@ -109,12 +126,16 @@ class LiveMessagesRepository @Inject constructor(
         val builder = NotificationCompat.Builder(context, MESSAGES_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_chat)
                 .setContentTitle(message.userName)
-                .setContentText(message.body ?: "Image")
+                .setContentText(message.body ?: context.getString(R.string.image))
                 .setGroup(message.userId.toString())
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
         with(NotificationManagerCompat.from(context)) {
             notify(notificationId++, builder.build())
         }
+    }
+
+    companion object {
+        const val RESPONSE_TIMEOUT = 5_000L
     }
 }
