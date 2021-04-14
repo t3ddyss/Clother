@@ -1,5 +1,7 @@
 package com.t3ddyss.clother.di
 
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.t3ddyss.clother.api.ClotherAuthService
 import com.t3ddyss.clother.api.ClotherChatService
 import com.t3ddyss.clother.api.ClotherOffersService
@@ -16,6 +18,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
+
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
@@ -29,10 +32,10 @@ object NetworkModule {
         clientBuilder.interceptors().add(Interceptor {
             it.run {
                 proceed(
-                    request()
-                        .newBuilder()
-                        .addHeader("Connection", "close")
-                        .build()
+                        request()
+                                .newBuilder()
+                                .addHeader("Connection", "close")
+                                .build()
                 )
             }
         })
@@ -48,10 +51,18 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideRetrofit(httpClient: OkHttpClient): Retrofit {
+    fun provideGson(): Gson {
+        return GsonBuilder()
+                .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .create()
+    }
+
+    @Singleton
+    @Provides
+    fun provideRetrofit(httpClient: OkHttpClient, gson: Gson): Retrofit {
         return Retrofit.Builder()
             .baseUrl(getBaseUrlForCurrentDevice())
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .client(httpClient)
             .build()
     }

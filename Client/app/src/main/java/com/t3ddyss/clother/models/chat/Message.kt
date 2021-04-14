@@ -5,6 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import java.time.OffsetDateTime
+import java.util.*
 
 @Entity(tableName = "message",
         foreignKeys = [ForeignKey(
@@ -27,7 +29,7 @@ data class Message(@PrimaryKey val id: Int,
 
                    @SerializedName("created_at")
                    @ColumnInfo(name = "created_at")
-                   val createdAt: String,
+                   val createdAt: Date,
 
                    val body: String?,
                    val image: String?

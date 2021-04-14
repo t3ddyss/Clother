@@ -2,6 +2,7 @@ package com.t3ddyss.clother.models.offers
 
 import androidx.room.*
 import com.google.gson.annotations.SerializedName
+import java.util.*
 
 // TODO store images in a separate table like on server-side
 @Entity(tableName = "offer",
@@ -21,7 +22,7 @@ data class Offer(@PrimaryKey var id: Int = 0,
 
                  @SerializedName("created_at")
                  @ColumnInfo(name = "created_at")
-                 var createdAt: String = "",
+                 val createdAt: Date,
 
                  var title: String = "",
                  var description: String? = null,

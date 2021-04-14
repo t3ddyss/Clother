@@ -9,7 +9,7 @@ from clother.extensions import db, migrate, jwt, mail, socketio
 from clother import admin, authentication, users, offers, images, chat
 
 
-def create_app(config_filename):
+def create_app(config_filename='config.py'):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_pyfile(f"../{config_filename}")
     app.config.from_pyfile(config_filename)

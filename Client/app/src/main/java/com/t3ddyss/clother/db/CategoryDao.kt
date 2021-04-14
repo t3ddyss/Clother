@@ -1,8 +1,9 @@
 package com.t3ddyss.clother.db
 
-import androidx.room.*
-import androidx.sqlite.db.SimpleSQLiteQuery
-import androidx.sqlite.db.SupportSQLiteQuery
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.t3ddyss.clother.models.offers.Category
 
 @Dao

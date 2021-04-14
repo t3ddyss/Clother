@@ -21,15 +21,16 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import io.socket.client.IO
 import io.socket.emitter.Emitter
 import io.socket.engineio.client.transports.WebSocket
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.launch
+import java.time.OffsetDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 
 @Singleton
@@ -53,27 +54,24 @@ class LiveMessagesRepository @Inject constructor(
     private val socket = IO.socket(getBaseUrlForCurrentDevice(), options)
     private var notificationId = 0
 
-    suspend fun getMessagesStream(): Flow<String> = callbackFlow {
+    suspend fun getMessagesStream() = callbackFlow {
         val onConnectListener = Emitter.Listener {
-            offer("Connected!")
         }
 
         val onNewMessageListener = Emitter.Listener {
             val gson = Gson()
             val message = gson.fromJson(it[0] as? String, Message::class.java)
-
-            offer(it[0] as? String ?: "Error getting message")
-            showNotification(message)
+            offer(message)
 
             launch {
                 messageDao.insertAll(listOf(message))
             }
+
+            showNotification(message)
         }
 
         socket.on("connection", onConnectListener)
         socket.on("message", onNewMessageListener)
-
-        Log.d(DEBUG_TAG, "Going to connect")
         socket.connect()
 
         awaitClose {
@@ -82,8 +80,23 @@ class LiveMessagesRepository @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
-    fun sendMessage(to: Int = 1, message: String) {
+    suspend fun sendMessage(to: Int, message: String) {
         socket.emit("send_message", message, to)
+        db.messageDao().insertAll(listOf())
+
+        withTimeout(10_000L) {
+            val result = getMessageResult(1)
+        }
+    }
+
+    private suspend fun getMessageResult(messageId: Int) =
+            suspendCancellableCoroutine<String> { cont ->
+        val onMessageSentListener = Emitter.Listener {
+            Log.d(DEBUG_TAG, "Message delivered")
+            cont.resume(it[0] as? String ?: "Error delivering message")
+        }
+
+        socket.on("message$messageId", onMessageSentListener)
     }
 
     fun disconnectFromServer() {
@@ -97,6 +110,7 @@ class LiveMessagesRepository @Inject constructor(
                 .setSmallIcon(R.drawable.ic_chat)
                 .setContentTitle(message.userName)
                 .setContentText(message.body ?: "Image")
+                .setGroup(message.userId.toString())
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
         with(NotificationManagerCompat.from(context)) {

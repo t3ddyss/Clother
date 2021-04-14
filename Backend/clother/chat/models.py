@@ -39,7 +39,7 @@ class Message(db.Model):
                    'chat_id': self.chat_id,
                    'user_id': self.user_id,
                    'user_name': self.user.name,
-                   'created_at': self.created_at,
+                   'created_at': self.created_at.isoformat(' ', 'seconds'),
                    'body': self.body}
         if self.image:
             message['image'] = self.image

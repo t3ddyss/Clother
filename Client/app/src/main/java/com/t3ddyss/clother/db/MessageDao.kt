@@ -16,7 +16,7 @@ interface MessageDao {
     @Query("""SELECT message.* FROM chat, message
                     WHERE chat.interlocutor_id == :interlocutorId 
                     AND chat.id == message.chat_id
-                    ORDER BY message.id DESC""")
+                    ORDER BY message.created_at DESC""")
     fun getMessagesByInterlocutorId(interlocutorId: Int): Flow<List<Message>>
 
     @Query("DELETE FROM message WHERE chat_id == :chatId")

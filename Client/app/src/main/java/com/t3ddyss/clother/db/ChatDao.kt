@@ -14,7 +14,7 @@ interface ChatDao {
     @Update
     suspend fun update(chat: Chat?): Int
 
-    @Query("SELECT * FROM chat ORDER BY last_message_id DESC")
+    @Query("SELECT * FROM chat ORDER BY last_message_created_at DESC")
     fun getAllChats(): Flow<List<Chat>>
 
     @Query("SELECT * FROM chat WHERE interlocutor_id == :interlocutorId LIMIT 1")

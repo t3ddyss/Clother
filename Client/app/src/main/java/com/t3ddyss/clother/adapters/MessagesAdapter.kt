@@ -58,7 +58,7 @@ class MessagesAdapter(private val interlocutorId: Int
             binding.textViewBody.requestLayout()
 
             binding.textViewBody.text = message.body
-//            binding.textViewTime.text = message.createdAt.formatTime()
+            binding.textViewTime.text = message.createdAt.formatTime()
         }
     }
 

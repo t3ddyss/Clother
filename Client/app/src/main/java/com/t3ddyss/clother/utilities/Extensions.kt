@@ -67,20 +67,18 @@ fun String.getImageUrlForCurrentDevice(): String {
     else getBaseUrlForCurrentDevice() + this
 }
 
-fun String.formatDate(): String {
-    var format = SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss Z", Locale.getDefault())
-    val date = format.parse(this)
-
-    format = SimpleDateFormat("MMM d, hh:mm a", Locale.ENGLISH)
-    return format.format(date!!)
+fun Date.formatDate(): String {
+    val format = SimpleDateFormat("MMM d, hh:mm a", Locale.ENGLISH)
+    return format.format(this)
+            .replace("AM", "am")
+            .replace("PM","pm");
 }
 
-fun String.formatTime(): String {
-    var format = SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss Z", Locale.getDefault())
-    val date = format.parse(this)
-
-    format = SimpleDateFormat("hh:mm a", Locale.ENGLISH)
-    return format.format(date!!)
+fun Date.formatTime(): String {
+    val format = SimpleDateFormat("hh:mm a", Locale.ENGLISH)
+    return format.format(this)
+            .replace("AM", "am")
+            .replace("PM","pm");
 }
 
 fun isEmulator() = FINGERPRINT.contains("generic")
