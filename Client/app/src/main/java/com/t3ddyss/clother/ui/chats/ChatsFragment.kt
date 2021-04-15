@@ -29,7 +29,7 @@ class ChatsFragment : Fragment() {
     private val adapter by lazy {
         ChatsAdapter(prefs.getInt(USER_ID, 0)) {
             val action = ChatsFragmentDirections
-                    .actionChatsFragmentToChatFragment(it.interlocutor.id, it.interlocutor.name)
+                    .actionChatsFragmentToChatFragment(it.interlocutor!!.id, it.interlocutor.name)
             findNavController().navigate(action)
         }
     }
@@ -48,6 +48,8 @@ class ChatsFragment : Fragment() {
 //            textViewError.isVisible = result is Resource.Error && result.data.isNullOrEmpty()
 //            textViewError.text = result.error?.localizedMessage
         }
+
+        viewModel.getChats()
 
         return binding.root
     }

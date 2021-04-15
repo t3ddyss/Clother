@@ -6,7 +6,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.t3ddyss.clother.models.chat.Message
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 
 @Dao
 interface MessageDao {
@@ -18,10 +17,11 @@ interface MessageDao {
 
     @Query("""SELECT message.* FROM chat, message
                     WHERE chat.interlocutor_id == :interlocutorId 
-                    AND chat.id == message.chat_id
+                    AND (message.local_chat_id == chat.local_id 
+                    OR message.server_chat_id == chat.server_id)
                     ORDER BY message.created_at DESC""")
     fun getMessagesByInterlocutorId(interlocutorId: Int): Flow<List<Message>>
 
-    @Query("DELETE FROM message WHERE chat_id == :chatId")
-    suspend fun deleteAllMessagesFromChat(chatId: Int?)
+    @Query("DELETE FROM message WHERE server_chat_id == :serverChatId")
+    suspend fun deleteAllMessagesFromChat(serverChatId: Int?)
 }

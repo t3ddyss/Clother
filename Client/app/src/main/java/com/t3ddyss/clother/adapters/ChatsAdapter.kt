@@ -41,19 +41,19 @@ class ChatsAdapter(
         @SuppressLint("SetTextI18n")
         fun bind(chat: Chat) {
             with (binding) {
-                textViewName.text = chat.interlocutor.name
-                textViewTime.text = chat.lastMessage.createdAt.formatDate()
+                textViewName.text = chat.interlocutor?.name
+                textViewTime.text = chat.lastMessage?.createdAt?.formatDate()
 
-                if (chat.lastMessage.userId == userId) {
+                if (chat.lastMessage?.userId == userId) {
                     textViewMessage.text = "${binding.root.context.getString(R.string.you)}: " +
-                            "${chat.lastMessage.body}"
+                            "${chat.lastMessage!!.body}"
                 }
 
                 else {
-                    textViewMessage.text = chat.lastMessage.body
+                    textViewMessage.text = chat.lastMessage?.body
                 }
 
-                chat.interlocutor.image?.let {
+                chat.interlocutor?.image?.let {
                     Glide.with(cardViewAvatar.imageViewAvatar)
                         .load(it.getImageUrlForCurrentDevice())
                         .centerCrop()

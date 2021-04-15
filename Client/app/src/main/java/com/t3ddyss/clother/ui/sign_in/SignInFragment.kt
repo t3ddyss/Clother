@@ -19,6 +19,7 @@ import com.t3ddyss.clother.models.common.Loading
 import com.t3ddyss.clother.models.common.Success
 import com.t3ddyss.clother.utilities.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @AndroidEntryPoint
 class SignInFragment : Fragment() {
@@ -31,6 +32,7 @@ class SignInFragment : Fragment() {
         findNavController()
     }
 
+    @ExperimentalCoroutinesApi
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         _binding = FragmentSignInBinding.inflate(inflater, container, false)

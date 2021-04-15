@@ -8,6 +8,7 @@ import com.t3ddyss.clother.data.LiveMessagesRepository
 import com.t3ddyss.clother.data.MessagesRepository
 import com.t3ddyss.clother.models.chat.Message
 import com.t3ddyss.clother.models.common.LoadResult
+import com.t3ddyss.clother.models.user.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -32,28 +33,28 @@ class ChatViewModel @Inject constructor(
     var isLoading = AtomicBoolean(false)
     var isEndOfPaginationReached = false
 
-    fun getMessages(interlocutorId: Int) {
+    fun getMessages(interlocutor: User) {
         if (messages.value != null) return
 
         viewModelScope.launch {
-            repository.getMessages(interlocutorId).collectLatest {
+            repository.getMessages(interlocutor).collectLatest {
                 _messages.postValue(it)
             }
         }
 
-        getMoreMessages(interlocutorId)
+        getMoreMessages(interlocutor)
     }
 
-    fun getMoreMessages(interlocutorId: Int) {
+    fun getMoreMessages(interlocutor: User) {
         if (isEndOfPaginationReached || isLoading.getAndSet(true)) return
 
         viewModelScope.launch {
-            _loadStatus.postValue(repository.fetchMessages(interlocutorId))
+            _loadStatus.postValue(repository.fetchMessages(interlocutor))
             isLoading.set(false)
         }
     }
 
-    fun sendMessage(message: String, to: Int) {
+    fun sendMessage(message: String, to: User) {
         viewModelScope.launch(Dispatchers.IO) {
             liveRepository.sendMessage(to, message)
         }

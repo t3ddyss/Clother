@@ -4,13 +4,20 @@ import androidx.room.*
 import com.google.gson.annotations.SerializedName
 import com.t3ddyss.clother.models.user.User
 
-@Entity(tableName = "chat")
-data class Chat(@PrimaryKey val id: Int,
+@Entity(tableName = "chat", indices = [Index(value = ["server_id"], unique = true)])
+data class Chat(@PrimaryKey(autoGenerate = true)
+                @SerializedName("local_id")
+                @ColumnInfo(name = "local_id")
+                var localId: Int = 0,
+
+                @SerializedName("server_id")
+                @ColumnInfo(name = "server_id")
+                val serverId: Int? = null,
 
                 @Embedded(prefix = "interlocutor_")
-                val interlocutor: User,
+                val interlocutor: User? = null,
 
                 @SerializedName("last_message")
                 @Embedded(prefix = "last_message_")
-                val lastMessage: Message
+                var lastMessage: Message? = null
 )

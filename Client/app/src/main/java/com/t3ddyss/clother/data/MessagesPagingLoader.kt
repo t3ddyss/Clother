@@ -11,6 +11,7 @@ import com.t3ddyss.clother.db.RemoteKeyDao
 import com.t3ddyss.clother.models.common.LoadResult
 import com.t3ddyss.clother.models.common.LoadType
 import com.t3ddyss.clother.models.common.RemoteKey
+import com.t3ddyss.clother.models.user.User
 import com.t3ddyss.clother.utilities.ACCESS_TOKEN
 import com.t3ddyss.clother.utilities.CLOTHER_PAGE_SIZE_CHAT
 import com.t3ddyss.clother.utilities.DEBUG_TAG
@@ -23,7 +24,7 @@ class MessagesPagingLoader (
         private val messageDao: MessageDao,
         private val remoteKeyDao: RemoteKeyDao,
         private val remoteKeyList: String,
-        private val interlocutorId: Int
+        private val interlocutor: User
 ) {
     private var accessToken: String? = null
     private var changeListener =
@@ -43,7 +44,6 @@ class MessagesPagingLoader (
     }
 
     suspend fun load(): LoadResult {
-        Log.d(DEBUG_TAG, "Going to load messages")
 
         val key = when (loadType) {
             LoadType.REFRESH -> {
@@ -52,7 +52,7 @@ class MessagesPagingLoader (
 
             LoadType.APPEND -> {
                 val afterKey = db.withTransaction {
-                    remoteKeyDao.remoteKeyByList(remoteKeyList + interlocutorId).afterKey
+                    remoteKeyDao.remoteKeyByList(remoteKeyList + interlocutor.id).afterKey
                 }
 
                 afterKey
@@ -61,19 +61,20 @@ class MessagesPagingLoader (
 
         return try {
             val items = service.getMessages(
-                    interlocutorId = interlocutorId,
+                    interlocutorId = interlocutor.id,
                     accessToken = accessToken,
                     afterKey = key,
                     beforeKey = null,
                     limit = CLOTHER_PAGE_SIZE_CHAT)
 
             db.withTransaction {
-                val chat = chatDao.getChatByInterlocutorId(interlocutorId)
+                // TODO handle situation when user opens existing chat which is not cached from offer fragment
+                val chat = chatDao.getChatByInterlocutorId(interlocutor.id)
 
-                if (loadType == LoadType.REFRESH) {
-                    messageDao.deleteAllMessagesFromChat(chat?.id)
-                    remoteKeyDao.removeByList(remoteKeyList + interlocutorId)
-                    chatDao.update(chat?.copy(lastMessage = items.first()))
+                if (chat != null && loadType == LoadType.REFRESH) {
+                    messageDao.deleteAllMessagesFromChat(chat.localId)
+                    remoteKeyDao.removeByList(remoteKeyList + interlocutor.id)
+                    chatDao.insert(chat.copy(lastMessage = items.first()))
 
                     loadType = LoadType.APPEND
                 }
@@ -81,8 +82,8 @@ class MessagesPagingLoader (
 
                 messageDao.insertAll(items)
                 remoteKeyDao.insert(RemoteKey(
-                        remoteKeyList + interlocutorId,
-                        items.lastOrNull()?.server_id))
+                        remoteKeyList + interlocutor.id,
+                        items.lastOrNull()?.serverId))
             }
 
             LoadResult.Success(isEndOfPaginationReached = items.isEmpty())

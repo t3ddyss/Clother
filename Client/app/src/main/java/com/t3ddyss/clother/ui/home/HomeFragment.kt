@@ -183,6 +183,11 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
+    override fun onStart() {
+        super.onStart()
+        (activity as? MainActivity)?.connectToMessagesServer()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         lifecycleScope.launchWhenStarted {

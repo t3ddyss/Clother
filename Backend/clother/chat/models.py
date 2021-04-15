@@ -19,7 +19,7 @@ class Chat(db.Model):
     def to_dict(self, user_id_to):
         interlocutor = [x for x in self.users if x.id != user_id_to][0]
         last_message = self.messages[-1]
-        return {'id': self.id,
+        return {'server_id': self.id,
                 'interlocutor': interlocutor.to_dict(),
                 'last_message': last_message.to_dict()}
 
@@ -36,7 +36,7 @@ class Message(db.Model):
 
     def to_dict(self):
         message = {'server_id': self.id,
-                   'chat_id': self.chat_id,
+                   'server_chat_id': self.chat_id,
                    'user_id': self.user_id,
                    'status': 1,  # MessageStatus.DELIVERED
                    'user_name': self.user.name,

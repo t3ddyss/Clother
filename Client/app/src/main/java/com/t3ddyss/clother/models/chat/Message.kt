@@ -7,17 +7,25 @@ import java.util.*
 @Entity(tableName = "message",
         foreignKeys = [ForeignKey(
                 entity = Chat::class,
-                parentColumns = arrayOf("id"),
-                childColumns = arrayOf("chat_id"))])
+                parentColumns = arrayOf("server_id"),
+                childColumns = arrayOf("server_chat_id"))],
+        indices = [Index(value = ["server_id"], unique = true)])
 data class Message(@PrimaryKey(autoGenerate = true)
                    @SerializedName("local_id")
-                   var id: Int = 0,
+                   @ColumnInfo(name = "local_id")
+                   var localId: Int = 0,
 
-                   val server_id: Int? = null,
+                   @SerializedName("server_id")
+                   @ColumnInfo(name = "server_id")
+                   val serverId: Int? = null,
 
-                   @SerializedName("chat_id")
-                   @ColumnInfo(name = "chat_id", index = true)
-                   val chatId: Int,
+                   @SerializedName("local_chat_id")
+                   @ColumnInfo(name = "local_chat_id", index = true)
+                   var localChatId: Int,
+
+                   @SerializedName("server_chat_id")
+                   @ColumnInfo(name = "server_chat_id", index = true)
+                   var serverChatId: Int? = null,
 
                    @SerializedName("user_id")
                    @ColumnInfo(name = "user_id", index = true)

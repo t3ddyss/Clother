@@ -53,7 +53,9 @@ def send_message(*args, **kwargs):
         group_by(Chat). \
         having(func.count(distinct(User.id)) == 2).first()
 
-    if chat is None:
+    is_new_chat = chat is None
+
+    if is_new_chat:
         chat = Chat()
         chat.users.extend([user, interlocutor])
         db.session.add(chat)
@@ -64,10 +66,14 @@ def send_message(*args, **kwargs):
     message = Message(user_id=user.id, chat_id=chat.id, body=new_message['body'])
     chat.messages.append(message)
     db.session.commit()
-
     sleep(1)  # Remove
-    send(json.dumps(message.to_dict()), to=interlocutor.id)
-    emit(f'message{new_message["local_id"]}', json.dumps(message.to_dict()))
+
+    if is_new_chat:
+        send(json.dumps(message.to_dict()), to=interlocutor.id)  # TODO send chat instead
+        emit(f'message{new_message["local_id"]}', json.dumps(chat.to_dict(user.id)))
+    else:
+        send(json.dumps(message.to_dict()), to=interlocutor.id)
+        emit(f'message{new_message["local_id"]}', json.dumps(message.to_dict()))
 
     print(f'Sent new message "{new_message}" from {user.id} to {interlocutor.id}')
 

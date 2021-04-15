@@ -32,7 +32,7 @@
     <string name="session_expired">Your session has expired</string>
 
     <!-- Main -->
-    <string name="unknown_error">Unknown error</string>
+    <string name="unknown_error">Something went wrong…</string>
     <string name="create_new_offer">Create new offer</string>
     <string name="description">Description</string>
     <string name="title">Title</string>

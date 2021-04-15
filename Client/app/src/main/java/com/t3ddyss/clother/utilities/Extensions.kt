@@ -71,14 +71,14 @@ fun Date.formatDate(): String {
     val format = SimpleDateFormat("MMM d, hh:mm a", Locale.ENGLISH)
     return format.format(this)
             .replace("AM", "am")
-            .replace("PM","pm");
+            .replace("PM","pm")
 }
 
 fun Date.formatTime(): String {
     val format = SimpleDateFormat("hh:mm a", Locale.ENGLISH)
     return format.format(this)
             .replace("AM", "am")
-            .replace("PM","pm");
+            .replace("PM","pm")
 }
 
 fun isEmulator() = FINGERPRINT.contains("generic")

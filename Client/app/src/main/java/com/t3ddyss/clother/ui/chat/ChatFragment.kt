@@ -3,14 +3,17 @@ package com.t3ddyss.clother.ui.chat
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.adapters.MessagesAdapter
 import com.t3ddyss.clother.databinding.FragmentChatBinding
 import com.t3ddyss.clother.models.common.LoadResult
+import com.t3ddyss.clother.models.user.User
 import com.t3ddyss.clother.utilities.DEBUG_TAG
 import com.t3ddyss.clother.utilities.text
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,7 +46,7 @@ class ChatFragment : Fragment() {
             savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentChatBinding.inflate(inflater, container, false)
-
+        val interlocutor = User(id = args.userId, name = args.userName, image = null)
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, true)
 
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
@@ -65,19 +68,21 @@ class ChatFragment : Fragment() {
 
                     if ((visibleItemCount + firstVisibleItemPosition) + RECYCLER_THRESHOLD
                             >= totalItemCount) {
-                        viewModel.getMoreMessages(args.userId)
+                        // TODO add loading indicator like on home fragment
+                        viewModel.getMoreMessages(interlocutor)
                     }
                 }
             }
         })
 
         binding.buttonSend.setOnClickListener {
-            viewModel.sendMessage(binding.editTextMessage.text(), args.userId)
+            viewModel.sendMessage(binding.editTextMessage.text(), interlocutor)
             binding.editTextMessage.text?.clear()
         }
 
         viewModel.messages.observe(viewLifecycleOwner) {
             adapter.submitList(it)
+            binding.emptyState.isVisible = it.isEmpty()
         }
 
         viewModel.loadStatus.observe(viewLifecycleOwner) {
@@ -86,11 +91,13 @@ class ChatFragment : Fragment() {
                     viewModel.isEndOfPaginationReached = it.isEndOfPaginationReached
                 }
 
-                else -> Log.d(DEBUG_TAG, "LoadStatus error")
+                is LoadResult.Error -> {
+                    (activity as? MainActivity)?.showGenericError(it.exception)
+                }
             }
         }
 
-        viewModel.getMessages(args.userId)
+        viewModel.getMessages(User(id = args.userId, name = args.userName, image = null)) // TODO fix later
 
         return binding.root
     }

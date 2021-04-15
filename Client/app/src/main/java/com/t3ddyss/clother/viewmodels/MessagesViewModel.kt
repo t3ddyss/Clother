@@ -20,16 +20,12 @@ class MessagesViewModel @Inject constructor(
     val messages: LiveData<Message> = _messages
 
     fun getMessages() {
+        if (repository.isConnected) return
+
         viewModelScope.launch {
             repository.getMessagesStream().collect {
                 _messages.postValue(it)
             }
-        }
-    }
-
-    fun sendMessage(message: String, to: Int = 1) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.sendMessage(to, message)
         }
     }
 

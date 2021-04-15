@@ -8,6 +8,7 @@ import com.t3ddyss.clother.db.MessageDao
 import com.t3ddyss.clother.db.RemoteKeyDao
 import com.t3ddyss.clother.models.common.LoadResult
 import com.t3ddyss.clother.models.common.LoadType
+import com.t3ddyss.clother.models.user.User
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,10 +31,10 @@ class MessagesRepository @Inject constructor(
 //    private val coroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     private lateinit var messageLoader: MessagesPagingLoader
 
-    fun getMessages(interlocutorId: Int) = messageDao
-            .getMessagesByInterlocutorId(interlocutorId)
+    fun getMessages(interlocutor: User) = messageDao
+            .getMessagesByInterlocutorId(interlocutor.id)
 
-    suspend fun fetchMessages(interlocutorId: Int): LoadResult {
+    suspend fun fetchMessages(interlocutor: User): LoadResult {
         if (!this@MessagesRepository::messageLoader.isInitialized) {
             messageLoader = MessagesPagingLoader(
                     service = service,
@@ -43,7 +44,7 @@ class MessagesRepository @Inject constructor(
                     messageDao = messageDao,
                     remoteKeyDao = remoteKeyDao,
                     remoteKeyList = KEY_LIST,
-                    interlocutorId = interlocutorId
+                    interlocutor = interlocutor
             )
         }
 

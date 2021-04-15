@@ -12,6 +12,7 @@ class Converters {
     @TypeConverter
     fun toListOfStrings(images: String) = images.split(";")
 
+    // TODO add timezone support
     @TypeConverter
     fun fromTimestamp(value: Long?): Date? {
         return value?.let { Date(it) }

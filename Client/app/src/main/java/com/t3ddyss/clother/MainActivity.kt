@@ -114,11 +114,6 @@ class MainActivity : AppCompatActivity() {
         startService(Intent(applicationContext, OnClearFromRecentService::class.java))
     }
 
-    override fun onStart() {
-        super.onStart()
-        messagesViewModel.getMessages()
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         navController.removeOnDestinationChangedListener(destinationChangeListener)
@@ -126,6 +121,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    fun connectToMessagesServer(): Boolean {
+        return if (prefs.getBoolean(IS_AUTHENTICATED, false)) {
+            messagesViewModel.getMessages()
+            true
+        }
+        else false
     }
 
     private fun showGenericDialog(message: String?) {
@@ -142,7 +145,7 @@ class MainActivity : AppCompatActivity() {
     fun showGenericError(throwable: Throwable) {
         when (throwable) {
             is SocketTimeoutException -> showGenericError(null)
-            is ConnectException -> showGenericError(getString(R.string.no_connection)) // Fix
+            is ConnectException -> showGenericError(getString(R.string.no_connection))
         }
     }
 

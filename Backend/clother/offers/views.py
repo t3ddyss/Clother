@@ -34,7 +34,7 @@ def get_offers():
     if query:
         offers_query = offers_query.filter(Offer.title.ilike(f'%{query}%'))
     if size:
-        offers_query = offers_query.filter(Offer.size.ilike(f'%{size}%'))
+        offers_query = offers_query.filter(Offer.size.ilike(f'{size}'))
     if coordinates and radius:
         create_math_functions()
         lat, lng = [float(x) for x in coordinates.split(',')]

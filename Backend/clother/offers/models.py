@@ -15,7 +15,7 @@ class Offer(db.Model):
 
     user = db.relationship('User', uselist=False, backref=db.backref('offers', lazy=True))
     category = db.relationship('Category', uselist=False, backref=db.backref('offers', lazy=True))
-    images = db.relationship('Image', passive_deletes=True)
+    images = db.relationship('Image', cascade="all, delete", passive_deletes=True)
     location = db.relationship('Location', uselist=False, passive_deletes=True)
 
     def to_dict(self):
