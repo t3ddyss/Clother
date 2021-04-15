@@ -118,6 +118,9 @@ def mock_messages():
                 "Ok, fine",
                 "Are you free on Friday?",
                 "Yes"]
+    Chat.query.delete()
+    Message.query.delete()
+
     users = User.query.order_by(User.id.asc()).limit(3).all()
 
     for i in range(len(users)):

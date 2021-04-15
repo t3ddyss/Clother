@@ -1,9 +1,6 @@
 package com.t3ddyss.clother.db
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.t3ddyss.clother.models.chat.Message
 import kotlinx.coroutines.flow.Flow
 
@@ -24,4 +21,7 @@ interface MessageDao {
 
     @Query("DELETE FROM message WHERE server_chat_id == :serverChatId")
     suspend fun deleteAllMessagesFromChat(serverChatId: Int?)
+
+    @Delete
+    suspend fun delete(message: Message)
 }

@@ -53,13 +53,12 @@ class LiveMessagesRepository @Inject constructor(
     private var notificationId = 0
     val isConnected get() = socket.connected()
 
-    suspend fun getMessagesStream() = callbackFlow {
+    suspend fun getMessagesStream() = callbackFlow<Message> {
         val onConnectListener = Emitter.Listener {
         }
 
         val onNewMessageListener = Emitter.Listener {
             val message = gson.fromJson(it[0] as? String, Message::class.java)
-            offer(message)
 
             launch {
                 addNewMessage(message)
@@ -68,8 +67,21 @@ class LiveMessagesRepository @Inject constructor(
             showNotification(message)
         }
 
+        val onNewChatListener = Emitter.Listener {
+            val chat = gson.fromJson(it[0] as? String, Chat::class.java)
+
+            launch {
+                addNewChat(chat)
+            }
+
+            chat.lastMessage?.also { message ->
+                showNotification(message)
+            }
+        }
+
         socket.on("connection", onConnectListener)
         socket.on("message", onNewMessageListener)
+        socket.on("chat", onNewChatListener)
         socket.connect()
 
         awaitClose {
@@ -141,7 +153,7 @@ class LiveMessagesRepository @Inject constructor(
 
             if (createdChat != null) {
                 createdChat.lastMessage?.status = MessageStatus.DELIVERED
-                updateMessage(createdChat.lastMessage ?: return)
+                addNewChat(chat = createdChat, temporaryChat = chat, temporaryMessage = message)
             }
             else {
                 message?.status = MessageStatus.FAILED
@@ -192,9 +204,29 @@ class LiveMessagesRepository @Inject constructor(
         }
     }
 
-    fun disconnectFromServer() {
-        Log.d(DEBUG_TAG, "Going to disconnect manually")
+    private suspend fun addNewChat(chat: Chat,
+                                   temporaryChat: Chat? = null,
+                                   temporaryMessage: Message? = null) {
+        db.withTransaction {
+            if (temporaryMessage != null) {
+                messageDao.delete(temporaryMessage)
+            }
 
+            if (temporaryChat != null) {
+                chatDao.delete(temporaryChat)
+            }
+
+            val message = chat.lastMessage!!
+
+            chat.lastMessage = null
+            message.localChatId = chatDao.insert(chat).toInt()
+            message.localId = messageDao.insert(message).toInt()
+            chat.lastMessage = message
+            chatDao.insert(chat)
+        }
+    }
+
+    fun disconnectFromServer() {
         socket.off()
         socket.disconnect()
     }

@@ -69,8 +69,8 @@ def send_message(*args, **kwargs):
     sleep(1)  # Remove
 
     if is_new_chat:
-        send(json.dumps(message.to_dict()), to=interlocutor.id)  # TODO send chat instead
-        emit(f'message{new_message["local_id"]}', json.dumps(chat.to_dict(user.id)))
+        emit("chat", json.dumps(chat.to_dict(user_id_to=interlocutor.id)), to=interlocutor.id)
+        emit(f'message{new_message["local_id"]}', json.dumps(chat.to_dict(user_id_to=user.id)))
     else:
         send(json.dumps(message.to_dict()), to=interlocutor.id)
         emit(f'message{new_message["local_id"]}', json.dumps(message.to_dict()))
