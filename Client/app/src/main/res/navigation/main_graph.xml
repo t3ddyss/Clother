@@ -25,6 +25,10 @@
                 android:name="offer_id"
                 android:defaultValue="0" />
         </action>
+        <argument
+            android:name="refresh"
+            android:defaultValue="false"
+            app:argType="boolean"/>
     </fragment>
 
     <fragment

@@ -2,6 +2,7 @@ package com.t3ddyss.clother.ui.home
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.paging.CombinedLoadStates
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
@@ -22,6 +24,7 @@ import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OffersAdapter
 import com.t3ddyss.clother.databinding.FragmentHomeBinding
 import com.t3ddyss.clother.ui.offer.OfferViewModel
+import com.t3ddyss.clother.utilities.DEBUG_TAG
 import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
 import com.t3ddyss.clother.utilities.getThemeColor
 import com.t3ddyss.clother.viewmodels.NetworkStateViewModel
@@ -48,6 +51,7 @@ class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+    private val args by navArgs<HomeFragmentArgs>()
     @Inject lateinit var prefs: SharedPreferences
 
     private val adapter = OffersAdapter {offer ->
@@ -173,6 +177,7 @@ class HomeFragment : Fragment() {
                 adapter.submitData(it)
             }
         }
+
         viewModel.getOffers()
 
         return binding.root

@@ -1,5 +1,6 @@
 package com.t3ddyss.clother.ui.chats
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,7 +14,9 @@ import com.t3ddyss.clother.databinding.FragmentChatsBinding
 import com.t3ddyss.clother.models.common.Loading
 import com.t3ddyss.clother.models.common.Success
 import com.t3ddyss.clother.utilities.DEBUG_TAG
+import com.t3ddyss.clother.utilities.USER_ID
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ChatsFragment : Fragment() {
@@ -21,10 +24,14 @@ class ChatsFragment : Fragment() {
     private var _binding: FragmentChatsBinding? = null
     private val binding get() = _binding!!
 
-    private val adapter = ChatsAdapter {
-        val action = ChatsFragmentDirections
-                .actionChatsFragmentToChatFragment(it.interlocutor.id, it.interlocutor.name)
-        findNavController().navigate(action)
+    @Inject lateinit var prefs: SharedPreferences
+
+    private val adapter by lazy {
+        ChatsAdapter(prefs.getInt(USER_ID, 0)) {
+            val action = ChatsFragmentDirections
+                    .actionChatsFragmentToChatFragment(it.interlocutor.id, it.interlocutor.name)
+            findNavController().navigate(action)
+        }
     }
 
     override fun onCreateView(

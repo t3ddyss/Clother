@@ -18,6 +18,17 @@
         <action
             android:id="@+id/action_offerEditorFragment_to_locationFragment"
             app:destination="@id/locationFragment" />
+
+        <action
+            android:id="@+id/action_offerEditorFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/offer_editor_graph"
+            app:popUpToInclusive="true">
+            <argument
+                android:name="refresh"
+                android:defaultValue="false"
+                app:argType="boolean" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/galleryFragment"

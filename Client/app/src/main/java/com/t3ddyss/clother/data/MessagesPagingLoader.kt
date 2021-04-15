@@ -78,11 +78,11 @@ class MessagesPagingLoader (
                     loadType = LoadType.APPEND
                 }
 
-                // TODO update "latest" message for corresponding chat
+
                 messageDao.insertAll(items)
                 remoteKeyDao.insert(RemoteKey(
                         remoteKeyList + interlocutorId,
-                        items.lastOrNull()?.id))
+                        items.lastOrNull()?.server_id))
             }
 
             LoadResult.Success(isEndOfPaginationReached = items.isEmpty())

@@ -94,7 +94,9 @@ class OfferEditorFragment : Fragment() {
                 is Loading<NewOfferResponse> ->
                     (activity as? MainActivity)?.setLoadingVisibility(true)
                 is Success<NewOfferResponse> -> {
-//                    navController.navigate(R.id.action_signInFragment_to_homeFragment) // TODO
+                    val action = OfferEditorFragmentDirections
+                            .actionOfferEditorFragmentToHomeFragment(refresh = true)
+                    findNavController().navigate(action)
                     (activity as? MainActivity)?.setLoadingVisibility(false)
                 }
                 is Error<NewOfferResponse> -> {

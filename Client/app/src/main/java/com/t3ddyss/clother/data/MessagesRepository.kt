@@ -7,6 +7,7 @@ import com.t3ddyss.clother.db.ChatDao
 import com.t3ddyss.clother.db.MessageDao
 import com.t3ddyss.clother.db.RemoteKeyDao
 import com.t3ddyss.clother.models.common.LoadResult
+import com.t3ddyss.clother.models.common.LoadType
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
