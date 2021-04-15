@@ -109,12 +109,12 @@ class LiveMessagesRepository @Inject constructor(
         }
 
         if (sentMessage != null) {
-            message.status = MessageStatus.DELIVERED
-            updateMessage(message)
+            sentMessage.status = MessageStatus.DELIVERED
+            updateMessage(sentMessage, to)
         }
         else {
             message.status = MessageStatus.FAILED
-            updateMessage(message)
+            updateMessage(message, to)
         }
     }
 
@@ -157,7 +157,7 @@ class LiveMessagesRepository @Inject constructor(
             }
             else {
                 message?.status = MessageStatus.FAILED
-                updateMessage(message ?: return)
+                updateMessage(message ?: return, to)
             }
         }
     }
@@ -188,8 +188,15 @@ class LiveMessagesRepository @Inject constructor(
         socket.on("message$localMessageId", onChatCreatedListener)
     }
 
-    private suspend fun updateMessage(message: Message) {
-        addNewMessage(message)
+    private suspend fun updateMessage(message: Message, interlocutor: User) {
+        val chat = chatDao.getChatByInterlocutorId(interlocutor.id)
+        messageDao.update(message)
+
+        if (chat != null) {
+            Log.d(DEBUG_TAG, "Going to update last message")
+            chat.lastMessage = message
+            chatDao.update(chat)
+        }
     }
 
     private suspend fun addNewMessage(message: Message) {

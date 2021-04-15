@@ -17,7 +17,7 @@ data class Message(@PrimaryKey(autoGenerate = true)
 
                    @SerializedName("server_id")
                    @ColumnInfo(name = "server_id")
-                   val serverId: Int? = null,
+                   var serverId: Int? = null,
 
                    @SerializedName("local_chat_id")
                    @ColumnInfo(name = "local_chat_id", index = true)

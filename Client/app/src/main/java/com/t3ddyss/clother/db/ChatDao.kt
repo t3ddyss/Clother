@@ -12,6 +12,9 @@ interface ChatDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(chat: Chat): Long
 
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun update(chat: Chat)
+
     @Query("SELECT * FROM chat ORDER BY last_message_created_at DESC")
     fun getAllChats(): Flow<List<Chat>>
 
