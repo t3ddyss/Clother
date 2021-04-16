@@ -12,9 +12,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentProfileBinding
 import com.t3ddyss.clother.utilities.DEBUG_TAG
+import com.t3ddyss.clother.utilities.getImageUrlForCurrentDevice
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -35,6 +37,17 @@ class ProfileFragment : Fragment() {
             savedInstanceState: Bundle?
     ): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
+
+        profileViewModel.user.observe(viewLifecycleOwner) {
+            binding.textViewName.text = it.name
+
+            if (it.image != null) {
+                Glide.with(binding.cardViewAvatar.imageViewAvatar)
+                        .load(it.image.getImageUrlForCurrentDevice())
+                        .centerCrop()
+                        .into(binding.cardViewAvatar.imageViewAvatar)
+            }
+        }
 
         return binding.root
     }

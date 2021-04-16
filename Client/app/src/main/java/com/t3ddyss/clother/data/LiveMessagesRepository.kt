@@ -44,7 +44,14 @@ class LiveMessagesRepository @Inject constructor(
                 .build()
         IO.socket(getBaseUrlForCurrentDevice(), options)
     }
+
+    private val userId by lazy {
+        prefs.getInt(USER_ID, 0)
+    }
+
     val isConnected get() = socket.connected()
+    var currentInterlocutorId: Int? = null
+    var isChatsFragment = false
 
     suspend fun getMessagesStream() = callbackFlow<Message> {
         val onConnectListener = Emitter.Listener {
@@ -57,7 +64,9 @@ class LiveMessagesRepository @Inject constructor(
                 addNewMessage(message)
             }
 
-            notificationUtil.showNotification(message)
+            if (!isChatsFragment && currentInterlocutorId != userId) {
+                notificationUtil.showNotification(message)
+            }
         }
 
         val onNewChatListener = Emitter.Listener {

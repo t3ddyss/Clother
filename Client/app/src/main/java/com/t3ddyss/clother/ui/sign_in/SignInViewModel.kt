@@ -2,7 +2,7 @@ package com.t3ddyss.clother.ui.sign_in
 
 import androidx.lifecycle.*
 import com.t3ddyss.clother.data.UsersRepository
-import com.t3ddyss.clother.models.auth.AuthTokens
+import com.t3ddyss.clother.models.auth.AuthData
 import com.t3ddyss.clother.models.common.Loading
 import com.t3ddyss.clother.models.common.Resource
 import com.t3ddyss.clother.utilities.DEFAULT_STRING_VALUE
@@ -23,8 +23,8 @@ class SignInViewModel @Inject constructor(
     private val _password = savedStateHandle.getLiveData(PASSWORD, DEFAULT_STRING_VALUE)
     val password: LiveData<String> = _password
 
-    private val _signInResponse = MutableLiveData<Resource<AuthTokens>>()
-    val authTokens: LiveData<Resource<AuthTokens>> = _signInResponse
+    private val _signInResponse = MutableLiveData<Resource<AuthData>>()
+    val authData: LiveData<Resource<AuthData>> = _signInResponse
 
     fun saveEmail(email: String) {
         savedStateHandle.set(EMAIL, email)

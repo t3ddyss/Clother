@@ -60,6 +60,7 @@ class OfferEditorImagesAdapter(
         fun bind(imageUri: Uri) {
             Glide.with(binding.image)
                     .load(imageUri)
+                    .thumbnail(0.5f)
                     .into(binding.image)
         }
     }

@@ -80,6 +80,8 @@ class FilterDialogFragment : BottomSheetDialogFragment() {
             binding.chipGroupSize.chipGroupSize.check(it)
         }
 
+        viewModel.getSavedLocation()
+
         return binding.root
     }
 

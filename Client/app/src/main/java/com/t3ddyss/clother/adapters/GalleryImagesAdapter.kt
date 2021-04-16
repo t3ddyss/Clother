@@ -52,6 +52,7 @@ class GalleryImagesAdapter(private val selectedLimitExceeded: () -> Unit) :
         fun bind(image: GalleryImage) {
             Glide.with(binding.image)
                     .load(image.uri)
+                    .thumbnail(0.5f)
                     .into(binding.image)
 
             binding.imageViewChecked.isVisible = image.isSelected

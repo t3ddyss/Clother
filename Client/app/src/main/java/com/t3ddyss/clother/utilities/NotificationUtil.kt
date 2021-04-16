@@ -19,7 +19,7 @@ class NotificationUtil @Inject constructor(
         @ApplicationContext private val context: Context,
 ) {
     private val notificationId = AtomicInteger(1)
-    private val users = mutableListOf<Int>()
+    private val users = mutableMapOf<Int, Boolean>()
 
     fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -53,8 +53,13 @@ class NotificationUtil @Inject constructor(
             notify(notificationId.getAndIncrement(), singleNotification)
         }
 
-        if (message.userId !in users) {
-            users.add(message.userId)
+        if (message.userId !in users.keys) {
+            users[message.userId] = false
+            return
+        }
+
+        // TODO retrieve shown notifications and use them to decide whether new group should be created or not
+        if (users[message.userId] == true) {
             return
         }
 
@@ -67,6 +72,7 @@ class NotificationUtil @Inject constructor(
                 .build()
 
         with(NotificationManagerCompat.from(context)) {
+            users[message.userId] = true
             notify(notificationId.getAndIncrement(), summaryNotification)
         }
     }

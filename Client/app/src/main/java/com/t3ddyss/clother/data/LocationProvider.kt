@@ -11,6 +11,7 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.OnSuccessListener
+import com.t3ddyss.clother.db.LocationDao
 import com.t3ddyss.clother.models.common.LatLngWrapper
 import com.t3ddyss.clother.utilities.DEBUG_TAG
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -21,12 +22,19 @@ import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 class LocationProvider @Inject constructor(
-        application: Application
+        application: Application,
+        private val locationDao: LocationDao
 ) {
     private val locationProviderClient = LocationServices
             .getFusedLocationProviderClient(application.applicationContext)
 
     suspend fun getLocationStream() = merge(getInitalLocation(), getLocationUpdates())
+
+    suspend fun saveSelectedLocation(location: com.t3ddyss.clother.models.common.Location) {
+        locationDao.insert(location)
+    }
+
+    suspend fun getLatestSavedLocation() = locationDao.getLatestLocation()
 
     @SuppressLint("MissingPermission")
     private fun getInitalLocation() = callbackFlow {

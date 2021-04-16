@@ -8,10 +8,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.google.gson.JsonObject
 import com.t3ddyss.clother.api.ClotherOffersService
-import com.t3ddyss.clother.db.AppDatabase
-import com.t3ddyss.clother.db.CategoryDao
-import com.t3ddyss.clother.db.OfferDao
-import com.t3ddyss.clother.db.RemoteKeyDao
+import com.t3ddyss.clother.db.*
 import com.t3ddyss.clother.models.common.Error
 import com.t3ddyss.clother.models.common.Failed
 import com.t3ddyss.clother.models.common.Resource

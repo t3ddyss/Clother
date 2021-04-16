@@ -29,7 +29,6 @@ class ChatViewModel @Inject constructor(
     private val _loadStatus = MutableLiveData<LoadResult>()
     val loadStatus: LiveData<LoadResult> = _loadStatus
 
-    @Volatile
     var isLoading = AtomicBoolean(false)
     var isEndOfPaginationReached = false
 
@@ -42,6 +41,7 @@ class ChatViewModel @Inject constructor(
             }
         }
 
+        liveRepository.currentInterlocutorId = interlocutor.id
         getMoreMessages(interlocutor)
     }
 

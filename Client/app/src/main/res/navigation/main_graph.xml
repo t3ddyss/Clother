@@ -93,12 +93,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/messagesFragment"
-        android:name="com.t3ddyss.clother.ui.messages.MessagesFragment"
-        android:label="@string/messages"
-        tools:layout="@layout/fragment_messages" />
-
-    <fragment
         android:id="@+id/profileFragment"
         android:name="com.t3ddyss.clother.ui.profile.ProfileFragment"
         android:label="@string/profile"
@@ -225,7 +219,7 @@
             app:destination="@id/search_results_graph">
             <argument
                 android:name="query"
-                app:argType="string"/>
+                app:argType="string" />
         </action>
         <argument
             android:name="query"

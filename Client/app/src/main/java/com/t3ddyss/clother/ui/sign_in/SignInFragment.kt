@@ -12,7 +12,7 @@ import com.t3ddyss.clother.R
 import com.t3ddyss.clother.data.*
 import com.t3ddyss.clother.databinding.FragmentSignInBinding
 import com.t3ddyss.clother.models.*
-import com.t3ddyss.clother.models.auth.AuthTokens
+import com.t3ddyss.clother.models.auth.AuthData
 import com.t3ddyss.clother.models.common.Error
 import com.t3ddyss.clother.models.common.Failed
 import com.t3ddyss.clother.models.common.Loading
@@ -45,18 +45,18 @@ class SignInFragment : Fragment() {
             binding.editTextPassword.text = it.toEditable()
         })
 
-        signInViewModel.authTokens.observe(viewLifecycleOwner, {
+        signInViewModel.authData.observe(viewLifecycleOwner, {
             when(it) {
-                is Loading<AuthTokens> ->
+                is Loading<AuthData> ->
                     (activity as? MainActivity)?.setLoadingVisibility(true)
-                is Success<AuthTokens> -> {
+                is Success<AuthData> -> {
                     navController.navigate(R.id.action_signInFragment_to_homeFragment)
                 }
-                is Error<AuthTokens> -> {
+                is Error<AuthData> -> {
                     (activity as? MainActivity)?.setLoadingVisibility(false)
                     (activity as? MainActivity)?.showGenericError(it.message)
                 }
-                is Failed<AuthTokens> -> {
+                is Failed<AuthData> -> {
                     (activity as? MainActivity)?.setLoadingVisibility(false)
                     (activity as? MainActivity)?.showGenericError(getString(R.string.no_connection))
                 }

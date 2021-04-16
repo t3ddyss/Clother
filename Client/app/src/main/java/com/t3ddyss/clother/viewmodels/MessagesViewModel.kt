@@ -37,6 +37,14 @@ class MessagesViewModel @Inject constructor(
         }
     }
 
+    fun setIsChatsDestination(isChatsFragment: Boolean, isChatFragment: Boolean) {
+        liveRepository.isChatsFragment = isChatsFragment
+
+        if (!isChatFragment) {
+            liveRepository.currentInterlocutorId = null
+        }
+    }
+
     override fun onCleared() {
         super.onCleared()
         liveRepository.disconnectFromServer()

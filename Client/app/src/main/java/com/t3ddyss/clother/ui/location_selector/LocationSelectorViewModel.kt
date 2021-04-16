@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.google.android.gms.maps.model.LatLng
 import com.t3ddyss.clother.data.LocationProvider
 import com.t3ddyss.clother.models.common.LatLngWrapper
+import com.t3ddyss.clother.models.common.Location
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
@@ -39,5 +40,12 @@ class LocationSelectorViewModel
                 isInitialValue = false,
                 isManuallySelected = true,
         )
+    }
+
+    fun saveSelectedLocation(latLng: LatLngWrapper) {
+        viewModelScope.launch {
+            repository.saveSelectedLocation(Location(lat = latLng.latLng.latitude,
+                    lng = latLng.latLng.longitude))
+        }
     }
 }

@@ -1,6 +1,4 @@
 from flask import Blueprint
-from .models import User
-from flask_jwt_extended import jwt_required
 
 from ..utils import base_prefix
 

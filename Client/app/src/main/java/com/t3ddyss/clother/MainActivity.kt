@@ -240,7 +240,7 @@ class MainActivity : AppCompatActivity() {
         R.id.homeFragment, R.id.chatsFragment)
 
         private val fragmentsWithoutNavIcon = setOf(R.id.homeFragment,
-                R.id.messagesFragment, R.id.profileFragment, R.id.searchByCategoryFragment,
+                R.id.profileFragment, R.id.searchByCategoryFragment,
         R.id.searchFragment, R.id.signUpFragment, R.id.chatsFragment)
 
         private val fragmentsWithCustomUpIcon = setOf(R.id.offerEditorFragment,
@@ -253,6 +253,9 @@ class MainActivity : AppCompatActivity() {
                 destination: NavDestination,
                 arguments: Bundle?
         ) {
+            messagesViewModel.setIsChatsDestination(destination.id == R.id.chatsFragment,
+            destination.id == R.id.chatFragment)
+
             with(binding) {
                 // NavView visibility
                 if (destination.id !in fragmentsWithoutBottomNav && !navView.isVisible) {

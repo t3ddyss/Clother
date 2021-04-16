@@ -58,6 +58,18 @@ object DatabaseModule {
 
     @Singleton
     @Provides
+    fun provideUserDao(appDatabase: AppDatabase): UserDao {
+        return appDatabase.userDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideLocationDao(appDatabase: AppDatabase): LocationDao {
+        return appDatabase.locationDao()
+    }
+
+    @Singleton
+    @Provides
     fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences =
         context.getSharedPreferences(AUTH, Context.MODE_PRIVATE)
 }

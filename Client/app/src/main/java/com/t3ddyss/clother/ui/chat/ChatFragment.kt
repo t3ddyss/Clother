@@ -97,7 +97,7 @@ class ChatFragment : Fragment() {
             }
         }
 
-        viewModel.getMessages(User(id = args.userId, name = args.userName, image = null)) // TODO fix later
+        viewModel.getMessages(interlocutor) // TODO fix later
 
         return binding.root
     }

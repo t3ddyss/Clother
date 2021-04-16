@@ -122,6 +122,14 @@ class HomeFragment : Fragment() {
         }
         adapter.addLoadStateListener(loadStateListener)
 
+        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                if (layoutManager.findFirstVisibleItemPosition() == 0) {
+                    binding.list.scrollToPosition(positionStart)
+                }
+            }
+        })
+
         binding.list.layoutManager = layoutManager
         binding.list.adapter = adapter
 
@@ -147,6 +155,8 @@ class HomeFragment : Fragment() {
                         && (recyclerView.adapter?.itemCount ?: 0) > 0)
             }
         })
+
+
 
         context?.getThemeColor(R.attr.colorPrimaryVariant)?.let {
             binding.swipeRefresh.setProgressBackgroundColorSchemeColor(it)

@@ -4,20 +4,21 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.ExperimentalPagingApi
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.*
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -28,13 +29,9 @@ import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentLocationSelectorBinding
 import com.t3ddyss.clother.ui.filters.FiltersViewModel
 import com.t3ddyss.clother.ui.offer_editor.OfferEditorViewModel
-import com.t3ddyss.clother.ui.search_results.SearchResultsViewModel
-import com.t3ddyss.clother.utilities.DEBUG_TAG
 import com.t3ddyss.clother.utilities.MAPVIEW_BUNDLE
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 @ExperimentalPagingApi
@@ -128,6 +125,8 @@ class LocationSelectorFragment : Fragment() {
                 }
 
                 findNavController().popBackStack()
+
+                viewModel.saveSelectedLocation(location)
             }
         }
 
