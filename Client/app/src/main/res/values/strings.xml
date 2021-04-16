@@ -30,6 +30,7 @@
     <string name="no_connection">You are offline</string>
     <string name="retry">Retry</string>
     <string name="session_expired">Your session has expired</string>
+    <string name="default_notification_channel_id">Messages</string>
 
     <!-- Main -->
     <string name="unknown_error">Something went wrong…</string>

@@ -1,12 +1,9 @@
 package com.t3ddyss.clother.data
 
-import android.content.Context
 import android.content.SharedPreferences
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
+import android.util.Log
 import androidx.room.withTransaction
 import com.google.gson.Gson
-import com.t3ddyss.clother.R
 import com.t3ddyss.clother.db.AppDatabase
 import com.t3ddyss.clother.db.ChatDao
 import com.t3ddyss.clother.db.MessageDao
@@ -15,7 +12,6 @@ import com.t3ddyss.clother.models.chat.Message
 import com.t3ddyss.clother.models.chat.MessageStatus
 import com.t3ddyss.clother.models.user.User
 import com.t3ddyss.clother.utilities.*
-import dagger.hilt.android.qualifiers.ApplicationContext
 import io.socket.client.IO
 import io.socket.emitter.Emitter
 import io.socket.engineio.client.transports.WebSocket
@@ -36,9 +32,8 @@ class LiveMessagesRepository @Inject constructor(
         private val db: AppDatabase,
         private val chatDao: ChatDao,
         private val messageDao: MessageDao,
+        private val notificationUtil: NotificationUtil,
         private val gson: Gson,
-        @ApplicationContext
-        private val context: Context,
 ) {
     private val socket by lazy {
         val options = IO.Options.builder()
@@ -49,7 +44,6 @@ class LiveMessagesRepository @Inject constructor(
                 .build()
         IO.socket(getBaseUrlForCurrentDevice(), options)
     }
-    private var notificationId = 0
     val isConnected get() = socket.connected()
 
     suspend fun getMessagesStream() = callbackFlow<Message> {
@@ -63,7 +57,7 @@ class LiveMessagesRepository @Inject constructor(
                 addNewMessage(message)
             }
 
-            showNotification(message)
+            notificationUtil.showNotification(message)
         }
 
         val onNewChatListener = Emitter.Listener {
@@ -74,7 +68,7 @@ class LiveMessagesRepository @Inject constructor(
             }
 
             chat.lastMessage?.also { message ->
-                showNotification(message)
+                notificationUtil.showNotification(message)
             }
         }
 
@@ -112,6 +106,7 @@ class LiveMessagesRepository @Inject constructor(
             updateMessage(sentMessage, to)
         }
         else {
+            Log.d(DEBUG_TAG, "Sent message is null")
             message.status = MessageStatus.FAILED
             updateMessage(message, to)
         }
@@ -234,19 +229,6 @@ class LiveMessagesRepository @Inject constructor(
     fun disconnectFromServer() {
         socket.off()
         socket.disconnect()
-    }
-
-    private fun showNotification(message: Message) {
-        val builder = NotificationCompat.Builder(context, MESSAGES_CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_chat)
-                .setContentTitle(message.userName)
-                .setContentText(message.body ?: context.getString(R.string.image))
-                .setGroup(message.userId.toString())
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-
-        with(NotificationManagerCompat.from(context)) {
-            notify(notificationId++, builder.build())
-        }
     }
 
     companion object {

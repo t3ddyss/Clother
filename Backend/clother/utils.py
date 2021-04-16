@@ -6,7 +6,7 @@ from .extensions import mail
 
 base_prefix = '/api'
 default_page_size = 10
-default_chat_page_size = 30
+default_chat_page_size = 25
 response_delay = 1.5
 allowed_extensions = {'png', 'jpg', 'jpeg'}
 

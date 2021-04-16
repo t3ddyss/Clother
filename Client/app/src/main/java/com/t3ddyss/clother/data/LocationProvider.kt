@@ -15,7 +15,6 @@ import com.t3ddyss.clother.models.common.LatLngWrapper
 import com.t3ddyss.clother.utilities.DEBUG_TAG
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.merge
 import javax.inject.Inject
@@ -27,7 +26,7 @@ class LocationProvider @Inject constructor(
     private val locationProviderClient = LocationServices
             .getFusedLocationProviderClient(application.applicationContext)
 
-    suspend fun getLocation(): Flow<LatLngWrapper> = merge(getInitalLocation(), getLocationUpdates())
+    suspend fun getLocationStream() = merge(getInitalLocation(), getLocationUpdates())
 
     @SuppressLint("MissingPermission")
     private fun getInitalLocation() = callbackFlow {

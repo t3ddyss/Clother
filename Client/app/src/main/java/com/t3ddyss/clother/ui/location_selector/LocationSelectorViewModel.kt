@@ -27,7 +27,7 @@ class LocationSelectorViewModel
         if (isLocationRequested) return
         viewModelScope.launch {
             isLocationRequested = true
-            repository.getLocation().collectLatest {
+            repository.getLocationStream().collectLatest {
                 _location.postValue(it)
             }
         }

@@ -7,8 +7,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,16 +19,13 @@ class GalleryViewModel @Inject constructor(
 ) : ViewModel() {
     private val _images = MutableLiveData<List<GalleryImage>>()
     val images: LiveData<List<GalleryImage>> = _images
-    private var isInitialImagesLoaded = false
+    private var isInitialImagesLoaded = AtomicBoolean(false)
 
     fun getImages() {
-        if (isInitialImagesLoaded) return
-        viewModelScope.launch {
-            isInitialImagesLoaded = true
-            val initialImages = repository.getInitialImages()
-            val updatedImages = repository.getImageUpdates()
+        if (isInitialImagesLoaded.getAndSet(true)) return
 
-            merge(initialImages, updatedImages)
+        viewModelScope.launch {
+            repository.getImagesStream()
                     .map { list -> list.map { GalleryImage(it) } }
                     .collectLatest {
                         _images.postValue(it)

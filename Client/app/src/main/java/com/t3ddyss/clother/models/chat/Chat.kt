@@ -4,6 +4,7 @@ import androidx.room.*
 import com.google.gson.annotations.SerializedName
 import com.t3ddyss.clother.models.user.User
 
+// TODO normalize table (remove last_message) to avoid update anomalies, also use different classes for network and local data
 @Entity(tableName = "chat", indices = [Index(value = ["server_id"], unique = true)])
 data class Chat(@PrimaryKey(autoGenerate = true)
                 @SerializedName("local_id")

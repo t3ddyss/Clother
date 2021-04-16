@@ -5,7 +5,7 @@ from eventlet import wsgi
 from flask import Flask
 from sqlalchemy import event
 
-from clother.extensions import db, migrate, jwt, mail, socketio, push_service
+from clother.extensions import db, migrate, jwt, mail, socketio
 from clother import admin, authentication, users, offers, images, chat
 
 

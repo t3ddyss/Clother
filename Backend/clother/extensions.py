@@ -5,7 +5,7 @@ from flask_migrate import Migrate
 from flask_socketio import SocketIO
 from flask_sqlalchemy import SQLAlchemy
 
-push_service = None
+
 db = SQLAlchemy()
 migrate = Migrate()
 cache = Cache()

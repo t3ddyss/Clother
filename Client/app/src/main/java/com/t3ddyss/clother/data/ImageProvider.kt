@@ -15,6 +15,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
@@ -24,13 +25,15 @@ class ImageProvider @Inject constructor(
         private val application: Application) {
     private val uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 
-    suspend fun getInitialImages() = flow {
+    suspend fun getImagesStream() = merge(getInitialImages(), getImageUpdates())
+
+    private suspend fun getInitialImages() = flow {
         Log.d(DEBUG_TAG, "Going to emit initial images")
 
         emit(loadImagesFromGallery())
     }.flowOn(Dispatchers.IO)
 
-    suspend fun getImageUpdates() = callbackFlow<List<Uri>> {
+    private suspend fun getImageUpdates() = callbackFlow<List<Uri>> {
         val newImagesObserver = object : ContentObserver(Handler(application.applicationContext.mainLooper)) {
             override fun onChange(selfChange: Boolean) {
                 if (selfChange) return

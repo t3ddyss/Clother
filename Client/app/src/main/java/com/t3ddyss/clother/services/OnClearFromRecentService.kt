@@ -3,9 +3,7 @@ package com.t3ddyss.clother.services
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import android.util.Log
 import com.t3ddyss.clother.data.LiveMessagesRepository
-import com.t3ddyss.clother.utilities.DEBUG_TAG
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
@@ -24,7 +22,6 @@ class OnClearFromRecentService @Inject constructor(): Service() {
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
-        Log.d(DEBUG_TAG, "onTaskRemoved")
         repository.disconnectFromServer()
     }
 }

@@ -1,0 +1,73 @@
+package com.t3ddyss.clother.utilities
+
+import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.os.Build
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import com.t3ddyss.clother.R
+import com.t3ddyss.clother.models.chat.Message
+import dagger.hilt.android.qualifiers.ApplicationContext
+import java.util.concurrent.atomic.AtomicInteger
+import javax.inject.Inject
+import javax.inject.Singleton
+
+@Singleton
+class NotificationUtil @Inject constructor(
+        @ApplicationContext private val context: Context,
+) {
+    private val notificationId = AtomicInteger(1)
+    private val users = mutableListOf<Int>()
+
+    fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = context.getString(R.string.messages)
+            val descriptionText = context.getString(R.string.messages)
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(
+                    context.getString(R.string.default_notification_channel_id),
+                    name,
+                    importance).apply {
+                description = descriptionText
+            }
+
+            val notificationManager = context
+                    .getSystemService(Application.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    fun showNotification(message: Message) {
+        val singleNotification = NotificationCompat.Builder(context,
+                context.getString(R.string.default_notification_channel_id))
+                .setSmallIcon(R.drawable.ic_chat)
+                .setContentTitle(message.userName)
+                .setContentText(message.body ?: context.getString(R.string.image))
+                .setGroup(message.userId.toString())
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .build()
+
+        with(NotificationManagerCompat.from(context)) {
+            notify(notificationId.getAndIncrement(), singleNotification)
+        }
+
+        if (message.userId !in users) {
+            users.add(message.userId)
+            return
+        }
+
+        val summaryNotification = NotificationCompat.Builder(context,
+                context.getString(R.string.default_notification_channel_id))
+                .setSmallIcon(R.drawable.ic_chat)
+                .setGroup(message.userId.toString())
+                .setGroupSummary(true)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .build()
+
+        with(NotificationManagerCompat.from(context)) {
+            notify(notificationId.getAndIncrement(), summaryNotification)
+        }
+    }
+}

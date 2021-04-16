@@ -29,4 +29,7 @@ interface ChatDao {
 
     @Delete
     suspend fun delete(chat: Chat)
+
+    @Query("DELETE FROM chat WHERE server_id NOT IN (:serverIds)")
+    suspend fun deleteRemovedChats(serverIds: Array<Long>)
 }

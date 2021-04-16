@@ -7,7 +7,7 @@ import retrofit2.http.*
 
 interface ClotherAuthService {
     @GET("api/auth/refresh")
-    suspend fun refreshTokens(@Header("Authorization") refreshToken: String): Response<AuthTokens>
+    suspend fun refreshTokens(@Header("Authorization") refreshToken: String?): Response<AuthTokens>
 
     @POST("api/auth/register")
     suspend fun createUserWithCredentials(@Body user: Map<String, String>): AuthResponse

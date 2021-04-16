@@ -61,7 +61,7 @@ class MessagesRepository @Inject constructor(
         sendDeviceTokenToServer(token)
     }
 
-    suspend fun sendDeviceTokenToServer(token: String?) {
+    private suspend fun sendDeviceTokenToServer(token: String?) {
         try {
             token?.let {
                 authService.sendDeviceToken(prefs.getString(ACCESS_TOKEN, null), token)
@@ -75,7 +75,7 @@ class MessagesRepository @Inject constructor(
     private suspend fun setupCloudMessaging() = suspendCancellableCoroutine<String?> { cont ->
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             if (!task.isSuccessful) {
-                Log.w(DEBUG_TAG, "Fetching FCM registration token failed", task.exception)
+                Log.d(DEBUG_TAG, "Fetching FCM registration token failed", task.exception)
                 cont.resume(null)
             }
 
