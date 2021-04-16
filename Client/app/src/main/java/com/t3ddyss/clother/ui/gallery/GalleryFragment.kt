@@ -39,7 +39,7 @@ class GalleryFragment : Fragment() {
 
         layoutManager = GridLayoutManager(context, 3)
         adapter = GalleryImagesAdapter {
-            (activity as? MainActivity)?.showGenericError(getString(R.string.attach_limit_exceeded))
+            (activity as? MainActivity)?.showGenericMessage(getString(R.string.attach_limit_exceeded))
         }
 
         binding.list.layoutManager = layoutManager

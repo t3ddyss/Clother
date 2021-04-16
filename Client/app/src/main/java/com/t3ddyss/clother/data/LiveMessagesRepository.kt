@@ -25,6 +25,7 @@ import javax.inject.Singleton
 import kotlin.coroutines.resume
 
 
+// TODO add methods for refreshing token
 @Singleton
 @ExperimentalCoroutinesApi
 class LiveMessagesRepository @Inject constructor(

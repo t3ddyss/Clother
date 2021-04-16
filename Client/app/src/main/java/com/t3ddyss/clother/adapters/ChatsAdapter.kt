@@ -56,6 +56,7 @@ class ChatsAdapter(
                 chat.interlocutor?.image?.let {
                     Glide.with(cardViewAvatar.imageViewAvatar)
                         .load(it.getImageUrlForCurrentDevice())
+                        .thumbnail(0.25f)
                         .centerCrop()
                         .into(cardViewAvatar.imageViewAvatar)
                 }

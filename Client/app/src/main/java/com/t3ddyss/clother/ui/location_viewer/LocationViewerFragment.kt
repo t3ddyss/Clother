@@ -1,6 +1,5 @@
 package com.t3ddyss.clother.ui.location_viewer
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +16,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentLocationViewerBinding
-import com.t3ddyss.clother.ui.location_selector.LocationSelectorFragment
 import com.t3ddyss.clother.utilities.MAPVIEW_BUNDLE
 
 class LocationViewerFragment : Fragment() {
@@ -35,7 +33,7 @@ class LocationViewerFragment : Fragment() {
         val (lat, lng) = args.coordinates.split(",").map { it.toDoubleOrNull() }
 
         if (lat == null || lng == null) {
-            (activity as? MainActivity)?.showGenericError(getString(R.string.error_showing_location))
+            (activity as? MainActivity)?.showGenericMessage(getString(R.string.error_showing_location))
             findNavController().popBackStack()
         }
         val point = LatLng(lat!!, lng!!)

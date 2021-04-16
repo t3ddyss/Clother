@@ -34,7 +34,7 @@ class HomeViewModel
 
         viewModelScope.launch {
             repository
-                    .getOffers(query, REMOTE_KEY_HOME)
+                    .getOffers(query = query, remoteKeyList = REMOTE_KEY_HOME)
                     .cachedIn(viewModelScope)
                     .collectLatest {
                         _offers.postValue(it)

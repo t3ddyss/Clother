@@ -1,8 +1,10 @@
 package com.t3ddyss.clother.ui.chat
 
 import android.os.Bundle
-import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -14,7 +16,6 @@ import com.t3ddyss.clother.adapters.MessagesAdapter
 import com.t3ddyss.clother.databinding.FragmentChatBinding
 import com.t3ddyss.clother.models.common.LoadResult
 import com.t3ddyss.clother.models.user.User
-import com.t3ddyss.clother.utilities.DEBUG_TAG
 import com.t3ddyss.clother.utilities.text
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -92,7 +93,7 @@ class ChatFragment : Fragment() {
                 }
 
                 is LoadResult.Error -> {
-                    (activity as? MainActivity)?.showGenericError(it.exception)
+                    (activity as? MainActivity)?.showGenericMessage(it.exception)
                 }
             }
         }

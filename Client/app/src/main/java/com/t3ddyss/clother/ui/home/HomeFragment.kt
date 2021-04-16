@@ -95,7 +95,7 @@ class HomeFragment : Fragment() {
                         findNavController().navigate(R.id.action_homeFragment_to_signUpFragment)
 
                         (activity as? MainActivity)
-                            ?.showGenericError(getString(R.string.session_expired))
+                            ?.showGenericMessage(getString(R.string.session_expired))
                         prefs.edit().remove(IS_AUTHENTICATED).apply()
                     }
                     else {
@@ -104,7 +104,7 @@ class HomeFragment : Fragment() {
                         binding.swipeRefresh.isRefreshing = false
 
                         (activity as? MainActivity)
-                            ?.showGenericError(error)
+                            ?.showGenericMessage(error)
                     }
                 }
             }
@@ -157,7 +157,6 @@ class HomeFragment : Fragment() {
         })
 
 
-
         context?.getThemeColor(R.attr.colorPrimaryVariant)?.let {
             binding.swipeRefresh.setProgressBackgroundColorSchemeColor(it)
         }
@@ -174,7 +173,7 @@ class HomeFragment : Fragment() {
                 if (it.second) {
                     adapter.retry()
                 } else {
-                    (activity as? MainActivity)?.showGenericError(getString(R.string.no_connection))
+                    (activity as? MainActivity)?.showGenericMessage(getString(R.string.no_connection))
                 }
             }
         })
@@ -183,6 +182,10 @@ class HomeFragment : Fragment() {
             lifecycleScope.launch {
                 adapter.submitData(it)
             }
+        }
+
+        if (args.isNewOfferAdded) {
+            (activity as? MainActivity)?.showGenericMessage(getString(R.string.offer_created))
         }
 
         viewModel.getOffers()

@@ -8,7 +8,6 @@ import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -22,9 +21,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.maps.MapView
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.messaging.FirebaseMessaging
 import com.t3ddyss.clother.databinding.ActivityMainBinding
 import com.t3ddyss.clother.services.OnClearFromRecentService
 import com.t3ddyss.clother.utilities.*
@@ -34,11 +31,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import javax.inject.Inject
-import kotlin.coroutines.resume
 
 
 @AndroidEntryPoint
@@ -110,14 +105,14 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-    fun showGenericError(throwable: Throwable) {
+    fun showGenericMessage(throwable: Throwable) {
         when (throwable) {
-            is SocketTimeoutException -> showGenericError(null)
-            is ConnectException -> showGenericError(getString(R.string.no_connection))
+            is SocketTimeoutException -> showGenericMessage(null)
+            is ConnectException -> showGenericMessage(getString(R.string.no_connection))
         }
     }
 
-    fun showGenericError(message: String?) {
+    fun showGenericMessage(message: String?) {
         val snackbar = Snackbar.make(binding.container,
                 message ?: getString(R.string.unknown_error),
                 Snackbar.LENGTH_SHORT)
@@ -194,7 +189,7 @@ class MainActivity : AppCompatActivity() {
                         second = false
                 ))
 
-                showGenericError(getString(R.string.no_connection))
+                showGenericMessage(getString(R.string.no_connection))
             }
         })
     }

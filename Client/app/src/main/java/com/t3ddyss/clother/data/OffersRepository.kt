@@ -43,7 +43,11 @@ class OffersRepository
         private val categoryDao: CategoryDao
 ) {
 
-    fun getOffers(query: Map<String, String>, remoteKeyList: String): Flow<PagingData<Offer>> {
+    /**
+     * Gets offers and saves them in database
+     */
+    fun getOffers(query: Map<String, String>, userId: Int? = null, remoteKeyList: String):
+            Flow<PagingData<Offer>> {
         return Pager(
                 config = PagingConfig(
                         pageSize = CLOTHER_PAGE_SIZE,
@@ -56,10 +60,14 @@ class OffersRepository
                         offerDao = offerDao,
                         remoteKeyDao = remoteKeyDao,
                         remoteKeyList = remoteKeyList),
-                pagingSourceFactory = { offerDao.getAllOffers() }
+                pagingSourceFactory = { if (userId == null) offerDao.getAllOffers()
+                else offerDao.getAllOffers() }
         ).flow
     }
 
+    /**
+     * Gets offers without saving them in database
+     */
     fun getOffers(query: Map<String, String>): Flow<PagingData<Offer>> {
         return Pager(
                 config = PagingConfig(

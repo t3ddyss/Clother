@@ -95,17 +95,17 @@ class OfferEditorFragment : Fragment() {
                     (activity as? MainActivity)?.setLoadingVisibility(true)
                 is Success<NewOfferResponse> -> {
                     val action = OfferEditorFragmentDirections
-                            .actionOfferEditorFragmentToHomeFragment(refresh = true)
+                            .actionOfferEditorFragmentToHomeFragment(isNewOfferAdded = true)
                     findNavController().navigate(action)
                     (activity as? MainActivity)?.setLoadingVisibility(false)
                 }
                 is Error<NewOfferResponse> -> {
                     (activity as? MainActivity)?.setLoadingVisibility(false)
-                    (activity as? MainActivity)?.showGenericError(it.message)
+                    (activity as? MainActivity)?.showGenericMessage(it.message)
                 }
                 is Failed<NewOfferResponse> -> {
                     (activity as? MainActivity)?.setLoadingVisibility(false)
-                    (activity as? MainActivity)?.showGenericError(getString(R.string.no_connection))
+                    (activity as? MainActivity)?.showGenericMessage(getString(R.string.no_connection))
                 }
             }
         }
@@ -144,7 +144,7 @@ class OfferEditorFragment : Fragment() {
 
         val images = viewModel.images.value!!.toList()
         if (images.isEmpty()) {
-            (activity as? MainActivity)?.showGenericError(getString(R.string.provide_image))
+            (activity as? MainActivity)?.showGenericMessage(getString(R.string.provide_image))
             return
         }
 

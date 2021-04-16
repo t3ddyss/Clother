@@ -59,7 +59,7 @@ class LocationSelectorFragment : Fragment() {
         }
         else {
             setOnMapLongClickListener()
-            (activity as? MainActivity)?.showGenericError(
+            (activity as? MainActivity)?.showGenericMessage(
                     message = getString(R.string.no_location_access)
             )
         }}

@@ -42,6 +42,7 @@ class OffersAdapter(
             binding.apply {
                 Glide.with(image.context)
                         .load(offer.images.firstOrNull()?.getImageUrlForCurrentDevice())
+                        .thumbnail(0.5f)
                         .centerCrop()
                         .placeholder(R.drawable.placeholder_offer_image)
                         .dontAnimate()

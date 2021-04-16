@@ -57,11 +57,11 @@ class PasswordRecoveryFragment : Fragment() {
                 }
                 is Error<AuthResponse> -> {
                     (activity as? MainActivity)?.setLoadingVisibility(false)
-                    (activity as? MainActivity)?.showGenericError(response.message)
+                    (activity as? MainActivity)?.showGenericMessage(response.message)
                 }
                 is Failed<AuthResponse> -> {
                     (activity as? MainActivity)?.setLoadingVisibility(false)
-                    (activity as? MainActivity)?.showGenericError(getString(R.string.no_connection))
+                    (activity as? MainActivity)?.showGenericMessage(getString(R.string.no_connection))
                 }
             }
         }

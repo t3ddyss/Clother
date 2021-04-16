@@ -2,7 +2,6 @@ package com.t3ddyss.clother.ui.search_results
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -22,12 +21,8 @@ import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OffersAdapter
 import com.t3ddyss.clother.databinding.FragmentSearchResultsBinding
-import com.t3ddyss.clother.ui.filters.FiltersViewModel
-import com.t3ddyss.clother.ui.home.HomeFragmentDirections
 import com.t3ddyss.clother.ui.offer.OfferViewModel
-import com.t3ddyss.clother.utilities.DEBUG_TAG
 import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
-import com.t3ddyss.clother.utilities.getThemeColor
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -85,7 +80,7 @@ class SearchResultsFragment : Fragment() {
                         findNavController().navigate(R.id.action_searchResults_to_signUpFragment)
 
                         (activity as? MainActivity)
-                                ?.showGenericError(getString(R.string.session_expired))
+                                ?.showGenericMessage(getString(R.string.session_expired))
                         prefs.edit().remove(IS_AUTHENTICATED).apply()
                     }
                     else {
@@ -93,7 +88,7 @@ class SearchResultsFragment : Fragment() {
                         binding.containerSearch.isVisible = true
 
                         (activity as? MainActivity)
-                                ?.showGenericError(error)
+                                ?.showGenericMessage(error)
                     }
                 }
             }
