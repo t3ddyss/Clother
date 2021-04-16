@@ -8,9 +8,8 @@ import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.view.Gravity
+import android.util.Log
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
@@ -22,26 +21,24 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.transition.AutoTransition
-import androidx.transition.Slide
-import androidx.transition.TransitionManager
 import com.google.android.gms.maps.MapView
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.messaging.FirebaseMessaging
 import com.t3ddyss.clother.databinding.ActivityMainBinding
 import com.t3ddyss.clother.services.OnClearFromRecentService
-import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
-import com.t3ddyss.clother.utilities.convertDpToPx
-import com.t3ddyss.clother.utilities.getThemeColor
-import com.t3ddyss.clother.utilities.toColorFilter
+import com.t3ddyss.clother.utilities.*
 import com.t3ddyss.clother.viewmodels.MessagesViewModel
 import com.t3ddyss.clother.viewmodels.NetworkStateViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import javax.inject.Inject
+import kotlin.coroutines.resume
 
 
 @AndroidEntryPoint
@@ -98,18 +95,8 @@ class MainActivity : AppCompatActivity() {
             navController.addOnDestinationChangedListener(it)
         }
 
+        setupGoogleMap()
         setupNetworkStateListener()
-
-        lifecycleScope.launch(Dispatchers.Default) {
-            try {
-                val mapView = MapView(applicationContext)
-                mapView.onCreate(null)
-                mapView.onPause()
-                mapView.onDestroy()
-            } catch (ex: Exception) {
-
-            }
-        }
 
         startService(Intent(applicationContext, OnClearFromRecentService::class.java))
     }
@@ -121,25 +108,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
-    }
-
-    fun connectToMessagesServer(): Boolean {
-        return if (prefs.getBoolean(IS_AUTHENTICATED, false)) {
-            messagesViewModel.getMessages()
-            true
-        }
-        else false
-    }
-
-    private fun showGenericDialog(message: String?) {
-        AlertDialog.Builder(this)
-                .setTitle(getString(R.string.confirmation))
-                .setMessage(message)
-                .setPositiveButton(getString(R.string.yes)) { _, _ ->
-                    super.onBackPressed()
-                }
-                .setNegativeButton(getString(R.string.no), null)
-                .show()
     }
 
     fun showGenericError(throwable: Throwable) {
@@ -175,6 +143,20 @@ class MainActivity : AppCompatActivity() {
         snackbar.show()
     }
 
+    private fun setupGoogleMap() {
+        lifecycleScope.launch(Dispatchers.Default) {
+            try {
+                val mapView = MapView(applicationContext)
+                mapView.onCreate(null)
+                mapView.onPause()
+                mapView.onDestroy()
+            } catch (ex: Exception) {
+
+            }
+        }
+    }
+
+    // TODO replace Pair with data class
     private fun setupNetworkStateListener() {
         val connectivityManager = getSystemService(CONNECTIVITY_SERVICE)
                 as? ConnectivityManager ?: return
@@ -229,24 +211,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun animateBottomNav(gravity: Int = Gravity.BOTTOM) {
-        TransitionManager
-                .beginDelayedTransition(
-                        binding.navView,
-                        Slide(gravity),
-//                        AutoTransition()
-                )
-    }
-
-    private fun animateToolbar(gravity: Int = Gravity.TOP) {
-        TransitionManager
-                .beginDelayedTransition(
-                        binding.toolbar,
-//                            Slide(gravity),
-                        AutoTransition()
-                )
-    }
-
     fun setNavIconVisibility(isVisible: Boolean) {
         if (!isVisible) {
             binding.toolbar.navigationIcon = null
@@ -292,21 +256,17 @@ class MainActivity : AppCompatActivity() {
             with(binding) {
                 // NavView visibility
                 if (destination.id !in fragmentsWithoutBottomNav && !navView.isVisible) {
-//                    animateBottomNav()
                     navView.isVisible = true
                 }
                 else if (destination.id in fragmentsWithoutBottomNav && navView.isVisible) {
-//                    animateBottomNav()
                     navView.isVisible = false
                 }
 
                 // Toolbar visibility
                 if (destination.id !in fragmentsWithoutToolbar && !toolbar.isVisible) {
-//                    animateToolbar()
                     toolbar.isVisible = true
                 }
                 else if (destination.id in fragmentsWithoutToolbar && toolbar.isVisible) {
-//                    animateToolbar()
                     toolbar.isVisible = false
                 }
                 binding.navHostFragmentMarginTop.isVisible =

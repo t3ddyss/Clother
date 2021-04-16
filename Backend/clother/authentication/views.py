@@ -44,6 +44,15 @@ def refresh_tokens():
             }
 
 
+@blueprint.route('/device/<token>', methods=['POST'])
+@jwt_required()
+def set_device_token(token):
+    user = User.query.get(get_jwt_identity())
+    user.device_token = token
+    db.session.commit()
+    return {'message': 'Success'}
+
+
 @blueprint.route('/register', methods=['POST'])
 def register():
     if not request.is_json:

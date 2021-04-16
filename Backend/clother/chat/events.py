@@ -2,10 +2,11 @@ import json
 from functools import wraps
 from time import sleep
 
-from flask import request, jsonify
+from flask import request, current_app
 from flask_jwt_extended import decode_token
 from flask_jwt_extended.exceptions import JWTExtendedException
 from flask_socketio import emit, join_room, leave_room, send
+from pyfcm import FCMNotification
 from sqlalchemy import func, distinct
 
 from .models import Chat, Message
@@ -68,6 +69,15 @@ def send_message(*args, **kwargs):
     db.session.commit()
     sleep(1)  # Remove
 
+    push_service = FCMNotification(api_key=current_app.config['FCM_API_KEY'])
+
+    if interlocutor.device_token:
+        message_title = "Uber update"
+        message_body = "Hi John, your customized news for today is ready"
+        result = push_service.notify_single_device(registration_id=interlocutor.device_token,
+                                                   message_title=message_title,
+                                                   message_body=message_body,
+                                                   android_channel_id="Messages")
     if is_new_chat:
         emit("chat", json.dumps(chat.to_dict(user_id_to=interlocutor.id)), to=interlocutor.id)
         emit(f'message{new_message["local_id"]}', json.dumps(chat.to_dict(user_id_to=user.id)))

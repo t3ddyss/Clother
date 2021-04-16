@@ -2,7 +2,6 @@ package com.t3ddyss.clother.ui.home
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,15 +23,13 @@ import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OffersAdapter
 import com.t3ddyss.clother.databinding.FragmentHomeBinding
 import com.t3ddyss.clother.ui.offer.OfferViewModel
-import com.t3ddyss.clother.utilities.DEBUG_TAG
 import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
 import com.t3ddyss.clother.utilities.getThemeColor
+import com.t3ddyss.clother.viewmodels.MessagesViewModel
 import com.t3ddyss.clother.viewmodels.NetworkStateViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -45,8 +42,8 @@ class HomeFragment : Fragment() {
 
     // Using activityViewModels delegate here to save data across different instances of HomeFragment
     private val viewModel by activityViewModels<HomeViewModel>()
-
     private val offerViewModel by activityViewModels<OfferViewModel>()
+    private val messagesViewModel by activityViewModels<MessagesViewModel>()
     private val networkStateViewModel by activityViewModels<NetworkStateViewModel>()
 
     private var _binding: FragmentHomeBinding? = null
@@ -185,7 +182,8 @@ class HomeFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        (activity as? MainActivity)?.connectToMessagesServer()
+        messagesViewModel.getMessages()
+        messagesViewModel.sendDeviceTokenToServer()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

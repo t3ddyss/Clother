@@ -3,10 +3,7 @@ package com.t3ddyss.clother.api
 import com.t3ddyss.clother.models.auth.AuthResponse
 import com.t3ddyss.clother.models.auth.AuthTokens
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface ClotherAuthService {
     @GET("api/auth/refresh")
@@ -20,4 +17,9 @@ interface ClotherAuthService {
 
     @POST("api/auth/forgot_password")
     suspend fun resetPassword(@Body user: Map<String, String>): AuthResponse
+
+    @POST("api/auth/device/{token}")
+    suspend fun sendDeviceToken(@Header("Authorization") accessToken: String?,
+                                @Path("token") token: String
+    )
 }

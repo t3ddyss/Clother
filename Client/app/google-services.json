@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "228653382834",
+    "project_id": "clother",
+    "storage_bucket": "clother.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:228653382834:android:29c656a9cdda251fe65dab",
+        "android_client_info": {
+          "package_name": "com.t3ddyss.clother"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "228653382834-apvlra51618n8fl3cg1bldt8o0a5ccsv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.t3ddyss.clother",
+            "certificate_hash": "c124b2375e9c6f29d2930d8b4e1284d2829dc16d"
+          }
+        },
+        {
+          "client_id": "228653382834-p9l2p5bqsr4a8lfv0v44cfifg5ks2o8h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNNyNfQNEylQOMQMfFKQu75O7fLyZvhbs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "228653382834-p9l2p5bqsr4a8lfv0v44cfifg5ks2o8h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

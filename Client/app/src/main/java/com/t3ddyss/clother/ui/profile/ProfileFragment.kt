@@ -36,10 +36,6 @@ class ProfileFragment : Fragment() {
     ): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
 
-        binding.buttonNewOffer.setOnClickListener {
-            findNavController().navigate(R.id.action_profileFragment_to_offerEditorFragment)
-        }
-
         return binding.root
     }
 

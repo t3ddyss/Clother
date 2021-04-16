@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -43,6 +44,8 @@ class ChatsFragment : Fragment() {
 
         viewModel.chats.observe(viewLifecycleOwner) {
             adapter.submitList(it.content)
+
+            binding.emptyState.isVisible = it.content?.isEmpty() == true
 
 //            progressBar.isVisible = result is Resource.Loading && result.data.isNullOrEmpty()
 //            textViewError.isVisible = result is Resource.Error && result.data.isNullOrEmpty()

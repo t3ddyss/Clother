@@ -4,6 +4,7 @@ plugins {
     id 'androidx.navigation.safeargs.kotlin'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'com.google.gms.google-services'
     id 'com.google.secrets_gradle_plugin' version '0.5'
 }
 
@@ -47,6 +48,7 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
     kapt "com.github.bumptech.glide:compiler:$glide_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
+    implementation platform("com.google.firebase:firebase-bom:$firebase_bom_version")
     implementation "androidx.activity:activity-ktx:$activity_version"
     implementation "androidx.annotation:annotation:$annotation_version"
     implementation "androidx.appcompat:appcompat:$app_compat_version"
@@ -73,6 +75,8 @@ dependencies {
     implementation "com.google.android.gms:play-services-location:$google_location_version"
     implementation "com.google.android.material:material:$material_version"
     implementation "com.google.dagger:hilt-android:$hilt_version"
+    implementation "com.google.firebase:firebase-analytics-ktx"
+    implementation "com.google.firebase:firebase-messaging-ktx"
     implementation "com.squareup.okhttp3:okhttp:$ok_http_version"
     implementation "com.squareup.okhttp3:logging-interceptor:$ok_http_version"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"

@@ -1,7 +1,7 @@
 package com.t3ddyss.clother.ui.offer
 
+import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,13 +12,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.ExperimentalPagingApi
 import com.google.android.material.tabs.TabLayoutMediator
-import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OfferImagesAdapter
 import com.t3ddyss.clother.databinding.FragmentOfferBinding
-import com.t3ddyss.clother.utilities.DEBUG_TAG
+import com.t3ddyss.clother.utilities.USER_ID
 import com.t3ddyss.clother.utilities.formatDate
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import javax.inject.Inject
 
 @AndroidEntryPoint
 @ExperimentalPagingApi
@@ -30,6 +30,7 @@ class OfferFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val args by navArgs<OfferFragmentArgs>()
+    @Inject lateinit var prefs: SharedPreferences
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -81,9 +82,14 @@ class OfferFragment : Fragment() {
                 textViewUser.text = it.userName
                 textViewTime.text = it.createdAt.formatDate()
 
-                buttonMessage.setOnClickListener {_ ->
+                if (it.userId == prefs.getInt(USER_ID, 0)) {
+                    buttonMessage.isVisible = false
+                    return@observe
+                }
+
+                buttonMessage.setOnClickListener { _ ->
                     val action = OfferFragmentDirections
-                        .actionOfferFragmentToChatFragment(it.userId, it.userName)
+                            .actionOfferFragmentToChatFragment(it.userId, it.userName)
                     findNavController().navigate(action)
                 }
             }

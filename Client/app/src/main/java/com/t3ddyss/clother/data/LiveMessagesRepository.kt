@@ -2,7 +2,6 @@ package com.t3ddyss.clother.data
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.room.withTransaction
@@ -193,7 +192,6 @@ class LiveMessagesRepository @Inject constructor(
         messageDao.update(message)
 
         if (chat != null) {
-            Log.d(DEBUG_TAG, "Going to update last message")
             chat.lastMessage = message
             chatDao.update(chat)
         }

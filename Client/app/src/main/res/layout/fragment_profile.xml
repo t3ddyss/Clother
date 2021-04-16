@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.profile.ProfileFragment">
+    android:layout_height="wrap_content">
 
     <include
         android:id="@+id/cardView_avatar"
@@ -12,18 +11,21 @@
         android:layout_width="@dimen/avatar_size"
         android:layout_height="@dimen/avatar_size"
         android:layout_margin="@dimen/fragment_horizontal_margin"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/button_new_offer"
-        android:layout_width="0dp"
+    <TextView
+        android:id="@+id/textView_name"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fragment_horizontal_margin"
-        android:background="@drawable/button_rounded"
-        android:text="@string/create_new_offer"
-        app:backgroundTint="@null"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView_avatar" />
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textSize="@dimen/text_size_medium"
+        android:textStyle="bold"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/cardView_avatar"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Фёдор Соколов" />
 </androidx.constraintlayout.widget.ConstraintLayout>
