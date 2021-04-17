@@ -76,7 +76,6 @@ def send_message(*args, **kwargs):
                                           message_body=new_message.body,
                                           android_channel_id="Messages")
 
-    # fix new_message
     if is_new_chat:
         emit("chat", json.dumps(chat.to_dict(user_id_to=interlocutor.id)), to=interlocutor.id)
         emit(f'message{message["local_id"]}', json.dumps(chat.to_dict(user_id_to=sender.id)))
@@ -84,7 +83,7 @@ def send_message(*args, **kwargs):
         send(json.dumps(new_message.to_dict()), to=interlocutor.id)
         emit(f'message{message["local_id"]}', json.dumps(new_message.to_dict()))
 
-    print(f'Sent new message "{message.body}" from {sender.name} to {interlocutor.name}')
+    print(f'Sent new message "{new_message.body}" from {sender.name} to {interlocutor.name}')
 
 
 @socketio.on('disconnect')

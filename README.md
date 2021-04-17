@@ -1,1 +1,1 @@
-Clother is an Android client-server app for swapping unused clothes.
+Clother is an Android client-server app for swapping unused clothes written in Python and Kotlin.
