@@ -24,14 +24,12 @@ import com.t3ddyss.clother.databinding.FragmentSearchResultsBinding
 import com.t3ddyss.clother.ui.offer.OfferViewModel
 import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import javax.inject.Inject
 
-@AndroidEntryPoint
-@ExperimentalCoroutinesApi
 @ExperimentalPagingApi
+@AndroidEntryPoint
 class SearchResultsFragment : Fragment() {
 
     private val viewModel by hiltNavGraphViewModels<SearchResultsViewModel>(

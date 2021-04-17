@@ -27,7 +27,6 @@ import kotlin.coroutines.resume
 
 // TODO add methods for refreshing token
 @Singleton
-@ExperimentalCoroutinesApi
 class LiveMessagesRepository @Inject constructor(
         private val prefs: SharedPreferences,
         private val db: AppDatabase,

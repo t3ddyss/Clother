@@ -31,11 +31,9 @@ import com.t3ddyss.clother.ui.filters.FiltersViewModel
 import com.t3ddyss.clother.ui.offer_editor.OfferEditorViewModel
 import com.t3ddyss.clother.utilities.MAPVIEW_BUNDLE
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@AndroidEntryPoint
 @ExperimentalPagingApi
-@ExperimentalCoroutinesApi
+@AndroidEntryPoint
 class LocationSelectorFragment : Fragment() {
 
     private val viewModel by viewModels<LocationSelectorViewModel>()

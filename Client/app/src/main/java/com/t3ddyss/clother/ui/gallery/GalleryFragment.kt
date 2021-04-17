@@ -17,11 +17,9 @@ import com.t3ddyss.clother.adapters.GalleryImagesAdapter
 import com.t3ddyss.clother.databinding.FragmentGalleryBinding
 import com.t3ddyss.clother.ui.offer_editor.OfferEditorViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@AndroidEntryPoint
 @ExperimentalPagingApi
-@ExperimentalCoroutinesApi
+@AndroidEntryPoint
 class GalleryFragment : Fragment() {
     private val viewModel by viewModels<GalleryViewModel>()
     private val editorViewModel by hiltNavGraphViewModels<OfferEditorViewModel>(R.id.offer_editor_graph)

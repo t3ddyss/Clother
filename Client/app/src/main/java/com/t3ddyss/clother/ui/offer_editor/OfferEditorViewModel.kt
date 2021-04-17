@@ -10,13 +10,11 @@ import com.t3ddyss.clother.models.common.Loading
 import com.t3ddyss.clother.models.offers.NewOfferResponse
 import com.t3ddyss.clother.models.common.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@HiltViewModel
 @ExperimentalPagingApi
-@ExperimentalCoroutinesApi
+@HiltViewModel
 class OfferEditorViewModel
 @Inject constructor(
         private val repository: OffersRepository,

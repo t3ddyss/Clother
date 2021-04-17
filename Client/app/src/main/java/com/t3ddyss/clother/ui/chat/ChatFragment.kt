@@ -18,11 +18,9 @@ import com.t3ddyss.clother.models.common.LoadResult
 import com.t3ddyss.clother.models.user.User
 import com.t3ddyss.clother.utilities.text
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
 @AndroidEntryPoint
-@ExperimentalCoroutinesApi
 class ChatFragment : Fragment() {
 
     private val viewModel by viewModels<ChatViewModel>()
@@ -61,7 +59,6 @@ class ChatFragment : Fragment() {
         binding.listMessages.adapter = adapter
         binding.listMessages.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-
                 if (dy < 0) {
                     val visibleItemCount = layoutManager.childCount
                     val totalItemCount = layoutManager.itemCount

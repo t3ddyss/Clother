@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -28,16 +29,14 @@ import com.t3ddyss.clother.utilities.getThemeColor
 import com.t3ddyss.clother.viewmodels.MessagesViewModel
 import com.t3ddyss.clother.viewmodels.NetworkStateViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import javax.inject.Inject
 
 
-@AndroidEntryPoint
 @ExperimentalPagingApi
-@ExperimentalCoroutinesApi
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     // Using activityViewModels delegate here to save data across different instances of HomeFragment
@@ -58,6 +57,8 @@ class HomeFragment : Fragment() {
         findNavController().navigate(action)
     }
     private lateinit var loadStateListener: (CombinedLoadStates) -> Unit
+    private lateinit var adapterDataObserver: RecyclerView.AdapterDataObserver
+    private lateinit var onScrollListener: RecyclerView.OnScrollListener
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -122,13 +123,14 @@ class HomeFragment : Fragment() {
         }
         adapter.addLoadStateListener(loadStateListener)
 
-        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+        adapterDataObserver = object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 if (layoutManager.findFirstVisibleItemPosition() == 0) {
                     binding.list.scrollToPosition(positionStart)
                 }
             }
-        })
+        }
+        adapter.registerAdapterDataObserver(adapterDataObserver)
 
         binding.list.layoutManager = layoutManager
         binding.list.adapter = adapter
@@ -145,16 +147,20 @@ class HomeFragment : Fragment() {
         }
 
         // Show progressbar if reached end of current list
-        binding.list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        onScrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
+                if (!viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                    return
+                }
+
                 binding.progressBarFooter.isVisible =
                         (!recyclerView.canScrollVertically(1)
-                        && newState==RecyclerView.SCROLL_STATE_IDLE
-                        && !viewModel.endOfPaginationReachedBottom
-                        && (recyclerView.adapter?.itemCount ?: 0) > 0)
+                                && newState==RecyclerView.SCROLL_STATE_IDLE
+                                && !viewModel.endOfPaginationReachedBottom
+                                && (recyclerView.adapter?.itemCount ?: 0) > 0)
             }
-        })
+        }
+        binding.list.addOnScrollListener(onScrollListener)
 
 
         context?.getThemeColor(R.attr.colorPrimaryVariant)?.let {
@@ -209,7 +215,9 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.list.removeOnScrollListener(onScrollListener)
         adapter.removeLoadStateListener(loadStateListener)
+        adapter.unregisterAdapterDataObserver(adapterDataObserver)
         _binding = null
     }
 }

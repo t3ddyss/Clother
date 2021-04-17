@@ -8,13 +8,11 @@ import androidx.paging.ExperimentalPagingApi
 import com.t3ddyss.clother.data.OffersRepository
 import com.t3ddyss.clother.models.offers.Category
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@HiltViewModel
-@ExperimentalCoroutinesApi
 @ExperimentalPagingApi
+@HiltViewModel
 class SearchByCategoryViewModel @Inject constructor(
         private val repository: OffersRepository
 ): ViewModel() {

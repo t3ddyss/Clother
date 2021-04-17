@@ -20,7 +20,6 @@ import com.t3ddyss.clother.models.common.Loading
 import com.t3ddyss.clother.models.common.Success
 import com.t3ddyss.clother.utilities.*
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @AndroidEntryPoint
 class SignUpFragment : Fragment() {
@@ -40,7 +39,6 @@ class SignUpFragment : Fragment() {
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
     }
 
-    @ExperimentalCoroutinesApi
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?

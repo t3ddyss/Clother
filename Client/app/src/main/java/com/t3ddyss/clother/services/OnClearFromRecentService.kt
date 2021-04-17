@@ -5,11 +5,9 @@ import android.content.Intent
 import android.os.IBinder
 import com.t3ddyss.clother.data.LiveMessagesRepository
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
 @AndroidEntryPoint
-@ExperimentalCoroutinesApi
 class OnClearFromRecentService @Inject constructor(): Service() {
     @Inject lateinit var repository: LiveMessagesRepository
 

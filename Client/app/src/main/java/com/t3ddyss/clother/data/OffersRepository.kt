@@ -29,9 +29,7 @@ import java.net.ConnectException
 import java.net.SocketTimeoutException
 import javax.inject.Inject
 
-
 @ExperimentalPagingApi
-@ExperimentalCoroutinesApi
 class OffersRepository
 @Inject constructor(
         private val service: ClotherOffersService,

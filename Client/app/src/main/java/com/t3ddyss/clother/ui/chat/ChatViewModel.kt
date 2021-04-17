@@ -11,14 +11,12 @@ import com.t3ddyss.clother.models.common.LoadResult
 import com.t3ddyss.clother.models.user.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 @HiltViewModel
-@ExperimentalCoroutinesApi
 class ChatViewModel @Inject constructor(
         private val repository: MessagesRepository,
         private val liveRepository: LiveMessagesRepository,

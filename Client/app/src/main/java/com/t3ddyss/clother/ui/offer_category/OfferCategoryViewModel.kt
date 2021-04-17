@@ -5,14 +5,13 @@ import androidx.paging.ExperimentalPagingApi
 import com.t3ddyss.clother.data.OffersRepository
 import com.t3ddyss.clother.models.offers.Category
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@HiltViewModel
 @ExperimentalPagingApi
-@ExperimentalCoroutinesApi
-class OfferCategoryViewModel @Inject constructor(
+@HiltViewModel
+class OfferCategoryViewModel @OptIn(ExperimentalPagingApi::class)
+@Inject constructor(
         private val repository: OffersRepository,
         private val savedStateHandle: SavedStateHandle
 ): ViewModel() {

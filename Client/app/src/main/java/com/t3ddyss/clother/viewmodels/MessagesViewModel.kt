@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 @HiltViewModel
-@ExperimentalCoroutinesApi
 class MessagesViewModel @Inject constructor(
     private val liveRepository: LiveMessagesRepository,
     private val repository: MessagesRepository

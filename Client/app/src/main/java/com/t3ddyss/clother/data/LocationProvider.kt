@@ -14,13 +14,11 @@ import com.google.android.gms.tasks.OnSuccessListener
 import com.t3ddyss.clother.db.LocationDao
 import com.t3ddyss.clother.models.common.LatLngWrapper
 import com.t3ddyss.clother.utilities.DEBUG_TAG
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.merge
 import javax.inject.Inject
 
-@ExperimentalCoroutinesApi
 class LocationProvider @Inject constructor(
         application: Application,
         private val locationDao: LocationDao

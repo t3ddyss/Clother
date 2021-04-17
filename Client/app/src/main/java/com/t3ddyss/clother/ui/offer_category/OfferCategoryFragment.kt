@@ -17,11 +17,9 @@ import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.CategoriesAdapter
 import com.t3ddyss.clother.databinding.FragmentOfferCategoryBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@AndroidEntryPoint
 @ExperimentalPagingApi
-@ExperimentalCoroutinesApi
+@AndroidEntryPoint
 class OfferCategoryFragment : Fragment() {
 
     private val viewModel by viewModels<OfferCategoryViewModel>()

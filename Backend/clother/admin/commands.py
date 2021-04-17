@@ -71,6 +71,8 @@ def populate_categories():
 
 @blueprint.cli.command('mock_users')
 def mock_users():
+    User.query.delete()
+
     users = json.load(open("./users.json", 'r'))
 
     for item in users:
@@ -87,6 +89,11 @@ def mock_users():
 
 @blueprint.cli.command('mock_offers')
 def mock_offers():
+    Offer.query.delete()
+    Image.query.delete()
+    Location.query.delete()
+    db.session.commit()
+
     offers = json.load(open("./offers.json", 'r'))
 
     for item in offers:
@@ -104,7 +111,8 @@ def mock_offers():
         try:
             db.session.add(offer)
             db.session.commit()
-        except IntegrityError:
+        except IntegrityError as ex:
+            print(repr(ex))
             db.session.rollback()
 
     print("Finished mocking offers")
@@ -120,6 +128,7 @@ def mock_messages():
                 "Yes"]
     Chat.query.delete()
     Message.query.delete()
+    db.session.commit()
 
     users = User.query.order_by(User.id.asc()).limit(3).all()
 

@@ -4,7 +4,6 @@ import androidx.lifecycle.*
 import com.t3ddyss.clother.data.ImageProvider
 import com.t3ddyss.clother.models.common.GalleryImage
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -12,7 +11,6 @@ import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 @HiltViewModel
-@ExperimentalCoroutinesApi
 class GalleryViewModel @Inject constructor(
         private val repository: ImageProvider,
         private val savedStateHandle: SavedStateHandle

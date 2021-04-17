@@ -30,12 +30,10 @@ import com.t3ddyss.clother.models.offers.NewOfferResponse
 import com.t3ddyss.clother.utilities.text
 import com.t3ddyss.clother.utilities.toCoordinatesString
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
-@AndroidEntryPoint
 @ExperimentalPagingApi
-@ExperimentalCoroutinesApi
+@AndroidEntryPoint
 class OfferEditorFragment : Fragment() {
     private val viewModel by hiltNavGraphViewModels<OfferEditorViewModel>(R.id.offer_editor_graph)
 

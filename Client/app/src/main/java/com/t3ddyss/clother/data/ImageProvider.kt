@@ -10,7 +10,6 @@ import com.bumptech.glide.Glide
 import com.t3ddyss.clother.utilities.DEBUG_TAG
 import id.zelory.compressor.Compressor
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
@@ -20,7 +19,6 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 
-@ExperimentalCoroutinesApi
 class ImageProvider @Inject constructor(
         private val application: Application) {
     private val uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI

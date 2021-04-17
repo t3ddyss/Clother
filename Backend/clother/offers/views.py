@@ -26,6 +26,7 @@ def get_offers():
     size = request.args.get('size', default=None, type=str)
     coordinates = request.args.get('location', default=None, type=str)
     radius = request.args.get('radius', default=None, type=int)
+    user = request.args.get('user', default=None, type=int)
 
     offers_query = Offer.query
 
@@ -45,6 +46,8 @@ def get_offers():
                      lng,
                      db.func) <= radius
         )
+    if user:
+        offers_query = offers_query.filter(Offer.user_id == user)
 
     if after is None and before is None:  # initial request
         offers = offers_query.order_by(Offer.id.desc()).limit(limit).all()

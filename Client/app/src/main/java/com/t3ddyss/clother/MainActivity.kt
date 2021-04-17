@@ -29,7 +29,6 @@ import com.t3ddyss.clother.viewmodels.MessagesViewModel
 import com.t3ddyss.clother.viewmodels.NetworkStateViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -37,7 +36,6 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-@ExperimentalCoroutinesApi
 class MainActivity : AppCompatActivity() {
 
     private val messagesViewModel by viewModels<MessagesViewModel>()

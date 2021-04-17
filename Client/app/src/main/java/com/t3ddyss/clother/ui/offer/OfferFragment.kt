@@ -17,12 +17,10 @@ import com.t3ddyss.clother.databinding.FragmentOfferBinding
 import com.t3ddyss.clother.utilities.USER_ID
 import com.t3ddyss.clother.utilities.formatDate
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
-@AndroidEntryPoint
 @ExperimentalPagingApi
-@ExperimentalCoroutinesApi
+@AndroidEntryPoint
 class OfferFragment : Fragment() {
 
     private val viewModel by activityViewModels<OfferViewModel>()

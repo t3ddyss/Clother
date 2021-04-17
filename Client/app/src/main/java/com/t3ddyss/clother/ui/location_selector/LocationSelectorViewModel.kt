@@ -6,13 +6,11 @@ import com.t3ddyss.clother.data.LocationProvider
 import com.t3ddyss.clother.models.common.LatLngWrapper
 import com.t3ddyss.clother.models.common.Location
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-@ExperimentalCoroutinesApi
 class LocationSelectorViewModel
 @Inject constructor(
         private val repository: LocationProvider,

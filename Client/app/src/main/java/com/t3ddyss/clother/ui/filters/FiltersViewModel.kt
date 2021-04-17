@@ -7,13 +7,11 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.t3ddyss.clother.data.LocationProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 @HiltViewModel
-@ExperimentalCoroutinesApi
 class FiltersViewModel @Inject constructor(
         private val repository: LocationProvider
 ) : ViewModel() {

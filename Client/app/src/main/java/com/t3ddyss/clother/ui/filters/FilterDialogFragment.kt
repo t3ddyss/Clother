@@ -16,11 +16,9 @@ import com.t3ddyss.clother.databinding.FragmentFiltersDialogBinding
 import com.t3ddyss.clother.ui.search_results.SearchResultsViewModel
 import com.t3ddyss.clother.utilities.toCoordinatesString
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@AndroidEntryPoint
 @ExperimentalPagingApi
-@ExperimentalCoroutinesApi
+@AndroidEntryPoint
 class FilterDialogFragment : BottomSheetDialogFragment() {
     private val searchViewModel by hiltNavGraphViewModels<SearchResultsViewModel>(
             R.id.search_results_graph)

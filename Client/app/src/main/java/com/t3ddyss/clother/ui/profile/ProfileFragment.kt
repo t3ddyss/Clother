@@ -1,21 +1,14 @@
 package com.t3ddyss.clother.ui.profile
 
-import android.content.Intent
 import android.content.SharedPreferences
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
-import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentProfileBinding
-import com.t3ddyss.clother.utilities.DEBUG_TAG
 import com.t3ddyss.clother.utilities.getImageUrlForCurrentDevice
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
