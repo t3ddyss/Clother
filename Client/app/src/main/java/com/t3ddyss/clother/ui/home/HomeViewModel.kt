@@ -4,11 +4,13 @@ import androidx.lifecycle.*
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.insertHeaderItem
 import com.t3ddyss.clother.data.OffersRepository
 import com.t3ddyss.clother.models.offers.Offer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 @ExperimentalPagingApi
@@ -21,26 +23,19 @@ class HomeViewModel
     private val _offers = MutableLiveData<PagingData<Offer>>()
     val offers: LiveData<PagingData<Offer>> = _offers
 
-    private var currentQuery: Map<String, String>? = null
+    private val isOffersLoaded = AtomicBoolean(false)
     var endOfPaginationReachedBottom = false
 
-    fun getOffers(query: Map<String, String> = mapOf()) {
-        if (query == currentQuery) {
-            return
-        }
-        currentQuery = query
+    fun getOffers() {
+        if (isOffersLoaded.getAndSet(true)) return
 
         viewModelScope.launch {
             repository
-                    .getOffers(query = query, remoteKeyList = REMOTE_KEY_HOME)
+                    .getOffers()
                     .cachedIn(viewModelScope)
                     .collectLatest {
                         _offers.postValue(it)
                     }
         }
-    }
-
-    companion object {
-        const val REMOTE_KEY_HOME = "home"
     }
 }

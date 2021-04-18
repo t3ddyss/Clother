@@ -22,7 +22,10 @@ class User(db.Model):
     def check_password(self, password):
         return check_password_hash(self.password, password)
 
-    def to_dict(self):
-        return {'id': self.id,
+    def to_dict(self, with_email=False):
+        user = {'id': self.id,
                 'name': self.name,
                 'image': self.image}
+        if with_email:
+            user['email'] = self.email
+        return user

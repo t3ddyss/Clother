@@ -23,7 +23,7 @@ class MessagesPagingLoader (
         private val chatDao: ChatDao,
         private val messageDao: MessageDao,
         private val remoteKeyDao: RemoteKeyDao,
-        private val remoteKeyList: String,
+        private val listKey: String,
         private val interlocutor: User
 ) {
     private var accessToken: String? = null
@@ -44,7 +44,6 @@ class MessagesPagingLoader (
     }
 
     suspend fun load(): LoadResult {
-
         val key = when (loadType) {
             LoadType.REFRESH -> {
                 null
@@ -52,7 +51,7 @@ class MessagesPagingLoader (
 
             LoadType.APPEND -> {
                 val afterKey = db.withTransaction {
-                    remoteKeyDao.remoteKeyByList(remoteKeyList + interlocutor.id).afterKey
+                    remoteKeyDao.remoteKeyByList(listKey).afterKey
                 }
 
                 afterKey
@@ -73,7 +72,7 @@ class MessagesPagingLoader (
 
                 if (chat != null && loadType == LoadType.REFRESH) {
                     messageDao.deleteAllMessagesFromChat(chat.localId)
-                    remoteKeyDao.removeByList(remoteKeyList + interlocutor.id)
+                    remoteKeyDao.removeByList(listKey)
                     chatDao.insert(chat.copy(lastMessage = items.first()))
 
                     loadType = LoadType.APPEND
@@ -82,7 +81,7 @@ class MessagesPagingLoader (
 
                 messageDao.insertAll(items)
                 remoteKeyDao.insert(RemoteKey(
-                        remoteKeyList + interlocutor.id,
+                        listKey,
                         items.lastOrNull()?.serverId))
             }
 

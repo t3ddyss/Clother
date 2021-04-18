@@ -10,15 +10,11 @@ import com.t3ddyss.clother.db.ChatDao
 import com.t3ddyss.clother.db.MessageDao
 import com.t3ddyss.clother.db.RemoteKeyDao
 import com.t3ddyss.clother.models.common.LoadResult
-import com.t3ddyss.clother.models.common.LoadType
 import com.t3ddyss.clother.models.user.User
 import com.t3ddyss.clother.utilities.ACCESS_TOKEN
 import com.t3ddyss.clother.utilities.DEBUG_TAG
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.stateIn
 import java.lang.Exception
 import javax.inject.Inject
 import kotlin.coroutines.resume
@@ -48,7 +44,7 @@ class MessagesRepository @Inject constructor(
                     chatDao = chatDao,
                     messageDao = messageDao,
                     remoteKeyDao = remoteKeyDao,
-                    remoteKeyList = KEY_LIST,
+                    listKey = LIST_KEY_MESSAGES + interlocutor.id,
                     interlocutor = interlocutor
             )
         }
@@ -84,6 +80,6 @@ class MessagesRepository @Inject constructor(
     }
 
     companion object {
-        const val KEY_LIST = "messages"
+        const val LIST_KEY_MESSAGES = "messages"
     }
 }

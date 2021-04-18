@@ -147,7 +147,7 @@ def login():
         return {"message": "You haven't verified your email address"}, 403
     if user and user.check_password(password):
         additional_claims = {"user_id": user.id}
-        return {'user': user.to_dict(),
+        return {'user': user.to_dict(with_email=True),
                 'access_token': create_access_token(user.id, additional_claims=additional_claims),
                 'refresh_token': create_refresh_token(user.id, additional_claims=additional_claims)
                 }

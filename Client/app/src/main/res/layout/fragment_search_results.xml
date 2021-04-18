@@ -39,6 +39,7 @@
         android:id="@+id/shimmer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:translationZ="20dp"
         tools:visibility="gone">
         <LinearLayout
             android:layout_width="match_parent"
@@ -54,6 +55,7 @@
         android:id="@+id/empty_state"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:translationZ="10dp"
         android:visibility="gone">
         <TextView
             android:layout_width="wrap_content"

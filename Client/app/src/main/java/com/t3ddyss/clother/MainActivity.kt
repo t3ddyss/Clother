@@ -225,7 +225,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.signUpFragment, R.id.galleryFragment, R.id.locationFragment,
             R.id.offerFragment, R.id.locationViewerFragment, R.id.searchFragment, R.id.chatFragment)
 
-        private val fragmentsWithoutToolbar = setOf(R.id.searchFragment)
+        private val fragmentsWithoutToolbar = setOf(R.id.searchFragment,
+        R.id.profileFragment)
 
         private val fragmentsWithToolbarLabel = setOf(R.id.offerCategoryFragment,
                 R.id.offerEditorFragment, R.id.galleryFragment, R.id.locationFragment,

@@ -12,12 +12,12 @@ interface OfferDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(offers: List<Offer>)
 
-    @Query("SELECT * FROM offer ORDER BY id DESC")
-    fun getAllOffers(): PagingSource<Int, Offer>
+    @Query("SELECT * FROM offer WHERE list_key == :listKey ORDER BY id DESC")
+    fun getAllOffersByList(listKey: String): PagingSource<Int, Offer>
 
     @Query("SELECT * FROM offer WHERE id == :id")
     suspend fun getOfferById(id: Int): Offer
 
-    @Query("DELETE FROM offer")
-    suspend fun deleteAllOffers()
+    @Query("DELETE FROM offer WHERE list_key == :listKey")
+    suspend fun deleteAllOffersFromList(listKey: String)
 }

@@ -45,7 +45,7 @@ class ChatFragment : Fragment() {
             savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentChatBinding.inflate(inflater, container, false)
-        val interlocutor = User(id = args.userId, name = args.userName, image = null)
+        val interlocutor = User(id = args.userId, name = args.userName, image = null, email = "")
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, true)
 
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {

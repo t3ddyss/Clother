@@ -16,13 +16,13 @@ import java.lang.Exception
 
 @ExperimentalPagingApi
 class OffersRemoteMediator(
-    private val service: ClotherOffersService,
-    prefs: SharedPreferences,
-    private val db: AppDatabase,
-    private val offerDao: OfferDao,
-    private val remoteKeyDao: RemoteKeyDao,
-    private val remoteKeyList: String,
-    private val query: Map<String, String>
+        private val service: ClotherOffersService,
+        prefs: SharedPreferences,
+        private val db: AppDatabase,
+        private val offerDao: OfferDao,
+        private val remoteKeyDao: RemoteKeyDao,
+        private val listKey: String,
+        private val query: Map<String, String>
 ) : RemoteMediator<Int, Offer>() {
     private var accessToken: String? = null
     private var changeListener =
@@ -55,7 +55,7 @@ class OffersRemoteMediator(
 
             LoadType.APPEND -> {
                 val afterKey = db.withTransaction {
-                    remoteKeyDao.remoteKeyByList(remoteKeyList).afterKey
+                    remoteKeyDao.remoteKeyByList(listKey).afterKey
                 }
 
                 Log.d(DEBUG_TAG, "APPEND ${afterKey ?: "NULL"}")
@@ -74,15 +74,18 @@ class OffersRemoteMediator(
                     else -> state.config.pageSize
                 },
                 filters = query)
+            items.forEach {
+                it.listKey = listKey
+            }
 
             db.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-                    offerDao.deleteAllOffers()
-                    remoteKeyDao.removeByList(remoteKeyList)
+                    offerDao.deleteAllOffersFromList(listKey)
+                    remoteKeyDao.removeByList(listKey)
                 }
 
                 offerDao.insertAll(items)
-                remoteKeyDao.insert(RemoteKey(remoteKeyList, items.lastOrNull()?.id))
+                remoteKeyDao.insert(RemoteKey(listKey, items.lastOrNull()?.id))
             }
 
             MediatorResult.Success(endOfPaginationReached = items.isEmpty())

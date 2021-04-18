@@ -44,8 +44,9 @@ class OffersRepository
     /**
      * Gets offers and saves them in database
      */
-    fun getOffers(query: Map<String, String>, userId: Int? = null, remoteKeyList: String):
+    fun getOffers(query: Map<String, String> = mapOf(), userId: Int? = null):
             Flow<PagingData<Offer>> {
+        val listKey = LIST_KEY_OFFERS + (userId ?: "")
         return Pager(
                 config = PagingConfig(
                         pageSize = CLOTHER_PAGE_SIZE,
@@ -57,9 +58,8 @@ class OffersRepository
                         db = db,
                         offerDao = offerDao,
                         remoteKeyDao = remoteKeyDao,
-                        remoteKeyList = remoteKeyList),
-                pagingSourceFactory = { if (userId == null) offerDao.getAllOffers()
-                else offerDao.getAllOffers() }
+                        listKey = listKey),
+                pagingSourceFactory = { offerDao.getAllOffersByList(listKey) }
         ).flow
     }
 
@@ -116,5 +116,9 @@ class OffersRepository
         } catch (ex: SocketTimeoutException) {
             Error(null)
         }
+    }
+
+    companion object {
+        const val LIST_KEY_OFFERS = "offers"
     }
 }
