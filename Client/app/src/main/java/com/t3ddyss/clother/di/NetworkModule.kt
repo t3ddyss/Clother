@@ -46,6 +46,7 @@ object NetworkModule {
         return clientBuilder
                 .authenticator(authenticator)
                 .addInterceptor(logging)
+                .retryOnConnectionFailure(true)
                 .build()
     }
 

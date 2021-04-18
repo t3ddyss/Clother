@@ -2,9 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android"
     android:opacity="opaque">
     <item android:drawable="?attr/colorPrimary" />
-    <item>
-        <bitmap
-            android:gravity="center"
-            android:src="@drawable/ic_clother" />
-    </item>
+    <item
+        android:drawable="@drawable/ic_clother"
+        android:gravity="center"/>
 </layer-list>
