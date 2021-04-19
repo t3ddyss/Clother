@@ -53,7 +53,7 @@ class HomeFragment : Fragment() {
     private val adapter = OffersAdapter {offer ->
         offerViewModel.selectOffer(offer)
         val action = HomeFragmentDirections
-                .actionHomeFragmentToOfferFragment(offer.id)
+                .actionHomeFragmentToOfferFragment(offer.userId)
         findNavController().navigate(action)
     }
     private lateinit var loadStateListener: (CombinedLoadStates) -> Unit

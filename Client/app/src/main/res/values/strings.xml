@@ -84,4 +84,10 @@
     <string name="you">You</string>
     <string name="offer_created">Offer was successfully created</string>
     <string name="your_offers">Your offers</string>
+    <string name="delete">Delete</string>
+    <string name="delete_offer">Delete offer?</string>
+    <string name="deletion_confirmation">Are you sure you want to delete offer?
+        This cannot be undone</string>
+    <string name="cancel">Cancel</string>
+    <string name="offer_deleted">Offer was successfully deleted</string>
 </resources>

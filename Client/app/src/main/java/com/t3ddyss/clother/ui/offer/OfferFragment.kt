@@ -2,18 +2,24 @@ package com.t3ddyss.clother.ui.offer
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.ExperimentalPagingApi
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayoutMediator
+import com.t3ddyss.clother.MainActivity
+import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OfferImagesAdapter
 import com.t3ddyss.clother.databinding.FragmentOfferBinding
+import com.t3ddyss.clother.models.auth.AuthData
+import com.t3ddyss.clother.models.common.Error
+import com.t3ddyss.clother.models.common.Failed
+import com.t3ddyss.clother.models.common.Loading
+import com.t3ddyss.clother.models.common.Success
 import com.t3ddyss.clother.utilities.USER_ID
 import com.t3ddyss.clother.utilities.formatDate
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,6 +39,11 @@ class OfferFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         _binding = FragmentOfferBinding.inflate(inflater, container, false)
+        val currentUserId = prefs.getInt(USER_ID, 0)
+
+        if (args.posterId == currentUserId) {
+            setHasOptionsMenu(true)
+        }
 
         viewModel.offer.observe(viewLifecycleOwner) {
             with (binding) {
@@ -80,7 +91,7 @@ class OfferFragment : Fragment() {
                 textViewUser.text = it.userName
                 textViewTime.text = it.createdAt.formatDate()
 
-                if (it.userId == prefs.getInt(USER_ID, 0)) {
+                if (it.userId == currentUserId) {
                     buttonMessage.isVisible = false
                     return@observe
                 }
@@ -93,7 +104,46 @@ class OfferFragment : Fragment() {
             }
         }
 
+        viewModel.deletionResponse.observe(viewLifecycleOwner) {
+            val result = it.getContentIfNotHandled() ?: return@observe
+
+            when(result) {
+                is Success<*> -> {
+                    findNavController().popBackStack()
+                    (activity as? MainActivity)?.showGenericMessage(
+                            getString(R.string.offer_deleted)
+                    )
+                }
+                is Error<*> -> {
+                    (activity as? MainActivity)?.showGenericMessage(result.message)
+                }
+                is Failed<*> -> {
+                    (activity as? MainActivity)?.showGenericMessage(getString(R.string.no_connection))
+                }
+                else -> { }
+            }
+        }
+
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.toolbar_delete_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.delete) {
+            MaterialAlertDialogBuilder(requireContext(),
+                    R.style.MyThemeOverlay_MaterialComponents_MaterialAlertDialog)
+                    .setTitle(getString(R.string.delete_offer))
+                    .setMessage(getString(R.string.deletion_confirmation))
+                    .setPositiveButton(getString(R.string.delete)) {_, _ ->
+                        viewModel.deleteOffer()
+                    }
+                    .setNegativeButton(getString(R.string.cancel), null)
+                    .show()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onDestroyView() {

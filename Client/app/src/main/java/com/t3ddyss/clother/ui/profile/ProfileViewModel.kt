@@ -49,14 +49,27 @@ class ProfileViewModel
                         pagingData.map { UiModel.OfferItem(it) as UiModel
                         }
                     }
-                    .map { it.insertHeaderItem(
-                            terminalSeparatorType = TerminalSeparatorType.SOURCE_COMPLETE,
-                            item = UiModel.HeaderItem(null))
-                    }
+//                    .map { it.insertHeaderItem(
+//                            terminalSeparatorType = TerminalSeparatorType.SOURCE_COMPLETE,
+//                            item = UiModel.HeaderItem(null))
+//                    }
                     .cachedIn(viewModelScope)
                     .collectLatest {
                         _offers.postValue(it)
                     }
+        }
+    }
+
+    fun removeOffers(removedOffers: Set<Int>) {
+        val currentOffers = offers.value
+
+        viewModelScope.launch {
+            currentOffers?.filter {
+                (it is UiModel.HeaderItem)
+                        || (it is UiModel.OfferItem && it.offer.id !in removedOffers)
+            }?.let {
+                _offers.postValue(it)
+            }
         }
     }
 }

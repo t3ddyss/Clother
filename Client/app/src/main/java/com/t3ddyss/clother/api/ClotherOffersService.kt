@@ -5,6 +5,7 @@ import com.t3ddyss.clother.models.offers.NewOfferResponse
 import com.t3ddyss.clother.models.offers.Offer
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.Response
 import retrofit2.http.*
 
 interface ClotherOffersService {
@@ -23,4 +24,8 @@ interface ClotherOffersService {
     suspend fun postOffer(@Header("Authorization") accessToken: String?,
                           @Part("request") body: RequestBody,
                           @Part files: List<MultipartBody.Part>): NewOfferResponse
+
+    @DELETE("api/offers/delete")
+    suspend fun deleteOffer(@Header("Authorization") accessToken: String?,
+                            @Query("offer") offerId: Int): Response<*>
 }

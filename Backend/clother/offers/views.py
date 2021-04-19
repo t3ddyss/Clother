@@ -4,12 +4,13 @@ import os
 import secrets
 import time
 
-from flask import Blueprint, request, jsonify, current_app
+from flask import Blueprint, request, jsonify, current_app, abort
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename
 
 from .models import Offer, Category, Location, Image, distance
 from .. import db
+from ..users.models import User
 from ..utils import response_delay, base_prefix, allowed_file, default_page_size
 
 blueprint = Blueprint('offers', __name__, url_prefix=(base_prefix + '/offers'))
@@ -114,6 +115,20 @@ def post_offer():
         return {"message": "Unknown error"}, 400
 
     return {'message': 'Successfully created a new offer'}
+
+
+@blueprint.route('/delete', methods=['DELETE'])
+@jwt_required()
+def delete_offer():
+    user = User.query.get(get_jwt_identity())
+    offer = Offer.query.get(request.args.get('offer', default=None, type=int))
+
+    if offer and offer.user_id == user.id:
+        db.session.delete(offer)
+        db.session.commit()
+        return {'message': 'Offer was successfully deleted'}
+    else:
+        abort(400)
 
 
 @blueprint.route('/categories')

@@ -118,6 +118,26 @@ class OffersRepository
         }
     }
 
+    suspend fun deleteOffer(offer: Offer): Resource<Boolean> {
+        return try {
+            service.deleteOffer(
+                    prefs.getString(ACCESS_TOKEN, null),
+                    offer.id
+            )
+            offerDao.deleteOfferById(offer.id)
+
+            Success(true)
+        } catch (ex: HttpException) {
+            handleError(ex)
+
+        } catch (ex: ConnectException) {
+            Failed()
+
+        } catch (ex: SocketTimeoutException) {
+            Error(null)
+        }
+    }
+
     companion object {
         const val LIST_KEY_OFFERS = "offers"
     }

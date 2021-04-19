@@ -34,12 +34,12 @@
         <!-- TextInput style. -->
         <item name="textInputStyle">@style/AppTheme.TextInputLayoutStyle</item>
 
-        <item name="actionOverflowButtonStyle">@style/MyOverflowButtonStyle</item>
+        <item name="actionOverflowButtonStyle">@style/OverflowButtonStyle</item>
 
         <item name="android:colorControlNormal">@color/green_500</item>
     </style>
 
-    <!-- EditText style -->
+    <!-- EditText -->
     <!-- https://stackoverflow.com/questions/56044075/overriding-edittextstyle-doesnt-work-with-latest-material-components-base-style -->
     <style name="AppTheme.TextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="boxStrokeColor">@color/green_500</item>
@@ -55,7 +55,22 @@
         <item name="android:textCursorDrawable">@drawable/textinput_cursor</item>
     </style>
 
-    <style name="MyOverflowButtonStyle" parent="Widget.AppCompat.ActionButton.Overflow">
-        <item name="android:tint">#62ff00</item>
+    <!-- Toolbar menu dots -->
+    <style name="OverflowButtonStyle" parent="Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:tint">?attr/colorOnPrimary</item>
+    </style>
+
+    <!-- Alert Dialog -->
+    <style name="MyThemeOverlay.MaterialComponents.MaterialAlertDialog" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+    </style>
+
+    <style name="PositiveButtonStyle" parent="@style/Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+    </style>
+
+    <style name="NegativeButtonStyle" parent="@style/Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">?attr/colorOnPrimary</item>
     </style>
 </resources>

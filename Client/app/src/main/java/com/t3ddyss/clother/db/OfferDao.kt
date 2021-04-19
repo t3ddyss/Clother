@@ -20,4 +20,7 @@ interface OfferDao {
 
     @Query("DELETE FROM offer WHERE list_key == :listKey")
     suspend fun deleteAllOffersFromList(listKey: String)
+
+    @Query("DELETE FROM offer WHERE id == :id")
+    suspend fun deleteOfferById(id: Int)
 }

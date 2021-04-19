@@ -95,11 +95,11 @@
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.t3ddyss.clother.ui.profile.ProfileFragment"
-        android:label="@string/profile"
+        android:label="@string/your_offers"
         tools:layout="@layout/fragment_profile" >
         <action
-            android:id="@+id/action_profileFragment_to_offerEditorFragment"
-            app:destination="@id/offer_editor_graph" />
+            android:id="@+id/action_profileFragment_to_offerFragment"
+            app:destination="@id/offerFragment" />
     </fragment>
 
     <fragment
@@ -185,9 +185,9 @@
         android:label="fragment_offer"
         tools:layout="@layout/fragment_offer">
         <argument
-            android:name="offer_id"
+            android:name="poster_id"
             app:argType="integer"
-            android:defaultValue="0" />
+            android:defaultValue="-1" />
         <action
             android:id="@+id/action_offerFragment_to_locationViewerFragment"
             app:destination="@id/locationViewerFragment" />

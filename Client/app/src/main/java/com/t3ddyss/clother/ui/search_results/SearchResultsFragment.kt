@@ -43,7 +43,7 @@ class SearchResultsFragment : Fragment() {
     private val adapter = OffersAdapter {offer ->
         offerViewModel.selectOffer(offer)
         val action = SearchResultsFragmentDirections
-                .actionSearchResultsToOfferFragment(offer.id)
+                .actionSearchResultsToOfferFragment(offer.userId)
         findNavController().navigate(action)
     }
     private lateinit var loadStateListener: (CombinedLoadStates) -> Unit
