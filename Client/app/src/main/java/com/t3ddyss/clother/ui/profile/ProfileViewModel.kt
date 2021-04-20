@@ -22,8 +22,8 @@ class ProfileViewModel
         private val usersRepository: UsersRepository,
         private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val _offers = MutableLiveData<PagingData<UiModel>>()
-    val offers: LiveData<PagingData<UiModel>> = _offers
+    private val _offers = MutableLiveData<PagingData<Offer>>()
+    val offers: LiveData<PagingData<Offer>> = _offers
 
     private val _user = MutableLiveData<User>()
     val user: LiveData<User> = _user
@@ -45,14 +45,6 @@ class ProfileViewModel
         viewModelScope.launch {
             offersRepository
             .getOffers(query = mapOf("user" to userId.toString()), userId = userId)
-                    .map { pagingData ->
-                        pagingData.map { UiModel.OfferItem(it) as UiModel
-                        }
-                    }
-//                    .map { it.insertHeaderItem(
-//                            terminalSeparatorType = TerminalSeparatorType.SOURCE_COMPLETE,
-//                            item = UiModel.HeaderItem(null))
-//                    }
                     .cachedIn(viewModelScope)
                     .collectLatest {
                         _offers.postValue(it)
@@ -65,16 +57,10 @@ class ProfileViewModel
 
         viewModelScope.launch {
             currentOffers?.filter {
-                (it is UiModel.HeaderItem)
-                        || (it is UiModel.OfferItem && it.offer.id !in removedOffers)
+                it.id !in removedOffers
             }?.let {
                 _offers.postValue(it)
             }
         }
     }
-}
-
-sealed class UiModel {
-    data class HeaderItem(val user: User?) : UiModel()
-    data class OfferItem(val offer: Offer) : UiModel()
 }

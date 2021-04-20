@@ -15,10 +15,8 @@ import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OfferImagesAdapter
 import com.t3ddyss.clother.databinding.FragmentOfferBinding
-import com.t3ddyss.clother.models.auth.AuthData
 import com.t3ddyss.clother.models.common.Error
 import com.t3ddyss.clother.models.common.Failed
-import com.t3ddyss.clother.models.common.Loading
 import com.t3ddyss.clother.models.common.Success
 import com.t3ddyss.clother.utilities.USER_ID
 import com.t3ddyss.clother.utilities.formatDate
@@ -115,12 +113,16 @@ class OfferFragment : Fragment() {
                     )
                 }
                 is Error<*> -> {
+                    binding.layoutLoading.isVisible = false
                     (activity as? MainActivity)?.showGenericMessage(result.message)
                 }
                 is Failed<*> -> {
+                    binding.layoutLoading.isVisible = false
                     (activity as? MainActivity)?.showGenericMessage(getString(R.string.no_connection))
                 }
-                else -> { }
+                else -> {
+                    binding.layoutLoading.isVisible = false
+                }
             }
         }
 
@@ -138,6 +140,7 @@ class OfferFragment : Fragment() {
                     .setTitle(getString(R.string.delete_offer))
                     .setMessage(getString(R.string.deletion_confirmation))
                     .setPositiveButton(getString(R.string.delete)) {_, _ ->
+                        binding.layoutLoading.isVisible = true
                         viewModel.deleteOffer()
                     }
                     .setNegativeButton(getString(R.string.cancel), null)

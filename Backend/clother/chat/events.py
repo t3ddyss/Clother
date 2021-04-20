@@ -6,6 +6,7 @@ from flask import request, current_app
 from flask_jwt_extended import decode_token
 from flask_jwt_extended.exceptions import JWTExtendedException
 from flask_socketio import emit, join_room, leave_room, send
+from jwt import ExpiredSignatureError
 from pyfcm import FCMNotification
 from sqlalchemy import func, distinct
 
@@ -24,8 +25,9 @@ def auth_required(f):
             user_id = decode_token(token, allow_expired=allow_expired)['user_id']
             print('Authenticated ' + str(user_id) + f' for {f.__name__}')
             return f(*args, user_id=user_id, **kwargs)
-        except JWTExtendedException:
+        except (JWTExtendedException, ExpiredSignatureError) as ex:
             emit('unauthorized', {'message': 'Your token has expired'})
+            return
 
     return decorated_function
 

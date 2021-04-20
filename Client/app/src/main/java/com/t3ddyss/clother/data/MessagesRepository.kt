@@ -13,6 +13,7 @@ import com.t3ddyss.clother.models.common.LoadResult
 import com.t3ddyss.clother.models.user.User
 import com.t3ddyss.clother.utilities.ACCESS_TOKEN
 import com.t3ddyss.clother.utilities.DEBUG_TAG
+import com.t3ddyss.clother.utilities.IS_DEVICE_TOKEN_RETRIEVED
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.*
 import java.lang.Exception
@@ -53,6 +54,8 @@ class MessagesRepository @Inject constructor(
     }
 
     suspend fun sendDeviceTokenToServer() {
+        if (prefs.getBoolean(IS_DEVICE_TOKEN_RETRIEVED, false)) return
+
         val token = setupCloudMessaging()
         sendDeviceTokenToServer(token)
     }
@@ -61,6 +64,7 @@ class MessagesRepository @Inject constructor(
         try {
             token?.let {
                 authService.sendDeviceToken(prefs.getString(ACCESS_TOKEN, null), token)
+                prefs.edit().putBoolean(IS_DEVICE_TOKEN_RETRIEVED, true).apply()
             }
         }
         catch (ex: Exception) {

@@ -14,11 +14,6 @@
         android:label="@string/home"
         tools:layout="@layout/fragment_home" >
         <action
-            android:id="@+id/action_homeFragment_to_signUpFragment"
-            app:destination="@id/signUpFragment"
-            app:popUpTo="@id/homeFragment"
-            app:popUpToInclusive="true" />
-        <action
             android:id="@+id/action_homeFragment_to_offerFragment"
             app:destination="@id/offerFragment" >
             <argument
@@ -26,9 +21,9 @@
                 android:defaultValue="0" />
         </action>
         <argument
-            android:name="is_new_offer_added"
-            android:defaultValue="false"
-            app:argType="boolean"/>
+            android:name="created_offer_id"
+            android:defaultValue="0"
+            app:argType="integer" />
     </fragment>
 
     <fragment
@@ -203,7 +198,8 @@
     <fragment
         android:id="@+id/locationViewerFragment"
         android:name="com.t3ddyss.clother.ui.location_viewer.LocationViewerFragment"
-        android:label="@string/location" >
+        android:label="@string/location"
+        tools:layout="@layout/fragment_location_viewer">
         <argument
             android:name="coordinates"
             app:argType="string"
@@ -229,7 +225,8 @@
     <fragment
         android:id="@+id/chatsFragment"
         android:name="com.t3ddyss.clother.ui.chats.ChatsFragment"
-        android:label="@string/messages" >
+        android:label="@string/messages"
+        tools:layout="@layout/fragment_chats">
         <action
             android:id="@+id/action_chatsFragment_to_chatFragment"
             app:destination="@id/chatFragment" />
@@ -248,4 +245,9 @@
             app:argType="string"
             android:defaultValue=""/>
     </fragment>
+    <action
+        android:id="@+id/action_global_signUpFragment"
+        app:destination="@id/signUpFragment"
+        app:popUpTo="@id/homeFragment"
+        app:popUpToInclusive="true" />
 </navigation>

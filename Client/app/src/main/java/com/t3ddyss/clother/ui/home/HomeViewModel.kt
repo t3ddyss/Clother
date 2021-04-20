@@ -7,6 +7,7 @@ import androidx.paging.cachedIn
 import androidx.paging.insertHeaderItem
 import com.t3ddyss.clother.data.OffersRepository
 import com.t3ddyss.clother.models.offers.Offer
+import com.t3ddyss.clother.utilities.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -15,13 +16,14 @@ import javax.inject.Inject
 
 @ExperimentalPagingApi
 @HiltViewModel
-class HomeViewModel
-@Inject constructor(
+class HomeViewModel @Inject constructor(
         private val repository: OffersRepository,
         private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _offers = MutableLiveData<PagingData<Offer>>()
     val offers: LiveData<PagingData<Offer>> = _offers
+    private val _newOfferAdded = MutableLiveData<Event<Int>>()
+    val newOfferAdded: LiveData<Event<Int>> = _newOfferAdded
 
     private val isOffersLoaded = AtomicBoolean(false)
     var endOfPaginationReachedBottom = false
@@ -37,5 +39,10 @@ class HomeViewModel
                         _offers.postValue(it)
                     }
         }
+    }
+
+    fun setNewOfferAdded(offerId: Int) {
+        if (newOfferAdded.value?.peekContent() == offerId) return
+        _newOfferAdded.value = Event(offerId)
     }
 }

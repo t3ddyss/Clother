@@ -26,7 +26,7 @@ class CategoriesAdapter(
     override fun getItemCount() = currentList.size
 
     inner class CategoryViewHolder(
-            val binding:ListItemCategoryBinding
+            val binding: ListItemCategoryBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         init {

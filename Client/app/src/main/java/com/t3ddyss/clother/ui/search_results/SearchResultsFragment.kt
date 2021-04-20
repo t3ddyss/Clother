@@ -24,6 +24,7 @@ import com.t3ddyss.clother.databinding.FragmentSearchResultsBinding
 import com.t3ddyss.clother.ui.offer.OfferViewModel
 import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -48,6 +49,7 @@ class SearchResultsFragment : Fragment() {
     }
     private lateinit var loadStateListener: (CombinedLoadStates) -> Unit
 
+    @ExperimentalCoroutinesApi
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         _binding = FragmentSearchResultsBinding.inflate(inflater, container, false)
@@ -58,6 +60,7 @@ class SearchResultsFragment : Fragment() {
                 is LoadState.Loading -> {
                     binding.shimmer.isVisible = true
                     binding.containerSearch.isVisible = false
+                    binding.emptyState.isVisible = false
                 }
 
                 is LoadState.NotLoading -> {
@@ -75,7 +78,7 @@ class SearchResultsFragment : Fragment() {
                     val error = (it.refresh as LoadState.Error).error
 
                     if (error is HttpException && error.code() == 401) {
-                        findNavController().navigate(R.id.action_searchResults_to_signUpFragment)
+                        findNavController().navigate(R.id.action_global_signUpFragment)
 
                         (activity as? MainActivity)
                                 ?.showGenericMessage(getString(R.string.session_expired))

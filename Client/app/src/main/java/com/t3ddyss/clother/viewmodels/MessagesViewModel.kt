@@ -1,31 +1,45 @@
 package com.t3ddyss.clother.viewmodels
 
+import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.t3ddyss.clother.data.LiveMessagesRepository
+import com.t3ddyss.clother.data.LiveMessagesRepository.Companion.CONNECTED
 import com.t3ddyss.clother.data.MessagesRepository
 import com.t3ddyss.clother.models.chat.Message
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
+@ExperimentalCoroutinesApi
 class MessagesViewModel @Inject constructor(
     private val liveRepository: LiveMessagesRepository,
-    private val repository: MessagesRepository
+    private val repository: MessagesRepository,
+    private val prefs: SharedPreferences
 ) : ViewModel() {
-    private val _messages = MutableLiveData<Message>()
-    val messages: LiveData<Message> = _messages
+    private var messagesJob: Job? = null
+    private var isConnecting = false
 
-    fun getMessages() {
-        if (liveRepository.isConnected) return
+    fun getMessages(tokenUpdated: Boolean = false) {
+        if (isConnecting || liveRepository.isConnected) {
+            if (!tokenUpdated) return
 
-        viewModelScope.launch {
+            liveRepository.disconnectFromServer()
+            messagesJob?.cancel()
+        }
+        isConnecting = true
+
+        messagesJob = viewModelScope.launch {
             liveRepository.getMessagesStream().collect {
-                _messages.postValue(it)
+                if (it == CONNECTED) {
+                    isConnecting = false
+                }
             }
         }
     }

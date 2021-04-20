@@ -13,6 +13,7 @@ import com.t3ddyss.clother.models.chat.MessageStatus
 import com.t3ddyss.clother.models.user.User
 import com.t3ddyss.clother.utilities.*
 import io.socket.client.IO
+import io.socket.client.Socket
 import io.socket.emitter.Emitter
 import io.socket.engineio.client.transports.WebSocket
 import kotlinx.coroutines.*
@@ -24,9 +25,9 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resume
 
-
-// TODO add methods for refreshing token
+// T0D0 add methods for refreshing token
 @Singleton
+@ExperimentalCoroutinesApi
 class LiveMessagesRepository @Inject constructor(
         private val prefs: SharedPreferences,
         private val db: AppDatabase,
@@ -35,26 +36,30 @@ class LiveMessagesRepository @Inject constructor(
         private val notificationUtil: NotificationUtil,
         private val gson: Gson,
 ) {
-    private val socket by lazy {
+    private var socket: Socket? = null
+    private val userId by lazy {
+        prefs.getInt(USER_ID, 0)
+    }
+
+    val isConnected get() = socket?.connected() ?: false
+    var currentInterlocutorId: Int? = null
+    var isChatsFragment = false
+
+    private fun initializeSocket(): Socket {
         val options = IO.Options.builder()
                 .setTransports(arrayOf(WebSocket.NAME))
                 .setExtraHeaders(
                         mapOf("Authorization" to listOf(prefs.getString(ACCESS_TOKEN, "")),
                                 "Content-type" to listOf("application/json")))
                 .build()
-        IO.socket(getBaseUrlForCurrentDevice(), options)
+        return IO.socket(getBaseUrlForCurrentDevice(), options)
     }
 
-    private val userId by lazy {
-        prefs.getInt(USER_ID, 0)
-    }
+    suspend fun getMessagesStream() = callbackFlow {
+        socket = initializeSocket()
 
-    val isConnected get() = socket.connected()
-    var currentInterlocutorId: Int? = null
-    var isChatsFragment = false
-
-    suspend fun getMessagesStream() = callbackFlow<Message> {
         val onConnectListener = Emitter.Listener {
+            offer(CONNECTED)
         }
 
         val onNewMessageListener = Emitter.Listener {
@@ -64,7 +69,7 @@ class LiveMessagesRepository @Inject constructor(
                 addNewMessage(message)
             }
 
-            if (!isChatsFragment && currentInterlocutorId != userId) {
+            if (!isChatsFragment && currentInterlocutorId != message.userId) {
                 notificationUtil.showNotification(message)
             }
         }
@@ -81,13 +86,13 @@ class LiveMessagesRepository @Inject constructor(
             }
         }
 
-        socket.on("connection", onConnectListener)
-        socket.on("message", onNewMessageListener)
-        socket.on("chat", onNewChatListener)
-        socket.connect()
+        socket?.on("connection", onConnectListener)
+        socket?.on("message", onNewMessageListener)
+        socket?.on("chat", onNewChatListener)
+        socket?.connect()
 
         awaitClose {
-            socket.disconnect()
+            socket?.disconnect()
         }
     }.flowOn(Dispatchers.IO)
 
@@ -104,7 +109,7 @@ class LiveMessagesRepository @Inject constructor(
                 image = null)
 
         message.localId = messageDao.insert(message).toInt()
-        socket.emit("send_message", gson.toJson(message), to.id)
+        socket?.emit("send_message", gson.toJson(message), to.id)
 
         val sentMessage = withTimeoutOrNull(RESPONSE_TIMEOUT) {
             getSentMessage(message.localId)
@@ -147,7 +152,7 @@ class LiveMessagesRepository @Inject constructor(
 
 
         if (message != null) {
-            socket.emit("send_message", gson.toJson(message), to.id)
+            socket?.emit("send_message", gson.toJson(message), to.id)
 
             val createdChat = withTimeoutOrNull(RESPONSE_TIMEOUT) {
                 getCreatedChat(message?.localId ?: return@withTimeoutOrNull null,
@@ -168,19 +173,19 @@ class LiveMessagesRepository @Inject constructor(
     private suspend fun getSentMessage(localMessageId: Int) =
             suspendCancellableCoroutine<Message> { cont ->
         val onMessageSentListener = Emitter.Listener {
-            socket.off("message$localMessageId")
+            socket?.off("message$localMessageId")
             cont.resume(gson.fromJson(it[0] as String, Message::class.java).also { message ->
                 message.localId = localMessageId
             })
         }
 
-        socket.on("message$localMessageId", onMessageSentListener)
+        socket?.on("message$localMessageId", onMessageSentListener)
     }
 
     private suspend fun getCreatedChat(localMessageId: Int, localChatId: Int) =
             suspendCancellableCoroutine<Chat> { cont ->
         val onChatCreatedListener = Emitter.Listener {
-            socket.off("message$localMessageId")
+            socket?.off("message$localMessageId")
             cont.resume(gson.fromJson(it[0] as String, Chat::class.java).also { chat ->
                 chat.localId = localChatId
                 chat.lastMessage?.localId = localMessageId
@@ -188,7 +193,7 @@ class LiveMessagesRepository @Inject constructor(
             })
         }
 
-        socket.on("message$localMessageId", onChatCreatedListener)
+        socket?.on("message$localMessageId", onChatCreatedListener)
     }
 
     private suspend fun updateMessage(message: Message, interlocutor: User) {
@@ -236,11 +241,12 @@ class LiveMessagesRepository @Inject constructor(
     }
 
     fun disconnectFromServer() {
-        socket.off()
-        socket.disconnect()
+        socket?.off()
+        socket?.disconnect()
     }
 
     companion object {
         const val RESPONSE_TIMEOUT = 5_000L
+        const val CONNECTED = "connected"
     }
 }

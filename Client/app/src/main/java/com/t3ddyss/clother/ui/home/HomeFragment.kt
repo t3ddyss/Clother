@@ -29,16 +29,17 @@ import com.t3ddyss.clother.utilities.getThemeColor
 import com.t3ddyss.clother.viewmodels.MessagesViewModel
 import com.t3ddyss.clother.viewmodels.NetworkStateViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import javax.inject.Inject
 
 
-@ExperimentalPagingApi
 @AndroidEntryPoint
+@ExperimentalCoroutinesApi
+@ExperimentalPagingApi
 class HomeFragment : Fragment() {
-
     // Using activityViewModels delegate here to save data across different instances of HomeFragment
     private val viewModel by activityViewModels<HomeViewModel>()
     private val offerViewModel by activityViewModels<OfferViewModel>()
@@ -67,6 +68,7 @@ class HomeFragment : Fragment() {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val layoutManager = GridLayoutManager(context, 2)
+        binding.progressBarFooter.isVisible = false
 
         loadStateListener = {
             val isRefreshInitiatedByUser = binding.swipeRefresh.isRefreshing
@@ -93,7 +95,7 @@ class HomeFragment : Fragment() {
                     val error = (it.refresh as LoadState.Error).error
 
                     if (error is HttpException && error.code() == 401) {
-                        findNavController().navigate(R.id.action_homeFragment_to_signUpFragment)
+                        findNavController().navigate(R.id.action_global_signUpFragment)
 
                         (activity as? MainActivity)
                             ?.showGenericMessage(getString(R.string.session_expired))
@@ -162,7 +164,6 @@ class HomeFragment : Fragment() {
         }
         binding.list.addOnScrollListener(onScrollListener)
 
-
         context?.getThemeColor(R.attr.colorPrimaryVariant)?.let {
             binding.swipeRefresh.setProgressBackgroundColorSchemeColor(it)
         }
@@ -190,18 +191,23 @@ class HomeFragment : Fragment() {
             }
         }
 
-        if (args.isNewOfferAdded) {
+        viewModel.newOfferAdded.observe(viewLifecycleOwner) {
             (activity as? MainActivity)?.showGenericMessage(getString(R.string.offer_created))
         }
 
         viewModel.getOffers()
 
+        if (args.createdOfferId != 0) {
+            viewModel.setNewOfferAdded(args.createdOfferId)
+        }
+
         return binding.root
     }
 
+
     override fun onStart() {
         super.onStart()
-        messagesViewModel.getMessages()
+
         messagesViewModel.sendDeviceTokenToServer()
     }
 

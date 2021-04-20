@@ -25,9 +25,9 @@
             app:popUpTo="@id/main_graph"
             app:popUpToInclusive="true">
             <argument
-                android:name="is_new_offer_added"
-                android:defaultValue="false"
-                app:argType="boolean" />
+                android:name="created_offer_id"
+                android:defaultValue="0"
+                app:argType="integer" />
         </action>
     </fragment>
     <fragment

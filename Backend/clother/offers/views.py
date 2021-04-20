@@ -6,6 +6,7 @@ import time
 
 from flask import Blueprint, request, jsonify, current_app, abort
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from sqlalchemy.exc import IntegrityError
 from werkzeug.utils import secure_filename
 
 from .models import Offer, Category, Location, Image, distance
@@ -110,11 +111,12 @@ def post_offer():
         db.session.add(offer)
         db.session.commit()
 
-    except Exception as ex:
+    except (IntegrityError, Exception) as ex:
         db.session.rollback()
         return {"message": "Unknown error"}, 400
 
-    return {'message': 'Successfully created a new offer'}
+    return {'id': offer.id,
+            'message': 'Successfully created a new offer'}
 
 
 @blueprint.route('/delete', methods=['DELETE'])

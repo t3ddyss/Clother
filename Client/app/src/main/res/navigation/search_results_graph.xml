@@ -27,11 +27,6 @@
                 android:defaultValue="0" />
         </action>
         <action
-            android:id="@+id/action_searchResults_to_signUpFragment"
-            app:destination="@id/signUpFragment"
-            app:popUpTo="@id/homeFragment"
-            app:popUpToInclusive="true" />
-        <action
             android:id="@+id/action_searchResultsFragment_to_filterDialogFragment"
             app:destination="@id/filterDialogFragment" />
         <action

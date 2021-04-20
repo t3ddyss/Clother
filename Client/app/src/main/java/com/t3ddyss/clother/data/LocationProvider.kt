@@ -35,7 +35,7 @@ class LocationProvider @Inject constructor(
     suspend fun getLatestSavedLocation() = locationDao.getLatestLocation()
 
     @SuppressLint("MissingPermission")
-    private fun getInitalLocation() = callbackFlow {
+    private suspend fun getInitalLocation() = callbackFlow {
 
         val initialLocationListener = OnSuccessListener<Location?> {
             Log.d(DEBUG_TAG, "Got location in last location $it")

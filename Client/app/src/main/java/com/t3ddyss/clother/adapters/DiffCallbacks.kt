@@ -6,7 +6,6 @@ import com.t3ddyss.clother.models.chat.Message
 import com.t3ddyss.clother.models.offers.Category
 import com.t3ddyss.clother.models.common.GalleryImage
 import com.t3ddyss.clother.models.offers.Offer
-import com.t3ddyss.clother.ui.profile.UiModel
 
 class OfferDiffCallback : DiffUtil.ItemCallback<Offer>() {
     override fun areItemsTheSame(oldItem: Offer, newItem: Offer): Boolean {
@@ -14,18 +13,6 @@ class OfferDiffCallback : DiffUtil.ItemCallback<Offer>() {
     }
 
     override fun areContentsTheSame(oldItem: Offer, newItem: Offer): Boolean {
-        return oldItem == newItem
-    }
-}
-
-class UiModelDiffCallback : DiffUtil.ItemCallback<UiModel>() {
-    override fun areItemsTheSame(oldItem: UiModel, newItem: UiModel): Boolean {
-        return (oldItem is UiModel.HeaderItem && newItem is UiModel.HeaderItem)
-                || (oldItem is UiModel.OfferItem && newItem is UiModel.OfferItem &&
-                    oldItem.offer.id == newItem.offer.id)
-    }
-
-    override fun areContentsTheSame(oldItem: UiModel, newItem: UiModel): Boolean {
         return oldItem == newItem
     }
 }

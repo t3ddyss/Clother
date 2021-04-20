@@ -30,10 +30,12 @@ import com.t3ddyss.clother.models.offers.NewOfferResponse
 import com.t3ddyss.clother.utilities.text
 import com.t3ddyss.clother.utilities.toCoordinatesString
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
-@ExperimentalPagingApi
 @AndroidEntryPoint
+@ExperimentalCoroutinesApi
+@ExperimentalPagingApi
 class OfferEditorFragment : Fragment() {
     private val viewModel by hiltNavGraphViewModels<OfferEditorViewModel>(R.id.offer_editor_graph)
 
@@ -93,7 +95,7 @@ class OfferEditorFragment : Fragment() {
                     (activity as? MainActivity)?.setLoadingVisibility(true)
                 is Success<NewOfferResponse> -> {
                     val action = OfferEditorFragmentDirections
-                            .actionOfferEditorFragmentToHomeFragment(isNewOfferAdded = true)
+                            .actionOfferEditorFragmentToHomeFragment(it.content?.id ?: 0)
                     findNavController().navigate(action)
                     (activity as? MainActivity)?.setLoadingVisibility(false)
                 }

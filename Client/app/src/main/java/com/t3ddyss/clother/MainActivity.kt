@@ -29,6 +29,7 @@ import com.t3ddyss.clother.viewmodels.MessagesViewModel
 import com.t3ddyss.clother.viewmodels.NetworkStateViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -36,6 +37,7 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
+@ExperimentalCoroutinesApi
 class MainActivity : AppCompatActivity() {
 
     private val messagesViewModel by viewModels<MessagesViewModel>()
@@ -56,6 +58,15 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    private var changeListener =
+            SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+                run {
+                    if (key == ACCESS_TOKEN) {
+                        messagesViewModel.getMessages(tokenUpdated = true)
+                    }
+                }
+            }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
@@ -65,12 +76,16 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        prefs.registerOnSharedPreferenceChangeListener(changeListener)
+
+        val navHostFragment = supportFragmentManager
+                .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
         val navGraph = navController.navInflater.inflate(R.navigation.main_graph)
 
         if (prefs.getBoolean(IS_AUTHENTICATED, false)) {
             navGraph.startDestination = R.id.homeFragment
+            messagesViewModel.getMessages()
         }
         else {
             navGraph.startDestination = R.id.signUpFragment
