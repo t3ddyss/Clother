@@ -28,7 +28,7 @@ object NetworkModule {
     fun provideHttpClient(authenticator: TokenAuthenticator): OkHttpClient {
         val clientBuilder = OkHttpClient().newBuilder()
 
-        // Unexpected end of stream issue https://github.com/square/okhttp/issues/2738
+        // Unexpected end of stream emulator issue https://github.com/square/okhttp/issues/2738
         clientBuilder.interceptors().add(Interceptor {
             it.run {
                 proceed(

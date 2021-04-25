@@ -17,8 +17,8 @@ data class Chat(@PrimaryKey(autoGenerate = true)
 
                 @Embedded(prefix = "interlocutor_")
                 val interlocutor: User? = null,
-
-                @SerializedName("last_message")
-                @Embedded(prefix = "last_message_")
-                var lastMessage: Message? = null
-)
+) {
+    @SerializedName("last_message")
+    @Ignore
+    var lastMessage: Message? = null
+}

@@ -8,14 +8,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.ListItemChatBinding
-import com.t3ddyss.clother.models.chat.Chat
+import com.t3ddyss.clother.models.chat.ChatWithMessageAndUser
 import com.t3ddyss.clother.utilities.formatDate
-import com.t3ddyss.clother.utilities.getImageUrlForCurrentDevice
 
 class ChatsAdapter(
         private val userId: Int,
-    private val clickListener: (Chat) -> Unit
-) : ListAdapter<Chat, ChatsAdapter.ChatViewHolder>(ChatDiffCallback()) {
+        private val clickListener: (ChatWithMessageAndUser) -> Unit
+) : ListAdapter<ChatWithMessageAndUser, ChatsAdapter.ChatViewHolder>(ChatWithMessageDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
         return ChatViewHolder(ListItemChatBinding.inflate(
@@ -30,7 +29,7 @@ class ChatsAdapter(
     }
 
     inner class ChatViewHolder(private val binding: ListItemChatBinding,
-                         private val clickListener: (Chat) -> Unit
+                               private val clickListener: (ChatWithMessageAndUser) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         init {
             binding.root.setOnClickListener {
@@ -39,26 +38,18 @@ class ChatsAdapter(
         }
 
         @SuppressLint("SetTextI18n")
-        fun bind(chat: Chat) {
+        fun bind(chat: ChatWithMessageAndUser) {
             with (binding) {
-                textViewName.text = chat.interlocutor?.name
-                textViewTime.text = chat.lastMessage?.createdAt?.formatDate()
+                textViewName.text = chat.interlocutorName
+                textViewTime.text = chat.messageCreatedAt.formatDate()
 
-                if (chat.lastMessage?.userId == userId) {
+                if (chat.messageUserId == userId) {
                     textViewMessage.text = "${binding.root.context.getString(R.string.you)}: " +
-                            "${chat.lastMessage!!.body}"
+                            "${chat.messageBody}"
                 }
 
                 else {
-                    textViewMessage.text = chat.lastMessage?.body
-                }
-
-                chat.interlocutor?.image?.let {
-                    Glide.with(cardViewAvatar.imageViewAvatar)
-                        .load(it.getImageUrlForCurrentDevice())
-                        .thumbnail(0.25f)
-                        .centerCrop()
-                        .into(cardViewAvatar.imageViewAvatar)
+                    textViewMessage.text = chat.messageBody
                 }
             }
         }

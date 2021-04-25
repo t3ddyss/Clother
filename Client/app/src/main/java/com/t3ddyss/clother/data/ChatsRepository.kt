@@ -23,7 +23,11 @@ class ChatsRepository @Inject constructor(
             saveFetchResult = { db.withTransaction {
                 chatDao.deleteRemovedChats(it.map { it.serverId?.toLong() ?: 0 }.toTypedArray())
                 messageDao.deleteUnsendMessages()
-                chatDao.insertAll(it)
+
+                val ids = chatDao.insertAll(it)
+                messageDao.insertAll(it.mapIndexed { pos, chat-> chat.lastMessage!!.also {
+                    it.localChatId = ids[pos].toInt()
+                }})
             }
             }
     )

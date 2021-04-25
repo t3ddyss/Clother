@@ -43,7 +43,6 @@ android {
     }
     kotlinOptions.freeCompilerArgs += [
             "-Xuse-=kotlinx.coroutines.ExperimentalCoroutinesApi",
-            "-Xuse-=androidx.paging.ExperimentalPagingApi",
             "-Xopt-in=kotlin.RequiresOptIn"
             ]
 }

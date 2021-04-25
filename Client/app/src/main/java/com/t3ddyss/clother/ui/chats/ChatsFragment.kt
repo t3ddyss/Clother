@@ -30,7 +30,7 @@ class ChatsFragment : Fragment() {
     private val adapter by lazy {
         ChatsAdapter(prefs.getInt(USER_ID, 0)) {
             val action = ChatsFragmentDirections
-                    .actionChatsFragmentToChatFragment(it.interlocutor!!.id, it.interlocutor.name)
+                    .actionChatsFragmentToChatFragment(it.interlocutorId, it.interlocutorName)
             findNavController().navigate(action)
         }
     }

@@ -16,7 +16,7 @@ import com.t3ddyss.clother.utilities.ACCESS_TOKEN
 import com.t3ddyss.clother.utilities.CLOTHER_PAGE_SIZE_CHAT
 import com.t3ddyss.clother.utilities.DEBUG_TAG
 
-class MessagesPagingLoader (
+class MessagesPagingLoader(
         private val service: ClotherChatService,
         prefs: SharedPreferences,
         private val db: AppDatabase,
@@ -73,13 +73,14 @@ class MessagesPagingLoader (
                 if (chat != null && loadType == LoadType.REFRESH) {
                     messageDao.deleteAllMessagesFromChat(chat.localId)
                     remoteKeyDao.removeByList(listKey)
-                    chatDao.insert(chat.copy(lastMessage = items.first()))
+//                    chatDao.insert(chat.copy(lastMessage = items.first()))
 
                     loadType = LoadType.APPEND
                 }
 
-
-                messageDao.insertAll(items)
+                if (chat != null) {
+                    messageDao.insertAll(items.map { it.also { it.localChatId = chat.localId } } )
+                }
                 remoteKeyDao.insert(RemoteKey(
                         listKey,
                         items.lastOrNull()?.serverId))

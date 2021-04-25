@@ -1,7 +1,7 @@
 package com.t3ddyss.clother.adapters
 
 import androidx.recyclerview.widget.DiffUtil
-import com.t3ddyss.clother.models.chat.Chat
+import com.t3ddyss.clother.models.chat.ChatWithMessageAndUser
 import com.t3ddyss.clother.models.chat.Message
 import com.t3ddyss.clother.models.offers.Category
 import com.t3ddyss.clother.models.common.GalleryImage
@@ -41,12 +41,14 @@ class CategoryDiffCallback : DiffUtil.ItemCallback<Category>() {
     }
 }
 
-class ChatDiffCallback : DiffUtil.ItemCallback<Chat>() {
-    override fun areItemsTheSame(oldItem: Chat, newItem: Chat): Boolean {
-        return oldItem.localId == newItem.localId || oldItem.serverId == newItem.serverId
+class ChatWithMessageDiffCallback : DiffUtil.ItemCallback<ChatWithMessageAndUser>() {
+    override fun areItemsTheSame(oldItem: ChatWithMessageAndUser,
+                                 newItem: ChatWithMessageAndUser): Boolean {
+        return oldItem.localChatId == newItem.localChatId
     }
 
-    override fun areContentsTheSame(oldItem: Chat, newItem: Chat): Boolean {
+    override fun areContentsTheSame(oldItem: ChatWithMessageAndUser,
+                                    newItem: ChatWithMessageAndUser): Boolean {
         return oldItem == newItem
     }
 }
