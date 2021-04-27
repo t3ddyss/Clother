@@ -20,7 +20,8 @@ import java.io.File
 import javax.inject.Inject
 
 class ImageProvider @Inject constructor(
-        private val application: Application) {
+        private val application: Application
+) {
     private val uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 
     suspend fun getImagesStream() = merge(getInitialImages(), getImageUpdates())

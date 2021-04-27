@@ -1,14 +1,11 @@
 package com.t3ddyss.clother.viewmodels
 
 import android.content.SharedPreferences
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.t3ddyss.clother.data.LiveMessagesRepository
 import com.t3ddyss.clother.data.LiveMessagesRepository.Companion.CONNECTED
 import com.t3ddyss.clother.data.MessagesRepository
-import com.t3ddyss.clother.models.chat.Message
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job

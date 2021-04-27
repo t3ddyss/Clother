@@ -1,11 +1,7 @@
 package com.t3ddyss.clother.adapters
 
 import androidx.recyclerview.widget.DiffUtil
-import com.t3ddyss.clother.models.chat.ChatWithMessageAndUser
-import com.t3ddyss.clother.models.chat.Message
-import com.t3ddyss.clother.models.offers.Category
-import com.t3ddyss.clother.models.common.GalleryImage
-import com.t3ddyss.clother.models.offers.Offer
+import com.t3ddyss.clother.models.domain.*
 
 class OfferDiffCallback : DiffUtil.ItemCallback<Offer>() {
     override fun areItemsTheSame(oldItem: Offer, newItem: Offer): Boolean {
@@ -17,12 +13,12 @@ class OfferDiffCallback : DiffUtil.ItemCallback<Offer>() {
     }
 }
 
-class ImageDiffCallback : DiffUtil.ItemCallback<GalleryImage>() {
-    override fun areItemsTheSame(oldItem: GalleryImage, newItem: GalleryImage): Boolean {
+class ImageDiffCallback : DiffUtil.ItemCallback<MediaImage>() {
+    override fun areItemsTheSame(oldItem: MediaImage, newItem: MediaImage): Boolean {
         return oldItem.uri == newItem.uri
     }
 
-    override fun areContentsTheSame(oldItem: GalleryImage, newItem: GalleryImage): Boolean {
+    override fun areContentsTheSame(oldItem: MediaImage, newItem: MediaImage): Boolean {
         if (oldItem.isSelected) {
             newItem.isSelected = true
         }
@@ -41,21 +37,23 @@ class CategoryDiffCallback : DiffUtil.ItemCallback<Category>() {
     }
 }
 
-class ChatWithMessageDiffCallback : DiffUtil.ItemCallback<ChatWithMessageAndUser>() {
-    override fun areItemsTheSame(oldItem: ChatWithMessageAndUser,
-                                 newItem: ChatWithMessageAndUser): Boolean {
+class ChatWithMessageDiffCallback : DiffUtil.ItemCallback<ChatWithLastMessage>() {
+    override fun areItemsTheSame(oldItem: ChatWithLastMessage,
+                                 newItem: ChatWithLastMessage
+    ): Boolean {
         return oldItem.localChatId == newItem.localChatId
     }
 
-    override fun areContentsTheSame(oldItem: ChatWithMessageAndUser,
-                                    newItem: ChatWithMessageAndUser): Boolean {
+    override fun areContentsTheSame(oldItem: ChatWithLastMessage,
+                                    newItem: ChatWithLastMessage
+    ): Boolean {
         return oldItem == newItem
     }
 }
 
 class MessageDiffCallback : DiffUtil.ItemCallback<Message>() {
     override fun areItemsTheSame(oldItem: Message, newItem: Message): Boolean {
-        return oldItem.localId == newItem.localId || oldItem.serverId == newItem.serverId
+        return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(oldItem: Message, newItem: Message): Boolean {

@@ -16,7 +16,6 @@ class EmailConfirmationFragment : Fragment() {
     private var _binding: FragmentEmailConfirmationBinding? = null
     private val binding get() = _binding!!
 
-    private val navController by lazy { findNavController() }
     private val args: EmailConfirmationFragmentArgs by navArgs()
 
     override fun onCreateView(
@@ -29,15 +28,23 @@ class EmailConfirmationFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
         val message = SpannableStringBuilder()
                 .append(args.emailActionMessage)
-                .bold { append(args.emailAddress) }
+        if (args.emailAddress.isEmpty()) {
+            message.append(getString(R.string.your_email))
+        }
+        else {
+            message.bold { append(args.emailAddress) }
+        }
         binding.textViewMessage.text = message
 
         binding.buttonOkay.setOnClickListener {
-            navController.navigate(R.id.action_emailActionFragment_to_signInFragment)
+            findNavController().navigate(R.id.action_emailActionFragment_to_signInFragment)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

@@ -57,7 +57,7 @@
             app:destination="@id/search_results_graph">
             <argument
                 android:name="category"
-                app:argType="com.t3ddyss.clother.models.offers.Category"/>
+                app:argType="com.t3ddyss.clother.models.domain.Category"/>
         </action>
     </fragment>
 
@@ -83,7 +83,7 @@
             app:destination="@id/offer_editor_graph">
             <argument
                 android:name="category"
-                app:argType="com.t3ddyss.clother.models.offers.Category" />
+                app:argType="com.t3ddyss.clother.models.domain.Category" />
         </action>
     </fragment>
 

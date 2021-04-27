@@ -1,11 +1,11 @@
 package com.t3ddyss.clother.db
 
 import androidx.room.TypeConverter
-import com.t3ddyss.clother.models.chat.MessageStatus
+import com.t3ddyss.clother.models.domain.MessageStatus
 import java.util.*
 
 class Converters {
-    // Violates 1NF, but we don't need to update an offer in our database
+    // Violates 1NF, but we don't need to update an offer in our database yet
     @TypeConverter
     fun fromListOfStrings(images: List<String>) = images.joinToString(separator = ";")
 

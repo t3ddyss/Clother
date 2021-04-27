@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.databinding.ListItemCategoryBinding
-import com.t3ddyss.clother.models.offers.Category
+import com.t3ddyss.clother.models.domain.Category
 
 class CategoriesAdapter(
         private val clickListener: (Category) -> Unit

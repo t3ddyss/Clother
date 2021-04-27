@@ -11,18 +11,18 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.adapters.MessagesAdapter
 import com.t3ddyss.clother.databinding.FragmentChatBinding
-import com.t3ddyss.clother.models.common.LoadResult
-import com.t3ddyss.clother.models.user.User
+import com.t3ddyss.clother.models.domain.LoadResult
+import com.t3ddyss.clother.models.domain.User
 import com.t3ddyss.clother.utilities.text
 import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
 class ChatFragment : Fragment() {
-
     private val viewModel by viewModels<ChatViewModel>()
 
     private var _binding: FragmentChatBinding? = null
@@ -55,6 +55,7 @@ class ChatFragment : Fragment() {
                 }
             }
         })
+
         binding.listMessages.layoutManager = layoutManager
         binding.listMessages.adapter = adapter
         binding.listMessages.addOnScrollListener(object : RecyclerView.OnScrollListener() {

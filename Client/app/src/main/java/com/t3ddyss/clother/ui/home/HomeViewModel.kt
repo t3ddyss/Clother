@@ -4,9 +4,8 @@ import androidx.lifecycle.*
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.insertHeaderItem
 import com.t3ddyss.clother.data.OffersRepository
-import com.t3ddyss.clother.models.offers.Offer
+import com.t3ddyss.clother.models.domain.Offer
 import com.t3ddyss.clother.utilities.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest

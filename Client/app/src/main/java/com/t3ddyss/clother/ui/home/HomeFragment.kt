@@ -30,7 +30,6 @@ import com.t3ddyss.clother.viewmodels.MessagesViewModel
 import com.t3ddyss.clother.viewmodels.NetworkStateViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -207,16 +206,7 @@ class HomeFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-
         messagesViewModel.sendDeviceTokenToServer()
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        lifecycleScope.launchWhenStarted {
-            delay(250) // Bad practice, add loading state layout to Login fragment layout itself
-            (activity as? MainActivity)?.setLoadingVisibility(false)
-        }
     }
 
     override fun onDestroyView() {

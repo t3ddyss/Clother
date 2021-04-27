@@ -1,8 +1,8 @@
 package com.t3ddyss.clother.utilities
 
-import com.t3ddyss.clother.models.common.Error
-import com.t3ddyss.clother.models.common.Loading
-import com.t3ddyss.clother.models.common.Success
+import com.t3ddyss.clother.models.domain.Error
+import com.t3ddyss.clother.models.domain.Loading
+import com.t3ddyss.clother.models.domain.Success
 import kotlinx.coroutines.flow.*
 
 inline fun <ResultType, RequestType> networkBoundResource(

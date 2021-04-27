@@ -2,17 +2,20 @@ package com.t3ddyss.clother.data
 
 import android.content.SharedPreferences
 import android.util.Log
-import androidx.paging.*
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.LoadType
+import androidx.paging.PagingState
+import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.t3ddyss.clother.api.ClotherOffersService
 import com.t3ddyss.clother.db.AppDatabase
 import com.t3ddyss.clother.db.OfferDao
 import com.t3ddyss.clother.db.RemoteKeyDao
-import com.t3ddyss.clother.models.offers.Offer
-import com.t3ddyss.clother.models.common.RemoteKey
+import com.t3ddyss.clother.models.entity.OfferEntity
+import com.t3ddyss.clother.models.entity.RemoteKeyEntity
+import com.t3ddyss.clother.models.mappers.mapOfferDtoToEntity
 import com.t3ddyss.clother.utilities.ACCESS_TOKEN
 import com.t3ddyss.clother.utilities.DEBUG_TAG
-import java.lang.Exception
 
 @ExperimentalPagingApi
 class OffersRemoteMediator(
@@ -23,7 +26,7 @@ class OffersRemoteMediator(
         private val remoteKeyDao: RemoteKeyDao,
         private val listKey: String,
         private val query: Map<String, String>
-) : RemoteMediator<Int, Offer>() {
+) : RemoteMediator<Int, OfferEntity>() {
     private var accessToken: String? = null
     private var changeListener =
         SharedPreferences.OnSharedPreferenceChangeListener { sp, key ->
@@ -39,7 +42,7 @@ class OffersRemoteMediator(
         prefs.registerOnSharedPreferenceChangeListener(changeListener)
     }
 
-    override suspend fun load(loadType: LoadType, state: PagingState<Int, Offer>): MediatorResult {
+    override suspend fun load(loadType: LoadType, state: PagingState<Int, OfferEntity>): MediatorResult {
         val key: Int? = when (loadType) {
             LoadType.REFRESH -> {
                 Log.d(DEBUG_TAG, "REFRESH")
@@ -74,9 +77,8 @@ class OffersRemoteMediator(
                     else -> state.config.pageSize
                 },
                 filters = query)
-            items.forEach {
-                it.listKey = listKey
-            }
+                .map { mapOfferDtoToEntity(it) }
+            items.forEach { it.listKey = listKey }
 
             db.withTransaction {
                 if (loadType == LoadType.REFRESH) {
@@ -85,7 +87,7 @@ class OffersRemoteMediator(
                 }
 
                 offerDao.insertAll(items)
-                remoteKeyDao.insert(RemoteKey(listKey, items.lastOrNull()?.id))
+                remoteKeyDao.insert(RemoteKeyEntity(listKey, items.lastOrNull()?.id))
             }
 
             MediatorResult.Success(endOfPaginationReached = items.isEmpty())

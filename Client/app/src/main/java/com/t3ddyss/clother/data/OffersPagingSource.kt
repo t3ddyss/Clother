@@ -6,7 +6,8 @@ import androidx.paging.PagingSource.LoadParams.Append
 import androidx.paging.PagingSource.LoadParams.Prepend
 import androidx.paging.PagingState
 import com.t3ddyss.clother.api.ClotherOffersService
-import com.t3ddyss.clother.models.offers.Offer
+import com.t3ddyss.clother.models.domain.Offer
+import com.t3ddyss.clother.models.mappers.mapOfferDtoToDomain
 import com.t3ddyss.clother.utilities.ACCESS_TOKEN
 
 class OffersPagingSource(private val service: ClotherOffersService,
@@ -36,6 +37,7 @@ class OffersPagingSource(private val service: ClotherOffersService,
                     beforeKey = if (params is Prepend) params.key else null,
                     limit = params.loadSize,
                     filters = query)
+                .map { mapOfferDtoToDomain(it) }
 
             LoadResult.Page(
                     data = items,

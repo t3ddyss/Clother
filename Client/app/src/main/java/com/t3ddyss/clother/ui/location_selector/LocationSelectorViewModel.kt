@@ -3,8 +3,8 @@ package com.t3ddyss.clother.ui.location_selector
 import androidx.lifecycle.*
 import com.google.android.gms.maps.model.LatLng
 import com.t3ddyss.clother.data.LocationProvider
-import com.t3ddyss.clother.models.common.LatLngWrapper
-import com.t3ddyss.clother.models.common.Location
+import com.t3ddyss.clother.models.domain.LocationData
+import com.t3ddyss.clother.models.entity.LocationEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -16,8 +16,8 @@ class LocationSelectorViewModel
         private val repository: LocationProvider,
         private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val _location = MutableLiveData(LatLngWrapper())
-    val location: LiveData<LatLngWrapper> = _location
+    private val _location = MutableLiveData(LocationData())
+    val location: LiveData<LocationData> = _location
 
     var isEnablingLocationRequested = false
     private var isLocationRequested = false
@@ -33,17 +33,16 @@ class LocationSelectorViewModel
     }
 
     fun setLocationManually(latLng: LatLng) {
-        _location.value = LatLngWrapper(
+        _location.value = LocationData(
                 latLng = latLng,
                 isInitialValue = false,
                 isManuallySelected = true,
         )
     }
 
-    fun saveSelectedLocation(latLng: LatLngWrapper) {
+    fun saveSelectedLocation(latLng: LocationData) {
         viewModelScope.launch {
-            repository.saveSelectedLocation(Location(lat = latLng.latLng.latitude,
-                    lng = latLng.latLng.longitude))
+            repository.saveSelectedLocation(latLng)
         }
     }
 }

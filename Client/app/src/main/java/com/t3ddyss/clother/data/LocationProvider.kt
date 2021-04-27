@@ -12,7 +12,8 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.OnSuccessListener
 import com.t3ddyss.clother.db.LocationDao
-import com.t3ddyss.clother.models.common.LatLngWrapper
+import com.t3ddyss.clother.models.domain.LocationData
+import com.t3ddyss.clother.models.entity.LocationEntity
 import com.t3ddyss.clother.utilities.DEBUG_TAG
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
@@ -28,8 +29,11 @@ class LocationProvider @Inject constructor(
 
     suspend fun getLocationStream() = merge(getInitalLocation(), getLocationUpdates())
 
-    suspend fun saveSelectedLocation(location: com.t3ddyss.clother.models.common.Location) {
-        locationDao.insert(location)
+    suspend fun saveSelectedLocation(location: LocationData) {
+        locationDao.insert((LocationEntity(
+            lat = location.latLng.latitude,
+            lng = location.latLng.longitude))
+        )
     }
 
     suspend fun getLatestSavedLocation() = locationDao.getLatestLocation()
@@ -41,7 +45,7 @@ class LocationProvider @Inject constructor(
             Log.d(DEBUG_TAG, "Got location in last location $it")
 
             if (it != null) {
-                val latLng = LatLngWrapper(
+                val latLng = LocationData(
                     latLng = LatLng(it.latitude, it.longitude),
                     isInitialValue = false,
                     isManuallySelected = false
@@ -56,7 +60,7 @@ class LocationProvider @Inject constructor(
     }
 
     @SuppressLint("MissingPermission")
-    private suspend fun getLocationUpdates() = callbackFlow<LatLngWrapper>{
+    private suspend fun getLocationUpdates() = callbackFlow<LocationData>{
         val locationRequest = LocationRequest.create()
         locationRequest.interval =  5_000
         locationRequest.fastestInterval = 1000
@@ -70,7 +74,7 @@ class LocationProvider @Inject constructor(
                     val location = locationResult.locations.lastOrNull()
 
                     if (location != null) {
-                        val latLng = LatLngWrapper(
+                        val latLng = LocationData(
                                 latLng = LatLng(location.latitude, location.longitude),
                                 isInitialValue = false,
                                 isManuallySelected = false

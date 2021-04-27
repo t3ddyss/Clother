@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -12,26 +13,17 @@ import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.data.*
 import com.t3ddyss.clother.databinding.FragmentSignUpBinding
-import com.t3ddyss.clother.models.*
-import com.t3ddyss.clother.models.auth.AuthResponse
-import com.t3ddyss.clother.models.common.Error
-import com.t3ddyss.clother.models.common.Failed
-import com.t3ddyss.clother.models.common.Loading
-import com.t3ddyss.clother.models.common.Success
+import com.t3ddyss.clother.models.domain.*
 import com.t3ddyss.clother.utilities.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @AndroidEntryPoint
 class SignUpFragment : Fragment() {
-
-    private val signUpViewModel by viewModels<SignUpViewModel>()
+    private val viewModel by viewModels<SignUpViewModel>()
 
     private var _binding: FragmentSignUpBinding? = null
     private val binding get() = _binding!!
-
-    private val navController by lazy {
-        findNavController()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,53 +31,54 @@ class SignUpFragment : Fragment() {
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
     }
 
+    @ExperimentalCoroutinesApi
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSignUpBinding.inflate(inflater, container, false)
 
-        signUpViewModel.name.observe(viewLifecycleOwner,
+        viewModel.name.observe(viewLifecycleOwner,
                 {
                     it?.let {
                         binding.editTextName.text = it.toEditable()
                     }
                 })
-        signUpViewModel.email.observe(viewLifecycleOwner,
+        viewModel.email.observe(viewLifecycleOwner,
                 {
                     it?.let {
                         binding.editTextEmail.text = it.toEditable()
                     }
                 })
-        signUpViewModel.password.observe(viewLifecycleOwner,
+        viewModel.password.observe(viewLifecycleOwner,
                 {
                     it?.let {
                         binding.editTextPassword.text = it.toEditable()
                     }
                 })
 
-        signUpViewModel.authResponse.observe(viewLifecycleOwner,
+        // TODO implement error messages localization on server side or in client
+        viewModel.signUpResult.observe(viewLifecycleOwner,
                 {
-                    val response = it.getContentIfNotHandled() ?: return@observe
+                    if (it.hasBeenHandled && it is Success<*>) return@observe
 
-                    // TODO implement error messages localization on server side or in client
-                    when(response){
-                        is Loading<AuthResponse> ->
-                            (activity as? MainActivity)?.setLoadingVisibility(true)
-                        is Success<AuthResponse> -> {
-                            navController.navigate(
+                    when(val response = it.peekContent()){
+                        is Loading<*> ->
+                            binding.layoutLoading.isVisible = true
+                        is Success<*> -> {
+                            findNavController().navigate(
                                 SignUpFragmentDirections.actionSignUpFragmentToEmailActionFragment(
                                         getString(R.string.email_activation),
-                                        response.content?.email ?: getString(R.string.your_email)))
-                            (activity as? MainActivity)?.setLoadingVisibility(false)
-                            signUpViewModel.clearCredentials()
+                                        binding.editTextEmail.text()))
+                            binding.layoutLoading.isVisible = false
+                            viewModel.clearCredentials()
                         }
-                        is Error<AuthResponse> -> {
-                            (activity as? MainActivity)?.setLoadingVisibility(false)
+                        is Error<*> -> {
+                            binding.layoutLoading.isVisible = false
                             (activity as? MainActivity)?.showGenericMessage(response.message)
                         }
-                        is Failed<AuthResponse> -> {
-                            (activity as? MainActivity)?.setLoadingVisibility(false)
+                        is Failed<*> -> {
+                            binding.layoutLoading.isVisible = false
                             (activity as? MainActivity)?.showGenericMessage(getString(R.string.no_connection))
                         }
                     }
@@ -95,8 +88,6 @@ class SignUpFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
         binding.buttonSignUp.setOnClickListener {
             val name = binding.editTextName.text()
             val email = binding.editTextEmail.text()
@@ -120,19 +111,19 @@ class SignUpFragment : Fragment() {
             }
             binding.textInputPassword.isErrorEnabled = false
 
-            signUpViewModel.createUserWithCredentials(name, email, password)
+            viewModel.createUserWithCredentials(name, email, password)
         }
 
         binding.textViewSignIn.setOnClickListener {
-            navController.navigate(R.id.action_signUpFragment_to_signInFragment)
+            findNavController().navigate(R.id.action_signUpFragment_to_signInFragment)
         }
     }
 
     override fun onPause() {
         super.onPause()
-        signUpViewModel.saveName(binding.editTextName.text())
-        signUpViewModel.saveEmail(binding.editTextEmail.text())
-        signUpViewModel.savePassword(binding.editTextPassword.text())
+        viewModel.saveName(binding.editTextName.text())
+        viewModel.saveEmail(binding.editTextEmail.text())
+        viewModel.savePassword(binding.editTextPassword.text())
     }
 
     override fun onDestroyView() {

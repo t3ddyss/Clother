@@ -6,7 +6,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.google.android.gms.maps.model.LatLng
 import com.t3ddyss.clother.data.OffersRepository
-import com.t3ddyss.clother.models.offers.Offer
+import com.t3ddyss.clother.models.domain.Offer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

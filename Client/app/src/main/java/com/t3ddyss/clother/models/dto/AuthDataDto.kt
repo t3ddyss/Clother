@@ -1,12 +1,13 @@
-package com.t3ddyss.clother.models.auth
+package com.t3ddyss.clother.models.dto
 
 import com.google.gson.annotations.SerializedName
-import com.t3ddyss.clother.models.user.User
 
-data class AuthData(
-        val user: User,
+data class AuthDataDto(
+        val user: UserDto,
+
         @SerializedName("access_token")
         val accessToken: String,
+
         @SerializedName("refresh_token")
         val refreshToken: String
 )

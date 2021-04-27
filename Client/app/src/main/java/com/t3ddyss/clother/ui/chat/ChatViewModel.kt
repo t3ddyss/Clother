@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.t3ddyss.clother.data.LiveMessagesRepository
 import com.t3ddyss.clother.data.MessagesRepository
-import com.t3ddyss.clother.models.chat.Message
-import com.t3ddyss.clother.models.common.LoadResult
-import com.t3ddyss.clother.models.user.User
+import com.t3ddyss.clother.models.domain.LoadResult
+import com.t3ddyss.clother.models.domain.Message
+import com.t3ddyss.clother.models.domain.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest

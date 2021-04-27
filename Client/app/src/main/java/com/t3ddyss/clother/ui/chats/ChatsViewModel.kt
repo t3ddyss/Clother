@@ -1,10 +1,13 @@
 package com.t3ddyss.clother.ui.chats
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.t3ddyss.clother.data.ChatsRepository
 import com.t3ddyss.clother.data.LiveMessagesRepository
-import com.t3ddyss.clother.models.chat.ChatWithMessageAndUser
-import com.t3ddyss.clother.models.common.Resource
+import com.t3ddyss.clother.models.domain.ChatWithLastMessage
+import com.t3ddyss.clother.models.domain.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -16,8 +19,8 @@ class ChatsViewModel @Inject constructor(
     private val repository: ChatsRepository,
     private val liveRepository: LiveMessagesRepository
 ): ViewModel() {
-    private val _chats = MutableLiveData<Resource<List<ChatWithMessageAndUser>>>()
-    val chats: LiveData<Resource<List<ChatWithMessageAndUser>>> = _chats
+    private val _chats = MutableLiveData<Resource<List<ChatWithLastMessage>>>()
+    val chats: LiveData<Resource<List<ChatWithLastMessage>>> = _chats
     var isChatsLoaded = AtomicBoolean(false)
 
     fun getChats() {

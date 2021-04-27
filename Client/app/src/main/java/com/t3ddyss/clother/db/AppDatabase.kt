@@ -3,17 +3,11 @@ package com.t3ddyss.clother.db
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.t3ddyss.clother.models.chat.Chat
-import com.t3ddyss.clother.models.chat.Message
-import com.t3ddyss.clother.models.common.Location
-import com.t3ddyss.clother.models.offers.Category
-import com.t3ddyss.clother.models.offers.Offer
-import com.t3ddyss.clother.models.common.RemoteKey
-import com.t3ddyss.clother.models.user.User
+import com.t3ddyss.clother.models.entity.*
 
 @Database(
-        entities = [Offer::class, RemoteKey::class, Category::class, Chat::class,
-                   Message::class, User::class, Location::class],
+        entities = [OfferEntity::class, RemoteKeyEntity::class, CategoryEntity::class, ChatEntity::class,
+                   MessageEntity::class, UserEntity::class, LocationEntity::class],
         version = 5,
         exportSchema = false)
 @TypeConverters(Converters::class)

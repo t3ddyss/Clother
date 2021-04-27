@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
 import com.t3ddyss.clother.data.OffersRepository
-import com.t3ddyss.clother.models.common.Resource
-import com.t3ddyss.clother.models.common.Success
-import com.t3ddyss.clother.models.offers.Offer
+import com.t3ddyss.clother.models.domain.Offer
+import com.t3ddyss.clother.models.domain.Resource
+import com.t3ddyss.clother.models.domain.Success
 import com.t3ddyss.clother.utilities.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -20,7 +20,7 @@ class OfferViewModel @Inject constructor(
         private val repository: OffersRepository
 ) : ViewModel() {
     private val _offer = MutableLiveData<Offer>()
-    val offer: LiveData<Offer> = _offer
+    val offerEntity: LiveData<Offer> = _offer
 
     private val _removedOffers = MutableLiveData<Set<Int>>(setOf())
     val removedOffers: LiveData<Set<Int>> = _removedOffers

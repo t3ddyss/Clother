@@ -6,6 +6,8 @@ import com.t3ddyss.clother.api.ClotherChatService
 import com.t3ddyss.clother.db.AppDatabase
 import com.t3ddyss.clother.db.ChatDao
 import com.t3ddyss.clother.db.MessageDao
+import com.t3ddyss.clother.models.mappers.mapChatDtoToEntity
+import com.t3ddyss.clother.models.mappers.mapMessageDtoToEntity
 import com.t3ddyss.clother.utilities.ACCESS_TOKEN
 import com.t3ddyss.clother.utilities.networkBoundResource
 import javax.inject.Inject
@@ -21,13 +23,24 @@ class ChatsRepository @Inject constructor(
             query = { chatDao.getAllChats() },
             fetch = { service.getChats(prefs.getString(ACCESS_TOKEN, null)) },
             saveFetchResult = { db.withTransaction {
-                chatDao.deleteRemovedChats(it.map { it.serverId?.toLong() ?: 0 }.toTypedArray())
-                messageDao.deleteUnsendMessages()
+                chatDao.deleteUncreatedChats(
+                    it.map { it.id.toLong() }.toTypedArray()
+                )
+                messageDao.deleteUnsentMessages()
 
-                val ids = chatDao.insertAll(it)
-                messageDao.insertAll(it.mapIndexed { pos, chat-> chat.lastMessage!!.also {
-                    it.localChatId = ids[pos].toInt()
-                }})
+                val ids = chatDao.insertAll(
+                    it.map { mapChatDtoToEntity(it) }
+                )
+
+                messageDao.insertAll(
+                    ids
+                        .zip(it)
+                        .map { chatWithId ->
+                            mapMessageDtoToEntity(chatWithId.second.lastMessage).also {
+                                it.localChatId = chatWithId.first.toInt()
+                            }
+                        }
+                    )
             }
             }
     )

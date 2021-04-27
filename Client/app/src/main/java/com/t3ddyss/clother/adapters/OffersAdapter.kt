@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.ListItemOfferBinding
-import com.t3ddyss.clother.models.offers.Offer
+import com.t3ddyss.clother.models.domain.Offer
 import com.t3ddyss.clother.utilities.getImageUrlForCurrentDevice
 
 class OffersAdapter(

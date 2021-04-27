@@ -1,20 +1,20 @@
 package com.t3ddyss.clother.db
 
 import androidx.room.*
-import com.t3ddyss.clother.models.chat.Chat
-import com.t3ddyss.clother.models.chat.ChatWithMessageAndUser
+import com.t3ddyss.clother.models.domain.ChatWithLastMessage
+import com.t3ddyss.clother.models.entity.ChatEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ChatDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(chats: List<Chat>): List<Long>
+    suspend fun insertAll(chats: List<ChatEntity>): List<Long>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(chat: Chat): Long
+    suspend fun insert(chat: ChatEntity): Long
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun update(chat: Chat)
+    suspend fun update(chat: ChatEntity)
 
     @Transaction
     @Query("""SELECT 
@@ -37,20 +37,20 @@ interface ChatDao {
                     ORDER BY m1.max_created_at DESC
                 """
     )
-    fun getAllChats(): Flow<List<ChatWithMessageAndUser>>
+    fun getAllChats(): Flow<List<ChatWithLastMessage>>
 
     @Query("SELECT * FROM chat WHERE local_id == :localId LIMIT 1")
-    suspend fun getChatByLocalId(localId: Int): Chat?
+    suspend fun getChatByLocalId(localId: Int): ChatEntity?
 
     @Query("SELECT * FROM chat WHERE interlocutor_id == :interlocutorId LIMIT 1")
-    suspend fun getChatByInterlocutorId(interlocutorId: Int): Chat?
+    suspend fun getChatByInterlocutorId(interlocutorId: Int): ChatEntity?
 
     @Query("DELETE FROM chat")
     suspend fun deleteAllChats()
 
     @Delete
-    suspend fun delete(chat: Chat)
+    suspend fun delete(chat: ChatEntity)
 
     @Query("DELETE FROM chat WHERE server_id NOT IN (:serverIds)")
-    suspend fun deleteRemovedChats(serverIds: Array<Long>)
+    suspend fun deleteUncreatedChats(serverIds: Array<Long>)
 }

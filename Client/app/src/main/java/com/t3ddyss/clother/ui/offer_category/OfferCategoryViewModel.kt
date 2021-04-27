@@ -3,14 +3,14 @@ package com.t3ddyss.clother.ui.offer_category
 import androidx.lifecycle.*
 import androidx.paging.ExperimentalPagingApi
 import com.t3ddyss.clother.data.OffersRepository
-import com.t3ddyss.clother.models.offers.Category
+import com.t3ddyss.clother.models.domain.Category
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @ExperimentalPagingApi
 @HiltViewModel
-class OfferCategoryViewModel @OptIn(ExperimentalPagingApi::class)
+class OfferCategoryViewModel
 @Inject constructor(
         private val repository: OffersRepository,
         private val savedStateHandle: SavedStateHandle

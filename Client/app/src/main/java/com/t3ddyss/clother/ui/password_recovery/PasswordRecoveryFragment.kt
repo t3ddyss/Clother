@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -12,55 +13,51 @@ import com.t3ddyss.clother.R
 import com.t3ddyss.clother.data.*
 import com.t3ddyss.clother.databinding.FragmentPasswordRecoveryBinding
 import com.t3ddyss.clother.models.*
-import com.t3ddyss.clother.models.auth.AuthResponse
-import com.t3ddyss.clother.models.common.Error
-import com.t3ddyss.clother.models.common.Failed
-import com.t3ddyss.clother.models.common.Loading
-import com.t3ddyss.clother.models.common.Success
+import com.t3ddyss.clother.models.domain.*
 import com.t3ddyss.clother.utilities.text
 import com.t3ddyss.clother.utilities.toEditable
 import com.t3ddyss.clother.utilities.validateEmail
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @AndroidEntryPoint
 class PasswordRecoveryFragment : Fragment() {
-    private val resetPasswordViewModel by viewModels<PasswordRecoveryViewModel>()
+    private val viewModel by viewModels<PasswordRecoveryViewModel>()
 
     private var _binding: FragmentPasswordRecoveryBinding? = null
     private val binding get() = _binding!!
 
-    private val navController by lazy { findNavController() }
-
+    @ExperimentalCoroutinesApi
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View {
         _binding = FragmentPasswordRecoveryBinding.inflate(inflater, container, false)
 
-        resetPasswordViewModel.email.observe(viewLifecycleOwner) {
+        viewModel.email.observe(viewLifecycleOwner) {
             binding.editTextEmail.text = it.toEditable()
         }
 
-        resetPasswordViewModel.passwordResetResponse.observe(viewLifecycleOwner) {
-            val response = it.getContentIfNotHandled() ?: return@observe
+        viewModel.passwordRecoveryResult.observe(viewLifecycleOwner) {
+            if (it.hasBeenHandled && it is Success<*>) return@observe
 
-            when (response) {
-                is Loading<AuthResponse> ->
-                    (activity as? MainActivity)?.setLoadingVisibility(true)
-                is Success<AuthResponse> -> {
-                    navController
+            when (val response = it.peekContent()) {
+                is Loading<*> ->
+                    binding.layoutLoading.isVisible = true
+                is Success<Response> -> {
+                    findNavController()
                             .navigate(PasswordRecoveryFragmentDirections
                             .actionResetPasswordFragmentToEmailActionFragment(
                                     getString(R.string.password_reset_message),
-                                    response.content?.email ?: getString(R.string.your_email)))
-                    (activity as? MainActivity)?.setLoadingVisibility(false)
+                                    binding.editTextEmail.text()))
+                    binding.layoutLoading.isVisible = false
                 }
-                is Error<AuthResponse> -> {
-                    (activity as? MainActivity)?.setLoadingVisibility(false)
+                is Error<Response> -> {
+                    binding.layoutLoading.isVisible = false
                     (activity as? MainActivity)?.showGenericMessage(response.message)
                 }
-                is Failed<AuthResponse> -> {
-                    (activity as? MainActivity)?.setLoadingVisibility(false)
+                is Failed<Response> -> {
+                    binding.layoutLoading.isVisible = false
                     (activity as? MainActivity)?.showGenericMessage(getString(R.string.no_connection))
                 }
             }
@@ -70,8 +67,6 @@ class PasswordRecoveryFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
         binding.buttonResetPassword.setOnClickListener {
             val email = binding.editTextEmail.text()
 
@@ -81,13 +76,13 @@ class PasswordRecoveryFragment : Fragment() {
             }
             binding.textInputEmail.isErrorEnabled = false
 
-            resetPasswordViewModel.resetPassword(email)
+            viewModel.resetPassword(email)
         }
     }
 
     override fun onPause() {
         super.onPause()
-        resetPasswordViewModel.saveEmail(binding.editTextEmail.text())
+        viewModel.saveEmail(binding.editTextEmail.text())
     }
 
     override fun onDestroyView() {

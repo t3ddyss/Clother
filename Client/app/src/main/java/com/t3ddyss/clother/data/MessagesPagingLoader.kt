@@ -8,10 +8,11 @@ import com.t3ddyss.clother.db.AppDatabase
 import com.t3ddyss.clother.db.ChatDao
 import com.t3ddyss.clother.db.MessageDao
 import com.t3ddyss.clother.db.RemoteKeyDao
-import com.t3ddyss.clother.models.common.LoadResult
-import com.t3ddyss.clother.models.common.LoadType
-import com.t3ddyss.clother.models.common.RemoteKey
-import com.t3ddyss.clother.models.user.User
+import com.t3ddyss.clother.models.domain.LoadResult
+import com.t3ddyss.clother.models.domain.LoadType
+import com.t3ddyss.clother.models.domain.User
+import com.t3ddyss.clother.models.entity.RemoteKeyEntity
+import com.t3ddyss.clother.models.mappers.mapMessageDtoToEntity
 import com.t3ddyss.clother.utilities.ACCESS_TOKEN
 import com.t3ddyss.clother.utilities.CLOTHER_PAGE_SIZE_CHAT
 import com.t3ddyss.clother.utilities.DEBUG_TAG
@@ -71,19 +72,23 @@ class MessagesPagingLoader(
                 val chat = chatDao.getChatByInterlocutorId(interlocutor.id)
 
                 if (chat != null && loadType == LoadType.REFRESH) {
-                    messageDao.deleteAllMessagesFromChat(chat.localId)
+                    messageDao.deleteAllMessagesFromChat(chat.serverId)
                     remoteKeyDao.removeByList(listKey)
-//                    chatDao.insert(chat.copy(lastMessage = items.first()))
 
                     loadType = LoadType.APPEND
                 }
 
                 if (chat != null) {
-                    messageDao.insertAll(items.map { it.also { it.localChatId = chat.localId } } )
+                    messageDao.insertAll(
+                        items.map { messageDto ->
+                            mapMessageDtoToEntity(messageDto).also {
+                            it.localChatId = chat.localId
+                        } }
+                    )
                 }
-                remoteKeyDao.insert(RemoteKey(
+                remoteKeyDao.insert(RemoteKeyEntity(
                         listKey,
-                        items.lastOrNull()?.serverId))
+                        items.lastOrNull()?.id))
             }
 
             LoadResult.Success(isEndOfPaginationReached = items.isEmpty())

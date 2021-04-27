@@ -21,12 +21,7 @@ import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OfferEditorImagesAdapter
 import com.t3ddyss.clother.databinding.FragmentOfferEditorBinding
-import com.t3ddyss.clother.models.common.Error
-import com.t3ddyss.clother.models.common.Failed
-import com.t3ddyss.clother.models.common.Loading
-import com.t3ddyss.clother.models.common.Success
-import com.t3ddyss.clother.models.offers.Category
-import com.t3ddyss.clother.models.offers.NewOfferResponse
+import com.t3ddyss.clother.models.domain.*
 import com.t3ddyss.clother.utilities.text
 import com.t3ddyss.clother.utilities.toCoordinatesString
 import dagger.hilt.android.AndroidEntryPoint
@@ -91,19 +86,19 @@ class OfferEditorFragment : Fragment() {
 
         viewModel.newNewOfferResponse.observe(viewLifecycleOwner) {
             when(it) {
-                is Loading<NewOfferResponse> ->
+                is Loading<*> ->
                     (activity as? MainActivity)?.setLoadingVisibility(true)
-                is Success<NewOfferResponse> -> {
+                is Success<*> -> {
                     val action = OfferEditorFragmentDirections
-                            .actionOfferEditorFragmentToHomeFragment(it.content?.id ?: 0)
+                            .actionOfferEditorFragmentToHomeFragment(0) // TODO fix later
                     findNavController().navigate(action)
                     (activity as? MainActivity)?.setLoadingVisibility(false)
                 }
-                is Error<NewOfferResponse> -> {
+                is Error<*> -> {
                     (activity as? MainActivity)?.setLoadingVisibility(false)
                     (activity as? MainActivity)?.showGenericMessage(it.message)
                 }
-                is Failed<NewOfferResponse> -> {
+                is Failed<*> -> {
                     (activity as? MainActivity)?.setLoadingVisibility(false)
                     (activity as? MainActivity)?.showGenericMessage(getString(R.string.no_connection))
                 }
@@ -130,9 +125,9 @@ class OfferEditorFragment : Fragment() {
         return binding.root
     }
 
-    private fun postOffer(category: Category) {
+    private fun postOffer(categoryEntity: Category) {
         val offer = JsonObject()
-        offer.addProperty("category_id", category.id)
+        offer.addProperty("category_id", categoryEntity.id)
 
         val title = binding.editTextTitle.text()
         if (title.isEmpty()) {

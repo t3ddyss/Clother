@@ -8,7 +8,7 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.t3ddyss.clother.R
-import com.t3ddyss.clother.models.chat.Message
+import com.t3ddyss.clother.models.domain.Message
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
@@ -58,7 +58,8 @@ class NotificationUtil @Inject constructor(
             return
         }
 
-        // TODO retrieve shown notifications and use them to decide whether new group should be created or not
+        // TODO retrieve shown notifications and use them to decide
+        //  whether new group should be created or not
         if (users[message.userId] == true) {
             return
         }

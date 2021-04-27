@@ -2,31 +2,32 @@ package com.t3ddyss.clother.data
 
 import android.content.SharedPreferences
 import android.net.Uri
-import androidx.paging.ExperimentalPagingApi
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
+import androidx.paging.*
 import com.google.gson.JsonObject
 import com.t3ddyss.clother.api.ClotherOffersService
-import com.t3ddyss.clother.db.*
-import com.t3ddyss.clother.models.common.Error
-import com.t3ddyss.clother.models.common.Failed
-import com.t3ddyss.clother.models.common.Resource
-import com.t3ddyss.clother.models.common.Success
-import com.t3ddyss.clother.models.offers.NewOfferResponse
-import com.t3ddyss.clother.models.offers.Offer
+import com.t3ddyss.clother.db.AppDatabase
+import com.t3ddyss.clother.db.CategoryDao
+import com.t3ddyss.clother.db.OfferDao
+import com.t3ddyss.clother.db.RemoteKeyDao
+import com.t3ddyss.clother.models.domain.Offer
+import com.t3ddyss.clother.models.domain.Resource
+import com.t3ddyss.clother.models.domain.Response
+import com.t3ddyss.clother.models.domain.Success
+import com.t3ddyss.clother.models.mappers.mapCategoryEntityToDomain
+import com.t3ddyss.clother.models.mappers.mapOfferEntityToDomain
+import com.t3ddyss.clother.models.mappers.mapResponseDtoToDomain
 import com.t3ddyss.clother.utilities.ACCESS_TOKEN
 import com.t3ddyss.clother.utilities.CLOTHER_PAGE_SIZE
-import com.t3ddyss.clother.utilities.handleError
-import kotlinx.coroutines.*
+import com.t3ddyss.clother.utilities.handleNetworkException
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import retrofit2.HttpException
-import java.net.ConnectException
-import java.net.SocketTimeoutException
 import javax.inject.Inject
 
 @ExperimentalPagingApi
@@ -40,7 +41,6 @@ class OffersRepository
         private val remoteKeyDao: RemoteKeyDao,
         private val categoryDao: CategoryDao
 ) {
-
     /**
      * Gets offers and saves them in database
      */
@@ -59,8 +59,15 @@ class OffersRepository
                         offerDao = offerDao,
                         remoteKeyDao = remoteKeyDao,
                         listKey = listKey),
-                pagingSourceFactory = { offerDao.getAllOffersByList(listKey) }
+                pagingSourceFactory = {
+                    offerDao.getAllOffersByList(listKey)
+                }
         ).flow
+            .map {
+                it.map { offerEntity ->
+                    mapOfferEntityToDomain(offerEntity)
+                }
+            }
     }
 
     /**
@@ -80,11 +87,11 @@ class OffersRepository
         ).flow
     }
 
-    suspend fun getOfferById(id: Int) = offerDao.getOfferById(id)
+    suspend fun getCategories(parentId: Int? = null) =
+        categoryDao.getSubcategories(parentId)
+            .map { mapCategoryEntityToDomain(it) }
 
-    suspend fun getCategories(parentId: Int? = null) = categoryDao.getSubcategories(parentId)
-
-    suspend fun postOffer(offer: JsonObject, images: List<Uri>): Resource<NewOfferResponse> {
+    suspend fun postOffer(offer: JsonObject, images: List<Uri>): Resource<Response> {
         val body = offer.toString()
                 .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
         val imageFiles = images.map {
@@ -101,40 +108,25 @@ class OffersRepository
                 )
         }
 
-        return try {
+        return handleNetworkException {
             val response = service.postOffer(
-                    prefs.getString(ACCESS_TOKEN, null),
-                    body,
-                    imageFiles)
-            Success(response)
-        } catch (ex: HttpException) {
-            handleError(ex)
-
-        } catch (ex: ConnectException) {
-            Failed()
-
-        } catch (ex: SocketTimeoutException) {
-            Error(null)
+                prefs.getString(ACCESS_TOKEN, null),
+                body,
+                imageFiles
+            )
+            Success(mapResponseDtoToDomain(response))
         }
     }
 
-    suspend fun deleteOffer(offer: Offer): Resource<Boolean> {
-        return try {
+    suspend fun deleteOffer(offerEntity: Offer): Resource<*> {
+        return handleNetworkException {
             service.deleteOffer(
-                    prefs.getString(ACCESS_TOKEN, null),
-                    offer.id
+                prefs.getString(ACCESS_TOKEN, null),
+                offerEntity.id
             )
-            offerDao.deleteOfferById(offer.id)
+            offerDao.deleteOfferById(offerEntity.id)
 
-            Success(true)
-        } catch (ex: HttpException) {
-            handleError(ex)
-
-        } catch (ex: ConnectException) {
-            Failed()
-
-        } catch (ex: SocketTimeoutException) {
-            Error(null)
+            Success(null)
         }
     }
 

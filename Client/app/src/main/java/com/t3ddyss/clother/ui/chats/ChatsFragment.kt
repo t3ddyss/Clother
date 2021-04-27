@@ -2,7 +2,6 @@ package com.t3ddyss.clother.ui.chats
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,10 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.t3ddyss.clother.adapters.ChatsAdapter
 import com.t3ddyss.clother.databinding.FragmentChatsBinding
-import com.t3ddyss.clother.models.common.Loading
-import com.t3ddyss.clother.models.common.Success
-import com.t3ddyss.clother.utilities.DEBUG_TAG
-import com.t3ddyss.clother.utilities.USER_ID
+import com.t3ddyss.clother.utilities.CURRENT_USER_ID
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -28,7 +24,7 @@ class ChatsFragment : Fragment() {
     @Inject lateinit var prefs: SharedPreferences
 
     private val adapter by lazy {
-        ChatsAdapter(prefs.getInt(USER_ID, 0)) {
+        ChatsAdapter(prefs.getInt(CURRENT_USER_ID, 0)) {
             val action = ChatsFragmentDirections
                     .actionChatsFragmentToChatFragment(it.interlocutorId, it.interlocutorName)
             findNavController().navigate(action)

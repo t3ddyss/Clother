@@ -9,14 +9,15 @@ import com.t3ddyss.clother.db.AppDatabase
 import com.t3ddyss.clother.db.ChatDao
 import com.t3ddyss.clother.db.MessageDao
 import com.t3ddyss.clother.db.RemoteKeyDao
-import com.t3ddyss.clother.models.common.LoadResult
-import com.t3ddyss.clother.models.user.User
+import com.t3ddyss.clother.models.domain.LoadResult
+import com.t3ddyss.clother.models.domain.User
+import com.t3ddyss.clother.models.mappers.mapMessageEntityToDomain
 import com.t3ddyss.clother.utilities.ACCESS_TOKEN
 import com.t3ddyss.clother.utilities.DEBUG_TAG
 import com.t3ddyss.clother.utilities.IS_DEVICE_TOKEN_RETRIEVED
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.*
-import java.lang.Exception
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import kotlin.coroutines.resume
 
@@ -34,7 +35,12 @@ class MessagesRepository @Inject constructor(
     private lateinit var messageLoader: MessagesPagingLoader
 
     fun getMessages(interlocutor: User) = messageDao
-            .getMessagesByInterlocutorId(interlocutor.id)
+        .getMessagesByInterlocutorId(interlocutor.id)
+        .map { messages ->
+            messages.map {
+                mapMessageEntityToDomain(it)
+            }
+        }
 
     suspend fun fetchMessages(interlocutor: User): LoadResult {
         if (!this@MessagesRepository::messageLoader.isInitialized) {

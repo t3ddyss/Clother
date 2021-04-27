@@ -1,4 +1,4 @@
-package com.t3ddyss.clother.models.common
+package com.t3ddyss.clother.models.domain
 
 sealed class LoadResult {
     class Success(val isEndOfPaginationReached: Boolean) : LoadResult()

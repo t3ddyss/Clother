@@ -32,7 +32,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import java.net.ConnectException
-import java.net.SocketTimeoutException
 import javax.inject.Inject
 
 
@@ -58,7 +57,7 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private var changeListener =
+    private val changeListener =
             SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
                 run {
                     if (key == ACCESS_TOKEN) {
@@ -95,7 +94,7 @@ class MainActivity : AppCompatActivity() {
         // Do not represent actual top-level destinations, just for UP navigation purposes
         appBarConfiguration = AppBarConfiguration(setOf(
                 R.id.homeFragment, R.id.searchFragment, R.id.chatsFragment, R.id.profileFragment,
-        R.id.signUpFragment))
+                R.id.signUpFragment))
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
 
@@ -120,8 +119,8 @@ class MainActivity : AppCompatActivity() {
 
     fun showGenericMessage(throwable: Throwable) {
         when (throwable) {
-            is SocketTimeoutException -> showGenericMessage(null)
             is ConnectException -> showGenericMessage(getString(R.string.no_connection))
+            else -> showGenericMessage(null)
         }
     }
 

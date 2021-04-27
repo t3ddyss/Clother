@@ -5,16 +5,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.ListItemChatBinding
-import com.t3ddyss.clother.models.chat.ChatWithMessageAndUser
+import com.t3ddyss.clother.models.domain.ChatWithLastMessage
 import com.t3ddyss.clother.utilities.formatDate
 
 class ChatsAdapter(
         private val userId: Int,
-        private val clickListener: (ChatWithMessageAndUser) -> Unit
-) : ListAdapter<ChatWithMessageAndUser, ChatsAdapter.ChatViewHolder>(ChatWithMessageDiffCallback()) {
+        private val clickListener: (ChatWithLastMessage) -> Unit
+) : ListAdapter<ChatWithLastMessage, ChatsAdapter.ChatViewHolder>(ChatWithMessageDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
         return ChatViewHolder(ListItemChatBinding.inflate(
@@ -29,7 +28,7 @@ class ChatsAdapter(
     }
 
     inner class ChatViewHolder(private val binding: ListItemChatBinding,
-                               private val clickListener: (ChatWithMessageAndUser) -> Unit
+                               private val clickListener: (ChatWithLastMessage) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         init {
             binding.root.setOnClickListener {
@@ -38,7 +37,7 @@ class ChatsAdapter(
         }
 
         @SuppressLint("SetTextI18n")
-        fun bind(chat: ChatWithMessageAndUser) {
+        fun bind(chat: ChatWithLastMessage) {
             with (binding) {
                 textViewName.text = chat.interlocutorName
                 textViewTime.text = chat.messageCreatedAt.formatDate()

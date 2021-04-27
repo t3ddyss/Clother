@@ -80,10 +80,10 @@ def send_message(*args, **kwargs):
 
     if is_new_chat:
         emit("chat", json.dumps(chat.to_dict(user_id_to=interlocutor.id)), to=interlocutor.id)
-        emit(f'message{message["local_id"]}', json.dumps(chat.to_dict(user_id_to=sender.id)))
+        emit(f'message{message["id"]}', json.dumps(chat.to_dict(user_id_to=sender.id)))
     else:
         send(json.dumps(new_message.to_dict()), to=interlocutor.id)
-        emit(f'message{message["local_id"]}', json.dumps(new_message.to_dict()))
+        emit(f'message{message["id"]}', json.dumps(new_message.to_dict()))
 
     print(f'Sent new message "{new_message.body}" from {sender.name} to {interlocutor.name}')
 

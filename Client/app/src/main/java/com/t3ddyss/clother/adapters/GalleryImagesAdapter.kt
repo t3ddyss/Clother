@@ -7,10 +7,10 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.t3ddyss.clother.databinding.ListItemImageGalleryBinding
-import com.t3ddyss.clother.models.common.GalleryImage
+import com.t3ddyss.clother.models.domain.MediaImage
 
 class GalleryImagesAdapter(private val selectedLimitExceeded: () -> Unit) :
-        ListAdapter<GalleryImage, GalleryImagesAdapter.ImageViewHolder>(ImageDiffCallback()) {
+        ListAdapter<MediaImage, GalleryImagesAdapter.ImageViewHolder>(ImageDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         return ImageViewHolder(ListItemImageGalleryBinding.inflate(
@@ -49,13 +49,13 @@ class GalleryImagesAdapter(private val selectedLimitExceeded: () -> Unit) :
             }
         }
 
-        fun bind(image: GalleryImage) {
+        fun bind(mediaImage: MediaImage) {
             Glide.with(binding.image)
-                    .load(image.uri)
+                    .load(mediaImage.uri)
                     .thumbnail(0.5f)
                     .into(binding.image)
 
-            binding.imageViewChecked.isVisible = image.isSelected
+            binding.imageViewChecked.isVisible = mediaImage.isSelected
         }
     }
 }

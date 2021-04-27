@@ -15,10 +15,8 @@ import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OfferImagesAdapter
 import com.t3ddyss.clother.databinding.FragmentOfferBinding
-import com.t3ddyss.clother.models.common.Error
-import com.t3ddyss.clother.models.common.Failed
-import com.t3ddyss.clother.models.common.Success
-import com.t3ddyss.clother.utilities.USER_ID
+import com.t3ddyss.clother.models.domain.*
+import com.t3ddyss.clother.utilities.CURRENT_USER_ID
 import com.t3ddyss.clother.utilities.formatDate
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -37,13 +35,13 @@ class OfferFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         _binding = FragmentOfferBinding.inflate(inflater, container, false)
-        val currentUserId = prefs.getInt(USER_ID, 0)
+        val currentUserId = prefs.getInt(CURRENT_USER_ID, 0)
 
         if (args.posterId == currentUserId) {
             setHasOptionsMenu(true)
         }
 
-        viewModel.offer.observe(viewLifecycleOwner) {
+        viewModel.offerEntity.observe(viewLifecycleOwner) {
             with (binding) {
                 images.adapter = OfferImagesAdapter(it.images) {
                 }
@@ -71,7 +69,7 @@ class OfferFragment : Fragment() {
                 if (!it.location.isNullOrEmpty()) {
                     location.setOnClickListener { _ ->
                         val action = OfferFragmentDirections
-                            .actionOfferFragmentToLocationViewerFragment(it.location!!)
+                            .actionOfferFragmentToLocationViewerFragment(it.location)
                         findNavController().navigate(action)
                     }
                 }

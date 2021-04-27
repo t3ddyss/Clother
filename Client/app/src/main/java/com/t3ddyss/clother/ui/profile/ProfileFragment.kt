@@ -21,8 +21,8 @@ import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OffersAdapter
 import com.t3ddyss.clother.databinding.FragmentProfileBinding
 import com.t3ddyss.clother.ui.offer.OfferViewModel
+import com.t3ddyss.clother.utilities.CURRENT_USER_ID
 import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
-import com.t3ddyss.clother.utilities.USER_ID
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -113,7 +113,7 @@ class ProfileFragment : Fragment() {
             profileViewModel.removeOffers(it)
         }
 
-        profileViewModel.getOffers(prefs.getInt(USER_ID, 0))
+        profileViewModel.getOffers(prefs.getInt(CURRENT_USER_ID, 0))
 
         return binding.root
     }

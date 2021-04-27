@@ -4,19 +4,19 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
 import com.t3ddyss.clother.db.*
-import com.t3ddyss.clother.utilities.AUTH
-import com.t3ddyss.clother.utilities.DATABASE_NAME
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import javax.annotation.Signed
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
+    private const val DATABASE_NAME = "Clother.db"
+    private const val AUTH_PREFS_KEY = "AUTH_PREFS"
+
     // TODO implement migration
     @Singleton
     @Provides
@@ -71,5 +71,5 @@ object DatabaseModule {
     @Singleton
     @Provides
     fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences =
-        context.getSharedPreferences(AUTH, Context.MODE_PRIVATE)
+        context.getSharedPreferences(AUTH_PREFS_KEY, Context.MODE_PRIVATE)
 }
