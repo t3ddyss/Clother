@@ -14,7 +14,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@ExperimentalPagingApi
 @HiltViewModel
 class OfferViewModel @Inject constructor(
         private val repository: OffersRepository

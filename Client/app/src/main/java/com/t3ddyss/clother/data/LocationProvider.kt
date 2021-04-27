@@ -15,6 +15,7 @@ import com.t3ddyss.clother.db.LocationDao
 import com.t3ddyss.clother.models.domain.LocationData
 import com.t3ddyss.clother.models.entity.LocationEntity
 import com.t3ddyss.clother.utilities.DEBUG_TAG
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.merge
@@ -27,7 +28,10 @@ class LocationProvider @Inject constructor(
     private val locationProviderClient = LocationServices
             .getFusedLocationProviderClient(application.applicationContext)
 
+    @ExperimentalCoroutinesApi
     suspend fun getLocationStream() = merge(getInitalLocation(), getLocationUpdates())
+
+    suspend fun getLatestSavedLocation() = locationDao.getLatestLocation()
 
     suspend fun saveSelectedLocation(location: LocationData) {
         locationDao.insert((LocationEntity(
@@ -36,8 +40,7 @@ class LocationProvider @Inject constructor(
         )
     }
 
-    suspend fun getLatestSavedLocation() = locationDao.getLatestLocation()
-
+    @ExperimentalCoroutinesApi
     @SuppressLint("MissingPermission")
     private suspend fun getInitalLocation() = callbackFlow {
 
@@ -51,7 +54,7 @@ class LocationProvider @Inject constructor(
                     isManuallySelected = false
                 )
 
-                offer(latLng)
+                trySend(latLng)
             }
         }
         locationProviderClient.lastLocation.addOnSuccessListener(initialLocationListener)
@@ -59,6 +62,7 @@ class LocationProvider @Inject constructor(
         awaitClose()
     }
 
+    @ExperimentalCoroutinesApi
     @SuppressLint("MissingPermission")
     private suspend fun getLocationUpdates() = callbackFlow<LocationData>{
         val locationRequest = LocationRequest.create()
@@ -80,7 +84,7 @@ class LocationProvider @Inject constructor(
                                 isManuallySelected = false
                         )
 
-                        offer(latLng)
+                        trySend(latLng)
                     }
                 }
             }

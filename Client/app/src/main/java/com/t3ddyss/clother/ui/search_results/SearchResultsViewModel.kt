@@ -1,7 +1,6 @@
 package com.t3ddyss.clother.ui.search_results
 
 import androidx.lifecycle.*
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.google.android.gms.maps.model.LatLng
@@ -12,7 +11,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@ExperimentalPagingApi
 @HiltViewModel
 class SearchResultsViewModel @Inject constructor(
     private val repository: OffersRepository

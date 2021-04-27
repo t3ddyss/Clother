@@ -21,7 +21,6 @@ import com.t3ddyss.clother.utilities.formatDate
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-@ExperimentalPagingApi
 @AndroidEntryPoint
 class OfferFragment : Fragment() {
 

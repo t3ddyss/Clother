@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.t3ddyss.clother.utilities.DEBUG_TAG
 import id.zelory.compressor.Compressor
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
@@ -24,6 +25,7 @@ class ImageProvider @Inject constructor(
 ) {
     private val uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 
+    @ExperimentalCoroutinesApi
     suspend fun getImagesStream() = merge(getInitialImages(), getImageUpdates())
 
     private suspend fun getInitialImages() = flow {
@@ -32,13 +34,14 @@ class ImageProvider @Inject constructor(
         emit(loadImagesFromGallery())
     }.flowOn(Dispatchers.IO)
 
+    @ExperimentalCoroutinesApi
     private suspend fun getImageUpdates() = callbackFlow<List<Uri>> {
         val newImagesObserver = object : ContentObserver(Handler(application.applicationContext.mainLooper)) {
             override fun onChange(selfChange: Boolean) {
                 if (selfChange) return
                 Log.d(DEBUG_TAG, "Going to offer new images")
 
-                offer(loadImagesFromGallery())
+                trySend(loadImagesFromGallery())
             }
         }
         application.contentResolver.registerContentObserver(

@@ -1,19 +1,16 @@
 package com.t3ddyss.clother.ui.offer_category
 
 import androidx.lifecycle.*
-import androidx.paging.ExperimentalPagingApi
 import com.t3ddyss.clother.data.OffersRepository
 import com.t3ddyss.clother.models.domain.Category
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@ExperimentalPagingApi
 @HiltViewModel
 class OfferCategoryViewModel
 @Inject constructor(
-        private val repository: OffersRepository,
-        private val savedStateHandle: SavedStateHandle
+    private val repository: OffersRepository
 ): ViewModel() {
     private val _categories = MutableLiveData<List<Category>>()
     val categories: LiveData<List<Category>> = _categories

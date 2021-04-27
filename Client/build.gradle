@@ -12,7 +12,7 @@ buildscript {
         app_compat_version = '1.2.0'
         compressor_version = '3.0.1'
         constraintlayout_version = '2.0.4'
-        coroutines_version = '1.4.2'
+        coroutines_version = '1.5.0-RC'
         firebase_analytics_version = '18.0.3'
         firebase_bom_version = '27.0.0'
         firebase_messaging_version = '21.1.0'

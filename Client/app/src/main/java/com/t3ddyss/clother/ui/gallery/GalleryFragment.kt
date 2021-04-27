@@ -17,8 +17,8 @@ import com.t3ddyss.clother.adapters.GalleryImagesAdapter
 import com.t3ddyss.clother.databinding.FragmentGalleryBinding
 import com.t3ddyss.clother.ui.offer_editor.OfferEditorViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalPagingApi
 @AndroidEntryPoint
 class GalleryFragment : Fragment() {
     private val viewModel by viewModels<GalleryViewModel>()
@@ -30,6 +30,7 @@ class GalleryFragment : Fragment() {
     private lateinit var adapter: GalleryImagesAdapter
     private lateinit var layoutManager: GridLayoutManager
 
+    @ExperimentalCoroutinesApi
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         _binding = FragmentGalleryBinding.inflate(inflater, container, false)

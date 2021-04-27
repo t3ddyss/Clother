@@ -96,7 +96,7 @@ class ChatFragment : Fragment() {
             }
         }
 
-        viewModel.getMessages(interlocutor) // TODO fix later
+        viewModel.getMessages(interlocutor) // TODO move user object to viewModel
 
         return binding.root
     }

@@ -16,7 +16,6 @@ import com.t3ddyss.clother.adapters.CategoriesAdapter
 import com.t3ddyss.clother.databinding.FragmentSearchByCategoryBinding
 import dagger.hilt.android.AndroidEntryPoint
 
-@ExperimentalPagingApi
 @AndroidEntryPoint
 class SearchByCategoryFragment : Fragment() {
 

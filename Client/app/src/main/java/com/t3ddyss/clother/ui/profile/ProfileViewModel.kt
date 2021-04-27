@@ -14,17 +14,16 @@ import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 @HiltViewModel
-@ExperimentalPagingApi
 class ProfileViewModel
 @Inject constructor(
-        private val offersRepository: OffersRepository,
-        private val savedStateHandle: SavedStateHandle
+    private val offersRepository: OffersRepository
 ) : ViewModel() {
     private val _offers = MutableLiveData<PagingData<Offer>>()
     val offers: LiveData<PagingData<Offer>> = _offers
 
     private val isOffersLoaded = AtomicBoolean(false)
 
+    @ExperimentalPagingApi
     fun getOffers(userId: Int) {
         if (isOffersLoaded.getAndSet(true)) return
 

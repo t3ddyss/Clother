@@ -2,7 +2,6 @@ package com.t3ddyss.clother.ui.offer_editor
 
 import android.net.Uri
 import androidx.lifecycle.*
-import androidx.paging.ExperimentalPagingApi
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.JsonObject
 import com.t3ddyss.clother.data.OffersRepository
@@ -12,12 +11,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@ExperimentalPagingApi
 @HiltViewModel
 class OfferEditorViewModel
 @Inject constructor(
-        private val repository: OffersRepository,
-        private val savedStateHandle: SavedStateHandle
+    private val repository: OffersRepository
 ) : ViewModel() {
     private val _newOfferResponse = MutableLiveData<Resource<*>>()
     val newNewOfferResponse: LiveData<Resource<*>> = _newOfferResponse

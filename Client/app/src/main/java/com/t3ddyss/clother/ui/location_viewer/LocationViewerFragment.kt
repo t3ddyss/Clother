@@ -106,7 +106,7 @@ class LocationViewerFragment : Fragment() {
     }
 
     companion object {
-        const val RADIUS = 1000.0
+        const val RADIUS = 1_500.0
         const val DEFAULT_CAMERA_ZOOM = 13f
     }
 }

@@ -18,7 +18,6 @@ import com.t3ddyss.clother.adapters.CategoriesAdapter
 import com.t3ddyss.clother.databinding.FragmentOfferCategoryBinding
 import dagger.hilt.android.AndroidEntryPoint
 
-@ExperimentalPagingApi
 @AndroidEntryPoint
 class OfferCategoryFragment : Fragment() {
 

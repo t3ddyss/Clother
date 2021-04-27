@@ -32,7 +32,6 @@ import kotlin.coroutines.resume
 
 // TODO find out how to refresh access token without creating "racing" condition with HTTP requests
 @Singleton
-@ExperimentalCoroutinesApi
 class LiveMessagesRepository @Inject constructor(
         private val prefs: SharedPreferences,
         private val db: AppDatabase,
@@ -60,11 +59,12 @@ class LiveMessagesRepository @Inject constructor(
         return IO.socket(getBaseUrlForCurrentDevice(), options)
     }
 
+    @ExperimentalCoroutinesApi
     suspend fun getMessagesStream() = callbackFlow {
         socket = initializeSocket()
 
         val onConnectListener = Emitter.Listener {
-            offer(CONNECTED)
+            trySend(CONNECTED)
         }
 
         val onNewMessageListener = Emitter.Listener {

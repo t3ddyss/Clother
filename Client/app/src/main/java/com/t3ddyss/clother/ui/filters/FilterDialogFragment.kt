@@ -17,7 +17,6 @@ import com.t3ddyss.clother.ui.search_results.SearchResultsViewModel
 import com.t3ddyss.clother.utilities.toCoordinatesString
 import dagger.hilt.android.AndroidEntryPoint
 
-@ExperimentalPagingApi
 @AndroidEntryPoint
 class FilterDialogFragment : BottomSheetDialogFragment() {
     private val searchViewModel by hiltNavGraphViewModels<SearchResultsViewModel>(

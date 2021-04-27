@@ -29,8 +29,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
 @AndroidEntryPoint
-@ExperimentalCoroutinesApi
-@ExperimentalPagingApi
 class OfferEditorFragment : Fragment() {
     private val viewModel by hiltNavGraphViewModels<OfferEditorViewModel>(R.id.offer_editor_graph)
 

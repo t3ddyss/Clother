@@ -30,7 +30,6 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-@ExperimentalPagingApi
 class ProfileFragment : Fragment() {
     // Using activityViewModels delegate here to save data across different instances of ProfileFragment
     private val profileViewModel by activityViewModels<ProfileViewModel>()
@@ -49,6 +48,7 @@ class ProfileFragment : Fragment() {
 
     @Inject lateinit var prefs: SharedPreferences
 
+    @ExperimentalPagingApi
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,

@@ -29,7 +29,6 @@ import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import javax.inject.Inject
 
-@ExperimentalPagingApi
 @AndroidEntryPoint
 class SearchResultsFragment : Fragment() {
 

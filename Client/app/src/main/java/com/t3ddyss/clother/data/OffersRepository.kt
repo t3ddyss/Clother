@@ -30,7 +30,6 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject
 
-@ExperimentalPagingApi
 class OffersRepository
 @Inject constructor(
         private val service: ClotherOffersService,
@@ -44,6 +43,7 @@ class OffersRepository
     /**
      * Gets offers and saves them in database
      */
+    @ExperimentalPagingApi
     fun getOffers(query: Map<String, String> = mapOf(), userId: Int? = null):
             Flow<PagingData<Offer>> {
         val listKey = LIST_KEY_OFFERS + (userId ?: "")

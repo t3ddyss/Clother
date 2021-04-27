@@ -14,7 +14,6 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-@ExperimentalCoroutinesApi
 class MessagesViewModel @Inject constructor(
     private val liveRepository: LiveMessagesRepository,
     private val repository: MessagesRepository,
@@ -23,6 +22,7 @@ class MessagesViewModel @Inject constructor(
     private var messagesJob: Job? = null
     private var isConnecting = false
 
+    @ExperimentalCoroutinesApi
     fun getMessages(tokenUpdated: Boolean = false) {
         if (isConnecting || liveRepository.isConnected) {
             if (!tokenUpdated) return

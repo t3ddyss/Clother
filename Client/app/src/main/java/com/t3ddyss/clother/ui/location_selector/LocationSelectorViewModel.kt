@@ -4,8 +4,8 @@ import androidx.lifecycle.*
 import com.google.android.gms.maps.model.LatLng
 import com.t3ddyss.clother.data.LocationProvider
 import com.t3ddyss.clother.models.domain.LocationData
-import com.t3ddyss.clother.models.entity.LocationEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -13,8 +13,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LocationSelectorViewModel
 @Inject constructor(
-        private val repository: LocationProvider,
-        private val savedStateHandle: SavedStateHandle
+    private val repository: LocationProvider
 ) : ViewModel() {
     private val _location = MutableLiveData(LocationData())
     val location: LiveData<LocationData> = _location
@@ -22,6 +21,7 @@ class LocationSelectorViewModel
     var isEnablingLocationRequested = false
     private var isLocationRequested = false
 
+    @ExperimentalCoroutinesApi
     fun getLocation() {
         if (isLocationRequested) return
         viewModelScope.launch {

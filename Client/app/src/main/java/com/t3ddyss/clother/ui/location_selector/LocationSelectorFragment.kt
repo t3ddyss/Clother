@@ -12,7 +12,6 @@ import androidx.fragment.app.viewModels
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.paging.ExperimentalPagingApi
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.LocationRequest
@@ -31,8 +30,8 @@ import com.t3ddyss.clother.ui.filters.FiltersViewModel
 import com.t3ddyss.clother.ui.offer_editor.OfferEditorViewModel
 import com.t3ddyss.clother.utilities.MAPVIEW_BUNDLE
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalPagingApi
 @AndroidEntryPoint
 class LocationSelectorFragment : Fragment() {
 
@@ -50,6 +49,7 @@ class LocationSelectorFragment : Fragment() {
     private lateinit var map: GoogleMap
     private var isPermissionGranted = false
 
+    @ExperimentalCoroutinesApi
     private val enableLocationDialogLauncher = registerForActivityResult(
             ActivityResultContracts.StartIntentSenderForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -62,6 +62,7 @@ class LocationSelectorFragment : Fragment() {
             )
         }}
 
+    @ExperimentalCoroutinesApi
     @SuppressLint("MissingPermission")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -147,6 +148,7 @@ class LocationSelectorFragment : Fragment() {
         }
     }
 
+    @ExperimentalCoroutinesApi
     private fun getLocation() {
         viewModel.getLocation()
     }
@@ -170,6 +172,7 @@ class LocationSelectorFragment : Fragment() {
         }
     }
 
+    @ExperimentalCoroutinesApi
     private fun checkIfLocationEnabled() {
         if (viewModel.isEnablingLocationRequested) return
         viewModel.isEnablingLocationRequested = true

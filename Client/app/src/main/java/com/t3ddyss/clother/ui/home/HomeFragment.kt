@@ -36,8 +36,6 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-@ExperimentalCoroutinesApi
-@ExperimentalPagingApi
 class HomeFragment : Fragment() {
     // Using activityViewModels delegate here to save data across different instances of HomeFragment
     private val viewModel by activityViewModels<HomeViewModel>()
@@ -60,6 +58,7 @@ class HomeFragment : Fragment() {
     private lateinit var adapterDataObserver: RecyclerView.AdapterDataObserver
     private lateinit var onScrollListener: RecyclerView.OnScrollListener
 
+    @ExperimentalPagingApi
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,

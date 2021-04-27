@@ -36,7 +36,6 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-@ExperimentalCoroutinesApi
 class MainActivity : AppCompatActivity() {
 
     private val messagesViewModel by viewModels<MessagesViewModel>()
@@ -57,6 +56,7 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    @ExperimentalCoroutinesApi
     private val changeListener =
             SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
                 run {
@@ -66,6 +66,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+    @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)

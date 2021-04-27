@@ -13,11 +13,9 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
-@ExperimentalPagingApi
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-        private val repository: OffersRepository,
-        private val savedStateHandle: SavedStateHandle
+    private val repository: OffersRepository
 ) : ViewModel() {
     private val _offers = MutableLiveData<PagingData<Offer>>()
     val offers: LiveData<PagingData<Offer>> = _offers
@@ -27,6 +25,7 @@ class HomeViewModel @Inject constructor(
     private val isOffersLoaded = AtomicBoolean(false)
     var endOfPaginationReachedBottom = false
 
+    @ExperimentalPagingApi
     fun getOffers() {
         if (isOffersLoaded.getAndSet(true)) return
 
