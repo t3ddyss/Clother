@@ -12,8 +12,8 @@ import com.google.android.material.textfield.TextInputEditText
 import java.text.SimpleDateFormat
 import java.util.*
 
-val name_regex = """\p{L}{2,50}""".toRegex()
-val password_regex =
+private val name_regex = """\p{L}{2,50}""".toRegex()
+private val password_regex =
     """^(?=.*?[0-9])(?=.*?[a-z])(?=.*?[A-Z])(?=\S+$)(?=.*?[^A-Za-z\s0-9]).{8,25}""".toRegex()
 
 fun String.validateName() = this.matches(name_regex)
@@ -47,11 +47,6 @@ fun LatLng.toCoordinatesString(): String {
     val longitude = convertToDms(this.longitude)
     val longitudeCardinal = if (this.longitude >= 0) "E" else "W"
     return "$latitude$latitudeCardinal $longitude$longitudeCardinal"
-}
-
-fun String.getImageUrlForCurrentDevice(): String {
-    return if (this.startsWith("https://lp2.hm.com")) this
-    else getBaseUrlForCurrentDevice() + this
 }
 
 fun Date.formatDate(): String {

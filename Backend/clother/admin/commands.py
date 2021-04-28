@@ -102,7 +102,7 @@ def mock_offers():
                       user_id=get_random_user(),
                       created_at=generate_random_time(),
                       size=get_random_size())
-        for uri in item['images']:
+        for uri in reversed(item['images']):
             offer.images.append(Image(uri="https:" + uri))
 
         lat, lng = generate_random_location()

@@ -8,7 +8,6 @@ import com.bumptech.glide.Glide
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.ListItemOfferBinding
 import com.t3ddyss.clother.models.domain.Offer
-import com.t3ddyss.clother.utilities.getImageUrlForCurrentDevice
 
 class OffersAdapter(
     private val clickListener: (Offer) -> Unit
@@ -44,7 +43,7 @@ class OffersAdapter(
         fun bind(offer: Offer) {
             binding.apply {
                 Glide.with(image.context)
-                    .load(offer.images.firstOrNull()?.getImageUrlForCurrentDevice())
+                    .load(offer.images.firstOrNull())
                     .thumbnail(0.5f)
                     .centerCrop()
                     .placeholder(R.drawable.placeholder_offer_image)

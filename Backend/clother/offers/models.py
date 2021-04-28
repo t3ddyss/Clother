@@ -18,7 +18,7 @@ class Offer(db.Model):
     images = db.relationship('Image', cascade="all, delete", passive_deletes=True)
     location = db.relationship('Location', uselist=False, passive_deletes=True)
 
-    def to_dict(self):
+    def to_dict(self, url_root):
         offer = {'id': self.id,
                  'user_id': self.user_id,
                  'category_id': self.category_id,
@@ -28,7 +28,7 @@ class Offer(db.Model):
                  'size': self.size,
                  'user_name': self.user.name,
                  'category': self.category.title,
-                 'images': [image.uri for image in self.images]}
+                 'images': [image.to_dict(url_root) for image in self.images]}
         if self.location:
             offer['location'] = self.location.to_string()
         return offer
@@ -56,6 +56,9 @@ class Image(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     offer_id = db.Column(db.Integer, db.ForeignKey('offer.id', ondelete='CASCADE'))
     uri = db.Column(db.String, unique=True, nullable=False)
+
+    def to_dict(self, url_root):
+        return self.uri if self.uri.startswith('https://lp2.hm.com') else url_root + self.uri
 
 
 class Location(db.Model):

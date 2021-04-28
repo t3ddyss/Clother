@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.ListItemImageBinding
-import com.t3ddyss.clother.utilities.getImageUrlForCurrentDevice
 
 class OfferImagesAdapter(
     private val images: List<String>,
@@ -41,7 +40,7 @@ class OfferImagesAdapter(
         fun bind(url: String) {
             binding.apply {
                 Glide.with(image)
-                    .load(url.getImageUrlForCurrentDevice())
+                    .load(url)
                     .centerCrop()
                     .placeholder(R.drawable.placeholder_offer_image)
                     .dontAnimate()
