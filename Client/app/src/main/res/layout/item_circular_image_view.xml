@@ -11,9 +11,9 @@
         android:id="@+id/imageView_avatar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="?attr/colorPrimaryVariant"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_person"
         app:tint="@color/green_500"
-        android:background="?attr/colorPrimaryVariant"
         tools:ignore="ContentDescription" />
 </androidx.cardview.widget.CardView>

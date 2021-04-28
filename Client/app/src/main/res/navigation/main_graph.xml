@@ -5,17 +5,17 @@
     android:id="@+id/main_graph"
     tools:ignore="InvalidNavigation">
 
-    <include app:graph="@navigation/offer_editor_graph"/>
-    <include app:graph="@navigation/search_results_graph"/>
+    <include app:graph="@navigation/offer_editor_graph" />
+    <include app:graph="@navigation/search_results_graph" />
 
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.t3ddyss.clother.ui.home.HomeFragment"
         android:label="@string/home"
-        tools:layout="@layout/fragment_home" >
+        tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment_to_offerFragment"
-            app:destination="@id/offerFragment" >
+            app:destination="@id/offerFragment">
             <argument
                 android:name="offer_id"
                 android:defaultValue="0" />
@@ -30,18 +30,18 @@
         android:id="@+id/searchByCategoryFragment"
         android:name="com.t3ddyss.clother.ui.search_by_category.SearchByCategoryFragment"
         android:label="@string/search"
-        tools:layout="@layout/fragment_search_by_category" >
+        tools:layout="@layout/fragment_search_by_category">
         <argument
             android:name="parent_id"
             android:defaultValue="0"
-            app:argType="integer"/>
+            app:argType="integer" />
         <action
             android:id="@+id/openSubcategoriesAction"
             app:destination="@id/searchByCategoryFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_searchByCategoryFragment_to_searchFragment"
             app:destination="@id/searchFragment"
@@ -49,15 +49,15 @@
             app:popExitAnim="@anim/slide_out_bottom">
             <argument
                 android:name="query"
-                app:argType="string"
-                android:defaultValue=""/>
+                android:defaultValue=""
+                app:argType="string" />
         </action>
         <action
             android:id="@+id/searchByCategory_to_searchResultsGraph"
             app:destination="@id/search_results_graph">
             <argument
                 android:name="category"
-                app:argType="com.t3ddyss.clother.models.domain.Category"/>
+                app:argType="com.t3ddyss.clother.models.domain.Category" />
         </action>
     </fragment>
 
@@ -65,19 +65,18 @@
         android:id="@+id/offerCategoryFragment"
         android:name="com.t3ddyss.clother.ui.offer_category.OfferCategoryFragment"
         android:label="@string/select_category"
-        tools:layout="@layout/fragment_offer_category" >
+        tools:layout="@layout/fragment_offer_category">
         <argument
             android:name="parent_id"
             android:defaultValue="0"
-            app:argType="integer"/>
+            app:argType="integer" />
         <action
             android:id="@+id/openSubcategoriesAction"
             app:destination="@id/offerCategoryFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right">
-        </action>
+            app:popExitAnim="@anim/slide_out_right"></action>
         <action
             android:id="@+id/offerCategory_to_offerEditorGraph"
             app:destination="@id/offer_editor_graph">
@@ -91,7 +90,7 @@
         android:id="@+id/profileFragment"
         android:name="com.t3ddyss.clother.ui.profile.ProfileFragment"
         android:label="@string/your_offers"
-        tools:layout="@layout/fragment_profile" >
+        tools:layout="@layout/fragment_profile">
         <action
             android:id="@+id/action_profileFragment_to_offerFragment"
             app:destination="@id/offerFragment" />
@@ -113,7 +112,7 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_signUpFragment_to_homeFragment"
             app:destination="@id/homeFragment"
@@ -148,7 +147,7 @@
         android:id="@+id/signInFragment"
         android:name="com.t3ddyss.clother.ui.sign_in.SignInFragment"
         android:label="@string/sign_in"
-        tools:layout="@layout/fragment_sign_in" >
+        tools:layout="@layout/fragment_sign_in">
         <action
             android:id="@+id/action_signInFragment_to_homeFragment"
             app:destination="@id/homeFragment"
@@ -160,7 +159,7 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -181,18 +180,18 @@
         tools:layout="@layout/fragment_offer">
         <argument
             android:name="poster_id"
-            app:argType="integer"
-            android:defaultValue="-1" />
+            android:defaultValue="-1"
+            app:argType="integer" />
         <action
             android:id="@+id/action_offerFragment_to_locationViewerFragment"
             app:destination="@id/locationViewerFragment" />
         <action
             android:id="@+id/action_offerFragment_to_chatFragment"
-            app:destination="@id/chatFragment" >
+            app:destination="@id/chatFragment">
             <argument
                 android:name="user_id"
-                app:argType="integer"
-                android:defaultValue="0" />
+                android:defaultValue="0"
+                app:argType="integer" />
         </action>
     </fragment>
     <fragment
@@ -202,14 +201,14 @@
         tools:layout="@layout/fragment_location_viewer">
         <argument
             android:name="coordinates"
-            app:argType="string"
-            android:defaultValue="0,0" />
+            android:defaultValue="0,0"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.t3ddyss.clother.ui.search.SearchFragment"
         android:label="fragment_search"
-        tools:layout="@layout/fragment_search" >
+        tools:layout="@layout/fragment_search">
         <action
             android:id="@+id/searchFragment_to_searchResultsGraph"
             app:destination="@id/search_results_graph">
@@ -219,8 +218,8 @@
         </action>
         <argument
             android:name="query"
-            app:argType="string"
-            android:defaultValue=""/>
+            android:defaultValue=""
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/chatsFragment"
@@ -235,15 +234,15 @@
         android:id="@+id/chatFragment"
         android:name="com.t3ddyss.clother.ui.chat.ChatFragment"
         android:label="{user_name}"
-        tools:layout="@layout/fragment_chat" >
+        tools:layout="@layout/fragment_chat">
         <argument
             android:name="user_id"
-            app:argType="integer"
-            android:defaultValue="0" />
+            android:defaultValue="0"
+            app:argType="integer" />
         <argument
             android:name="user_name"
-            app:argType="string"
-            android:defaultValue=""/>
+            android:defaultValue=""
+            app:argType="string" />
     </fragment>
     <action
         android:id="@+id/action_global_signUpFragment"

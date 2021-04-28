@@ -21,12 +21,13 @@ class ChatsFragment : Fragment() {
     private var _binding: FragmentChatsBinding? = null
     private val binding get() = _binding!!
 
-    @Inject lateinit var prefs: SharedPreferences
+    @Inject
+    lateinit var prefs: SharedPreferences
 
     private val adapter by lazy {
         ChatsAdapter(prefs.getInt(CURRENT_USER_ID, 0)) {
             val action = ChatsFragmentDirections
-                    .actionChatsFragmentToChatFragment(it.interlocutorId, it.interlocutorName)
+                .actionChatsFragmentToChatFragment(it.interlocutorId, it.interlocutorName)
             findNavController().navigate(action)
         }
     }

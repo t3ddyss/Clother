@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.t3ddyss.clother.MainActivity
@@ -36,18 +35,17 @@ class OfferCategoryFragment : Fragment() {
         (activity as? MainActivity)?.setNavIconVisibility(parentId != null)
 
         val layoutManager = LinearLayoutManager(
-                context,
-                LinearLayoutManager.VERTICAL,
-                false)
+            context,
+            LinearLayoutManager.VERTICAL,
+            false
+        )
 
         val adapter = CategoriesAdapter {
             if (!it.isLastLevel) {
                 val action = OfferCategoryFragmentDirections
                     .openSubcategoriesAction(it.id)
                 findNavController().navigate(action)
-            }
-
-            else {
+            } else {
                 val action = OfferCategoryFragmentDirections
                     .offerCategoryToOfferEditorGraph(it)
                 findNavController().navigate(action)

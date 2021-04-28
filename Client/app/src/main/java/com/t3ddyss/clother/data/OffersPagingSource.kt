@@ -10,19 +10,20 @@ import com.t3ddyss.clother.models.domain.Offer
 import com.t3ddyss.clother.models.mappers.mapOfferDtoToDomain
 import com.t3ddyss.clother.utilities.ACCESS_TOKEN
 
-class OffersPagingSource(private val service: ClotherOffersService,
-                         prefs: SharedPreferences,
-                         private val query: Map<String, String>
-): PagingSource<Int, Offer>() {
+class OffersPagingSource(
+    private val service: ClotherOffersService,
+    prefs: SharedPreferences,
+    private val query: Map<String, String>
+) : PagingSource<Int, Offer>() {
     private var accessToken: String? = null
     private var changeListener =
-            SharedPreferences.OnSharedPreferenceChangeListener { sp, key ->
-                run {
-                    if (key == ACCESS_TOKEN) {
-                        accessToken = sp.getString(key, null)
-                    }
+        SharedPreferences.OnSharedPreferenceChangeListener { sp, key ->
+            run {
+                if (key == ACCESS_TOKEN) {
+                    accessToken = sp.getString(key, null)
                 }
             }
+        }
 
     init {
         accessToken = prefs.getString(ACCESS_TOKEN, null)
@@ -32,17 +33,18 @@ class OffersPagingSource(private val service: ClotherOffersService,
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Offer> {
         return try {
             val items = service.getOffers(
-                    accessToken = accessToken,
-                    afterKey = if (params is Append) params.key else null,
-                    beforeKey = if (params is Prepend) params.key else null,
-                    limit = params.loadSize,
-                    filters = query)
+                accessToken = accessToken,
+                afterKey = if (params is Append) params.key else null,
+                beforeKey = if (params is Prepend) params.key else null,
+                limit = params.loadSize,
+                filters = query
+            )
                 .map { mapOfferDtoToDomain(it) }
 
             LoadResult.Page(
-                    data = items,
-                    prevKey = items.firstOrNull()?.id,
-                    nextKey = items.lastOrNull()?.id
+                data = items,
+                prevKey = items.firstOrNull()?.id,
+                nextKey = items.lastOrNull()?.id
             )
 
         } catch (ex: Exception) {

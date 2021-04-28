@@ -5,5 +5,5 @@
         android:id="@+id/delete"
         android:title="@string/delete"
         app:iconTint="?attr/colorOnPrimary"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
 </menu>

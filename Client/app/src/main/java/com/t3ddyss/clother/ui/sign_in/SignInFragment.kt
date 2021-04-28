@@ -23,11 +23,13 @@ class SignInFragment : Fragment() {
     private val viewModel by viewModels<SignInViewModel>()
 
     private var _binding: FragmentSignInBinding? = null
-    private val binding get() =  _binding!!
+    private val binding get() = _binding!!
 
     @ExperimentalCoroutinesApi
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentSignInBinding.inflate(inflater, container, false)
 
         viewModel.email.observe(viewLifecycleOwner, {
@@ -39,7 +41,7 @@ class SignInFragment : Fragment() {
         })
 
         viewModel.signInResult.observe(viewLifecycleOwner, {
-            when(it) {
+            when (it) {
                 is Loading<*> ->
                     binding.layoutLoading.isVisible = true
                 is Success<*> -> {

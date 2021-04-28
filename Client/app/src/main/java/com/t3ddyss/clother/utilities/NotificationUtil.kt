@@ -16,7 +16,7 @@ import javax.inject.Singleton
 
 @Singleton
 class NotificationUtil @Inject constructor(
-        @ApplicationContext private val context: Context,
+    @ApplicationContext private val context: Context,
 ) {
     private val notificationId = AtomicInteger(1)
     private val users = mutableMapOf<Int, Boolean>()
@@ -27,27 +27,30 @@ class NotificationUtil @Inject constructor(
             val descriptionText = context.getString(R.string.messages)
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(
-                    context.getString(R.string.default_notification_channel_id),
-                    name,
-                    importance).apply {
+                context.getString(R.string.default_notification_channel_id),
+                name,
+                importance
+            ).apply {
                 description = descriptionText
             }
 
             val notificationManager = context
-                    .getSystemService(Application.NOTIFICATION_SERVICE) as NotificationManager
+                .getSystemService(Application.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
     }
 
     fun showNotification(message: Message) {
-        val singleNotification = NotificationCompat.Builder(context,
-                context.getString(R.string.default_notification_channel_id))
-                .setSmallIcon(R.drawable.ic_chat)
-                .setContentTitle(message.userName)
-                .setContentText(message.body ?: context.getString(R.string.image))
-                .setGroup(message.userId.toString())
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .build()
+        val singleNotification = NotificationCompat.Builder(
+            context,
+            context.getString(R.string.default_notification_channel_id)
+        )
+            .setSmallIcon(R.drawable.ic_chat)
+            .setContentTitle(message.userName)
+            .setContentText(message.body ?: context.getString(R.string.image))
+            .setGroup(message.userId.toString())
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .build()
 
         with(NotificationManagerCompat.from(context)) {
             notify(notificationId.getAndIncrement(), singleNotification)
@@ -64,13 +67,15 @@ class NotificationUtil @Inject constructor(
             return
         }
 
-        val summaryNotification = NotificationCompat.Builder(context,
-                context.getString(R.string.default_notification_channel_id))
-                .setSmallIcon(R.drawable.ic_chat)
-                .setGroup(message.userId.toString())
-                .setGroupSummary(true)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .build()
+        val summaryNotification = NotificationCompat.Builder(
+            context,
+            context.getString(R.string.default_notification_channel_id)
+        )
+            .setSmallIcon(R.drawable.ic_chat)
+            .setGroup(message.userId.toString())
+            .setGroupSummary(true)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .build()
 
         with(NotificationManagerCompat.from(context)) {
             users[message.userId] = true

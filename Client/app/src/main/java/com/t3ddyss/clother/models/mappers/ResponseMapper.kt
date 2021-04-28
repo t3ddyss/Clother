@@ -5,6 +5,6 @@ import com.t3ddyss.clother.models.dto.ResponseDto
 
 fun mapResponseDtoToDomain(input: ResponseDto): Response {
     return Response(
-            message = input.message.orEmpty()
+        message = input.message.orEmpty()
     )
 }

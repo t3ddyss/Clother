@@ -12,26 +12,29 @@ import com.t3ddyss.clother.models.domain.Message
 import com.t3ddyss.clother.models.domain.MessageStatus
 import com.t3ddyss.clother.utilities.formatTime
 
-class MessagesAdapter(private val interlocutorId: Int
+class MessagesAdapter(
+    private val interlocutorId: Int
 ) : ListAdapter<Message, RecyclerView.ViewHolder>(MessageDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             R.layout.list_item_message_in -> {
-                IncomingMessageViewHolder(ListItemMessageInBinding.inflate(
+                IncomingMessageViewHolder(
+                    ListItemMessageInBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
                         false
-                )
+                    )
                 )
             }
 
             R.layout.list_item_message_out -> {
-                OutgoingMessageViewHolder(ListItemMessageOutBinding.inflate(
+                OutgoingMessageViewHolder(
+                    ListItemMessageOutBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
                         false
-                )
+                    )
                 )
             }
 
@@ -52,7 +55,7 @@ class MessagesAdapter(private val interlocutorId: Int
     }
 
     class IncomingMessageViewHolder(
-            private val binding: ListItemMessageInBinding
+        private val binding: ListItemMessageInBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(message: Message) {
@@ -64,7 +67,7 @@ class MessagesAdapter(private val interlocutorId: Int
     }
 
     class OutgoingMessageViewHolder(
-            private val binding: ListItemMessageOutBinding
+        private val binding: ListItemMessageOutBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(message: Message) {

@@ -9,19 +9,25 @@ import retrofit2.http.*
 
 interface ClotherOffersService {
     @GET("api/offers")
-    suspend fun getOffers(@Header("Authorization") accessToken: String?,
-                          @Query("after") afterKey: Int? = null,
-                          @Query("before") beforeKey: Int? = null,
-                          @Query("limit") limit: Int = 10,
-                          @QueryMap filters: Map<String, String>? = null): List<OfferDto>
+    suspend fun getOffers(
+        @Header("Authorization") accessToken: String?,
+        @Query("after") afterKey: Int? = null,
+        @Query("before") beforeKey: Int? = null,
+        @Query("limit") limit: Int = 10,
+        @QueryMap filters: Map<String, String>? = null
+    ): List<OfferDto>
 
     @Multipart
     @POST("api/offers/new")
-    suspend fun postOffer(@Header("Authorization") accessToken: String?,
-                          @Part("request") body: RequestBody,
-                          @Part files: List<MultipartBody.Part>): ResponseDto
+    suspend fun postOffer(
+        @Header("Authorization") accessToken: String?,
+        @Part("request") body: RequestBody,
+        @Part files: List<MultipartBody.Part>
+    ): ResponseDto
 
     @DELETE("api/offers/delete")
-    suspend fun deleteOffer(@Header("Authorization") accessToken: String?,
-                            @Query("offer") offerId: Int): Response<*>
+    suspend fun deleteOffer(
+        @Header("Authorization") accessToken: String?,
+        @Query("offer") offerId: Int
+    ): Response<*>
 }

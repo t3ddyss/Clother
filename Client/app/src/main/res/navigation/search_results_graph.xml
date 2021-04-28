@@ -8,7 +8,7 @@
         android:id="@+id/searchResultsFragment"
         android:name="com.t3ddyss.clother.ui.search_results.SearchResultsFragment"
         android:label="fragment_search_results"
-        tools:layout="@layout/fragment_search_results" >
+        tools:layout="@layout/fragment_search_results">
         <argument
             android:name="category"
             android:defaultValue="@null"
@@ -21,7 +21,7 @@
             app:nullable="true" />
         <action
             android:id="@+id/action_searchResults_to_offerFragment"
-            app:destination="@id/offerFragment" >
+            app:destination="@id/offerFragment">
             <argument
                 android:name="offer_id"
                 android:defaultValue="0" />
@@ -34,14 +34,14 @@
             app:destination="@id/searchFragment">
             <argument
                 android:name="query"
-                app:argType="string"
-                android:defaultValue=""/>
+                android:defaultValue=""
+                app:argType="string" />
         </action>
     </fragment>
     <dialog
         android:id="@+id/filterDialogFragment"
         android:name="com.t3ddyss.clother.ui.filters.FilterDialogFragment"
-        android:label="FilterDialogFragment" >
+        android:label="FilterDialogFragment">
         <action
             android:id="@+id/action_filterDialogFragment_to_locationFragment"
             app:destination="@id/locationFragment" />
@@ -50,7 +50,7 @@
         android:id="@+id/locationFragment"
         android:name="com.t3ddyss.clother.ui.location_selector.LocationSelectorFragment"
         android:label="@string/select_location"
-        tools:layout="@layout/fragment_location_selector" >
+        tools:layout="@layout/fragment_location_selector">
         <argument
             android:name="called_from_id"
             android:defaultValue="0"

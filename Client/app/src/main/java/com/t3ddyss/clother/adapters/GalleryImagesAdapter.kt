@@ -10,13 +10,16 @@ import com.t3ddyss.clother.databinding.ListItemImageGalleryBinding
 import com.t3ddyss.clother.models.domain.MediaImage
 
 class GalleryImagesAdapter(private val selectedLimitExceeded: () -> Unit) :
-        ListAdapter<MediaImage, GalleryImagesAdapter.ImageViewHolder>(ImageDiffCallback()) {
+    ListAdapter<MediaImage, GalleryImagesAdapter.ImageViewHolder>(ImageDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
-        return ImageViewHolder(ListItemImageGalleryBinding.inflate(
+        return ImageViewHolder(
+            ListItemImageGalleryBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
-                false))
+                false
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
@@ -26,7 +29,7 @@ class GalleryImagesAdapter(private val selectedLimitExceeded: () -> Unit) :
     override fun getItemCount(): Int = currentList.size
 
     inner class ImageViewHolder(
-            val binding: ListItemImageGalleryBinding
+        val binding: ListItemImageGalleryBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         init {
@@ -36,13 +39,11 @@ class GalleryImagesAdapter(private val selectedLimitExceeded: () -> Unit) :
                 if (!image.isSelected) {
                     if (currentList.count { it.isSelected } >= 5) {
                         selectedLimitExceeded.invoke()
-                    }
-                    else {
+                    } else {
                         binding.imageViewChecked.isVisible = true
                         image.isSelected = true
                     }
-                }
-                else {
+                } else {
                     binding.imageViewChecked.isVisible = false
                     image.isSelected = false
                 }
@@ -51,9 +52,9 @@ class GalleryImagesAdapter(private val selectedLimitExceeded: () -> Unit) :
 
         fun bind(mediaImage: MediaImage) {
             Glide.with(binding.image)
-                    .load(mediaImage.uri)
-                    .thumbnail(0.5f)
-                    .into(binding.image)
+                .load(mediaImage.uri)
+                .thumbnail(0.5f)
+                .into(binding.image)
 
             binding.imageViewChecked.isVisible = mediaImage.isSelected
         }

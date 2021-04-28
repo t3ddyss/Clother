@@ -37,9 +37,11 @@ class LocationSelectorFragment : Fragment() {
 
     private val viewModel by viewModels<LocationSelectorViewModel>()
     private val editorViewModel by hiltNavGraphViewModels<OfferEditorViewModel>(
-            R.id.offer_editor_graph)
+        R.id.offer_editor_graph
+    )
     private val filtersViewModel by hiltNavGraphViewModels<FiltersViewModel>(
-            R.id.search_results_graph)
+        R.id.search_results_graph
+    )
 
     private var _binding: FragmentLocationSelectorBinding? = null
     private val binding get() = _binding!!
@@ -51,16 +53,17 @@ class LocationSelectorFragment : Fragment() {
 
     @ExperimentalCoroutinesApi
     private val enableLocationDialogLauncher = registerForActivityResult(
-            ActivityResultContracts.StartIntentSenderForResult()) { result ->
+        ActivityResultContracts.StartIntentSenderForResult()
+    ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             getLocation()
-        }
-        else {
+        } else {
             setOnMapLongClickListener()
             (activity as? MainActivity)?.showGenericMessage(
-                    message = getString(R.string.no_location_access)
+                message = getString(R.string.no_location_access)
             )
-        }}
+        }
+    }
 
     @ExperimentalCoroutinesApi
     @SuppressLint("MissingPermission")
@@ -73,7 +76,8 @@ class LocationSelectorFragment : Fragment() {
 
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { isGranted ->
             if (isGranted[Manifest.permission.ACCESS_FINE_LOCATION] == true
-                && isGranted[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
+                && isGranted[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+            ) {
                 isPermissionGranted = true
 
                 if (this::map.isInitialized) {
@@ -81,17 +85,20 @@ class LocationSelectorFragment : Fragment() {
                 }
 
                 checkIfLocationEnabled()
-            }
-            else {
+            } else {
                 (activity as? MainActivity)
-                        ?.showSnackbarWithAction(
-                            message = getString(R.string.no_location_access),
-                            actionText = getString(R.string.grant_permission)
-                        )
+                    ?.showSnackbarWithAction(
+                        message = getString(R.string.no_location_access),
+                        actionText = getString(R.string.grant_permission)
+                    )
                 setOnMapLongClickListener()
             }
-        }.launch(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION))
+        }.launch(
+            arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+        )
 
         mapView = binding.mapView
         mapView?.onCreate(savedInstanceState?.getBundle(MAPVIEW_BUNDLE))
@@ -120,7 +127,8 @@ class LocationSelectorFragment : Fragment() {
                 when (args.calledFromId) {
                     R.id.offer_editor_graph -> editorViewModel.location.value = location.latLng
                     R.id.search_results_graph -> filtersViewModel.location.value = location.latLng
-                    else -> { }
+                    else -> {
+                    }
                 }
 
                 findNavController().popBackStack()
@@ -142,7 +150,12 @@ class LocationSelectorFragment : Fragment() {
                     setLocationWithMarker(it.latLng)
                 }
                 else -> {
-                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(it.latLng, DEFAULT_CAMERA_ZOOM))
+                    map.moveCamera(
+                        CameraUpdateFactory.newLatLngZoom(
+                            it.latLng,
+                            DEFAULT_CAMERA_ZOOM
+                        )
+                    )
                 }
             }
         }
@@ -160,10 +173,11 @@ class LocationSelectorFragment : Fragment() {
     private fun setLocationWithMarker(latLng: LatLng) {
         map.clear()
         map.addMarker(
-                MarkerOptions()
-                        .position(latLng)
-                        .draggable(false)
-                        .visible(true))
+            MarkerOptions()
+                .position(latLng)
+                .draggable(false)
+                .visible(true)
+        )
     }
 
     private fun setOnMapLongClickListener() {
@@ -178,28 +192,31 @@ class LocationSelectorFragment : Fragment() {
         viewModel.isEnablingLocationRequested = true
 
         val locationRequest = LocationRequest.create().also {
-            it.priority = LocationRequest.PRIORITY_HIGH_ACCURACY }
+            it.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
         val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
         val result = LocationServices
-                .getSettingsClient(requireActivity())
-                .checkLocationSettings(builder.build())
+            .getSettingsClient(requireActivity())
+            .checkLocationSettings(builder.build())
 
         result.addOnCompleteListener {
             try {
                 it.getResult(ApiException::class.java)
                 getLocation()
-            }
-            catch (exception: ApiException) {
+            } catch (exception: ApiException) {
                 when (exception.statusCode) {
                     LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> {
                         try {
                             if (exception is ResolvableApiException) {
                                 enableLocationDialogLauncher.launch(
-                                        IntentSenderRequest.Builder(exception.resolution).build())
+                                    IntentSenderRequest.Builder(exception.resolution).build()
+                                )
                             }
-                        } catch (ex: Exception) { }
+                        } catch (ex: Exception) {
+                        }
                     }
-                    LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> { }
+                    LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
+                    }
                 }
             }
         }

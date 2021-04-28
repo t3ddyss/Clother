@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
@@ -25,7 +24,6 @@ import com.t3ddyss.clother.models.domain.*
 import com.t3ddyss.clother.utilities.text
 import com.t3ddyss.clother.utilities.toCoordinatesString
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
 @AndroidEntryPoint
@@ -40,9 +38,9 @@ class OfferEditorFragment : Fragment() {
     private lateinit var layoutManager: LinearLayoutManager
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = FragmentOfferEditorBinding.inflate(inflater, container, false)
 
@@ -52,22 +50,22 @@ class OfferEditorFragment : Fragment() {
         binding.textViewLocation.text = getString(R.string.select_location)
 
         val requestGalleryPermissionLauncher =
-            registerForActivityResult(ActivityResultContracts.RequestPermission()) {isGranted ->
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
                 if (isGranted) {
                     findNavController().navigate(R.id.action_offerEditorFragment_to_galleryFragment)
                 } else {
                     (activity as? MainActivity)
-                            ?.showSnackbarWithAction(
-                                    message = getString(R.string.no_gallery_access),
-                                    actionText = getString(R.string.grant_access)
-                            )
+                        ?.showSnackbarWithAction(
+                            message = getString(R.string.no_gallery_access),
+                            actionText = getString(R.string.grant_access)
+                        )
                 }
             }
 
         layoutManager = LinearLayoutManager(
-                context,
-                LinearLayoutManager.HORIZONTAL,
-                false
+            context,
+            LinearLayoutManager.HORIZONTAL,
+            false
         )
         binding.listImages.layoutManager = layoutManager
 
@@ -83,12 +81,12 @@ class OfferEditorFragment : Fragment() {
         }
 
         viewModel.newNewOfferResponse.observe(viewLifecycleOwner) {
-            when(it) {
+            when (it) {
                 is Loading<*> ->
                     (activity as? MainActivity)?.setLoadingVisibility(true)
                 is Success<*> -> {
                     val action = OfferEditorFragmentDirections
-                            .actionOfferEditorFragmentToHomeFragment(0) // TODO fix later
+                        .actionOfferEditorFragmentToHomeFragment(0) // TODO fix later
                     findNavController().navigate(action)
                     (activity as? MainActivity)?.setLoadingVisibility(false)
                 }
@@ -111,8 +109,9 @@ class OfferEditorFragment : Fragment() {
 
         binding.location.setOnClickListener {
             val action = OfferEditorFragmentDirections
-                    .actionOfferEditorFragmentToLocationFragment(
-                            calledFromId = R.id.offer_editor_graph)
+                .actionOfferEditorFragmentToLocationFragment(
+                    calledFromId = R.id.offer_editor_graph
+                )
             findNavController().navigate(action)
         }
 
@@ -154,7 +153,7 @@ class OfferEditorFragment : Fragment() {
         val checkedChipId = binding.chipGroupSize.chipGroupSize.checkedChipId
         if (checkedChipId != View.NO_ID) {
             val size = binding.chipGroupSize.chipGroupSize
-                    .findViewById<Chip>(checkedChipId).text.toString()
+                .findViewById<Chip>(checkedChipId).text.toString()
             offer.addProperty("size", size)
         }
 

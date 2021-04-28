@@ -22,10 +22,10 @@
             android:id="@+id/editText_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/search_hint"
-            android:inputType="text"
-            android:imeOptions="actionSearch"
             android:background="@drawable/edit_text_rounded"
+            android:hint="@string/search_hint"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
             android:padding="12dp"
             android:textSize="@dimen/text_size_medium" />
     </com.google.android.material.textfield.TextInputLayout>

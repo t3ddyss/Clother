@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FiltersViewModel @Inject constructor(
-        private val repository: LocationProvider
+    private val repository: LocationProvider
 ) : ViewModel() {
     val location = MutableLiveData<LatLng>()
     val maxDistance = MutableLiveData(View.NO_ID)

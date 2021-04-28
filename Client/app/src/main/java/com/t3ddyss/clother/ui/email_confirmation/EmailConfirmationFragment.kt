@@ -19,8 +19,8 @@ class EmailConfirmationFragment : Fragment() {
     private val args: EmailConfirmationFragmentArgs by navArgs()
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = FragmentEmailConfirmationBinding.inflate(inflater, container, false)
 
@@ -29,11 +29,10 @@ class EmailConfirmationFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val message = SpannableStringBuilder()
-                .append(args.emailActionMessage)
+            .append(args.emailActionMessage)
         if (args.emailAddress.isEmpty()) {
             message.append(getString(R.string.your_email))
-        }
-        else {
+        } else {
             message.bold { append(args.emailAddress) }
         }
         binding.textViewMessage.text = message

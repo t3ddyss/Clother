@@ -1,7 +1,10 @@
 package com.t3ddyss.clother.ui.offer_editor
 
 import android.net.Uri
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.JsonObject
 import com.t3ddyss.clother.data.OffersRepository

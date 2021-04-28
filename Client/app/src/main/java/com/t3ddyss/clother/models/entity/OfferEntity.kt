@@ -5,7 +5,6 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import java.util.*
 
-// TODO store images in a separate table like on server-side
 @Entity(
     tableName = "offer",
     primaryKeys = ["id", "list_key"],
@@ -37,6 +36,7 @@ data class OfferEntity(
     var userName: String = "",
 
     var category: String = "",
+    // Violates 1NF, but we don't need to update an offer in our database for now
     var images: List<String> = listOf(),
     val size: String? = null,
     var location: String? = null

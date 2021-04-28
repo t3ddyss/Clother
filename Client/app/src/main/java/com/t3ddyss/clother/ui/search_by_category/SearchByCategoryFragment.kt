@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.t3ddyss.clother.MainActivity
@@ -25,8 +24,10 @@ class SearchByCategoryFragment : Fragment() {
     private val binding get() = _binding!!
     private val args by navArgs<SearchByCategoryFragmentArgs>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentSearchByCategoryBinding.inflate(inflater, container, false)
 
         val parentId = args.parentId.let { if (it == 0) null else it }
@@ -34,18 +35,17 @@ class SearchByCategoryFragment : Fragment() {
         setHasOptionsMenu(parentId == null)
 
         val layoutManager = LinearLayoutManager(
-                context,
-                LinearLayoutManager.VERTICAL,
-                false)
+            context,
+            LinearLayoutManager.VERTICAL,
+            false
+        )
 
         val adapter = CategoriesAdapter {
             if (!it.isLastLevel) {
                 val action = SearchByCategoryFragmentDirections
-                        .openSubcategoriesAction(it.id)
+                    .openSubcategoriesAction(it.id)
                 findNavController().navigate(action)
-            }
-
-            else {
+            } else {
                 val action = SearchByCategoryFragmentDirections
                     .searchByCategoryToSearchResultsGraph(it)
                 findNavController().navigate(action)

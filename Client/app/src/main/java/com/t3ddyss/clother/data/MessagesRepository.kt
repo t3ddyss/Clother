@@ -23,15 +23,14 @@ import kotlin.coroutines.resume
 
 @ViewModelScoped
 class MessagesRepository @Inject constructor(
-        private val service: ClotherChatService,
-        private val authService: ClotherAuthService,
-        private val prefs: SharedPreferences,
-        private val db: AppDatabase,
-        private val chatDao: ChatDao,
-        private val messageDao: MessageDao,
-        private val remoteKeyDao: RemoteKeyDao,
+    private val service: ClotherChatService,
+    private val authService: ClotherAuthService,
+    private val prefs: SharedPreferences,
+    private val db: AppDatabase,
+    private val chatDao: ChatDao,
+    private val messageDao: MessageDao,
+    private val remoteKeyDao: RemoteKeyDao,
 ) {
-//    private val coroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     private lateinit var messageLoader: MessagesPagingLoader
 
     fun getMessages(interlocutor: User) = messageDao
@@ -45,14 +44,14 @@ class MessagesRepository @Inject constructor(
     suspend fun fetchMessages(interlocutor: User): LoadResult {
         if (!this@MessagesRepository::messageLoader.isInitialized) {
             messageLoader = MessagesPagingLoader(
-                    service = service,
-                    prefs = prefs,
-                    db = db,
-                    chatDao = chatDao,
-                    messageDao = messageDao,
-                    remoteKeyDao = remoteKeyDao,
-                    listKey = LIST_KEY_MESSAGES + interlocutor.id,
-                    interlocutor = interlocutor
+                service = service,
+                prefs = prefs,
+                db = db,
+                chatDao = chatDao,
+                messageDao = messageDao,
+                remoteKeyDao = remoteKeyDao,
+                listKey = LIST_KEY_MESSAGES + interlocutor.id,
+                interlocutor = interlocutor
             )
         }
 
@@ -72,8 +71,7 @@ class MessagesRepository @Inject constructor(
                 authService.sendDeviceToken(prefs.getString(ACCESS_TOKEN, null), token)
                 prefs.edit().putBoolean(IS_DEVICE_TOKEN_RETRIEVED, true).apply()
             }
-        }
-        catch (ex: Exception) {
+        } catch (ex: Exception) {
 
         }
     }

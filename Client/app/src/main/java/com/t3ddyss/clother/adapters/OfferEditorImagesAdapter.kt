@@ -10,28 +10,34 @@ import com.t3ddyss.clother.databinding.ListItemImageAddBinding
 import com.t3ddyss.clother.databinding.ListItemImageEditorBinding
 
 class OfferEditorImagesAdapter(
-        private val images: MutableList<Uri>,
-        private val attachImageListener: () -> Unit
+    private val images: MutableList<Uri>,
+    private val attachImageListener: () -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == R.layout.list_item_image_add) {
-            AttachImageViewHolder(ListItemImageAddBinding.inflate(
+            AttachImageViewHolder(
+                ListItemImageAddBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
-                    false), attachImageListener)
-        }
-        else {
-            ImageViewHolder(ListItemImageEditorBinding.inflate(
+                    false
+                ), attachImageListener
+            )
+        } else {
+            ImageViewHolder(
+                ListItemImageEditorBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
-                    false))
+                    false
+                )
+            )
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is AttachImageViewHolder -> { }
+            is AttachImageViewHolder -> {
+            }
             is ImageViewHolder -> holder.bind(images[position])
         }
     }
@@ -44,7 +50,7 @@ class OfferEditorImagesAdapter(
     override fun getItemCount() = MAX_SIZE
 
     inner class ImageViewHolder(
-            val binding: ListItemImageEditorBinding
+        val binding: ListItemImageEditorBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         init {
@@ -59,15 +65,15 @@ class OfferEditorImagesAdapter(
 
         fun bind(imageUri: Uri) {
             Glide.with(binding.image)
-                    .load(imageUri)
-                    .thumbnail(0.5f)
-                    .into(binding.image)
+                .load(imageUri)
+                .thumbnail(0.5f)
+                .into(binding.image)
         }
     }
 
     class AttachImageViewHolder(
-            binding: ListItemImageAddBinding,
-            clickListener: () -> Unit
+        binding: ListItemImageAddBinding,
+        clickListener: () -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
         init {

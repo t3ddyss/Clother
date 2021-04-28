@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.ExperimentalPagingApi
 import com.t3ddyss.clother.data.OffersRepository
 import com.t3ddyss.clother.models.domain.Category
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,8 +12,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchByCategoryViewModel @Inject constructor(
-        private val repository: OffersRepository
-): ViewModel() {
+    private val repository: OffersRepository
+) : ViewModel() {
     private val _categories = MutableLiveData<List<Category>>()
     val categories: LiveData<List<Category>> = _categories
     private var currentParentId: Int? = -1 // Since null indicates root categories

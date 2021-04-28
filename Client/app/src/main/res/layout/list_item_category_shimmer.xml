@@ -7,11 +7,11 @@
         android:layout_width="200dp"
         android:layout_height="20dp"
         android:layout_margin="@dimen/fragment_horizontal_margin"
-        android:background="@color/grey_500"/>
+        android:background="@color/grey_500" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_gravity="bottom"
-        android:background="@color/grey_500"/>
+        android:background="@color/grey_500" />
 </FrameLayout>

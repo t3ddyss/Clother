@@ -15,11 +15,13 @@ interface MessageDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun update(message: MessageEntity)
 
-    @Query("""SELECT message.* FROM chat, message
+    @Query(
+        """SELECT message.* FROM chat, message
                     WHERE chat.interlocutor_id == :interlocutorId 
                     AND (message.local_chat_id == chat.local_id 
                     OR message.server_chat_id == chat.server_id)
-                    ORDER BY message.created_at DESC""")
+                    ORDER BY message.created_at DESC"""
+    )
     fun getMessagesByInterlocutorId(interlocutorId: Int): Flow<List<MessageEntity>>
 
     @Query("DELETE FROM message WHERE server_chat_id == :serverChatId")

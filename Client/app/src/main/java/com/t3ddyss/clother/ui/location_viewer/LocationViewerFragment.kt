@@ -27,8 +27,10 @@ class LocationViewerFragment : Fragment() {
     private var mapView: MapView? = null
     private lateinit var map: GoogleMap
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentLocationViewerBinding.inflate(inflater, container, false)
         val (lat, lng) = args.coordinates.split(",").map { it.toDoubleOrNull() }
 
@@ -44,17 +46,19 @@ class LocationViewerFragment : Fragment() {
             map = googleMap
             map.uiSettings?.isMyLocationButtonEnabled = false
 
-            val circle  = CircleOptions()
-                    .center(point)
-                    .radius(RADIUS)
-                    .fillColor(ContextCompat.getColor(requireContext(), R.color.green_500_map))
-                    .strokeColor(ContextCompat.getColor(requireContext(), R.color.green_500))
-                    .strokeWidth(5f)
+            val circle = CircleOptions()
+                .center(point)
+                .radius(RADIUS)
+                .fillColor(ContextCompat.getColor(requireContext(), R.color.green_500_map))
+                .strokeColor(ContextCompat.getColor(requireContext(), R.color.green_500))
+                .strokeWidth(5f)
 
             map.addCircle(circle)
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(
+            map.moveCamera(
+                CameraUpdateFactory.newLatLngZoom(
                     point,
-                    DEFAULT_CAMERA_ZOOM)
+                    DEFAULT_CAMERA_ZOOM
+                )
             )
         }
 

@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.paging.ExperimentalPagingApi
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayoutMediator
 import com.t3ddyss.clother.MainActivity
@@ -29,10 +28,13 @@ class OfferFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val args by navArgs<OfferFragmentArgs>()
-    @Inject lateinit var prefs: SharedPreferences
+    @Inject
+    lateinit var prefs: SharedPreferences
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentOfferBinding.inflate(inflater, container, false)
         val currentUserId = prefs.getInt(CURRENT_USER_ID, 0)
 
@@ -41,7 +43,7 @@ class OfferFragment : Fragment() {
         }
 
         viewModel.offerEntity.observe(viewLifecycleOwner) {
-            with (binding) {
+            with(binding) {
                 images.adapter = OfferImagesAdapter(it.images) {
                 }
                 if (it.images.size > 1) {
@@ -53,15 +55,13 @@ class OfferFragment : Fragment() {
 
                 if (!it.description.isNullOrEmpty()) {
                     textViewDescription.text = it.description
-                }
-                else {
+                } else {
                     textViewDescription.isVisible = false
                 }
 
                 if (it.category.isNotEmpty()) {
                     textViewCategory.text = it.category
-                }
-                else {
+                } else {
                     groupCategory.isVisible = false
                 }
 
@@ -71,15 +71,13 @@ class OfferFragment : Fragment() {
                             .actionOfferFragmentToLocationViewerFragment(it.location)
                         findNavController().navigate(action)
                     }
-                }
-                else {
+                } else {
                     groupLocation.isVisible = false
                 }
 
                 if (!it.size.isNullOrEmpty()) {
                     textViewSize.text = it.size
-                }
-                else {
+                } else {
                     groupSize.isVisible = false
                 }
 
@@ -93,7 +91,7 @@ class OfferFragment : Fragment() {
 
                 buttonMessage.setOnClickListener { _ ->
                     val action = OfferFragmentDirections
-                            .actionOfferFragmentToChatFragment(it.userId, it.userName)
+                        .actionOfferFragmentToChatFragment(it.userId, it.userName)
                     findNavController().navigate(action)
                 }
             }
@@ -102,11 +100,11 @@ class OfferFragment : Fragment() {
         viewModel.deletionResponse.observe(viewLifecycleOwner) {
             val result = it.getContentIfNotHandled() ?: return@observe
 
-            when(result) {
+            when (result) {
                 is Success<*> -> {
                     findNavController().popBackStack()
                     (activity as? MainActivity)?.showGenericMessage(
-                            getString(R.string.offer_deleted)
+                        getString(R.string.offer_deleted)
                     )
                 }
                 is Error<*> -> {
@@ -132,16 +130,18 @@ class OfferFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.delete) {
-            MaterialAlertDialogBuilder(requireContext(),
-                    R.style.MyThemeOverlay_MaterialComponents_MaterialAlertDialog)
-                    .setTitle(getString(R.string.delete_offer))
-                    .setMessage(getString(R.string.deletion_confirmation))
-                    .setPositiveButton(getString(R.string.delete)) {_, _ ->
-                        binding.layoutLoading.isVisible = true
-                        viewModel.deleteOffer()
-                    }
-                    .setNegativeButton(getString(R.string.cancel), null)
-                    .show()
+            MaterialAlertDialogBuilder(
+                requireContext(),
+                R.style.MyThemeOverlay_MaterialComponents_MaterialAlertDialog
+            )
+                .setTitle(getString(R.string.delete_offer))
+                .setMessage(getString(R.string.deletion_confirmation))
+                .setPositiveButton(getString(R.string.delete)) { _, _ ->
+                    binding.layoutLoading.isVisible = true
+                    viewModel.deleteOffer()
+                }
+                .setNegativeButton(getString(R.string.cancel), null)
+                .show()
         }
         return super.onOptionsItemSelected(item)
     }

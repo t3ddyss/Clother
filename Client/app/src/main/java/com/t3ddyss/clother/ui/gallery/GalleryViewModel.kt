@@ -1,6 +1,9 @@
 package com.t3ddyss.clother.ui.gallery
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.t3ddyss.clother.data.ImageProvider
 import com.t3ddyss.clother.models.domain.MediaImage
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,10 +28,10 @@ class GalleryViewModel @Inject constructor(
 
         viewModelScope.launch {
             repository.getImagesStream()
-                    .map { list -> list.map { MediaImage(it) } }
-                    .collectLatest {
-                        _images.postValue(it)
-            }
+                .map { list -> list.map { MediaImage(it) } }
+                .collectLatest {
+                    _images.postValue(it)
+                }
         }
     }
 }

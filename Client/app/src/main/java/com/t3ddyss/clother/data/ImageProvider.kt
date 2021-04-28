@@ -21,7 +21,7 @@ import java.io.File
 import javax.inject.Inject
 
 class ImageProvider @Inject constructor(
-        private val application: Application
+    private val application: Application
 ) {
     private val uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 
@@ -36,18 +36,20 @@ class ImageProvider @Inject constructor(
 
     @ExperimentalCoroutinesApi
     private suspend fun getImageUpdates() = callbackFlow<List<Uri>> {
-        val newImagesObserver = object : ContentObserver(Handler(application.applicationContext.mainLooper)) {
-            override fun onChange(selfChange: Boolean) {
-                if (selfChange) return
-                Log.d(DEBUG_TAG, "Going to offer new images")
+        val newImagesObserver =
+            object : ContentObserver(Handler(application.applicationContext.mainLooper)) {
+                override fun onChange(selfChange: Boolean) {
+                    if (selfChange) return
+                    Log.d(DEBUG_TAG, "Going to offer new images")
 
-                trySend(loadImagesFromGallery())
+                    trySend(loadImagesFromGallery())
+                }
             }
-        }
         application.contentResolver.registerContentObserver(
-                uri,
-                true,
-                newImagesObserver)
+            uri,
+            true,
+            newImagesObserver
+        )
         awaitClose {
             application.contentResolver.unregisterContentObserver(newImagesObserver)
         }
@@ -57,20 +59,20 @@ class ImageProvider @Inject constructor(
         val images = mutableListOf<Uri>()
 
         val projection = arrayOf(
-                MediaStore.Images.Media._ID,
-                MediaStore.Images.Media.DATE_ADDED,
+            MediaStore.Images.Media._ID,
+            MediaStore.Images.Media.DATE_ADDED,
         )
-        val query = (MediaStore.Images.Media.MIME_TYPE + "='image/jpeg'"+ " OR "
-                + MediaStore.Images.Media.MIME_TYPE + "='image/png'"+ " OR "
+        val query = (MediaStore.Images.Media.MIME_TYPE + "='image/jpeg'" + " OR "
+                + MediaStore.Images.Media.MIME_TYPE + "='image/png'" + " OR "
                 + MediaStore.Images.Media.MIME_TYPE + "='image/jpg'")
         val sortOrder = "${MediaStore.Images.Media.DATE_ADDED} DESC"
 
         val cursor = application.contentResolver.query(
-                uri,
-                projection,
-                query,
-                null,
-                sortOrder
+            uri,
+            projection,
+            query,
+            null,
+            sortOrder
         )
 
         cursor?.use {
@@ -93,5 +95,6 @@ class ImageProvider @Inject constructor(
     private suspend fun compressImage(image: File) = Compressor.compress(
         application.applicationContext,
         image,
-        Dispatchers.IO)
+        Dispatchers.IO
+    )
 }

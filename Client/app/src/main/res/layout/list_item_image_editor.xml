@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/image_size_editor"
@@ -18,8 +17,8 @@
         android:id="@+id/button_remove"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_margin="4dp"
         android:layout_gravity="top|end"
-        app:tint="@android:color/white"
-        app:srcCompat="@drawable/ic_remove_circle" />
+        android:layout_margin="4dp"
+        app:srcCompat="@drawable/ic_remove_circle"
+        app:tint="@android:color/white" />
 </androidx.cardview.widget.CardView>

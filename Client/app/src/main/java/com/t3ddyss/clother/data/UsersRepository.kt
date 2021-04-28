@@ -14,9 +14,9 @@ import javax.inject.Inject
 
 
 class UsersRepository @Inject constructor(
-        private val service: ClotherAuthService,
-        private val prefs: SharedPreferences,
-        private val userDao: UserDao
+    private val service: ClotherAuthService,
+    private val prefs: SharedPreferences,
+    private val userDao: UserDao
 ) {
     suspend fun createUser(name: String, email: String, password: String):
             Resource<Response> {

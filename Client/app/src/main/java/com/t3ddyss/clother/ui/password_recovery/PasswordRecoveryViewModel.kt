@@ -14,9 +14,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PasswordRecoveryViewModel @Inject constructor(
-        private val repository: UsersRepository,
-        private val savedStateHandle: SavedStateHandle
-): ViewModel() {
+    private val repository: UsersRepository,
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
     private val _email = savedStateHandle.getLiveData(EMAIL, DEFAULT_STRING_VALUE)
     val email: LiveData<String> = _email
 

@@ -6,10 +6,11 @@ import androidx.room.TypeConverters
 import com.t3ddyss.clother.models.entity.*
 
 @Database(
-        entities = [OfferEntity::class, RemoteKeyEntity::class, CategoryEntity::class, ChatEntity::class,
-                   MessageEntity::class, UserEntity::class, LocationEntity::class],
-        version = 5,
-        exportSchema = false)
+    entities = [OfferEntity::class, RemoteKeyEntity::class, CategoryEntity::class, ChatEntity::class,
+        MessageEntity::class, UserEntity::class, LocationEntity::class],
+    version = 5,
+    exportSchema = false
+)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun offerDao(): OfferDao

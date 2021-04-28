@@ -8,15 +8,17 @@ import com.t3ddyss.clother.databinding.ListItemCategoryBinding
 import com.t3ddyss.clother.models.domain.Category
 
 class CategoriesAdapter(
-        private val clickListener: (Category) -> Unit
+    private val clickListener: (Category) -> Unit
 ) : ListAdapter<Category, CategoriesAdapter.CategoryViewHolder>(CategoryDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
-        return CategoryViewHolder(ListItemCategoryBinding.inflate(
+        return CategoryViewHolder(
+            ListItemCategoryBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-        ))
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
@@ -26,7 +28,7 @@ class CategoriesAdapter(
     override fun getItemCount() = currentList.size
 
     inner class CategoryViewHolder(
-            val binding: ListItemCategoryBinding
+        val binding: ListItemCategoryBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         init {

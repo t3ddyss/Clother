@@ -12,7 +12,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.CombinedLoadStates
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
@@ -33,24 +32,28 @@ import javax.inject.Inject
 class SearchResultsFragment : Fragment() {
 
     private val viewModel by hiltNavGraphViewModels<SearchResultsViewModel>(
-            R.id.search_results_graph)
+        R.id.search_results_graph
+    )
     private val offerViewModel by activityViewModels<OfferViewModel>()
     private var _binding: FragmentSearchResultsBinding? = null
     private val binding get() = _binding!!
     private val args by navArgs<SearchResultsFragmentArgs>()
-    @Inject lateinit var prefs: SharedPreferences
+    @Inject
+    lateinit var prefs: SharedPreferences
 
-    private val adapter = OffersAdapter {offer ->
+    private val adapter = OffersAdapter { offer ->
         offerViewModel.selectOffer(offer)
         val action = SearchResultsFragmentDirections
-                .actionSearchResultsToOfferFragment(offer.userId)
+            .actionSearchResultsToOfferFragment(offer.userId)
         findNavController().navigate(action)
     }
     private lateinit var loadStateListener: (CombinedLoadStates) -> Unit
 
     @ExperimentalCoroutinesApi
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentSearchResultsBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
 
@@ -67,8 +70,7 @@ class SearchResultsFragment : Fragment() {
 
                     if (it.append.endOfPaginationReached && adapter.itemCount < 1) {
                         binding.emptyState.isVisible = true
-                    }
-                    else {
+                    } else {
                         binding.containerSearch.isVisible = true
                     }
                 }
@@ -80,15 +82,14 @@ class SearchResultsFragment : Fragment() {
                         findNavController().navigate(R.id.action_global_signUpFragment)
 
                         (activity as? MainActivity)
-                                ?.showGenericMessage(getString(R.string.session_expired))
+                            ?.showGenericMessage(getString(R.string.session_expired))
                         prefs.edit().remove(IS_AUTHENTICATED).apply()
-                    }
-                    else {
+                    } else {
                         binding.shimmer.isVisible = false
                         binding.containerSearch.isVisible = true
 
                         (activity as? MainActivity)
-                                ?.showGenericMessage(error)
+                            ?.showGenericMessage(error)
                     }
                 }
             }
@@ -126,10 +127,10 @@ class SearchResultsFragment : Fragment() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 binding.progressBarFooter.isVisible =
-                        (!recyclerView.canScrollVertically(1)
-                                && newState== RecyclerView.SCROLL_STATE_IDLE
-                                && !viewModel.endOfPaginationReachedBottom
-                                && (recyclerView.adapter?.itemCount ?: 0) > 0)
+                    (!recyclerView.canScrollVertically(1)
+                            && newState == RecyclerView.SCROLL_STATE_IDLE
+                            && !viewModel.endOfPaginationReachedBottom
+                            && (recyclerView.adapter?.itemCount ?: 0) > 0)
             }
         })
 
@@ -157,14 +158,16 @@ class SearchResultsFragment : Fragment() {
             R.id.filters -> {
                 val navController = findNavController()
                 if (navController.currentBackStackEntry?.destination?.id
-                        != R.id.filterDialogFragment) {
+                    != R.id.filterDialogFragment
+                ) {
                     navController.navigate(R.id.action_searchResultsFragment_to_filterDialogFragment)
                 }
             }
 
             R.id.search -> {
                 val action = SearchResultsFragmentDirections.actionSearchResultsToSearchFragment(
-                        args.query ?: "")
+                    args.query ?: ""
+                )
                 findNavController().navigate(action)
             }
         }

@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ChatsViewModel @Inject constructor(
     private val repository: ChatsRepository
-): ViewModel() {
+) : ViewModel() {
     private val _chats = MutableLiveData<Resource<List<ChatWithLastMessage>>>()
     val chats: LiveData<Resource<List<ChatWithLastMessage>>> = _chats
     var isChatsLoaded = AtomicBoolean(false)

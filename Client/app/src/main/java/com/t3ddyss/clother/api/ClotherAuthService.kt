@@ -7,7 +7,8 @@ import retrofit2.http.*
 
 interface ClotherAuthService {
     @GET("api/auth/refresh")
-    suspend fun refreshTokens(@Header("Authorization") refreshToken: String?
+    suspend fun refreshTokens(
+        @Header("Authorization") refreshToken: String?
     ): Response<AuthDataDto>
 
     @POST("api/auth/register")
@@ -20,7 +21,8 @@ interface ClotherAuthService {
     suspend fun resetPassword(@Body user: Map<String, String>): ResponseDto
 
     @POST("api/auth/device/{token}")
-    suspend fun sendDeviceToken(@Header("Authorization") accessToken: String?,
-                                @Path("token") token: String
+    suspend fun sendDeviceToken(
+        @Header("Authorization") accessToken: String?,
+        @Path("token") token: String
     )
 }

@@ -4,11 +4,8 @@ import androidx.room.ColumnInfo
 import java.util.*
 
 data class ChatWithLastMessage(
-    @ColumnInfo(name = "local_chat_id")
-    val localChatId: Int,
-
-    @ColumnInfo(name = "local_message_id")
-    val localMessageId: Int,
+    @ColumnInfo(name = "server_chat_id")
+    val serverChatId: Int,
 
     @ColumnInfo(name = "message_user_id")
     val messageUserId: Int,

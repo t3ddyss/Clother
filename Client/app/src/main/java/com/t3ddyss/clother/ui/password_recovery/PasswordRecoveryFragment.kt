@@ -29,8 +29,8 @@ class PasswordRecoveryFragment : Fragment() {
 
     @ExperimentalCoroutinesApi
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = FragmentPasswordRecoveryBinding.inflate(inflater, container, false)
 
@@ -46,10 +46,13 @@ class PasswordRecoveryFragment : Fragment() {
                     binding.layoutLoading.isVisible = true
                 is Success<Response> -> {
                     findNavController()
-                            .navigate(PasswordRecoveryFragmentDirections
-                            .actionResetPasswordFragmentToEmailActionFragment(
+                        .navigate(
+                            PasswordRecoveryFragmentDirections
+                                .actionResetPasswordFragmentToEmailActionFragment(
                                     getString(R.string.password_reset_message),
-                                    binding.editTextEmail.text()))
+                                    binding.editTextEmail.text()
+                                )
+                        )
                     binding.layoutLoading.isVisible = false
                 }
                 is Error<Response> -> {

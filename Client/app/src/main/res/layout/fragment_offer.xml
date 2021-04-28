@@ -6,9 +6,10 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     tools:context=".ui.offer.OfferFragment">
+
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_height="match_parent"
-        android:layout_width="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/images"
@@ -25,16 +26,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
-            app:tabBackground="@drawable/dots_selector"
-            app:tabGravity="center"
-            app:tabIndicatorHeight="0dp"
-            app:tabIndicatorGravity="bottom"
-            app:tabPaddingStart="6dp"
-            app:tabPaddingEnd="6dp"
             app:layout_constraintBottom_toBottomOf="@id/images"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-        </com.google.android.material.tabs.TabLayout>
+            app:layout_constraintStart_toStartOf="parent"
+            app:tabBackground="@drawable/dots_selector"
+            app:tabGravity="center"
+            app:tabIndicatorGravity="bottom"
+            app:tabIndicatorHeight="0dp"
+            app:tabPaddingEnd="6dp"
+            app:tabPaddingStart="6dp"></com.google.android.material.tabs.TabLayout>
 
         <TextView
             android:id="@+id/textView_title"
@@ -45,7 +45,7 @@
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/images"
-            tools:text="T-shirt"/>
+            tools:text="T-shirt" />
 
         <TextView
             android:id="@+id/textView_description"
@@ -135,7 +135,7 @@
                 android:textColor="@color/grey_500"
                 android:textSize="@dimen/text_size_medium"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <View
                 android:id="@+id/divider6"
@@ -150,8 +150,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/fragment_horizontal_margin"
-            android:textSize="@dimen/text_size_medium"
             android:text="@string/tap_to_view"
+            android:textSize="@dimen/text_size_medium"
             app:layout_constraintStart_toEndOf="@id/barier"
             app:layout_constraintTop_toBottomOf="@+id/divider5" />
 
@@ -202,16 +202,16 @@
             android:layout_marginTop="@dimen/fragment_vertical_margin"
             android:background="?android:attr/listDivider"
             app:layout_constraintTop_toBottomOf="@id/textView_size"
-            app:layout_goneMarginTop="0dp"/>
+            app:layout_goneMarginTop="0dp" />
 
         <TextView
             android:id="@+id/textView_user"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/fragment_horizontal_margin"
-            android:textSize="@dimen/text_size_medium"
-            android:maxLines="1"
             android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="@dimen/text_size_medium"
             app:layout_constraintEnd_toStartOf="@+id/textView_time"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@id/barier"
@@ -263,9 +263,10 @@
             android:translationZ="100dp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintTop_toTopOf="parent">
+
             <ProgressBar
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

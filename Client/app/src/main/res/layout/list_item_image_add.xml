@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/image_size_editor"
     android:layout_height="@dimen/image_size_editor"
-    app:cardCornerRadius="@dimen/corner_radius"
-    app:cardBackgroundColor="@color/grey_200">
+    app:cardBackgroundColor="@color/grey_200"
+    app:cardCornerRadius="@dimen/corner_radius">
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
-        app:tint="@color/green_500"
         android:background="@color/grey_200"
         app:srcCompat="@drawable/ic_add_photo"
+        app:tint="@color/green_500"
         tools:ignore="ContentDescription" />
 </androidx.cardview.widget.CardView>

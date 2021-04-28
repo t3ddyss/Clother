@@ -1,8 +1,8 @@
 package com.t3ddyss.clother.models.domain
 
 sealed class Resource<T>(
-        val content: T? = null,
-        val message: String? = null
+    val content: T? = null,
+    val message: String? = null
 )
 
 class Loading<T>(content: T? = null) : Resource<T>(content)

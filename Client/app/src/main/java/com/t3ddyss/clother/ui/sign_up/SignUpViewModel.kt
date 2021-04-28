@@ -12,8 +12,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-        private val repository: UsersRepository,
-        private val savedStateHandle: SavedStateHandle
+    private val repository: UsersRepository,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _name = savedStateHandle.getLiveData(NAME, DEFAULT_STRING_VALUE)

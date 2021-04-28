@@ -20,9 +20,10 @@ class ChatsRepository @Inject constructor(
     private val prefs: SharedPreferences
 ) {
     fun getChats() = networkBoundResource(
-            query = { chatDao.getAllChats() },
-            fetch = { service.getChats(prefs.getString(ACCESS_TOKEN, null)) },
-            saveFetchResult = { db.withTransaction {
+        query = { chatDao.getAllChats() },
+        fetch = { service.getChats(prefs.getString(ACCESS_TOKEN, null)) },
+        saveFetchResult = {
+            db.withTransaction {
                 chatDao.deleteUncreatedChats(
                     it.map { it.id.toLong() }.toTypedArray()
                 )
@@ -40,8 +41,8 @@ class ChatsRepository @Inject constructor(
                                 it.localChatId = chatWithId.first.toInt()
                             }
                         }
-                    )
+                )
             }
-            }
+        }
     )
 }

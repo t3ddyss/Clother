@@ -7,7 +7,8 @@ import javax.inject.Inject
 
 @HiltAndroidApp
 class ClotherApplication : Application() {
-    @Inject lateinit var notificationUtil: NotificationUtil
+    @Inject
+    lateinit var notificationUtil: NotificationUtil
 
     override fun onCreate() {
         super.onCreate()

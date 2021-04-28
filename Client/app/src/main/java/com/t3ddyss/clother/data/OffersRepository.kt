@@ -32,13 +32,13 @@ import javax.inject.Inject
 
 class OffersRepository
 @Inject constructor(
-        private val service: ClotherOffersService,
-        private val imageProvider: ImageProvider,
-        private val prefs: SharedPreferences,
-        private val db: AppDatabase,
-        private val offerDao: OfferDao,
-        private val remoteKeyDao: RemoteKeyDao,
-        private val categoryDao: CategoryDao
+    private val service: ClotherOffersService,
+    private val imageProvider: ImageProvider,
+    private val prefs: SharedPreferences,
+    private val db: AppDatabase,
+    private val offerDao: OfferDao,
+    private val remoteKeyDao: RemoteKeyDao,
+    private val categoryDao: CategoryDao
 ) {
     /**
      * Gets offers and saves them in database
@@ -48,20 +48,22 @@ class OffersRepository
             Flow<PagingData<Offer>> {
         val listKey = LIST_KEY_OFFERS + (userId ?: "")
         return Pager(
-                config = PagingConfig(
-                        pageSize = CLOTHER_PAGE_SIZE,
-                        enablePlaceholders = false),
-                remoteMediator = OffersRemoteMediator(
-                        query = query,
-                        service = service,
-                        prefs = prefs,
-                        db = db,
-                        offerDao = offerDao,
-                        remoteKeyDao = remoteKeyDao,
-                        listKey = listKey),
-                pagingSourceFactory = {
-                    offerDao.getAllOffersByList(listKey)
-                }
+            config = PagingConfig(
+                pageSize = CLOTHER_PAGE_SIZE,
+                enablePlaceholders = false
+            ),
+            remoteMediator = OffersRemoteMediator(
+                query = query,
+                service = service,
+                prefs = prefs,
+                db = db,
+                offerDao = offerDao,
+                remoteKeyDao = remoteKeyDao,
+                listKey = listKey
+            ),
+            pagingSourceFactory = {
+                offerDao.getAllOffersByList(listKey)
+            }
         ).flow
             .map {
                 it.map { offerEntity ->
@@ -75,15 +77,17 @@ class OffersRepository
      */
     fun getOffers(query: Map<String, String>): Flow<PagingData<Offer>> {
         return Pager(
-                config = PagingConfig(
-                        pageSize = CLOTHER_PAGE_SIZE,
-                        enablePlaceholders = false),
-                pagingSourceFactory = {
-                    OffersPagingSource(service,
-                            prefs,
-                            query
-                    )
-                }
+            config = PagingConfig(
+                pageSize = CLOTHER_PAGE_SIZE,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                OffersPagingSource(
+                    service,
+                    prefs,
+                    query
+                )
+            }
         ).flow
     }
 
@@ -93,7 +97,7 @@ class OffersRepository
 
     suspend fun postOffer(offer: JsonObject, images: List<Uri>): Resource<Response> {
         val body = offer.toString()
-                .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+            .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
         val imageFiles = images.map {
             coroutineScope {
                 async {
@@ -101,11 +105,11 @@ class OffersRepository
                 }
             }
         }.awaitAll().map {
-                MultipartBody.Part.createFormData(
-                    name = "file",
-                    it.name,
-                    it.asRequestBody("multipart/form-data".toMediaTypeOrNull())
-                )
+            MultipartBody.Part.createFormData(
+                name = "file",
+                it.name,
+                it.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+            )
         }
 
         return handleNetworkException {

@@ -29,7 +29,6 @@ import com.t3ddyss.clother.utilities.getThemeColor
 import com.t3ddyss.clother.viewmodels.MessagesViewModel
 import com.t3ddyss.clother.viewmodels.NetworkStateViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -46,12 +45,13 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private val args by navArgs<HomeFragmentArgs>()
-    @Inject lateinit var prefs: SharedPreferences
+    @Inject
+    lateinit var prefs: SharedPreferences
 
-    private val adapter = OffersAdapter {offer ->
+    private val adapter = OffersAdapter { offer ->
         offerViewModel.selectOffer(offer)
         val action = HomeFragmentDirections
-                .actionHomeFragmentToOfferFragment(offer.userId)
+            .actionHomeFragmentToOfferFragment(offer.userId)
         findNavController().navigate(action)
     }
     private lateinit var loadStateListener: (CombinedLoadStates) -> Unit
@@ -60,14 +60,15 @@ class HomeFragment : Fragment() {
 
     @ExperimentalPagingApi
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        val layoutManager = GridLayoutManager(context, 2)
         binding.progressBarFooter.isVisible = false
+        val layoutManager = GridLayoutManager(context, 2)
 
+        // TODO remove duplicated loadStateListener code if possible
         loadStateListener = {
             val isRefreshInitiatedByUser = binding.swipeRefresh.isRefreshing
 
@@ -83,8 +84,7 @@ class HomeFragment : Fragment() {
 
                     if (it.append.endOfPaginationReached && adapter.itemCount < 1) {
                         binding.emptyState.isVisible = true
-                    }
-                    else {
+                    } else {
                         binding.containerHome.isVisible = true
                     }
                 }
@@ -98,8 +98,7 @@ class HomeFragment : Fragment() {
                         (activity as? MainActivity)
                             ?.showGenericMessage(getString(R.string.session_expired))
                         prefs.edit().remove(IS_AUTHENTICATED).apply()
-                    }
-                    else {
+                    } else {
                         binding.shimmer.isVisible = false
                         binding.containerHome.isVisible = true
                         binding.swipeRefresh.isRefreshing = false
@@ -154,10 +153,10 @@ class HomeFragment : Fragment() {
                 }
 
                 binding.progressBarFooter.isVisible =
-                        (!recyclerView.canScrollVertically(1)
-                                && newState==RecyclerView.SCROLL_STATE_IDLE
-                                && !viewModel.endOfPaginationReachedBottom
-                                && (recyclerView.adapter?.itemCount ?: 0) > 0)
+                    (!recyclerView.canScrollVertically(1)
+                            && newState == RecyclerView.SCROLL_STATE_IDLE
+                            && !viewModel.endOfPaginationReachedBottom
+                            && (recyclerView.adapter?.itemCount ?: 0) > 0)
             }
         }
         binding.list.addOnScrollListener(onScrollListener)

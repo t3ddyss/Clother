@@ -32,10 +32,10 @@ object NetworkModule {
         clientBuilder.interceptors().add(Interceptor {
             it.run {
                 proceed(
-                        request()
-                                .newBuilder()
-                                .addHeader("Connection", "close")
-                                .build()
+                    request()
+                        .newBuilder()
+                        .addHeader("Connection", "close")
+                        .build()
                 )
             }
         })
@@ -44,18 +44,18 @@ object NetworkModule {
         logging.setLevel(HttpLoggingInterceptor.Level.BODY)
 
         return clientBuilder
-                .authenticator(authenticator)
-                .addInterceptor(logging)
-                .retryOnConnectionFailure(true)
-                .build()
+            .authenticator(authenticator)
+            .addInterceptor(logging)
+            .retryOnConnectionFailure(true)
+            .build()
     }
 
     @Singleton
     @Provides
     fun provideGson(): Gson {
         return GsonBuilder()
-                .setDateFormat("yyyy-MM-dd HH:mm:ss")
-                .create()
+            .setDateFormat("yyyy-MM-dd HH:mm:ss")
+            .create()
     }
 
     @Singleton

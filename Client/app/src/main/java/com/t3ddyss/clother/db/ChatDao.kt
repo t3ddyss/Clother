@@ -17,11 +17,11 @@ interface ChatDao {
     suspend fun update(chat: ChatEntity)
 
     @Transaction
-    @Query("""SELECT 
-                    c.local_id AS local_chat_id,
+    @Query(
+        """SELECT 
+                    c.server_id AS server_chat_id,
                     c.interlocutor_id,
                     c.interlocutor_name,
-                    m.local_id AS local_message_id,
                     m.user_id AS message_user_id,
                     m.created_at AS message_created_at,
                     m.body AS message_body,

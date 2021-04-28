@@ -22,8 +22,8 @@
             android:layout_width="0dp"
             android:layout_height="190dp"
             android:layout_marginStart="2.5dp"
-            android:background="@color/grey_500"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:background="@color/grey_500" />
     </LinearLayout>
 
     <LinearLayout
@@ -35,14 +35,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/fragment_horizontal_margin"
-            android:background="@color/grey_500"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:background="@color/grey_500" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/fragment_horizontal_margin"
-            android:background="@color/grey_500"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:background="@color/grey_500" />
     </LinearLayout>
 </LinearLayout>

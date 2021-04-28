@@ -41,18 +41,19 @@ class ProfileFragment : Fragment() {
     private val adapter = OffersAdapter {
         offerViewModel.selectOffer(it)
         val action = ProfileFragmentDirections
-                .actionProfileFragmentToOfferFragment(it.userId)
+            .actionProfileFragmentToOfferFragment(it.userId)
         findNavController().navigate(action)
     }
     private lateinit var loadStateListener: (CombinedLoadStates) -> Unit
 
-    @Inject lateinit var prefs: SharedPreferences
+    @Inject
+    lateinit var prefs: SharedPreferences
 
     @ExperimentalPagingApi
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         val layoutManager = GridLayoutManager(context, 2)
@@ -80,14 +81,13 @@ class ProfileFragment : Fragment() {
                         findNavController().navigate(R.id.action_global_signUpFragment)
 
                         (activity as? MainActivity)
-                                ?.showGenericMessage(getString(R.string.session_expired))
+                            ?.showGenericMessage(getString(R.string.session_expired))
                         prefs.edit().remove(IS_AUTHENTICATED).apply()
-                    }
-                    else {
+                    } else {
                         binding.shimmer.isVisible = false
                         binding.list.isVisible = true
                         (activity as? MainActivity)
-                                ?.showGenericMessage(error)
+                            ?.showGenericMessage(error)
                     }
                 }
             }

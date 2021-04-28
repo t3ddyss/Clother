@@ -22,11 +22,11 @@ import kotlinx.coroutines.flow.merge
 import javax.inject.Inject
 
 class LocationProvider @Inject constructor(
-        application: Application,
-        private val locationDao: LocationDao
+    application: Application,
+    private val locationDao: LocationDao
 ) {
     private val locationProviderClient = LocationServices
-            .getFusedLocationProviderClient(application.applicationContext)
+        .getFusedLocationProviderClient(application.applicationContext)
 
     @ExperimentalCoroutinesApi
     suspend fun getLocationStream() = merge(getInitalLocation(), getLocationUpdates())
@@ -34,9 +34,11 @@ class LocationProvider @Inject constructor(
     suspend fun getLatestSavedLocation() = locationDao.getLatestLocation()
 
     suspend fun saveSelectedLocation(location: LocationData) {
-        locationDao.insert((LocationEntity(
-            lat = location.latLng.latitude,
-            lng = location.latLng.longitude))
+        locationDao.insert(
+            (LocationEntity(
+                lat = location.latLng.latitude,
+                lng = location.latLng.longitude
+            ))
         )
     }
 
@@ -64,9 +66,9 @@ class LocationProvider @Inject constructor(
 
     @ExperimentalCoroutinesApi
     @SuppressLint("MissingPermission")
-    private suspend fun getLocationUpdates() = callbackFlow<LocationData>{
+    private suspend fun getLocationUpdates() = callbackFlow<LocationData> {
         val locationRequest = LocationRequest.create()
-        locationRequest.interval =  5_000
+        locationRequest.interval = 5_000
         locationRequest.fastestInterval = 1000
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
 
@@ -79,9 +81,9 @@ class LocationProvider @Inject constructor(
 
                     if (location != null) {
                         val latLng = LocationData(
-                                latLng = LatLng(location.latitude, location.longitude),
-                                isInitialValue = false,
-                                isManuallySelected = false
+                            latLng = LatLng(location.latitude, location.longitude),
+                            isInitialValue = false,
+                            isManuallySelected = false
                         )
 
                         trySend(latLng)
@@ -91,9 +93,10 @@ class LocationProvider @Inject constructor(
         }
 
         locationProviderClient.requestLocationUpdates(
-                locationRequest,
-                locationUpdatesObserver,
-                Looper.getMainLooper())
+            locationRequest,
+            locationUpdatesObserver,
+            Looper.getMainLooper()
+        )
 
         awaitClose {
             locationProviderClient.removeLocationUpdates(locationUpdatesObserver)

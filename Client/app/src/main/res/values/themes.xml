@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Splash screen. -->
     <style name="SplashScreenTheme" parent="AppTheme">
         <item name="android:windowBackground">@drawable/layout_splash_screen</item>
@@ -24,7 +24,7 @@
         <item name="android:windowLightStatusBar">true</item>
 
         <!-- Navigation bar color. -->
-<!--        <item name="android:navigationBarColor">?attr/colorPrimaryVariant</item>-->
+        <!--        <item name="android:navigationBarColor">?attr/colorPrimaryVariant</item>-->
         <!-- TODO override theme for API 27+ -->
         <!-- <item name="android:windowLightNavigationBar">true</item> -->
 

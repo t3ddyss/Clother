@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.paging.ExperimentalPagingApi
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -20,16 +19,20 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class FilterDialogFragment : BottomSheetDialogFragment() {
     private val searchViewModel by hiltNavGraphViewModels<SearchResultsViewModel>(
-            R.id.search_results_graph)
+        R.id.search_results_graph
+    )
     private val viewModel by hiltNavGraphViewModels<FiltersViewModel>(
-            R.id.search_results_graph)
+        R.id.search_results_graph
+    )
     private var _binding: FragmentFiltersDialogBinding? = null
     private val binding get() = _binding!!
 
     private var location: LatLng? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentFiltersDialogBinding.inflate(inflater, container, false)
 
         // BottomSheetDialog will close after navigating back from LocationSelectorFragment,
@@ -37,19 +40,19 @@ class FilterDialogFragment : BottomSheetDialogFragment() {
         // it is actually an expected BottomSheetDialog behaviour
         binding.cardViewLocation.setOnClickListener {
             val action = FilterDialogFragmentDirections
-                    .actionFilterDialogFragmentToLocationFragment(
-                            calledFromId = R.id.search_results_graph)
+                .actionFilterDialogFragmentToLocationFragment(
+                    calledFromId = R.id.search_results_graph
+                )
             findNavController().navigate(action)
         }
 
-        binding.buttonApply.setOnClickListener {_ ->
+        binding.buttonApply.setOnClickListener { _ ->
             val distance = getSelectedDistance()
             val size = getSelectedSize()
 
             if (location != null && distance != null) {
                 searchViewModel.location.value = Pair(location!!, distance)
-            }
-            else {
+            } else {
                 viewModel.maxDistance.value = View.NO_ID
             }
 
@@ -98,7 +101,7 @@ class FilterDialogFragment : BottomSheetDialogFragment() {
         val checkedChipId = binding.chipGroupDistance.chipGroupDistance.checkedChipId
         viewModel.maxDistance.value = checkedChipId
 
-        return when(checkedChipId) {
+        return when (checkedChipId) {
             R.id.dist_5km -> 5
             R.id.dist_10km -> 10
             R.id.dist_25km -> 25

@@ -4,5 +4,5 @@
     <item android:drawable="?attr/colorPrimary" />
     <item
         android:drawable="@drawable/ic_clother"
-        android:gravity="center"/>
+        android:gravity="center" />
 </layer-list>

@@ -3,12 +3,15 @@ package com.t3ddyss.clother.models.entity
 import androidx.room.*
 
 @Entity(tableName = "chat", indices = [Index(value = ["server_id"], unique = true)])
-data class ChatEntity(@PrimaryKey(autoGenerate = true)
-                      @ColumnInfo(name = "local_id")
-                      var localId: Int = 0,
+@SuppressWarnings(RoomWarnings.PRIMARY_KEY_FROM_EMBEDDED_IS_DROPPED)
+data class ChatEntity(
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "local_id")
+    var localId: Int = 0,
 
-                      @ColumnInfo(name = "server_id")
-                      var serverId: Int? = null,
+    @ColumnInfo(name = "server_id")
+    var serverId: Int? = null,
 
-                      @Embedded(prefix = "interlocutor_")
-                      val interlocutor: UserEntity)
+    @Embedded(prefix = "interlocutor_")
+    val interlocutor: UserEntity
+)

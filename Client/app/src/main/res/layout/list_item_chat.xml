@@ -38,16 +38,16 @@
         android:textColor="@color/grey_500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Apr 12 9:47"/>
+        tools:text="Apr 12 9:47" />
 
     <TextView
         android:id="@+id/textView_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fragment_horizontal_margin"
-        android:textSize="@dimen/text_size_medium"
         android:ellipsize="end"
         android:maxLines="1"
+        android:textSize="@dimen/text_size_medium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

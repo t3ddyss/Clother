@@ -8,8 +8,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class OnClearFromRecentService @Inject constructor(): Service() {
-    @Inject lateinit var repository: LiveMessagesRepository
+class OnClearFromRecentService @Inject constructor() : Service() {
+    @Inject
+    lateinit var repository: LiveMessagesRepository
 
     override fun onBind(intent: Intent?): IBinder? {
         return null

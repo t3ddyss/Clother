@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -31,8 +30,10 @@ class GalleryFragment : Fragment() {
     private lateinit var layoutManager: GridLayoutManager
 
     @ExperimentalCoroutinesApi
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentGalleryBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
 
@@ -49,7 +50,7 @@ class GalleryFragment : Fragment() {
             val previouslySelectedImages = editorViewModel.images.value!!
 
             images.filter {
-                 it.uri in previouslySelectedImages
+                it.uri in previouslySelectedImages
             }.forEach {
                 it.isSelected = true
             }

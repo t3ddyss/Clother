@@ -11,7 +11,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SimpleItemAnimator
 import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.adapters.MessagesAdapter
 import com.t3ddyss.clother.databinding.FragmentChatBinding
@@ -41,8 +40,8 @@ class ChatFragment : Fragment() {
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?,
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentChatBinding.inflate(inflater, container, false)
         val interlocutor = User(id = args.userId, name = args.userName, image = null, email = "")
@@ -66,7 +65,8 @@ class ChatFragment : Fragment() {
                     val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
 
                     if ((visibleItemCount + firstVisibleItemPosition) + RECYCLER_THRESHOLD
-                            >= totalItemCount) {
+                        >= totalItemCount
+                    ) {
                         // TODO add loading indicator like on home fragment
                         viewModel.getMoreMessages(interlocutor)
                     }

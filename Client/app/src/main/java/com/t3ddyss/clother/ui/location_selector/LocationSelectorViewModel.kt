@@ -1,6 +1,9 @@
 package com.t3ddyss.clother.ui.location_selector
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.t3ddyss.clother.data.LocationProvider
 import com.t3ddyss.clother.models.domain.LocationData
@@ -34,9 +37,9 @@ class LocationSelectorViewModel
 
     fun setLocationManually(latLng: LatLng) {
         _location.value = LocationData(
-                latLng = latLng,
-                isInitialValue = false,
-                isManuallySelected = true,
+            latLng = latLng,
+            isInitialValue = false,
+            isManuallySelected = true,
         )
     }
 

@@ -4,14 +4,16 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.t3ddyss.clother.utilities.DEFAULT_STRING_VALUE
 
-data class Category(val id: Int,
-                    val title: String,
-                    val isLastLevel: Boolean
+data class Category(
+    val id: Int,
+    val title: String,
+    val isLastLevel: Boolean
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-            parcel.readInt(),
-            parcel.readString() ?: DEFAULT_STRING_VALUE,
-            parcel.readByte() != 0.toByte())
+        parcel.readInt(),
+        parcel.readString() ?: DEFAULT_STRING_VALUE,
+        parcel.readByte() != 0.toByte()
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(id)
@@ -24,7 +26,7 @@ data class Category(val id: Int,
     }
 
     companion object CREATOR : Parcelable.Creator<Category> {
-        override fun createFromParcel(parcel: Parcel): Category{
+        override fun createFromParcel(parcel: Parcel): Category {
             return Category(parcel)
         }
 

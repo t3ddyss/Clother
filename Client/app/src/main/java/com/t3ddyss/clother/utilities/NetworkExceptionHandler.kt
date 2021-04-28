@@ -10,16 +10,16 @@ import java.net.ConnectException
 import java.net.SocketTimeoutException
 
 inline fun <ResultType> handleNetworkException(
-        request: () -> Resource<ResultType>
+    request: () -> Resource<ResultType>
 ): Resource<ResultType> = try {
-        request.invoke()
-    } catch (ex: HttpException) {
-        handleHttpException(ex)
-    } catch (ex: ConnectException) {
-        Failed()
-    } catch (ex: SocketTimeoutException) {
-        Error(null)
-    }
+    request.invoke()
+} catch (ex: HttpException) {
+    handleHttpException(ex)
+} catch (ex: ConnectException) {
+    Failed()
+} catch (ex: SocketTimeoutException) {
+    Error(null)
+}
 
 fun <T> handleHttpException(ex: HttpException): Error<T> {
     val gson = Gson()

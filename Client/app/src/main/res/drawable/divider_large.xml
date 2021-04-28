@@ -3,6 +3,6 @@
     android:shape="rectangle">
     <size
         android:width="@dimen/fragment_horizontal_margin"
-        android:height="@dimen/fragment_horizontal_margin"/>
-    <solid android:color="@android:color/transparent"/>
+        android:height="@dimen/fragment_horizontal_margin" />
+    <solid android:color="@android:color/transparent" />
 </shape>

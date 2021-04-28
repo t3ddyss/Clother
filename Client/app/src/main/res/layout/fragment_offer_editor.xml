@@ -17,25 +17,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/fragment_vertical_margin"
-            android:paddingHorizontal="@dimen/fragment_horizontal_margin"
             android:clipToPadding="false"
-            android:orientation="horizontal"
             android:minHeight="@dimen/image_size_editor"
+            android:orientation="horizontal"
+            android:paddingHorizontal="@dimen/fragment_horizontal_margin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/list_item_image_editor"/>
+            tools:listitem="@layout/list_item_image_editor" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInput_title"
+            style="@style/Widget.Design.TextInputLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/fragment_vertical_margin"
-            style="@style/Widget.Design.TextInputLayout"
-            app:hintAnimationEnabled="false"
             app:counterEnabled="true"
             app:counterMaxLength="50"
+            app:hintAnimationEnabled="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/list_images">
@@ -44,22 +44,22 @@
                 android:id="@+id/editText_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/title"
+                android:inputType="text"
                 android:maxLength="50"
                 android:paddingStart="@dimen/fragment_horizontal_margin"
-                android:paddingEnd="@dimen/fragment_horizontal_margin"
-                android:hint="@string/title"
-                android:inputType="text" />
+                android:paddingEnd="@dimen/fragment_horizontal_margin" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInput_description"
+            style="@style/Widget.Design.TextInputLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/fragment_vertical_margin"
-            style="@style/Widget.Design.TextInputLayout"
-            app:hintAnimationEnabled="false"
             app:counterEnabled="true"
             app:counterMaxLength="500"
+            app:hintAnimationEnabled="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textInput_title">
@@ -69,14 +69,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start|top"
-                android:paddingStart="@dimen/fragment_horizontal_margin"
-                android:paddingEnd="@dimen/fragment_horizontal_margin"
+                android:hint="@string/description"
+                android:inputType="textMultiLine"
+                android:maxLength="500"
                 android:minLines="1"
                 android:nestedScrollingEnabled="false"
-                android:hint="@string/description"
-                android:maxLength="500"
-                android:inputType="textMultiLine"
-                android:scrollbars="vertical"/>
+                android:paddingStart="@dimen/fragment_horizontal_margin"
+                android:paddingEnd="@dimen/fragment_horizontal_margin"
+                android:scrollbars="vertical" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <View
@@ -91,8 +91,8 @@
             layout="@layout/list_item_category"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/fragment_vertical_margin"
             android:layout_marginStart="@dimen/fragment_horizontal_margin"
+            android:layout_marginTop="@dimen/fragment_vertical_margin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/imageView_category"
             app:layout_constraintTop_toBottomOf="@+id/textInput_description" />
@@ -108,8 +108,8 @@
             android:id="@+id/imageView_category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_category"
             android:layout_marginStart="@dimen/fragment_horizontal_margin"
+            android:src="@drawable/ic_category"
             app:layout_constraintBottom_toBottomOf="@+id/category"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/category"
@@ -181,10 +181,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/fragment_horizontal_margin"
-            android:layout_marginBottom="@dimen/margin_padding_size_xlarge"
             android:layout_marginTop="@dimen/fragment_vertical_margin"
-            android:paddingHorizontal="@dimen/fragment_horizontal_margin"
+            android:layout_marginBottom="@dimen/margin_padding_size_xlarge"
             android:clipToPadding="false"
+            android:paddingHorizontal="@dimen/fragment_horizontal_margin"
             android:scrollbars="none"
             app:layout_constraintBottom_toTopOf="@+id/button_publish"
             app:layout_constraintEnd_toEndOf="parent"
@@ -192,11 +192,12 @@
             app:layout_constraintTop_toBottomOf="@+id/location"
             app:layout_constraintVertical_bias="0.0"
             tools:ignore="RtlSymmetry">
+
             <include
                 android:id="@+id/chip_group_size"
                 layout="@layout/item_size_chips"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
         </HorizontalScrollView>
 
         <View

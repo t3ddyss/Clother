@@ -42,7 +42,7 @@ android {
         useIR = true
     }
     kotlinOptions.freeCompilerArgs += [
-            "-Xuse-=kotlinx.coroutines.ExperimentalCoroutinesApi"
+            "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi"
     ]
 }
 

@@ -19,13 +19,13 @@ import com.t3ddyss.clother.utilities.DEBUG_TAG
 
 @ExperimentalPagingApi
 class OffersRemoteMediator(
-        private val service: ClotherOffersService,
-        prefs: SharedPreferences,
-        private val db: AppDatabase,
-        private val offerDao: OfferDao,
-        private val remoteKeyDao: RemoteKeyDao,
-        private val listKey: String,
-        private val query: Map<String, String>
+    private val service: ClotherOffersService,
+    prefs: SharedPreferences,
+    private val db: AppDatabase,
+    private val offerDao: OfferDao,
+    private val remoteKeyDao: RemoteKeyDao,
+    private val listKey: String,
+    private val query: Map<String, String>
 ) : RemoteMediator<Int, OfferEntity>() {
     private var accessToken: String? = null
     private var changeListener =
@@ -42,7 +42,10 @@ class OffersRemoteMediator(
         prefs.registerOnSharedPreferenceChangeListener(changeListener)
     }
 
-    override suspend fun load(loadType: LoadType, state: PagingState<Int, OfferEntity>): MediatorResult {
+    override suspend fun load(
+        loadType: LoadType,
+        state: PagingState<Int, OfferEntity>
+    ): MediatorResult {
         val key: Int? = when (loadType) {
             LoadType.REFRESH -> {
                 Log.d(DEBUG_TAG, "REFRESH")
@@ -76,7 +79,8 @@ class OffersRemoteMediator(
                     LoadType.REFRESH -> state.config.initialLoadSize
                     else -> state.config.pageSize
                 },
-                filters = query)
+                filters = query
+            )
                 .map { mapOfferDtoToEntity(it) }
             items.forEach { it.listKey = listKey }
 

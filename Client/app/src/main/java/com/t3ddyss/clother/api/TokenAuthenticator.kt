@@ -15,8 +15,8 @@ import javax.inject.Inject
 
 class TokenAuthenticator @Inject constructor(
     private val lazyService: Lazy<ClotherAuthService>,
-    private val prefs: SharedPreferences)
-: Authenticator {
+    private val prefs: SharedPreferences
+) : Authenticator {
 
     override fun authenticate(route: Route?, response: Response): Request? {
         Log.d(DEBUG_TAG, "Need new access token")
@@ -29,8 +29,7 @@ class TokenAuthenticator @Inject constructor(
             runBlocking {
                 service.refreshTokens(refreshToken)
             }
-        }
-        catch (ex: Exception) {
+        } catch (ex: Exception) {
             null
         }
 
@@ -41,9 +40,9 @@ class TokenAuthenticator @Inject constructor(
         Log.d(DEBUG_TAG, "Retrying request...")
 
         return response
-                .request
-                .newBuilder()
-                .header("Authorization", "Bearer ${tokens.accessToken}")
-                .build()
+            .request
+            .newBuilder()
+            .header("Authorization", "Bearer ${tokens.accessToken}")
+            .build()
     }
 }

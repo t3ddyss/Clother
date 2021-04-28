@@ -1,6 +1,9 @@
 package com.t3ddyss.clother.ui.home
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
@@ -31,11 +34,11 @@ class HomeViewModel @Inject constructor(
 
         viewModelScope.launch {
             repository
-                    .getOffers()
-                    .cachedIn(viewModelScope)
-                    .collectLatest {
-                        _offers.postValue(it)
-                    }
+                .getOffers()
+                .cachedIn(viewModelScope)
+                .collectLatest {
+                    _offers.postValue(it)
+                }
         }
     }
 

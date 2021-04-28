@@ -13,15 +13,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
-        private val repository: UsersRepository,
-        private val savedStateHandle: SavedStateHandle
+    private val repository: UsersRepository,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _email = savedStateHandle
-            .getLiveData(EMAIL, DEFAULT_STRING_VALUE)
+        .getLiveData(EMAIL, DEFAULT_STRING_VALUE)
     val email: LiveData<String> = _email
 
     private val _password = savedStateHandle
-            .getLiveData(PASSWORD, DEFAULT_STRING_VALUE)
+        .getLiveData(PASSWORD, DEFAULT_STRING_VALUE)
     val password: LiveData<String> = _password
 
     private val _signInResult = MutableLiveData<Resource<*>>()
@@ -31,8 +31,8 @@ class SignInViewModel @Inject constructor(
         _signInResult.value = Loading(null)
         viewModelScope.launch {
             val response = repository.signInWithCredentials(
-                    email = email,
-                    password = password
+                email = email,
+                password = password
             )
 
             _signInResult.postValue(response)

@@ -12,10 +12,11 @@ interface ClotherChatService {
     suspend fun getChats(@Header("Authorization") accessToken: String?): List<ChatDto>
 
     @GET("api/chats/{interlocutor_id}")
-    suspend fun getMessages(@Path("interlocutor_id") interlocutorId: Int,
-                            @Header("Authorization") accessToken: String?,
-                            @Query("after") afterKey: Int? = null,
-                            @Query("before") beforeKey: Int? = null,
-                            @Query("limit") limit: Int = 10
+    suspend fun getMessages(
+        @Path("interlocutor_id") interlocutorId: Int,
+        @Header("Authorization") accessToken: String?,
+        @Query("after") afterKey: Int? = null,
+        @Query("before") beforeKey: Int? = null,
+        @Query("limit") limit: Int = 10
     ): List<MessageDto>
 }

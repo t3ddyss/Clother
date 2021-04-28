@@ -18,9 +18,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChatViewModel @Inject constructor(
-        private val repository: MessagesRepository,
-        private val liveRepository: LiveMessagesRepository,
-): ViewModel() {
+    private val repository: MessagesRepository,
+    private val liveRepository: LiveMessagesRepository,
+) : ViewModel() {
     private val _messages = MutableLiveData<List<Message>>()
     val messages: LiveData<List<Message>> = _messages
 

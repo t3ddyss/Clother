@@ -11,14 +11,17 @@ import com.t3ddyss.clother.models.domain.Offer
 import com.t3ddyss.clother.utilities.getImageUrlForCurrentDevice
 
 class OffersAdapter(
-        private val clickListener: (Offer) -> Unit
+    private val clickListener: (Offer) -> Unit
 ) : PagingDataAdapter<Offer, OffersAdapter.OfferViewHolder>(OfferDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OfferViewHolder {
-        return OfferViewHolder(ListItemOfferBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false))
+        return OfferViewHolder(
+            ListItemOfferBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: OfferViewHolder, position: Int) {
@@ -41,12 +44,12 @@ class OffersAdapter(
         fun bind(offer: Offer) {
             binding.apply {
                 Glide.with(image.context)
-                        .load(offer.images.firstOrNull()?.getImageUrlForCurrentDevice())
-                        .thumbnail(0.5f)
-                        .centerCrop()
-                        .placeholder(R.drawable.placeholder_offer_image)
-                        .dontAnimate()
-                        .into(image)
+                    .load(offer.images.firstOrNull()?.getImageUrlForCurrentDevice())
+                    .thumbnail(0.5f)
+                    .centerCrop()
+                    .placeholder(R.drawable.placeholder_offer_image)
+                    .dontAnimate()
+                    .into(image)
 
                 textViewTitle.text = offer.title
             }

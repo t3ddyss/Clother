@@ -18,24 +18,24 @@ import com.t3ddyss.clother.utilities.CLOTHER_PAGE_SIZE_CHAT
 import com.t3ddyss.clother.utilities.DEBUG_TAG
 
 class MessagesPagingLoader(
-        private val service: ClotherChatService,
-        prefs: SharedPreferences,
-        private val db: AppDatabase,
-        private val chatDao: ChatDao,
-        private val messageDao: MessageDao,
-        private val remoteKeyDao: RemoteKeyDao,
-        private val listKey: String,
-        private val interlocutor: User
+    private val service: ClotherChatService,
+    prefs: SharedPreferences,
+    private val db: AppDatabase,
+    private val chatDao: ChatDao,
+    private val messageDao: MessageDao,
+    private val remoteKeyDao: RemoteKeyDao,
+    private val listKey: String,
+    private val interlocutor: User
 ) {
     private var accessToken: String? = null
     private var changeListener =
-            SharedPreferences.OnSharedPreferenceChangeListener { sp, key ->
-                run {
-                    if (key == ACCESS_TOKEN) {
-                        accessToken = sp.getString(key, null)
-                    }
+        SharedPreferences.OnSharedPreferenceChangeListener { sp, key ->
+            run {
+                if (key == ACCESS_TOKEN) {
+                    accessToken = sp.getString(key, null)
                 }
             }
+        }
 
     private var loadType = LoadType.REFRESH
 
@@ -61,11 +61,12 @@ class MessagesPagingLoader(
 
         return try {
             val items = service.getMessages(
-                    interlocutorId = interlocutor.id,
-                    accessToken = accessToken,
-                    afterKey = key,
-                    beforeKey = null,
-                    limit = CLOTHER_PAGE_SIZE_CHAT)
+                interlocutorId = interlocutor.id,
+                accessToken = accessToken,
+                afterKey = key,
+                beforeKey = null,
+                limit = CLOTHER_PAGE_SIZE_CHAT
+            )
 
             db.withTransaction {
                 // TODO handle situation when user opens existing chat which is not cached from offer fragment
@@ -82,13 +83,17 @@ class MessagesPagingLoader(
                     messageDao.insertAll(
                         items.map { messageDto ->
                             mapMessageDtoToEntity(messageDto).also {
-                            it.localChatId = chat.localId
-                        } }
+                                it.localChatId = chat.localId
+                            }
+                        }
                     )
                 }
-                remoteKeyDao.insert(RemoteKeyEntity(
+                remoteKeyDao.insert(
+                    RemoteKeyEntity(
                         listKey,
-                        items.lastOrNull()?.id))
+                        items.lastOrNull()?.id
+                    )
+                )
             }
 
             LoadResult.Success(isEndOfPaginationReached = items.isEmpty())

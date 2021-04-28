@@ -9,16 +9,18 @@ import com.t3ddyss.clother.databinding.ListItemImageBinding
 import com.t3ddyss.clother.utilities.getImageUrlForCurrentDevice
 
 class OfferImagesAdapter(
-        private val images: List<String>,
-        private val clickListener: (Int) -> Unit
+    private val images: List<String>,
+    private val clickListener: (Int) -> Unit
 ) : RecyclerView.Adapter<OfferImagesAdapter.ImageViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
-        return ImageViewHolder(ListItemImageBinding.inflate(
+        return ImageViewHolder(
+            ListItemImageBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-        ))
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
@@ -28,7 +30,7 @@ class OfferImagesAdapter(
     override fun getItemCount() = images.size
 
     inner class ImageViewHolder(
-            val binding: ListItemImageBinding
+        val binding: ListItemImageBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         init {
             binding.root.setOnClickListener {
@@ -39,11 +41,11 @@ class OfferImagesAdapter(
         fun bind(url: String) {
             binding.apply {
                 Glide.with(image)
-                        .load(url.getImageUrlForCurrentDevice())
-                        .centerCrop()
-                        .placeholder(R.drawable.placeholder_offer_image)
-                        .dontAnimate()
-                        .into(image)
+                    .load(url.getImageUrlForCurrentDevice())
+                    .centerCrop()
+                    .placeholder(R.drawable.placeholder_offer_image)
+                    .dontAnimate()
+                    .into(image)
             }
         }
     }

@@ -1,6 +1,9 @@
 package com.t3ddyss.clother.ui.profile
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
@@ -29,11 +32,11 @@ class ProfileViewModel
 
         viewModelScope.launch {
             offersRepository
-            .getOffers(query = mapOf("user" to userId.toString()), userId = userId)
-                    .cachedIn(viewModelScope)
-                    .collectLatest {
-                        _offers.postValue(it)
-                    }
+                .getOffers(query = mapOf("user" to userId.toString()), userId = userId)
+                .cachedIn(viewModelScope)
+                .collectLatest {
+                    _offers.postValue(it)
+                }
         }
     }
 

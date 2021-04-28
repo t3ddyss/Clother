@@ -46,8 +46,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var destinationChangeListener: DestinationChangeListener
 
-    @Inject lateinit var prefs: SharedPreferences
-    @Inject lateinit var onClearFromRecentService: OnClearFromRecentService
+    @Inject
+    lateinit var prefs: SharedPreferences
+    @Inject
+    lateinit var onClearFromRecentService: OnClearFromRecentService
 
     private val openSettingsAction = {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
@@ -58,13 +60,13 @@ class MainActivity : AppCompatActivity() {
 
     @ExperimentalCoroutinesApi
     private val changeListener =
-            SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-                run {
-                    if (key == ACCESS_TOKEN) {
-                        messagesViewModel.getMessages(tokenUpdated = true)
-                    }
+        SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+            run {
+                if (key == ACCESS_TOKEN) {
+                    messagesViewModel.getMessages(tokenUpdated = true)
                 }
             }
+        }
 
     @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,23 +81,25 @@ class MainActivity : AppCompatActivity() {
         prefs.registerOnSharedPreferenceChangeListener(changeListener)
 
         val navHostFragment = supportFragmentManager
-                .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
         val navGraph = navController.navInflater.inflate(R.navigation.main_graph)
 
         if (prefs.getBoolean(IS_AUTHENTICATED, false)) {
             navGraph.startDestination = R.id.homeFragment
             messagesViewModel.getMessages()
-        }
-        else {
+        } else {
             navGraph.startDestination = R.id.signUpFragment
         }
         navController.graph = navGraph
 
         // Do not represent actual top-level destinations, just for UP navigation purposes
-        appBarConfiguration = AppBarConfiguration(setOf(
+        appBarConfiguration = AppBarConfiguration(
+            setOf(
                 R.id.homeFragment, R.id.searchFragment, R.id.chatsFragment, R.id.profileFragment,
-                R.id.signUpFragment))
+                R.id.signUpFragment
+            )
+        )
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
 
@@ -126,21 +130,27 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun showGenericMessage(message: String?) {
-        val snackbar = Snackbar.make(binding.container,
-                message ?: getString(R.string.unknown_error),
-                Snackbar.LENGTH_SHORT)
+        val snackbar = Snackbar.make(
+            binding.container,
+            message ?: getString(R.string.unknown_error),
+            Snackbar.LENGTH_SHORT
+        )
         showSnackbarWithMargin(snackbar)
     }
 
-    fun showSnackbarWithAction(message: String,
-                               actionText: String,
-                               action: (() -> Unit) = openSettingsAction) {
-        val snackbar = Snackbar.make(binding.navHostFragment,
-                message,
-                Snackbar.LENGTH_SHORT)
-                .setAction(actionText) {
-                    action.invoke()
-                }
+    fun showSnackbarWithAction(
+        message: String,
+        actionText: String,
+        action: (() -> Unit) = openSettingsAction
+    ) {
+        val snackbar = Snackbar.make(
+            binding.navHostFragment,
+            message,
+            Snackbar.LENGTH_SHORT
+        )
+            .setAction(actionText) {
+                action.invoke()
+            }
         showSnackbarWithMargin(snackbar)
     }
 
@@ -172,35 +182,38 @@ class MainActivity : AppCompatActivity() {
         val isNetworkAvailable = isNetworkAvailable(connectivityManager)
         if (isNetworkAvailable) {
             networkStateViewModel.isNetworkAvailable.value = Pair(
-                    first = false,
-                    second = true
+                first = false,
+                second = true
             )
-        }
-        else {
+        } else {
             networkStateViewModel.isNetworkAvailable.value = Pair(
-                    first = true,
-                    second = false
+                first = true,
+                second = false
             )
         }
 
         connectivityManager.registerDefaultNetworkCallback(object :
-                ConnectivityManager.NetworkCallback() {
+                                                               ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 val wasNetworkAvailable = networkStateViewModel.isNetworkAvailable.value!!.second
 
                 if (!wasNetworkAvailable) {
-                    networkStateViewModel.isNetworkAvailable.postValue(Pair(
+                    networkStateViewModel.isNetworkAvailable.postValue(
+                        Pair(
                             first = true,
                             second = true
-                    ))
+                        )
+                    )
                 }
             }
 
             override fun onLost(network: Network) {
-                networkStateViewModel.isNetworkAvailable.postValue(Pair(
+                networkStateViewModel.isNetworkAvailable.postValue(
+                    Pair(
                         first = true,
                         second = false
-                ))
+                    )
+                )
 
                 showGenericMessage(getString(R.string.no_connection))
             }
@@ -222,8 +235,7 @@ class MainActivity : AppCompatActivity() {
     fun setNavIconVisibility(isVisible: Boolean) {
         if (!isVisible) {
             binding.toolbar.navigationIcon = null
-        }
-        else {
+        } else {
             destinationChangeListener.setIconUp(binding.toolbar)
         }
     }
@@ -233,89 +245,98 @@ class MainActivity : AppCompatActivity() {
     }
 
     inner class DestinationChangeListener(
-            private val binding: ActivityMainBinding)
-    : NavController.OnDestinationChangedListener {
-        private val fragmentsWithoutBottomNav = setOf(R.id.emailActionFragment,
-                R.id.offerEditorFragment, R.id.resetPasswordFragment, R.id.signInFragment,
-                R.id.signUpFragment, R.id.galleryFragment, R.id.locationFragment,
-            R.id.offerFragment, R.id.locationViewerFragment, R.id.searchFragment, R.id.chatFragment)
+        private val binding: ActivityMainBinding
+    ) : NavController.OnDestinationChangedListener {
+        private val fragmentsWithoutBottomNav = setOf(
+            R.id.emailActionFragment,
+            R.id.offerEditorFragment, R.id.resetPasswordFragment, R.id.signInFragment,
+            R.id.signUpFragment, R.id.galleryFragment, R.id.locationFragment,
+            R.id.offerFragment, R.id.locationViewerFragment, R.id.searchFragment, R.id.chatFragment
+        )
 
         private val fragmentsWithoutToolbar = setOf(R.id.searchFragment)
 
-        private val fragmentsWithToolbarLabel = setOf(R.id.offerCategoryFragment,
-                R.id.offerEditorFragment, R.id.galleryFragment, R.id.locationFragment,
+        private val fragmentsWithToolbarLabel = setOf(
+            R.id.offerCategoryFragment,
+            R.id.offerEditorFragment, R.id.galleryFragment, R.id.locationFragment,
             R.id.locationViewerFragment, R.id.searchByCategoryFragment, R.id.chatFragment,
-        R.id.homeFragment, R.id.chatsFragment, R.id.profileFragment)
+            R.id.homeFragment, R.id.chatsFragment, R.id.profileFragment
+        )
 
-        private val fragmentsWithoutNavIcon = setOf(R.id.homeFragment,
-                R.id.profileFragment, R.id.searchByCategoryFragment,
-        R.id.searchFragment, R.id.signUpFragment, R.id.chatsFragment)
+        private val fragmentsWithoutNavIcon = setOf(
+            R.id.homeFragment,
+            R.id.profileFragment, R.id.searchByCategoryFragment,
+            R.id.searchFragment, R.id.signUpFragment, R.id.chatsFragment
+        )
 
-        private val fragmentsWithCustomUpIcon = setOf(R.id.offerEditorFragment,
-                R.id.galleryFragment, R.id.locationFragment)
+        private val fragmentsWithCustomUpIcon = setOf(
+            R.id.offerEditorFragment,
+            R.id.galleryFragment, R.id.locationFragment
+        )
 
         private val fragmentsOverlayingToolbar = setOf(R.id.offerFragment)
 
         override fun onDestinationChanged(
-                controller: NavController,
-                destination: NavDestination,
-                arguments: Bundle?
+            controller: NavController,
+            destination: NavDestination,
+            arguments: Bundle?
         ) {
-            messagesViewModel.setIsChatsDestination(destination.id == R.id.chatsFragment,
-            destination.id == R.id.chatFragment)
+            messagesViewModel.setIsChatsDestination(
+                destination.id == R.id.chatsFragment,
+                destination.id == R.id.chatFragment
+            )
 
             with(binding) {
                 // NavView visibility
                 if (destination.id !in fragmentsWithoutBottomNav && !navView.isVisible) {
                     navView.isVisible = true
-                }
-                else if (destination.id in fragmentsWithoutBottomNav && navView.isVisible) {
+                } else if (destination.id in fragmentsWithoutBottomNav && navView.isVisible) {
                     navView.isVisible = false
                 }
 
                 // Toolbar visibility
                 if (destination.id !in fragmentsWithoutToolbar && !toolbar.isVisible) {
                     toolbar.isVisible = true
-                }
-                else if (destination.id in fragmentsWithoutToolbar && toolbar.isVisible) {
+                } else if (destination.id in fragmentsWithoutToolbar && toolbar.isVisible) {
                     toolbar.isVisible = false
                 }
                 binding.navHostFragmentMarginTop.isVisible =
-                        destination.id !in fragmentsOverlayingToolbar
-                                && destination.id !in fragmentsWithoutToolbar
+                    destination.id !in fragmentsOverlayingToolbar
+                            && destination.id !in fragmentsWithoutToolbar
 
                 // Toolbar icon
                 if (destination.id !in fragmentsWithoutNavIcon
-                        && destination.id in fragmentsWithCustomUpIcon) {
+                    && destination.id in fragmentsWithCustomUpIcon
+                ) {
                     setIconClose(toolbar)
-                }
-                else if (destination.id !in fragmentsWithoutNavIcon){
+                } else if (destination.id !in fragmentsWithoutNavIcon) {
                     setIconUp(toolbar)
                 }
 
                 // Toolbar title
                 if (destination.id in fragmentsWithToolbarLabel) {
                     supportActionBar?.setDisplayShowTitleEnabled(true)
-                }
-                else {
+                } else {
                     supportActionBar?.setDisplayShowTitleEnabled(false)
                 }
 
                 // Profile icon
                 binding.cardViewAvatar.imageViewAvatar.isVisible =
-                        destination.id == R.id.profileFragment
+                    destination.id == R.id.profileFragment
 
             }
         }
 
         private fun setIconClose(toolbar: Toolbar) {
             toolbar.setNavigationIcon(R.drawable.ic_close)
-            toolbar.navigationIcon?.colorFilter = getThemeColor(R.attr.colorOnPrimary).toColorFilter()
+            toolbar.navigationIcon?.colorFilter =
+                getThemeColor(R.attr.colorOnPrimary).toColorFilter()
         }
 
         fun setIconUp(toolbar: Toolbar) {
             toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
-            toolbar.navigationIcon?.colorFilter = getThemeColor(R.attr.colorOnPrimary).toColorFilter()
+            toolbar.navigationIcon?.colorFilter =
+                getThemeColor(R.attr.colorOnPrimary).toColorFilter()
         }
     }
 }
