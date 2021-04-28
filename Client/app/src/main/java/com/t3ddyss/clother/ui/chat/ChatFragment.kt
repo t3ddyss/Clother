@@ -44,7 +44,7 @@ class ChatFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentChatBinding.inflate(inflater, container, false)
-        val interlocutor = User(id = args.userId, name = args.userName, image = null, email = "")
+        val interlocutor = User(id = args.userId, name = args.userName, image = "", email = "")
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, true)
 
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
@@ -67,7 +67,7 @@ class ChatFragment : Fragment() {
                     if ((visibleItemCount + firstVisibleItemPosition) + RECYCLER_THRESHOLD
                         >= totalItemCount
                     ) {
-                        // TODO add loading indicator like on home fragment
+                        // TODO add loading indicator (header) like on home fragment
                         viewModel.getMoreMessages(interlocutor)
                     }
                 }

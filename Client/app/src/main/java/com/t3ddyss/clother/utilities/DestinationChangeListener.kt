@@ -11,7 +11,8 @@ import com.t3ddyss.clother.databinding.ActivityMainBinding
 
 class DestinationChangeListener(
     private val binding: ActivityMainBinding,
-    private val activity: MainActivity
+    private val activity: MainActivity,
+    private val notificationUtil: NotificationUtil
 ) : NavController.OnDestinationChangedListener {
     private val fragmentsWithoutBottomNav = setOf(
         R.id.emailActionFragment,
@@ -47,10 +48,8 @@ class DestinationChangeListener(
         destination: NavDestination,
         arguments: Bundle?
     ) {
-//        messagesViewModel.setIsChatsDestination(
-//            destination.id == R.id.chatsFragment,
-//            destination.id == R.id.chatFragment
-//        )
+        notificationUtil.isChatFragment = destination.id == R.id.chatFragment
+        notificationUtil.isChatsFragment = destination.id == R.id.chatsFragment
 
         with(binding) {
             // NavView visibility

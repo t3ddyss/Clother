@@ -95,7 +95,7 @@ class OffersRepository
         categoryDao.getSubcategories(parentId)
             .map { mapCategoryEntityToDomain(it) }
 
-    suspend fun postOffer(offer: JsonObject, images: List<Uri>): Resource<Response> {
+    suspend fun postOffer(offer: JsonObject, images: List<Uri>): Resource<Int> {
         val body = offer.toString()
             .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
         val imageFiles = images.map {
@@ -118,7 +118,7 @@ class OffersRepository
                 body,
                 imageFiles
             )
-            Success(mapResponseDtoToDomain(response))
+            Success(response.id)
         }
     }
 

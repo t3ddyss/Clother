@@ -46,6 +46,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var prefs: SharedPreferences
     @Inject
     lateinit var onClearFromRecentService: OnClearFromRecentService
+    @Inject
+    lateinit var notificationUtil: NotificationUtil
 
     private val openSettingsAction = {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
@@ -99,7 +101,8 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
 
-        destinationChangeListener = DestinationChangeListener(binding, this).also {
+        destinationChangeListener =
+            DestinationChangeListener(binding, this, notificationUtil).also {
             navController.addOnDestinationChangedListener(it)
         }
 

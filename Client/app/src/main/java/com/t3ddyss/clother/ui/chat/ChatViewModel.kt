@@ -39,7 +39,7 @@ class ChatViewModel @Inject constructor(
             }
         }
 
-        liveRepository.currentInterlocutorId = interlocutor.id
+        liveRepository.setCurrentInterlocutor(interlocutor.id)
         getMoreMessages(interlocutor)
     }
 

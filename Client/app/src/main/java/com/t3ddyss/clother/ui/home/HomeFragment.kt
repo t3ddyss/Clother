@@ -185,6 +185,7 @@ class HomeFragment : Fragment() {
         }
 
         viewModel.newOfferAdded.observe(viewLifecycleOwner) {
+            if (it.hasBeenHandled) return@observe
             (activity as? MainActivity)?.showGenericMessage(getString(R.string.offer_created))
         }
 
@@ -201,6 +202,16 @@ class HomeFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         messagesViewModel.sendDeviceTokenToServer()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.swipeRefresh.isEnabled = true
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding.swipeRefresh.isEnabled = false
     }
 
     override fun onDestroyView() {

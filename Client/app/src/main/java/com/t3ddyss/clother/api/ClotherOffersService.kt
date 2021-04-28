@@ -1,6 +1,7 @@
 package com.t3ddyss.clother.api
 
 import com.t3ddyss.clother.models.dto.OfferDto
+import com.t3ddyss.clother.models.dto.OfferPostResponseDto
 import com.t3ddyss.clother.models.dto.ResponseDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -23,7 +24,7 @@ interface ClotherOffersService {
         @Header("Authorization") accessToken: String?,
         @Part("request") body: RequestBody,
         @Part files: List<MultipartBody.Part>
-    ): ResponseDto
+    ): OfferPostResponseDto
 
     @DELETE("api/offers/delete")
     suspend fun deleteOffer(

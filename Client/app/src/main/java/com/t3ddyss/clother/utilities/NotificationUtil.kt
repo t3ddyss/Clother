@@ -21,6 +21,14 @@ class NotificationUtil @Inject constructor(
     private val notificationId = AtomicInteger(1)
     private val users = mutableMapOf<Int, Boolean>()
 
+    var isChatsFragment = false
+    var isChatFragment = false
+    var currentInterlocutorId: Int? = null
+
+    private fun shouldDisplayNotification(senderId: Int): Boolean {
+        return !(isChatFragment && currentInterlocutorId == senderId || isChatsFragment)
+    }
+
     fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = context.getString(R.string.messages)
@@ -40,7 +48,9 @@ class NotificationUtil @Inject constructor(
         }
     }
 
-    fun showNotification(message: Message) {
+    fun showNotificationIfShould(message: Message) {
+        if (!shouldDisplayNotification(message.userId)) return
+
         val singleNotification = NotificationCompat.Builder(
             context,
             context.getString(R.string.default_notification_channel_id)

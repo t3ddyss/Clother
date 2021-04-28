@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.t3ddyss.clother.adapters.ChatsAdapter
 import com.t3ddyss.clother.databinding.FragmentChatsBinding
+import com.t3ddyss.clother.models.domain.Loading
 import com.t3ddyss.clother.utilities.CURRENT_USER_ID
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -43,10 +44,7 @@ class ChatsFragment : Fragment() {
             adapter.submitList(it.content)
 
             binding.emptyState.isVisible = it.content?.isEmpty() == true
-
-//            progressBar.isVisible = result is Resource.Loading && result.data.isNullOrEmpty()
-//            textViewError.isVisible = result is Resource.Error && result.data.isNullOrEmpty()
-//            textViewError.text = result.error?.localizedMessage
+            binding.layoutLoading.isVisible = it is Loading && it.content.isNullOrEmpty()
         }
 
         viewModel.getChats()

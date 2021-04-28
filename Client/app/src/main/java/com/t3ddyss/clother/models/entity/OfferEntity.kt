@@ -15,29 +15,29 @@ import java.util.*
     )]
 )
 data class OfferEntity(
-    var id: Int = 0,
+    val id: Int,
 
     @ColumnInfo(name = "list_key")
     var listKey: String = "offers",
 
     @ColumnInfo(name = "user_id")
-    var userId: Int = 0,
+    val userId: Int,
 
     @ColumnInfo(name = "category_id", index = true)
-    var categoryId: Int = 0,
+    val categoryId: Int,
 
     @ColumnInfo(name = "created_at")
     val createdAt: Date,
 
-    var title: String = "",
-    var description: String? = null,
+    val title: String,
+    val description: String?,
 
     @ColumnInfo(name = "user_name")
-    var userName: String = "",
+    val userName: String,
 
-    var category: String = "",
+    val category: String,
     // Violates 1NF, but we don't need to update an offer in our database for now
-    var images: List<String> = listOf(),
-    val size: String? = null,
-    var location: String? = null
+    val images: List<String>,
+    val size: String?,
+    val location: String?
 )

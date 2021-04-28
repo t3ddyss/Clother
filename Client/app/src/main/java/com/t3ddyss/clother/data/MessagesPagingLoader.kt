@@ -54,7 +54,8 @@ class MessagesPagingLoader(
             )
 
             db.withTransaction {
-                // TODO handle situation when user opens existing chat which is not cached from offer fragment
+                // TODO handle situation when user opens existing chat which is not cached yet from
+                //  offer fragment
                 val chat = chatDao.getChatByInterlocutorId(interlocutor.id)
 
                 if (chat != null && loadType == LoadType.REFRESH) {

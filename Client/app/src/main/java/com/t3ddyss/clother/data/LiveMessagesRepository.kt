@@ -46,8 +46,6 @@ class LiveMessagesRepository @Inject constructor(
     }
 
     val isConnected get() = socket?.connected() ?: false
-    var currentInterlocutorId: Int? = null
-    var isChatsFragment = false
 
     private fun initializeSocket(): Socket {
         val options = IO.Options.builder()
@@ -77,11 +75,9 @@ class LiveMessagesRepository @Inject constructor(
                 addNewMessage(message)
             }
 
-            if (!isChatsFragment && currentInterlocutorId != message.userId) {
-                notificationUtil.showNotification(
-                    mapMessageDtoToDomain(message)
-                )
-            }
+            notificationUtil.showNotificationIfShould(
+                mapMessageDtoToDomain(message)
+            )
         }
 
         val onNewChatListener = Emitter.Listener {
@@ -91,7 +87,7 @@ class LiveMessagesRepository @Inject constructor(
                 addNewChat(chat)
             }
 
-            notificationUtil.showNotification(
+            notificationUtil.showNotificationIfShould(
                 mapMessageDtoToDomain(chat.lastMessage)
             )
         }
@@ -218,7 +214,7 @@ class LiveMessagesRepository @Inject constructor(
     private suspend fun addNewMessage(message: MessageDto) {
         val chat = chatDao.getChatByInterlocutorId(message.userId)
 
-        // TODO handle situation when chat is not in cache
+        // TODO handle situation when chat is not yet in cache
         chat?.let {
             messageDao.insert(mapMessageDtoToEntity(message).also {
                 it.localChatId = chat.localId
@@ -232,6 +228,10 @@ class LiveMessagesRepository @Inject constructor(
             message.localChatId = chatDao.insert(mapChatDtoToEntity(chat)).toInt()
             messageDao.insert(message)
         }
+    }
+
+    fun setCurrentInterlocutor(interlocutorId: Int) {
+        notificationUtil.currentInterlocutorId = interlocutorId
     }
 
     fun disconnectFromServer() {

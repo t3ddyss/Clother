@@ -86,7 +86,7 @@ class OfferEditorFragment : Fragment() {
                     binding.layoutLoading.isVisible = true
                 is Success<*> -> {
                     val action = OfferEditorFragmentDirections
-                        .actionOfferEditorFragmentToHomeFragment(0) // TODO fix later
+                        .actionOfferEditorFragmentToHomeFragment(it.content as? Int ?: 0)
                     findNavController().navigate(action)
                     binding.layoutLoading.isVisible = false
                 }
