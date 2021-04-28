@@ -83,19 +83,19 @@ class OfferEditorFragment : Fragment() {
         viewModel.newNewOfferResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Loading<*> ->
-                    (activity as? MainActivity)?.setLoadingVisibility(true)
+                    binding.layoutLoading.isVisible = true
                 is Success<*> -> {
                     val action = OfferEditorFragmentDirections
                         .actionOfferEditorFragmentToHomeFragment(0) // TODO fix later
                     findNavController().navigate(action)
-                    (activity as? MainActivity)?.setLoadingVisibility(false)
+                    binding.layoutLoading.isVisible = false
                 }
                 is Error<*> -> {
-                    (activity as? MainActivity)?.setLoadingVisibility(false)
+                    binding.layoutLoading.isVisible = false
                     (activity as? MainActivity)?.showGenericMessage(it.message)
                 }
                 is Failed<*> -> {
-                    (activity as? MainActivity)?.setLoadingVisibility(false)
+                    binding.layoutLoading.isVisible = false
                     (activity as? MainActivity)?.showGenericMessage(getString(R.string.no_connection))
                 }
             }

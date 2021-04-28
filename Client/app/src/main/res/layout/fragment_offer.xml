@@ -34,7 +34,7 @@
             app:tabIndicatorGravity="bottom"
             app:tabIndicatorHeight="0dp"
             app:tabPaddingEnd="6dp"
-            app:tabPaddingStart="6dp"></com.google.android.material.tabs.TabLayout>
+            app:tabPaddingStart="6dp" />
 
         <TextView
             android:id="@+id/textView_title"

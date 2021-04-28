@@ -5,7 +5,6 @@ import com.t3ddyss.clother.data.UsersRepository
 import com.t3ddyss.clother.models.domain.Loading
 import com.t3ddyss.clother.models.domain.Resource
 import com.t3ddyss.clother.models.domain.Response
-import com.t3ddyss.clother.utilities.DEFAULT_STRING_VALUE
 import com.t3ddyss.clother.utilities.EMAIL
 import com.t3ddyss.clother.utilities.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +16,7 @@ class PasswordRecoveryViewModel @Inject constructor(
     private val repository: UsersRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val _email = savedStateHandle.getLiveData(EMAIL, DEFAULT_STRING_VALUE)
+    private val _email = savedStateHandle.getLiveData(EMAIL, "")
     val email: LiveData<String> = _email
 
     private val _passwordRecoveryResult = MutableLiveData<Event<Resource<Response>>>()

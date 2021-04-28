@@ -79,7 +79,6 @@ class MessagesRepository @Inject constructor(
     private suspend fun setupCloudMessaging() = suspendCancellableCoroutine<String?> { cont ->
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             if (!task.isSuccessful) {
-                Log.d(DEBUG_TAG, "Fetching FCM registration token failed", task.exception)
                 cont.resume(null)
             }
 

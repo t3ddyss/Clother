@@ -19,7 +19,7 @@ import com.t3ddyss.clother.utilities.DEBUG_TAG
 
 class MessagesPagingLoader(
     private val service: ClotherChatService,
-    prefs: SharedPreferences,
+    private val prefs: SharedPreferences,
     private val db: AppDatabase,
     private val chatDao: ChatDao,
     private val messageDao: MessageDao,
@@ -27,22 +27,7 @@ class MessagesPagingLoader(
     private val listKey: String,
     private val interlocutor: User
 ) {
-    private var accessToken: String? = null
-    private var changeListener =
-        SharedPreferences.OnSharedPreferenceChangeListener { sp, key ->
-            run {
-                if (key == ACCESS_TOKEN) {
-                    accessToken = sp.getString(key, null)
-                }
-            }
-        }
-
     private var loadType = LoadType.REFRESH
-
-    init {
-        accessToken = prefs.getString(ACCESS_TOKEN, null)
-        prefs.registerOnSharedPreferenceChangeListener(changeListener)
-    }
 
     suspend fun load(): LoadResult {
         val key = when (loadType) {
@@ -62,7 +47,7 @@ class MessagesPagingLoader(
         return try {
             val items = service.getMessages(
                 interlocutorId = interlocutor.id,
-                accessToken = accessToken,
+                accessToken = prefs.getString(ACCESS_TOKEN, null),
                 afterKey = key,
                 beforeKey = null,
                 limit = CLOTHER_PAGE_SIZE_CHAT
@@ -98,7 +83,7 @@ class MessagesPagingLoader(
 
             LoadResult.Success(isEndOfPaginationReached = items.isEmpty())
         } catch (ex: Exception) {
-            Log.d(DEBUG_TAG, "MessagesPagingLoader $ex")
+            Log.d(DEBUG_TAG, "${this.javaClass.simpleName} $ex")
             LoadResult.Error(ex)
         }
     }

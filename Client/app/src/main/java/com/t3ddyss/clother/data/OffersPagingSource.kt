@@ -12,28 +12,14 @@ import com.t3ddyss.clother.utilities.ACCESS_TOKEN
 
 class OffersPagingSource(
     private val service: ClotherOffersService,
-    prefs: SharedPreferences,
+    private val prefs: SharedPreferences,
     private val query: Map<String, String>
 ) : PagingSource<Int, Offer>() {
-    private var accessToken: String? = null
-    private var changeListener =
-        SharedPreferences.OnSharedPreferenceChangeListener { sp, key ->
-            run {
-                if (key == ACCESS_TOKEN) {
-                    accessToken = sp.getString(key, null)
-                }
-            }
-        }
-
-    init {
-        accessToken = prefs.getString(ACCESS_TOKEN, null)
-        prefs.registerOnSharedPreferenceChangeListener(changeListener)
-    }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Offer> {
         return try {
             val items = service.getOffers(
-                accessToken = accessToken,
+                accessToken = prefs.getString(ACCESS_TOKEN, null),
                 afterKey = if (params is Append) params.key else null,
                 beforeKey = if (params is Prepend) params.key else null,
                 limit = params.loadSize,

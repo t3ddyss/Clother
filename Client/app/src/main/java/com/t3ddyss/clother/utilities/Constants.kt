@@ -7,7 +7,6 @@ const val BASE_URL_DEVICE = "http://192.168.0.105:5000/"
 // Default parameters
 const val CLOTHER_PAGE_SIZE = 10
 const val CLOTHER_PAGE_SIZE_CHAT = 25
-const val DEFAULT_STRING_VALUE = ""
 
 // Shared preferences keys
 const val ACCESS_TOKEN = "access_token"

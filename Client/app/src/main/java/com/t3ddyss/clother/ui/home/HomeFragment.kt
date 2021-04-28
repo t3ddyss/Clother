@@ -172,13 +172,9 @@ class HomeFragment : Fragment() {
             adapter.refresh()
         }
 
-        networkStateViewModel.isNetworkAvailable.observe(viewLifecycleOwner, {
-            if (it.first) {
-                if (it.second) {
-                    adapter.retry()
-                } else {
-                    (activity as? MainActivity)?.showGenericMessage(getString(R.string.no_connection))
-                }
+        networkStateViewModel.networkAvailability.observe(viewLifecycleOwner, {
+            if (it) {
+                adapter.retry()
             }
         })
 

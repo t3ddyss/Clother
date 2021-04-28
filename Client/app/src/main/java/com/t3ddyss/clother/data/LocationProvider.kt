@@ -47,8 +47,6 @@ class LocationProvider @Inject constructor(
     private suspend fun getInitalLocation() = callbackFlow {
 
         val initialLocationListener = OnSuccessListener<Location?> {
-            Log.d(DEBUG_TAG, "Got location in last location $it")
-
             if (it != null) {
                 val latLng = LocationData(
                     latLng = LatLng(it.latitude, it.longitude),
@@ -74,8 +72,6 @@ class LocationProvider @Inject constructor(
 
         val locationUpdatesObserver = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult?) {
-                Log.d(DEBUG_TAG, "Got location in onLocationResult $locationResult")
-
                 if (locationResult != null) {
                     val location = locationResult.locations.lastOrNull()
 

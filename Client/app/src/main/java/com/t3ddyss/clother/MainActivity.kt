@@ -2,19 +2,15 @@ package com.t3ddyss.clother
 
 import android.content.Intent
 import android.content.SharedPreferences
-import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
-import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -30,7 +26,7 @@ import com.t3ddyss.clother.viewmodels.NetworkStateViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.net.ConnectException
 import javax.inject.Inject
 
@@ -103,19 +99,29 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
 
-        destinationChangeListener = DestinationChangeListener(binding).also {
+        destinationChangeListener = DestinationChangeListener(binding, this).also {
             navController.addOnDestinationChangedListener(it)
         }
 
-        setupGoogleMap()
-        setupNetworkStateListener()
+        networkStateViewModel.networkAvailability.observe(this) {
+            Log.d(DEBUG_TAG, "Network is ${if (it) "connected" else "disconnected"}")
+
+            if (!it) {
+                showGenericMessage(getString(R.string.no_connection))
+            }
+        }
 
         startService(Intent(applicationContext, OnClearFromRecentService::class.java))
+
+        lifecycleScope.launchWhenCreated {
+            setupGoogleMap()
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         navController.removeOnDestinationChangedListener(destinationChangeListener)
+        prefs.unregisterOnSharedPreferenceChangeListener(changeListener)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -161,77 +167,6 @@ class MainActivity : AppCompatActivity() {
         snackbar.show()
     }
 
-    private fun setupGoogleMap() {
-        lifecycleScope.launch(Dispatchers.Default) {
-            try {
-                val mapView = MapView(applicationContext)
-                mapView.onCreate(null)
-                mapView.onPause()
-                mapView.onDestroy()
-            } catch (ex: Exception) {
-
-            }
-        }
-    }
-
-    // TODO replace Pair with data class
-    private fun setupNetworkStateListener() {
-        val connectivityManager = getSystemService(CONNECTIVITY_SERVICE)
-                as? ConnectivityManager ?: return
-
-        val isNetworkAvailable = isNetworkAvailable(connectivityManager)
-        if (isNetworkAvailable) {
-            networkStateViewModel.isNetworkAvailable.value = Pair(
-                first = false,
-                second = true
-            )
-        } else {
-            networkStateViewModel.isNetworkAvailable.value = Pair(
-                first = true,
-                second = false
-            )
-        }
-
-        connectivityManager.registerDefaultNetworkCallback(object :
-                                                               ConnectivityManager.NetworkCallback() {
-            override fun onAvailable(network: Network) {
-                val wasNetworkAvailable = networkStateViewModel.isNetworkAvailable.value!!.second
-
-                if (!wasNetworkAvailable) {
-                    networkStateViewModel.isNetworkAvailable.postValue(
-                        Pair(
-                            first = true,
-                            second = true
-                        )
-                    )
-                }
-            }
-
-            override fun onLost(network: Network) {
-                networkStateViewModel.isNetworkAvailable.postValue(
-                    Pair(
-                        first = true,
-                        second = false
-                    )
-                )
-
-                showGenericMessage(getString(R.string.no_connection))
-            }
-        })
-    }
-
-    private fun isNetworkAvailable(connectivityManager: ConnectivityManager): Boolean {
-        val network = connectivityManager.activeNetwork ?: return false
-        val networkCapabilities =
-            connectivityManager.getNetworkCapabilities(network) ?: return false
-
-        return with(networkCapabilities) {
-            hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
-                    || hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
-                    || hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
-        }
-    }
-
     fun setNavIconVisibility(isVisible: Boolean) {
         if (!isVisible) {
             binding.toolbar.navigationIcon = null
@@ -240,103 +175,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun setLoadingVisibility(isVisible: Boolean) {
-        binding.layoutLoading.isVisible = isVisible
-    }
+    private suspend fun setupGoogleMap() = withContext(Dispatchers.Default) {
+        try {
+            val mapView = MapView(applicationContext)
+            mapView.onCreate(null)
+            mapView.onPause()
+            mapView.onDestroy()
+        } catch (ex: Exception) {
 
-    inner class DestinationChangeListener(
-        private val binding: ActivityMainBinding
-    ) : NavController.OnDestinationChangedListener {
-        private val fragmentsWithoutBottomNav = setOf(
-            R.id.emailActionFragment,
-            R.id.offerEditorFragment, R.id.resetPasswordFragment, R.id.signInFragment,
-            R.id.signUpFragment, R.id.galleryFragment, R.id.locationFragment,
-            R.id.offerFragment, R.id.locationViewerFragment, R.id.searchFragment, R.id.chatFragment
-        )
-
-        private val fragmentsWithoutToolbar = setOf(R.id.searchFragment)
-
-        private val fragmentsWithToolbarLabel = setOf(
-            R.id.offerCategoryFragment,
-            R.id.offerEditorFragment, R.id.galleryFragment, R.id.locationFragment,
-            R.id.locationViewerFragment, R.id.searchByCategoryFragment, R.id.chatFragment,
-            R.id.homeFragment, R.id.chatsFragment, R.id.profileFragment
-        )
-
-        private val fragmentsWithoutNavIcon = setOf(
-            R.id.homeFragment,
-            R.id.profileFragment, R.id.searchByCategoryFragment,
-            R.id.searchFragment, R.id.signUpFragment, R.id.chatsFragment
-        )
-
-        private val fragmentsWithCustomUpIcon = setOf(
-            R.id.offerEditorFragment,
-            R.id.galleryFragment, R.id.locationFragment
-        )
-
-        private val fragmentsOverlayingToolbar = setOf(R.id.offerFragment)
-
-        override fun onDestinationChanged(
-            controller: NavController,
-            destination: NavDestination,
-            arguments: Bundle?
-        ) {
-            messagesViewModel.setIsChatsDestination(
-                destination.id == R.id.chatsFragment,
-                destination.id == R.id.chatFragment
-            )
-
-            with(binding) {
-                // NavView visibility
-                if (destination.id !in fragmentsWithoutBottomNav && !navView.isVisible) {
-                    navView.isVisible = true
-                } else if (destination.id in fragmentsWithoutBottomNav && navView.isVisible) {
-                    navView.isVisible = false
-                }
-
-                // Toolbar visibility
-                if (destination.id !in fragmentsWithoutToolbar && !toolbar.isVisible) {
-                    toolbar.isVisible = true
-                } else if (destination.id in fragmentsWithoutToolbar && toolbar.isVisible) {
-                    toolbar.isVisible = false
-                }
-                binding.navHostFragmentMarginTop.isVisible =
-                    destination.id !in fragmentsOverlayingToolbar
-                            && destination.id !in fragmentsWithoutToolbar
-
-                // Toolbar icon
-                if (destination.id !in fragmentsWithoutNavIcon
-                    && destination.id in fragmentsWithCustomUpIcon
-                ) {
-                    setIconClose(toolbar)
-                } else if (destination.id !in fragmentsWithoutNavIcon) {
-                    setIconUp(toolbar)
-                }
-
-                // Toolbar title
-                if (destination.id in fragmentsWithToolbarLabel) {
-                    supportActionBar?.setDisplayShowTitleEnabled(true)
-                } else {
-                    supportActionBar?.setDisplayShowTitleEnabled(false)
-                }
-
-                // Profile icon
-                binding.cardViewAvatar.imageViewAvatar.isVisible =
-                    destination.id == R.id.profileFragment
-
-            }
-        }
-
-        private fun setIconClose(toolbar: Toolbar) {
-            toolbar.setNavigationIcon(R.drawable.ic_close)
-            toolbar.navigationIcon?.colorFilter =
-                getThemeColor(R.attr.colorOnPrimary).toColorFilter()
-        }
-
-        fun setIconUp(toolbar: Toolbar) {
-            toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
-            toolbar.navigationIcon?.colorFilter =
-                getThemeColor(R.attr.colorOnPrimary).toColorFilter()
         }
     }
 }

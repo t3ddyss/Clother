@@ -29,8 +29,6 @@ class ImageProvider @Inject constructor(
     suspend fun getImagesStream() = merge(getInitialImages(), getImageUpdates())
 
     private suspend fun getInitialImages() = flow {
-        Log.d(DEBUG_TAG, "Going to emit initial images")
-
         emit(loadImagesFromGallery())
     }.flowOn(Dispatchers.IO)
 
@@ -40,8 +38,6 @@ class ImageProvider @Inject constructor(
             object : ContentObserver(Handler(application.applicationContext.mainLooper)) {
                 override fun onChange(selfChange: Boolean) {
                     if (selfChange) return
-                    Log.d(DEBUG_TAG, "Going to offer new images")
-
                     trySend(loadImagesFromGallery())
                 }
             }

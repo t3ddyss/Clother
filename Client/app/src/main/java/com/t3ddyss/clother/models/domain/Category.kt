@@ -2,7 +2,6 @@ package com.t3ddyss.clother.models.domain
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.t3ddyss.clother.utilities.DEFAULT_STRING_VALUE
 
 data class Category(
     val id: Int,
@@ -11,7 +10,7 @@ data class Category(
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
-        parcel.readString() ?: DEFAULT_STRING_VALUE,
+        parcel.readString().orEmpty(),
         parcel.readByte() != 0.toByte()
     )
 

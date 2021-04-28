@@ -20,27 +20,13 @@ import com.t3ddyss.clother.utilities.DEBUG_TAG
 @ExperimentalPagingApi
 class OffersRemoteMediator(
     private val service: ClotherOffersService,
-    prefs: SharedPreferences,
+    private val prefs: SharedPreferences,
     private val db: AppDatabase,
     private val offerDao: OfferDao,
     private val remoteKeyDao: RemoteKeyDao,
     private val listKey: String,
     private val query: Map<String, String>
 ) : RemoteMediator<Int, OfferEntity>() {
-    private var accessToken: String? = null
-    private var changeListener =
-        SharedPreferences.OnSharedPreferenceChangeListener { sp, key ->
-            run {
-                if (key == ACCESS_TOKEN) {
-                    accessToken = sp.getString(key, null)
-                }
-            }
-        }
-
-    init {
-        accessToken = prefs.getString(ACCESS_TOKEN, null)
-        prefs.registerOnSharedPreferenceChangeListener(changeListener)
-    }
 
     override suspend fun load(
         loadType: LoadType,
@@ -48,14 +34,10 @@ class OffersRemoteMediator(
     ): MediatorResult {
         val key: Int? = when (loadType) {
             LoadType.REFRESH -> {
-                Log.d(DEBUG_TAG, "REFRESH")
-
                 null
             }
 
             LoadType.PREPEND -> {
-                Log.d(DEBUG_TAG, "PREPEND")
-
                 return MediatorResult.Success(endOfPaginationReached = true)
             }
 
@@ -64,15 +46,13 @@ class OffersRemoteMediator(
                     remoteKeyDao.remoteKeyByList(listKey).afterKey
                 }
 
-                Log.d(DEBUG_TAG, "APPEND ${afterKey ?: "NULL"}")
-
                 afterKey ?: return MediatorResult.Success(endOfPaginationReached = true)
             }
         }
 
         return try {
             val items = service.getOffers(
-                accessToken = accessToken,
+                accessToken = prefs.getString(ACCESS_TOKEN, null),
                 afterKey = key,
                 beforeKey = null,
                 limit = when (loadType) {
@@ -96,7 +76,7 @@ class OffersRemoteMediator(
 
             MediatorResult.Success(endOfPaginationReached = items.isEmpty())
         } catch (ex: Exception) {
-            Log.d(DEBUG_TAG, "Mediator $ex")
+            Log.d(DEBUG_TAG, "${this.javaClass.simpleName} $ex")
             MediatorResult.Error(ex)
         }
     }

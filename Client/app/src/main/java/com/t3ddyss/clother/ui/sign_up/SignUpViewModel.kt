@@ -16,13 +16,13 @@ class SignUpViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _name = savedStateHandle.getLiveData(NAME, DEFAULT_STRING_VALUE)
+    private val _name = savedStateHandle.getLiveData(NAME, "")
     val name: LiveData<String> = _name
 
-    private val _email = savedStateHandle.getLiveData(EMAIL, DEFAULT_STRING_VALUE)
+    private val _email = savedStateHandle.getLiveData(EMAIL, "")
     val email: LiveData<String> = _email
 
-    private val _password = savedStateHandle.getLiveData(PASSWORD, DEFAULT_STRING_VALUE)
+    private val _password = savedStateHandle.getLiveData(PASSWORD, "")
     val password: LiveData<String> = _password
 
     private val _signUpResult = MutableLiveData<Event<Resource<Response>>>()
@@ -53,8 +53,8 @@ class SignUpViewModel @Inject constructor(
         savedStateHandle.remove<String>(EMAIL)
         savedStateHandle.remove<String>(PASSWORD)
 
-        _name.value = DEFAULT_STRING_VALUE
-        _email.value = DEFAULT_STRING_VALUE
-        _password.value = DEFAULT_STRING_VALUE
+        _name.value = ""
+        _email.value = ""
+        _password.value = ""
     }
 }
