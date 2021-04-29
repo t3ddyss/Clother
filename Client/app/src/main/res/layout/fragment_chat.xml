@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.chat.ChatFragment">
+    tools:context=".ui.chat.ChatFragment"
+    tools:ignore="ContentDescription">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_messages"

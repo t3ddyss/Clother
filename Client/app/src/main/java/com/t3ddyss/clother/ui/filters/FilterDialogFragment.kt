@@ -46,7 +46,8 @@ class FilterDialogFragment : BottomSheetDialogFragment() {
             findNavController().navigate(action)
         }
 
-        binding.buttonApply.setOnClickListener { _ ->
+        // TODO add ability to clear filters
+        binding.buttonApply.setOnClickListener {
             val distance = getSelectedDistance()
             val size = getSelectedSize()
 

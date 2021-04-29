@@ -11,11 +11,9 @@ import com.t3ddyss.clother.db.OfferDao
 import com.t3ddyss.clother.db.RemoteKeyDao
 import com.t3ddyss.clother.models.domain.Offer
 import com.t3ddyss.clother.models.domain.Resource
-import com.t3ddyss.clother.models.domain.Response
 import com.t3ddyss.clother.models.domain.Success
 import com.t3ddyss.clother.models.mappers.mapCategoryEntityToDomain
 import com.t3ddyss.clother.models.mappers.mapOfferEntityToDomain
-import com.t3ddyss.clother.models.mappers.mapResponseDtoToDomain
 import com.t3ddyss.clother.utilities.ACCESS_TOKEN
 import com.t3ddyss.clother.utilities.CLOTHER_PAGE_SIZE
 import com.t3ddyss.clother.utilities.handleNetworkException

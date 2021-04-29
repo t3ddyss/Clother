@@ -27,6 +27,7 @@ class GalleryFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var adapter: GalleryImagesAdapter
+    private lateinit var adapterDataObserver: RecyclerView.AdapterDataObserver
     private lateinit var layoutManager: GridLayoutManager
 
     @ExperimentalCoroutinesApi
@@ -58,11 +59,14 @@ class GalleryFragment : Fragment() {
             adapter.submitList(images)
         }
 
-        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+        adapterDataObserver = object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-//                layoutManager.scrollToPositionWithOffset(positionStart, 0)
+                if (layoutManager.findFirstVisibleItemPosition() == 0) {
+                    binding.list.scrollToPosition(positionStart)
+                }
             }
-        })
+        }
+        adapter.registerAdapterDataObserver(adapterDataObserver)
 
         val horizontalDecorator = DividerItemDecoration(activity, DividerItemDecoration.HORIZONTAL)
         val verticalDecorator = DividerItemDecoration(activity, DividerItemDecoration.VERTICAL)
@@ -103,6 +107,7 @@ class GalleryFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        adapter.unregisterAdapterDataObserver(adapterDataObserver)
         _binding = null
     }
 }

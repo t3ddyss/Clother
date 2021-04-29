@@ -38,6 +38,7 @@ class SearchResultsFragment : Fragment() {
     private var _binding: FragmentSearchResultsBinding? = null
     private val binding get() = _binding!!
     private val args by navArgs<SearchResultsFragmentArgs>()
+
     @Inject
     lateinit var prefs: SharedPreferences
 
@@ -48,6 +49,7 @@ class SearchResultsFragment : Fragment() {
         findNavController().navigate(action)
     }
     private lateinit var loadStateListener: (CombinedLoadStates) -> Unit
+    private lateinit var onScrollListener: RecyclerView.OnScrollListener
 
     @ExperimentalCoroutinesApi
     override fun onCreateView(
@@ -123,7 +125,7 @@ class SearchResultsFragment : Fragment() {
         }
 
         // Show progressbar if reached end of current list
-        binding.list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        onScrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 binding.progressBarFooter.isVisible =
@@ -132,7 +134,8 @@ class SearchResultsFragment : Fragment() {
                             && !viewModel.endOfPaginationReachedBottom
                             && (recyclerView.adapter?.itemCount ?: 0) > 0)
             }
-        })
+        }
+        binding.list.addOnScrollListener(onScrollListener)
 
         viewModel.offers.observe(viewLifecycleOwner) {
             lifecycleScope.launch {
@@ -151,7 +154,6 @@ class SearchResultsFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.toolbar_search_results_menu, menu)
     }
-
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -177,6 +179,7 @@ class SearchResultsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         adapter.removeLoadStateListener(loadStateListener)
+        binding.list.removeOnScrollListener(onScrollListener)
         _binding = null
     }
 

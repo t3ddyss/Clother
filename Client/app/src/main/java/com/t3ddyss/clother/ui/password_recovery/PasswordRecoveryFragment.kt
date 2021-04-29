@@ -41,7 +41,7 @@ class PasswordRecoveryFragment : Fragment() {
         viewModel.passwordRecoveryResult.observe(viewLifecycleOwner) {
             if (it.hasBeenHandled && it is Success<*>) return@observe
 
-            when (val response = it.peekContent()) {
+            when (val response = it.getContentIfNotHandled() ?: return@observe) {
                 is Loading<*> ->
                     binding.layoutLoading.isVisible = true
                 is Success<Response> -> {

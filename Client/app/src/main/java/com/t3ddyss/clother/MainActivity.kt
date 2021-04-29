@@ -44,8 +44,10 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var prefs: SharedPreferences
+
     @Inject
     lateinit var onClearFromRecentService: OnClearFromRecentService
+
     @Inject
     lateinit var notificationUtil: NotificationUtil
 
@@ -103,8 +105,8 @@ class MainActivity : AppCompatActivity() {
 
         destinationChangeListener =
             DestinationChangeListener(binding, this, notificationUtil).also {
-            navController.addOnDestinationChangedListener(it)
-        }
+                navController.addOnDestinationChangedListener(it)
+            }
 
         networkStateViewModel.networkAvailability.observe(this) {
             Log.d(DEBUG_TAG, "Network is ${if (it) "connected" else "disconnected"}")

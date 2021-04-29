@@ -28,6 +28,7 @@ class OfferFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val args by navArgs<OfferFragmentArgs>()
+
     @Inject
     lateinit var prefs: SharedPreferences
 

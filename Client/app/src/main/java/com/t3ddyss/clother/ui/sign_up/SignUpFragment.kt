@@ -39,56 +39,57 @@ class SignUpFragment : Fragment() {
         _binding = FragmentSignUpBinding.inflate(inflater, container, false)
 
         viewModel.name.observe(viewLifecycleOwner,
-                               {
-                                   it?.let {
-                                       binding.editTextName.text = it.toEditable()
-                                   }
-                               })
+            {
+                it?.let {
+                    binding.editTextName.text = it.toEditable()
+                }
+            })
         viewModel.email.observe(viewLifecycleOwner,
-                                {
-                                    it?.let {
-                                        binding.editTextEmail.text = it.toEditable()
-                                    }
-                                })
+            {
+                it?.let {
+                    binding.editTextEmail.text = it.toEditable()
+                }
+            })
         viewModel.password.observe(viewLifecycleOwner,
-                                   {
-                                       it?.let {
-                                           binding.editTextPassword.text = it.toEditable()
-                                       }
-                                   })
+            {
+                it?.let {
+                    binding.editTextPassword.text = it.toEditable()
+                }
+            })
 
         // TODO implement error messages localization on server side or in client
         viewModel.signUpResult.observe(viewLifecycleOwner,
-                                       {
-                                           if (it.hasBeenHandled && it is Success<*>) return@observe
+            {
+                if (it.hasBeenHandled && it is Success<*>) return@observe
 
-                                           when (val response = it.peekContent()) {
-                                               is Loading<*> ->
-                                                   binding.layoutLoading.isVisible = true
-                                               is Success<*> -> {
-                                                   findNavController().navigate(
-                                                       SignUpFragmentDirections.actionSignUpFragmentToEmailActionFragment(
-                                                           getString(R.string.email_activation),
-                                                           binding.editTextEmail.text()
-                                                       )
-                                                   )
-                                                   binding.layoutLoading.isVisible = false
-                                                   viewModel.clearCredentials()
-                                               }
-                                               is Error<*> -> {
-                                                   binding.layoutLoading.isVisible = false
-                                                   (activity as? MainActivity)?.showGenericMessage(
-                                                       response.message
-                                                   )
-                                               }
-                                               is Failed<*> -> {
-                                                   binding.layoutLoading.isVisible = false
-                                                   (activity as? MainActivity)?.showGenericMessage(
-                                                       getString(R.string.no_connection)
-                                                   )
-                                               }
-                                           }
-                                       })
+                when (val response = it.getContentIfNotHandled()
+                    ?: return@observe) {
+                    is Loading<*> ->
+                        binding.layoutLoading.isVisible = true
+                    is Success<*> -> {
+                        findNavController().navigate(
+                            SignUpFragmentDirections.actionSignUpFragmentToEmailActionFragment(
+                                getString(R.string.email_activation),
+                                binding.editTextEmail.text()
+                            )
+                        )
+                        binding.layoutLoading.isVisible = false
+                        viewModel.clearCredentials()
+                    }
+                    is Error<*> -> {
+                        binding.layoutLoading.isVisible = false
+                        (activity as? MainActivity)?.showGenericMessage(
+                            response.message
+                        )
+                    }
+                    is Failed<*> -> {
+                        binding.layoutLoading.isVisible = false
+                        (activity as? MainActivity)?.showGenericMessage(
+                            getString(R.string.no_connection)
+                        )
+                    }
+                }
+            })
 
         return binding.root
     }

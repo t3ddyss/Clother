@@ -5,7 +5,10 @@ import com.t3ddyss.clother.data.UsersRepository
 import com.t3ddyss.clother.models.domain.Loading
 import com.t3ddyss.clother.models.domain.Resource
 import com.t3ddyss.clother.models.domain.Response
-import com.t3ddyss.clother.utilities.*
+import com.t3ddyss.clother.utilities.EMAIL
+import com.t3ddyss.clother.utilities.Event
+import com.t3ddyss.clother.utilities.NAME
+import com.t3ddyss.clother.utilities.PASSWORD
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

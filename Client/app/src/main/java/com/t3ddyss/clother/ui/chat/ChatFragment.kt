@@ -31,6 +31,8 @@ class ChatFragment : Fragment() {
     private val adapter by lazy {
         MessagesAdapter(args.userId)
     }
+    private lateinit var adapterDataObserver: RecyclerView.AdapterDataObserver
+    private lateinit var onScrollListener: RecyclerView.OnScrollListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,17 +49,19 @@ class ChatFragment : Fragment() {
         val interlocutor = User(id = args.userId, name = args.userName, image = "", email = "")
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, true)
 
-        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+        adapterDataObserver = object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 if (layoutManager.findFirstVisibleItemPosition() == 0) {
                     binding.listMessages.scrollToPosition(positionStart)
                 }
             }
-        })
+        }
+        adapter.registerAdapterDataObserver(adapterDataObserver)
 
         binding.listMessages.layoutManager = layoutManager
         binding.listMessages.adapter = adapter
-        binding.listMessages.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+        onScrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (dy < 0) {
                     val visibleItemCount = layoutManager.childCount
@@ -72,7 +76,8 @@ class ChatFragment : Fragment() {
                     }
                 }
             }
-        })
+        }
+        binding.listMessages.addOnScrollListener(onScrollListener)
 
         binding.buttonSend.setOnClickListener {
             viewModel.sendMessage(binding.editTextMessage.text(), interlocutor)
@@ -103,6 +108,8 @@ class ChatFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        adapter.unregisterAdapterDataObserver(adapterDataObserver)
+        binding.listMessages.removeOnScrollListener(onScrollListener)
         _binding = null
     }
 

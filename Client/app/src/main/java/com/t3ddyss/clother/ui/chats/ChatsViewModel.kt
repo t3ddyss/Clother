@@ -19,7 +19,7 @@ class ChatsViewModel @Inject constructor(
 ) : ViewModel() {
     private val _chats = MutableLiveData<Resource<List<ChatWithLastMessage>>>()
     val chats: LiveData<Resource<List<ChatWithLastMessage>>> = _chats
-    var isChatsLoaded = AtomicBoolean(false)
+    private val isChatsLoaded = AtomicBoolean(false)
 
     fun getChats() {
         if (isChatsLoaded.getAndSet(true)) return

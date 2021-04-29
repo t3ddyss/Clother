@@ -44,7 +44,7 @@ class LocationViewerFragment : Fragment() {
         mapView?.onCreate(savedInstanceState?.getBundle(MAPVIEW_BUNDLE))
         mapView?.getMapAsync { googleMap ->
             map = googleMap
-            map.uiSettings?.isMyLocationButtonEnabled = false
+            map.uiSettings.isMyLocationButtonEnabled = false
 
             val circle = CircleOptions()
                 .center(point)

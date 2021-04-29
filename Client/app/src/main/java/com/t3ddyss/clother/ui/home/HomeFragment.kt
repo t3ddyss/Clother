@@ -45,6 +45,7 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private val args by navArgs<HomeFragmentArgs>()
+
     @Inject
     lateinit var prefs: SharedPreferences
 
@@ -185,7 +186,8 @@ class HomeFragment : Fragment() {
         }
 
         viewModel.newOfferAdded.observe(viewLifecycleOwner) {
-            if (it.hasBeenHandled) return@observe
+            it.getContentIfNotHandled()?: return@observe
+
             (activity as? MainActivity)?.showGenericMessage(getString(R.string.offer_created))
         }
 

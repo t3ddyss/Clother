@@ -9,13 +9,12 @@ import android.util.Log
 import com.bumptech.glide.Glide
 import com.t3ddyss.clother.utilities.DEBUG_TAG
 import id.zelory.compressor.Compressor
+import kotlinx.coroutines.DEBUG_PROPERTY_NAME
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
@@ -26,15 +25,10 @@ class ImageProvider @Inject constructor(
     private val uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 
     @ExperimentalCoroutinesApi
-    suspend fun getImagesStream() = merge(getInitialImages(), getImageUpdates())
+    suspend fun getImagesStream() = callbackFlow {
+        trySend(loadImagesFromGallery())
 
-    private suspend fun getInitialImages() = flow {
-        emit(loadImagesFromGallery())
-    }.flowOn(Dispatchers.IO)
-
-    @ExperimentalCoroutinesApi
-    private suspend fun getImageUpdates() = callbackFlow<List<Uri>> {
-        val newImagesObserver =
+        val imageUpdatesObserver =
             object : ContentObserver(Handler(application.applicationContext.mainLooper)) {
                 override fun onChange(selfChange: Boolean) {
                     if (selfChange) return
@@ -44,10 +38,10 @@ class ImageProvider @Inject constructor(
         application.contentResolver.registerContentObserver(
             uri,
             true,
-            newImagesObserver
+            imageUpdatesObserver
         )
         awaitClose {
-            application.contentResolver.unregisterContentObserver(newImagesObserver)
+            application.contentResolver.unregisterContentObserver(imageUpdatesObserver)
         }
     }.flowOn(Dispatchers.IO)
 

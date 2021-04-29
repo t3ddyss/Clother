@@ -13,7 +13,7 @@ import javax.inject.Inject
 class ConnectivityUtil @Inject constructor(
     @ApplicationContext context: Context
 ) {
-    private val connectivityManager= context
+    private val connectivityManager = context
         .getSystemService(AppCompatActivity.CONNECTIVITY_SERVICE) as? ConnectivityManager
 
     fun getConnectivityStatusStream() = callbackFlow {

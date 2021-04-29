@@ -146,7 +146,6 @@
                 android:paddingEnd="@dimen/fragment_horizontal_margin"
                 android:textSize="@dimen/text_size_medium"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/imageView2"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@id/imageView_location"
                 app:layout_constraintTop_toTopOf="parent"

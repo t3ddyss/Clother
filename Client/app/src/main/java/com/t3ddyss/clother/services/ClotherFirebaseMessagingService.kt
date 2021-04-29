@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class ClotherFirebaseMessagingService : FirebaseMessagingService() {
-    private val coroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    private val scope = MainScope()
     @Inject
     lateinit var service: ClotherAuthService
     @Inject
@@ -19,11 +19,16 @@ class ClotherFirebaseMessagingService : FirebaseMessagingService() {
     override fun onNewToken(token: String) {
         val handler = CoroutineExceptionHandler { _, _ -> }
 
-        coroutineScope.launch(handler) {
+        scope.launch(handler) {
             service.sendDeviceToken(
                 accessToken = prefs.getString(ACCESS_TOKEN, null),
                 token = token
             )
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        scope.cancel()
     }
 }

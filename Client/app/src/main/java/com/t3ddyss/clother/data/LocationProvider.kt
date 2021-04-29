@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.location.Location
 import android.os.Looper
-import android.util.Log
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
@@ -14,7 +13,6 @@ import com.google.android.gms.tasks.OnSuccessListener
 import com.t3ddyss.clother.db.LocationDao
 import com.t3ddyss.clother.models.domain.LocationData
 import com.t3ddyss.clother.models.entity.LocationEntity
-import com.t3ddyss.clother.utilities.DEBUG_TAG
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
@@ -29,7 +27,7 @@ class LocationProvider @Inject constructor(
         .getFusedLocationProviderClient(application.applicationContext)
 
     @ExperimentalCoroutinesApi
-    suspend fun getLocationStream() = merge(getInitalLocation(), getLocationUpdates())
+    suspend fun getLocationStream() = merge(getInitialLocation(), getLocationUpdates())
 
     suspend fun getLatestSavedLocation() = locationDao.getLatestLocation()
 
@@ -44,7 +42,7 @@ class LocationProvider @Inject constructor(
 
     @ExperimentalCoroutinesApi
     @SuppressLint("MissingPermission")
-    private suspend fun getInitalLocation() = callbackFlow {
+    private suspend fun getInitialLocation() = callbackFlow {
 
         val initialLocationListener = OnSuccessListener<Location?> {
             if (it != null) {

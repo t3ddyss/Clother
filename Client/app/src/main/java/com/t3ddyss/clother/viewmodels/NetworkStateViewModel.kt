@@ -24,10 +24,9 @@ class NetworkStateViewModel @Inject constructor(
             connectivityUtil.getConnectivityStatusStream().collect { isNetworkAvailable ->
                 if (isNetworkPreviouslyAvailable == null && !isNetworkAvailable) {
                     _networkAvailability.postValue(isNetworkAvailable)
-                }
-
-                else if (isNetworkPreviouslyAvailable != null
-                    && isNetworkPreviouslyAvailable != isNetworkAvailable) {
+                } else if (isNetworkPreviouslyAvailable != null
+                    && isNetworkPreviouslyAvailable != isNetworkAvailable
+                ) {
                     _networkAvailability.postValue(isNetworkAvailable)
                 }
 

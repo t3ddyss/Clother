@@ -2,7 +2,6 @@ package com.t3ddyss.clother.api
 
 import com.t3ddyss.clother.models.dto.OfferDto
 import com.t3ddyss.clother.models.dto.OfferPostResponseDto
-import com.t3ddyss.clother.models.dto.ResponseDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response

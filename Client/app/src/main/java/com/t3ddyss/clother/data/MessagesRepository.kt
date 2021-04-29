@@ -1,7 +1,6 @@
 package com.t3ddyss.clother.data
 
 import android.content.SharedPreferences
-import android.util.Log
 import com.google.firebase.messaging.FirebaseMessaging
 import com.t3ddyss.clother.api.ClotherAuthService
 import com.t3ddyss.clother.api.ClotherChatService
@@ -13,7 +12,6 @@ import com.t3ddyss.clother.models.domain.LoadResult
 import com.t3ddyss.clother.models.domain.User
 import com.t3ddyss.clother.models.mappers.mapMessageEntityToDomain
 import com.t3ddyss.clother.utilities.ACCESS_TOKEN
-import com.t3ddyss.clother.utilities.DEBUG_TAG
 import com.t3ddyss.clother.utilities.IS_DEVICE_TOKEN_RETRIEVED
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.*

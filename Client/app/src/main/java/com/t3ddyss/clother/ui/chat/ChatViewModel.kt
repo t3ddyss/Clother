@@ -27,7 +27,7 @@ class ChatViewModel @Inject constructor(
     private val _loadStatus = MutableLiveData<LoadResult>()
     val loadStatus: LiveData<LoadResult> = _loadStatus
 
-    var isLoading = AtomicBoolean(false)
+    private val isLoading = AtomicBoolean(false)
     var isEndOfPaginationReached = false
 
     fun getMessages(interlocutor: User) {
