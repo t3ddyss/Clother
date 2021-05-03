@@ -50,7 +50,7 @@ def create_database():
 
 @blueprint.cli.command('populate_categories')
 def populate_categories():
-    categories = json.load(open("./categories.json", 'r'))
+    categories = json.load(open("clother/static/categories.json", 'r'))
 
     for item in categories:
         category = Category(parent_id=item['parent_id'], title=item['title'])
@@ -73,7 +73,7 @@ def populate_categories():
 def mock_users():
     User.query.delete()
 
-    users = json.load(open("./users.json", 'r'))
+    users = json.load(open("clother/static/users.json", 'r'))
 
     for item in users:
         user = User(email=item['email'],
@@ -88,15 +88,17 @@ def mock_users():
 
 
 @blueprint.cli.command('mock_offers')
-def mock_offers():
+@click.argument('count', required=False)
+def mock_offers(count):
     Offer.query.delete()
     Image.query.delete()
     Location.query.delete()
     db.session.commit()
 
-    offers = json.load(open("./offers.json", 'r'))
+    offers = json.load(open("clother/static/offers.json", 'r'))
+    # limit = int(count)
 
-    for item in offers:
+    for i, item in enumerate(offers):
         offer = Offer(title=item['title'],
                       category_id=item['category_id'],
                       user_id=get_random_user(),
@@ -111,6 +113,11 @@ def mock_offers():
         try:
             db.session.add(offer)
             db.session.commit()
+            # print(f'i = {i}')
+            # print(f'limit = {limit}')
+            # if i + 1 >= limit:
+            #     break
+
         except IntegrityError as ex:
             print(repr(ex))
             db.session.rollback()

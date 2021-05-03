@@ -1,6 +1,7 @@
 Flask_WTF==0.14.3
 Flask_SocketIO==5.0.1
 eventlet==0.30.2
+gunicorn==20.1.0
 Flask_Migrate==2.6.0
 itsdangerous==1.1.0
 click==7.1.2
@@ -14,4 +15,3 @@ Flask==1.1.2
 alembic==1.5.4
 Werkzeug==1.0.1
 email_validator==1.1.2
-secrets==1.0.2

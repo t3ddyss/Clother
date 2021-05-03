@@ -17,9 +17,10 @@ def create_app(config_filename='config.py'):
     register_extensions(app)
     register_blueprints(app)
 
-    # TODO database event doesn't work with eventlet
-    wsgi.server(eventlet.listen(('', 5000)), app)
+    # Uncomment this line if you are going to run app without gunicorn
+    # wsgi.server(eventlet.listen(('', 5000)), app)
 
+    # TODO database events doesn't seem to work with eventlet
     with app.app_context():
         @event.listens_for(db.engine, 'connect')
         def on_connect(dbapi_con, connection_record):
