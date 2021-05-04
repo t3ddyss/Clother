@@ -4,6 +4,7 @@ FROM python:3.8-slim-buster
 
 COPY . /app
 WORKDIR /app
+MKDIR /instance/images
 
 RUN pip3 install -r requirements.txt
 
@@ -16,4 +17,5 @@ RUN ["flask", "admin", "populate_categories"]
 RUN ["flask", "admin", "mock_users"]
 RUN ["flask", "admin", "mock_messages"]
 RUN ["flask", "admin", "mock_offers"]
+
 CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--worker-class", "eventlet", "-w", "1", "run:gunicorn_app"]

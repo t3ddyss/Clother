@@ -101,7 +101,7 @@ def register():
         button_text='Verify email',
         action_url=confirmation_url)
 
-    send_email(subject='Confirm your email address', recipients=[user.email], html=html) # TODO for debug
+    send_email(subject='Confirm your email address', recipients=[user.email], html=html)
 
     return {'message': 'Check your inbox'}
 

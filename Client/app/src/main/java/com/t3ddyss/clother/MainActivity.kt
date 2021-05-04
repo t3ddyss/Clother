@@ -9,14 +9,12 @@ import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.gms.maps.MapView
 import com.google.android.material.snackbar.Snackbar
 import com.t3ddyss.clother.databinding.ActivityMainBinding
 import com.t3ddyss.clother.services.OnClearFromRecentService
@@ -24,9 +22,7 @@ import com.t3ddyss.clother.utilities.*
 import com.t3ddyss.clother.viewmodels.MessagesViewModel
 import com.t3ddyss.clother.viewmodels.NetworkStateViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.withContext
 import java.net.ConnectException
 import javax.inject.Inject
 
@@ -115,12 +111,6 @@ class MainActivity : AppCompatActivity() {
                 showGenericMessage(getString(R.string.no_connection))
             }
         }
-
-        startService(Intent(applicationContext, OnClearFromRecentService::class.java))
-
-        lifecycleScope.launchWhenCreated {
-            setupGoogleMap()
-        }
     }
 
     override fun onDestroy() {
@@ -177,17 +167,6 @@ class MainActivity : AppCompatActivity() {
             binding.toolbar.navigationIcon = null
         } else {
             destinationChangeListener.setIconUp(binding.toolbar)
-        }
-    }
-
-    private suspend fun setupGoogleMap() = withContext(Dispatchers.Default) {
-        try {
-            val mapView = MapView(applicationContext)
-            mapView.onCreate(null)
-            mapView.onPause()
-            mapView.onDestroy()
-        } catch (ex: Exception) {
-
         }
     }
 }
