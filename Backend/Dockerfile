@@ -4,7 +4,7 @@ FROM python:3.8-slim-buster
 
 COPY . /app
 WORKDIR /app
-MKDIR /instance/images
+RUN mkdir ./instance/images
 
 RUN pip3 install -r requirements.txt
 
