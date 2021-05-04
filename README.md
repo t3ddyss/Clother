@@ -44,13 +44,13 @@ Follow the steps below to run the application.
 7. Now open `Client` folder as Android Studio project
 8. Add the following line to `gradle.properties` (global) file: `GOOGLE_MAPS_API_KEY="%YOUR_API_KEY%"`. 
 9. If you are going to run this app on your physical device, go to `Client/app/src/main/java/com/t3ddyss/clother/utilities/Constants.kt` and change `BASE_URL_DEVICE` to IP address of your machine
-10. Register app with Firebase as described [here](https://firebase.google.com/docs/cloud-messaging/android/client#register_your_app_with_firebase). You will need to replace `Client/app/google-services.json` with your own `google-services.json` file
+10. Register the app with Firebase as described [here](https://firebase.google.com/docs/cloud-messaging/android/client#register_your_app_with_firebase). You will need to replace `Client/app/google-services.json` with your own `google-services.json` file
 11. At this point, you should be able to successfully build, run and use application
 
 
 ## Roadmap
 
-* Migrate to [PostgreSQL](https://www.postgresql.org/) and add advanced triggers to database
+* Migrate to [PostgreSQL](https://www.postgresql.org/) and add advanced triggers to the database
 * Support Room database migrations
 * Implement deep linking for push notifications
 * Support different timezones
