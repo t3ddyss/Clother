@@ -17,7 +17,6 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.snackbar.Snackbar
 import com.t3ddyss.clother.databinding.ActivityMainBinding
-import com.t3ddyss.clother.services.OnClearFromRecentService
 import com.t3ddyss.clother.utilities.*
 import com.t3ddyss.clother.viewmodels.MessagesViewModel
 import com.t3ddyss.clother.viewmodels.NetworkStateViewModel
@@ -40,9 +39,6 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var prefs: SharedPreferences
-
-    @Inject
-    lateinit var onClearFromRecentService: OnClearFromRecentService
 
     @Inject
     lateinit var notificationUtil: NotificationUtil
