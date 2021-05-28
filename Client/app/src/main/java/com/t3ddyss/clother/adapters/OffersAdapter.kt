@@ -1,5 +1,6 @@
 package com.t3ddyss.clother.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
@@ -8,6 +9,7 @@ import com.bumptech.glide.Glide
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.ListItemOfferBinding
 import com.t3ddyss.clother.models.domain.Offer
+import com.t3ddyss.clother.utilities.DEBUG_TAG
 
 class OffersAdapter(
     private val clickListener: (Offer) -> Unit
@@ -35,6 +37,7 @@ class OffersAdapter(
                 val offer = getItem(absoluteAdapterPosition)
 
                 if (offer != null) {
+                    Log.d(DEBUG_TAG, layoutPosition.toString())
                     clickListener.invoke(offer)
                 }
             }

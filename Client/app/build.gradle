@@ -18,6 +18,7 @@ android {
         applicationId "com.t3ddyss.clother"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         versionCode 1
         versionName "0.1.0"
 
@@ -46,6 +47,13 @@ android {
     kotlinOptions.freeCompilerArgs += [
             "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi"
     ]
+
+    packagingOptions {
+        exclude "**/attach_hotspot_windows.dll"
+        exclude "META-INF/licenses/**"
+        exclude "META-INF/AL2.0"
+        exclude "META-INF/LGPL2.1"
+    }
 }
 
 dependencies {
@@ -92,4 +100,23 @@ dependencies {
     }
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
+
+    testImplementation "androidx.arch.core:core-testing:$arch_core_test_version"
+    testImplementation "androidx.test:core:$test_version"
+    testImplementation "androidx.test.ext:junit:$test_ext_junit_version"
+    testImplementation "androidx.test:runner:$test_version"
+    testImplementation "androidx.test:rules:$test_version"
+    testImplementation "com.google.truth:truth:$truth_version"
+    testImplementation "junit:junit:$junit_version"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_test_version"
+    testImplementation "org.mockito:mockito-core:$mockito_version"
+    androidTestImplementation "androidx.arch.core:core-testing:$arch_core_test_version"
+    androidTestImplementation "androidx.test:core:$test_version"
+    androidTestImplementation "androidx.test.ext:junit:$test_ext_junit_version"
+    androidTestImplementation "androidx.test:runner:$test_version"
+    androidTestImplementation "androidx.test:rules:$test_version"
+    androidTestImplementation "com.google.truth:truth:$truth_version"
+    androidTestImplementation "junit:junit:$junit_version"
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_test_version"
+    androidTestImplementation "org.mockito:mockito-core:$mockito_version"
 }

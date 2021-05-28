@@ -2,11 +2,11 @@ package com.t3ddyss.clother.utilities
 
 import android.content.Context
 import android.text.Editable
-import android.util.Patterns
 import android.util.TypedValue
 import androidx.annotation.AttrRes
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
+import androidx.core.util.PatternsCompat
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.textfield.TextInputEditText
 import java.text.SimpleDateFormat
@@ -18,7 +18,7 @@ private val password_regex =
 
 fun String.validateName() = this.matches(name_regex)
 
-fun String.validateEmail() = Patterns.EMAIL_ADDRESS.matcher(this).matches()
+fun String.validateEmail() = PatternsCompat.EMAIL_ADDRESS.matcher(this).matches()
 
 fun String.validatePassword() = this.matches(password_regex)
 

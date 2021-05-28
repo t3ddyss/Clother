@@ -45,9 +45,6 @@
         </activity>
 
         <service
-            android:name=".services.OnClearFromRecentService"
-            android:stopWithTask="false" />
-        <service
             android:name=".services.ClotherFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
