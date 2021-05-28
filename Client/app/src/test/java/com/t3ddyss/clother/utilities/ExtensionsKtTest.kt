@@ -48,12 +48,29 @@ class ExtensionsKtTest {
     }
 
     @Test
+    fun `too short password returns false`() {
+        assertThat("Abc12?".validatePassword()).isFalse()
+    }
+
+    @Test
+    fun `too long password returns false`() {
+        val password = "A".repeat(5) +
+                "b".repeat(5) +
+                "c".repeat(5) +
+                "1".repeat(5) +
+                "2".repeat(5) +
+                "?".repeat(5)
+
+        assertThat(password.validatePassword()).isFalse()
+    }
+
+    @Test
     fun `weak password returns false`() {
-        assertThat("12345".validatePassword()).isFalse()
+        assertThat("123456789".validatePassword()).isFalse()
     }
 
     @Test
     fun `strong password returns true`() {
-        assertThat("abc123ABC?".validatePassword()).isTrue()
+        assertThat("Abc12?Def".validatePassword()).isTrue()
     }
 }

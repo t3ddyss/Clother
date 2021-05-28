@@ -6,23 +6,26 @@ import androidx.room.Room
 import com.t3ddyss.clother.db.*
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import dagger.hilt.testing.TestInstallIn
+import java.lang.IllegalStateException
 import javax.inject.Singleton
 
 @Module
-@InstallIn(SingletonComponent::class)
-object DatabaseModule {
-    private const val DATABASE_NAME = "Clother.db"
-
-    // TODO implement migration
+@TestInstallIn(
+    components = [SingletonComponent::class],
+    replaces = [DatabaseModule::class]
+)
+object TestDatabaseModule {
     @Singleton
     @Provides
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
         return Room
-            .databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME)
-            .createFromAsset("clother_category.db")
+            .inMemoryDatabaseBuilder(
+                context,
+                AppDatabase::class.java)
+            .allowMainThreadQueries()
             .build()
     }
 

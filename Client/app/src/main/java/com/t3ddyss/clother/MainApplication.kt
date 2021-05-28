@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 
 @HiltAndroidApp
-class ClotherApplication : Application() {
+class MainApplication : Application() {
     private val scope = MainScope()
     @Inject
     lateinit var notificationUtil: NotificationUtil
