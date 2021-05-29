@@ -18,7 +18,7 @@ android {
         applicationId "com.t3ddyss.clother"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        testInstrumentationRunner "com.t3ddyss.clother.utilities.MainTestRunner"
+        testInstrumentationRunner "com.t3ddyss.clother.utils.MainTestRunner"
         versionCode 1
         versionName "0.1.0"
 
@@ -105,6 +105,7 @@ dependencies {
     }
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
+
     testImplementation "androidx.arch.core:core-testing:$arch_core_test_version"
     testImplementation "androidx.test:core:$test_version"
     testImplementation "androidx.test.ext:junit:$test_ext_junit_version"
@@ -114,7 +115,7 @@ dependencies {
     testImplementation "com.google.truth:truth:$truth_version"
     testImplementation "junit:junit:$junit_version"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_test_version"
-    testImplementation "org.mockito:mockito-core:$mockito_version"
+    testImplementation "org.mockito:mockito-android:$mockito_version"
     androidTestImplementation "androidx.arch.core:core-testing:$arch_core_test_version"
     androidTestImplementation "androidx.test:core:$test_version"
     androidTestImplementation "androidx.test.ext:junit:$test_ext_junit_version"
@@ -124,5 +125,5 @@ dependencies {
     androidTestImplementation "com.google.truth:truth:$truth_version"
     androidTestImplementation "junit:junit:$junit_version"
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_test_version"
-    androidTestImplementation "org.mockito:mockito-core:$mockito_version"
+    androidTestImplementation "org.mockito:mockito-android:$mockito_version"
 }

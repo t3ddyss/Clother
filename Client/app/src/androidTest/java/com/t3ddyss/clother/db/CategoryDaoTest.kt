@@ -12,6 +12,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.RuleChain
 import org.junit.runner.RunWith
 import javax.inject.Inject
 
@@ -20,25 +21,27 @@ import javax.inject.Inject
 @MediumTest
 class CategoryDaoTest {
 
+    private val hiltAndroidRule = HiltAndroidRule(this)
+    private val instantTaskExecutorRule = InstantTaskExecutorRule()
+
     @Inject
     lateinit var db: AppDatabase
     @Inject
     lateinit var dao: CategoryDao
 
-    @get:Rule(order = 0)
-    val hiltAndroidRule = HiltAndroidRule(this)
-
-    @get:Rule(order = 1)
-    val instantTaskExecutorRule = InstantTaskExecutorRule()
+    @get:Rule
+    val rule = RuleChain
+        .outerRule(hiltAndroidRule)
+        .around(instantTaskExecutorRule)
 
     @Before
-    fun setup() = runBlockingTest {
+    fun setUp() = runBlockingTest {
         hiltAndroidRule.inject()
         mockCategories()
     }
 
     @After
-    fun teardown() {
+    fun tearDown() {
         db.close()
     }
 

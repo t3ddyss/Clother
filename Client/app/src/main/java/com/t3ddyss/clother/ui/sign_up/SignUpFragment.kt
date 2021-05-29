@@ -38,6 +38,18 @@ class SignUpFragment : Fragment() {
     ): View {
         _binding = FragmentSignUpBinding.inflate(inflater, container, false)
 
+        binding.buttonSignUp.setOnClickListener {
+            val name = binding.editTextName.text()
+            val email = binding.editTextEmail.text()
+            val password = binding.editTextPassword.text()
+
+            viewModel.createUserWithCredentials(name, email, password)
+        }
+
+        binding.textViewSignIn.setOnClickListener {
+            findNavController().navigate(R.id.action_signUpFragment_to_signInFragment)
+        }
+
         viewModel.name.observe(viewLifecycleOwner,
             {
                 it?.let {
@@ -56,6 +68,21 @@ class SignUpFragment : Fragment() {
                     binding.editTextPassword.text = it.toEditable()
                 }
             })
+
+        viewModel.nameError.observe(viewLifecycleOwner) {
+            binding.textInputName.error = getString(R.string.name_requirements)
+            binding.textInputName.isErrorEnabled = it
+        }
+
+        viewModel.emailError.observe(viewLifecycleOwner) {
+            binding.textInputEmail.error = getString(R.string.email_invalid)
+            binding.textInputEmail.isErrorEnabled = it
+        }
+
+        viewModel.passwordError.observe(viewLifecycleOwner) {
+            binding.textInputPassword.error = getString(R.string.password_requirements)
+            binding.textInputPassword.isErrorEnabled = it
+        }
 
         // TODO implement error messages localization on server side or in client
         viewModel.signUpResult.observe(viewLifecycleOwner,
@@ -92,38 +119,6 @@ class SignUpFragment : Fragment() {
             })
 
         return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.buttonSignUp.setOnClickListener {
-            val name = binding.editTextName.text()
-            val email = binding.editTextEmail.text()
-            val password = binding.editTextPassword.text()
-
-            if (!name.validateName()) {
-                binding.textInputName.error = getString(R.string.name_requirements)
-                return@setOnClickListener
-            }
-            binding.textInputName.isErrorEnabled = false
-
-            if (!email.validateEmail()) {
-                binding.textInputEmail.error = getString(R.string.email_invalid)
-                return@setOnClickListener
-            }
-            binding.textInputEmail.isErrorEnabled = false
-
-            if (!password.validatePassword()) {
-                binding.textInputPassword.error = getString(R.string.password_requirements)
-                return@setOnClickListener
-            }
-            binding.textInputPassword.isErrorEnabled = false
-
-            viewModel.createUserWithCredentials(name, email, password)
-        }
-
-        binding.textViewSignIn.setOnClickListener {
-            findNavController().navigate(R.id.action_signUpFragment_to_signInFragment)
-        }
     }
 
     override fun onPause() {

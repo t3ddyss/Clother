@@ -5,10 +5,7 @@ import com.t3ddyss.clother.data.UsersRepository
 import com.t3ddyss.clother.models.domain.Loading
 import com.t3ddyss.clother.models.domain.Resource
 import com.t3ddyss.clother.models.domain.Response
-import com.t3ddyss.clother.utilities.EMAIL
-import com.t3ddyss.clother.utilities.Event
-import com.t3ddyss.clother.utilities.NAME
-import com.t3ddyss.clother.utilities.PASSWORD
+import com.t3ddyss.clother.utilities.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,11 +24,39 @@ class SignUpViewModel @Inject constructor(
 
     private val _password = savedStateHandle.getLiveData(PASSWORD, "")
     val password: LiveData<String> = _password
+    
+    private val _nameError = MutableLiveData<Boolean>()
+    val nameError: LiveData<Boolean> = _nameError
+    
+    private val _emailError = MutableLiveData<Boolean>()
+    val emailError: LiveData<Boolean> = _emailError
+    
+    private val _passwordError = MutableLiveData<Boolean>()
+    val passwordError: LiveData<Boolean> = _passwordError
 
     private val _signUpResult = MutableLiveData<Event<Resource<Response>>>()
     val signUpResult: LiveData<Event<Resource<Response>>> = _signUpResult
 
     fun createUserWithCredentials(name: String, email: String, password: String) {
+
+        if (!name.validateName()) {
+            _nameError.value = true
+            return
+        }
+        _nameError.value = false
+
+        if (!email.validateEmail()) {
+            _emailError.value = true
+            return
+        }
+        _emailError.value = false
+
+        if (!password.validatePassword()) {
+            _passwordError.value = true
+            return
+        }
+        _passwordError.value = false
+
         _signUpResult.value = Event(Loading())
         viewModelScope.launch {
             val response = repository.createUser(name, email, password)
