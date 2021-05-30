@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.map
 import com.t3ddyss.clother.data.OffersRepository
 import com.t3ddyss.clother.models.domain.Offer
 import com.t3ddyss.clother.utilities.Event

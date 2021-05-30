@@ -28,13 +28,13 @@ class UsersRepository @Inject constructor(
         }
     }
 
-    suspend fun signInWithCredentials(email: String, password: String): Resource<*> {
+    suspend fun signInWithCredentials(email: String, password: String): Resource<AuthDataDto> {
         val user = mapOf("email" to email, "password" to password)
 
         return handleNetworkException {
             val response = service.signInWithCredentials(user)
             saveAuthData(response)
-            Success(null)
+            Success(response)
         }
     }
 

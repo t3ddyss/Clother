@@ -1,4 +1,4 @@
-package com.t3ddyss.clother.utils
+package com.t3ddyss.clother
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher

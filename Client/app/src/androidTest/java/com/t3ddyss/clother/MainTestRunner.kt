@@ -1,4 +1,4 @@
-package com.t3ddyss.clother.utils
+package com.t3ddyss.clother
 
 import android.app.Application
 import android.content.Context
