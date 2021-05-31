@@ -118,6 +118,7 @@ dependencies {
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_test_version"
     testImplementation "org.mockito:mockito-android:$mockito_version"
     androidTestImplementation "androidx.arch.core:core-testing:$arch_core_test_version"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
     androidTestImplementation "androidx.test:core:$test_version"
     androidTestImplementation "androidx.test.ext:junit:$test_ext_junit_version"
     androidTestImplementation "androidx.test:runner:$test_version"
@@ -127,5 +128,4 @@ dependencies {
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:$ok_http_version"
     androidTestImplementation "junit:junit:$junit_version"
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_test_version"
-    androidTestImplementation "org.mockito:mockito-android:$mockito_version"
-}
+    androidTestImplementation "org.mockito:mockito-android:$mockito_version"}
