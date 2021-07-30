@@ -22,6 +22,10 @@ class SearchFragment : Fragment() {
     ): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
 
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.editTextSearch.text = args.query.toEditable()
 
         binding.editTextSearch.setOnEditorActionListener { _, actionId, _ ->
@@ -38,8 +42,6 @@ class SearchFragment : Fragment() {
             }
             return@setOnEditorActionListener false
         }
-
-        return binding.root
     }
 
     override fun onStart() {

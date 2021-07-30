@@ -38,6 +38,10 @@ class SignUpFragment : Fragment() {
     ): View {
         _binding = FragmentSignUpBinding.inflate(inflater, container, false)
 
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.buttonSignUp.setOnClickListener {
             val name = binding.editTextName.text()
             val email = binding.editTextEmail.text()
@@ -50,6 +54,22 @@ class SignUpFragment : Fragment() {
             findNavController().navigate(R.id.action_signUpFragment_to_signInFragment)
         }
 
+        subscribeUi()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.saveName(binding.editTextName.text())
+        viewModel.saveEmail(binding.editTextEmail.text())
+        viewModel.savePassword(binding.editTextPassword.text())
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun subscribeUi() {
         viewModel.name.observe(viewLifecycleOwner,
             {
                 it?.let {
@@ -84,7 +104,6 @@ class SignUpFragment : Fragment() {
             binding.textInputPassword.isErrorEnabled = it
         }
 
-        // TODO implement error messages localization on server side or in client
         viewModel.signUpResult.observe(viewLifecycleOwner,
             {
                 if (it.hasBeenHandled && it is Success<*>) return@observe
@@ -117,19 +136,5 @@ class SignUpFragment : Fragment() {
                     }
                 }
             })
-
-        return binding.root
-    }
-
-    override fun onPause() {
-        super.onPause()
-        viewModel.saveName(binding.editTextName.text())
-        viewModel.saveEmail(binding.editTextEmail.text())
-        viewModel.savePassword(binding.editTextPassword.text())
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

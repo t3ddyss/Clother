@@ -37,12 +37,45 @@ class OfferFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentOfferBinding.inflate(inflater, container, false)
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val currentUserId = prefs.getInt(CURRENT_USER_ID, 0)
+        setHasOptionsMenu(args.posterId == currentUserId)
 
-        if (args.posterId == currentUserId) {
-            setHasOptionsMenu(true)
+        subscribeUi(currentUserId)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.toolbar_delete_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.delete) {
+            MaterialAlertDialogBuilder(
+                requireContext(),
+                R.style.MyThemeOverlay_MaterialComponents_MaterialAlertDialog
+            )
+                .setTitle(getString(R.string.delete_offer))
+                .setMessage(getString(R.string.deletion_confirmation))
+                .setPositiveButton(getString(R.string.delete)) { _, _ ->
+                    binding.layoutLoading.isVisible = true
+                    viewModel.deleteOffer()
+                }
+                .setNegativeButton(getString(R.string.cancel), null)
+                .show()
         }
+        return super.onOptionsItemSelected(item)
+    }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun subscribeUi(currentUserId: Int) {
         viewModel.offerEntity.observe(viewLifecycleOwner) {
             with(binding) {
                 images.adapter = OfferImagesAdapter(it.images) {
@@ -121,34 +154,5 @@ class OfferFragment : Fragment() {
                 }
             }
         }
-
-        return binding.root
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.toolbar_delete_menu, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.delete) {
-            MaterialAlertDialogBuilder(
-                requireContext(),
-                R.style.MyThemeOverlay_MaterialComponents_MaterialAlertDialog
-            )
-                .setTitle(getString(R.string.delete_offer))
-                .setMessage(getString(R.string.deletion_confirmation))
-                .setPositiveButton(getString(R.string.delete)) { _, _ ->
-                    binding.layoutLoading.isVisible = true
-                    viewModel.deleteOffer()
-                }
-                .setNegativeButton(getString(R.string.cancel), null)
-                .show()
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

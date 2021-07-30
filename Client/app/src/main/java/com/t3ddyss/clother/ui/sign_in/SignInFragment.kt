@@ -32,6 +32,42 @@ class SignInFragment : Fragment() {
     ): View {
         _binding = FragmentSignInBinding.inflate(inflater, container, false)
 
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        binding.buttonSignIn.setOnClickListener {
+            val email = binding.editTextEmail.text()
+            val password = binding.editTextPassword.text()
+
+            if (!email.validateEmail()) {
+                binding.textInputEmail.error = getString(R.string.email_invalid)
+                return@setOnClickListener
+            }
+            binding.textInputEmail.isErrorEnabled = false
+
+            viewModel.signInWithCredentials(email, password)
+        }
+
+        binding.textViewResetPassword.setOnClickListener {
+            findNavController().navigate(R.id.action_signInFragment_to_resetPasswordFragment)
+        }
+
+        subscribeUi()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.saveEmail(binding.editTextEmail.text())
+        viewModel.savePassword(binding.editTextPassword.text())
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun subscribeUi() {
         viewModel.email.observe(viewLifecycleOwner, {
             binding.editTextEmail.text = it.toEditable()
         })
@@ -57,39 +93,5 @@ class SignInFragment : Fragment() {
                 }
             }
         })
-
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        binding.buttonSignIn.setOnClickListener {
-            val email = binding.editTextEmail.text()
-            val password = binding.editTextPassword.text()
-
-            if (!email.validateEmail()) {
-                binding.textInputEmail.error = getString(R.string.email_invalid)
-                return@setOnClickListener
-            }
-            binding.textInputEmail.isErrorEnabled = false
-
-            viewModel.signInWithCredentials(email, password)
-        }
-
-        binding.textViewResetPassword.setOnClickListener {
-            findNavController().navigate(R.id.action_signInFragment_to_resetPasswordFragment)
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        viewModel.saveEmail(binding.editTextEmail.text())
-        viewModel.savePassword(binding.editTextPassword.text())
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

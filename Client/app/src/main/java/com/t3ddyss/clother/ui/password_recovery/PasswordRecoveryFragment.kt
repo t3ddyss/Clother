@@ -34,6 +34,36 @@ class PasswordRecoveryFragment : Fragment() {
     ): View {
         _binding = FragmentPasswordRecoveryBinding.inflate(inflater, container, false)
 
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        binding.buttonResetPassword.setOnClickListener {
+            val email = binding.editTextEmail.text()
+
+            if (!email.validateEmail()) {
+                binding.textInputEmail.error = getString(R.string.email_invalid)
+                return@setOnClickListener
+            }
+            binding.textInputEmail.isErrorEnabled = false
+
+            viewModel.resetPassword(email)
+        }
+
+        subscribeUi()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.saveEmail(binding.editTextEmail.text())
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun subscribeUi() {
         viewModel.email.observe(viewLifecycleOwner) {
             binding.editTextEmail.text = it.toEditable()
         }
@@ -65,31 +95,5 @@ class PasswordRecoveryFragment : Fragment() {
                 }
             }
         }
-
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.buttonResetPassword.setOnClickListener {
-            val email = binding.editTextEmail.text()
-
-            if (!email.validateEmail()) {
-                binding.textInputEmail.error = getString(R.string.email_invalid)
-                return@setOnClickListener
-            }
-            binding.textInputEmail.isErrorEnabled = false
-
-            viewModel.resetPassword(email)
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        viewModel.saveEmail(binding.editTextEmail.text())
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

@@ -59,6 +59,10 @@ class SearchResultsFragment : Fragment() {
         _binding = FragmentSearchResultsBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
 
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         loadStateListener = {
             when (it.refresh) {
                 is LoadState.Loading -> {
@@ -137,18 +141,7 @@ class SearchResultsFragment : Fragment() {
         }
         binding.list.addOnScrollListener(onScrollListener)
 
-        viewModel.offers.observe(viewLifecycleOwner) {
-            lifecycleScope.launch {
-                adapter.submitData(it)
-            }
-        }
-
-        viewModel.filters.observe(viewLifecycleOwner) {
-            val query = getQuery()
-            viewModel.getOffers(query)
-        }
-
-        return binding.root
+        subscribeUi()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -181,6 +174,19 @@ class SearchResultsFragment : Fragment() {
         adapter.removeLoadStateListener(loadStateListener)
         binding.list.removeOnScrollListener(onScrollListener)
         _binding = null
+    }
+
+    private fun subscribeUi() {
+        viewModel.offers.observe(viewLifecycleOwner) {
+            lifecycleScope.launch {
+                adapter.submitData(it)
+            }
+        }
+
+        viewModel.filters.observe(viewLifecycleOwner) {
+            val query = getQuery()
+            viewModel.getOffers(query)
+        }
     }
 
     private fun getQuery(): Map<String, String> {

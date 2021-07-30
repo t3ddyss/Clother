@@ -17,7 +17,7 @@ def create_app(config_filename='config.py'):
     register_extensions(app)
     register_blueprints(app)
 
-    # Uncomment this line if you are going to run app without gunicorn
+    # Uncomment this line if you are going to run this server without gunicorn (e.g. using flask run)
     # wsgi.server(eventlet.listen(('', 5000)), app)
 
     # TODO database events don't seem to work with eventlet

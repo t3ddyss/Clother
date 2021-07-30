@@ -45,10 +45,12 @@ class LocationSelectorFragment : Fragment() {
 
     private var _binding: FragmentLocationSelectorBinding? = null
     private val binding get() = _binding!!
+
     private val args by navArgs<LocationSelectorFragmentArgs>()
 
     private var mapView: MapView? = null
-    private lateinit var map: GoogleMap
+    private var map: GoogleMap? = null
+
     private var isPermissionGranted = false
 
     @ExperimentalCoroutinesApi
@@ -65,8 +67,6 @@ class LocationSelectorFragment : Fragment() {
         }
     }
 
-    @ExperimentalCoroutinesApi
-    @SuppressLint("MissingPermission")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -74,16 +74,24 @@ class LocationSelectorFragment : Fragment() {
         _binding = FragmentLocationSelectorBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
 
+        mapView = binding.mapView
+        mapView?.onCreate(savedInstanceState?.getBundle(MAPVIEW_BUNDLE))
+
+        return binding.root
+    }
+
+    @ExperimentalCoroutinesApi
+    @SuppressLint("MissingPermission")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { isGranted ->
-            if (isGranted[Manifest.permission.ACCESS_FINE_LOCATION] == true
-                && isGranted[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+            if (isGranted[Manifest.permission.ACCESS_FINE_LOCATION] == true &&
+                isGranted[Manifest.permission.ACCESS_COARSE_LOCATION] == true
             ) {
                 isPermissionGranted = true
 
-                if (this::map.isInitialized) {
-                    map.isMyLocationEnabled = true
+                map?.apply {
+                    isMyLocationEnabled = true
                 }
-
                 checkIfLocationEnabled()
             } else {
                 (activity as? MainActivity)
@@ -100,20 +108,50 @@ class LocationSelectorFragment : Fragment() {
             )
         )
 
-        mapView = binding.mapView
-        mapView?.onCreate(savedInstanceState?.getBundle(MAPVIEW_BUNDLE))
         mapView?.getMapAsync { googleMap ->
             map = googleMap
-            map.uiSettings.isMyLocationButtonEnabled = false
-
-            if (isPermissionGranted) {
-                map.isMyLocationEnabled = true
+            map?.let {
+                it.uiSettings.isMyLocationButtonEnabled = false
+                it.isMyLocationEnabled = isPermissionGranted
             }
-
-            subscribeToLocationUpdates()
+            subscribeUi()
         }
+    }
 
-        return binding.root
+    override fun onStart() {
+        super.onStart()
+        mapView?.onStart()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mapView?.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mapView?.onPause()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mapView?.onStop()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val mapViewBundle = outState.getBundle(MAPVIEW_BUNDLE) ?: Bundle().also {
+            outState.putBundle(MAPVIEW_BUNDLE, it)
+        }
+        mapView?.onSaveInstanceState(mapViewBundle)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+        mapView?.onDestroy()
+        mapView = null
+        map = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -140,17 +178,13 @@ class LocationSelectorFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun subscribeToLocationUpdates() {
+    private fun subscribeUi() {
         viewModel.location.observe(viewLifecycleOwner) {
             when {
-                it.isInitialValue -> {
-                    setInitialLocation(it.latLng)
-                }
-                it.isManuallySelected -> {
-                    setLocationWithMarker(it.latLng)
-                }
+                it.isInitialValue -> setInitialLocation(it.latLng)
+                it.isManuallySelected -> setLocationWithMarker(it.latLng)
                 else -> {
-                    map.moveCamera(
+                    map?.moveCamera(
                         CameraUpdateFactory.newLatLngZoom(
                             it.latLng,
                             DEFAULT_CAMERA_ZOOM
@@ -167,12 +201,12 @@ class LocationSelectorFragment : Fragment() {
     }
 
     private fun setInitialLocation(latLng: LatLng) {
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, INITIAL_CAMERA_ZOOM))
+        map?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, INITIAL_CAMERA_ZOOM))
     }
 
     private fun setLocationWithMarker(latLng: LatLng) {
-        map.clear()
-        map.addMarker(
+        map?.clear()
+        map?.addMarker(
             MarkerOptions()
                 .position(latLng)
                 .draggable(false)
@@ -181,7 +215,7 @@ class LocationSelectorFragment : Fragment() {
     }
 
     private fun setOnMapLongClickListener() {
-        map.setOnMapLongClickListener {
+        map?.setOnMapLongClickListener {
             viewModel.setLocationManually(it)
         }
     }
@@ -208,15 +242,15 @@ class LocationSelectorFragment : Fragment() {
                     LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> {
                         try {
                             if (exception is ResolvableApiException) {
-                                enableLocationDialogLauncher.launch(
-                                    IntentSenderRequest.Builder(exception.resolution).build()
-                                )
+                                enableLocationDialogLauncher
+                                    .launch(
+                                        IntentSenderRequest.Builder(exception.resolution).build()
+                                    )
                             }
                         } catch (ex: Exception) {
                         }
                     }
-                    LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
-                    }
+                    LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> { }
                 }
             }
         }
@@ -225,45 +259,6 @@ class LocationSelectorFragment : Fragment() {
     override fun onLowMemory() {
         super.onLowMemory()
         mapView?.onLowMemory()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        mapView?.onResume()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        mapView?.onStart()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        val mapViewBundle = outState.getBundle(MAPVIEW_BUNDLE) ?: Bundle().also {
-            outState.putBundle(MAPVIEW_BUNDLE, it)
-        }
-        mapView?.onSaveInstanceState(mapViewBundle)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        mapView?.onPause()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        mapView?.onStop()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        mapView?.onDestroy()
-        mapView = null
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     companion object {

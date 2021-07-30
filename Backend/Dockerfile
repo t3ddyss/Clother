@@ -18,4 +18,4 @@ RUN ["flask", "admin", "mock_users"]
 RUN ["flask", "admin", "mock_messages"]
 RUN ["flask", "admin", "mock_offers"]
 
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--worker-class", "eventlet", "-w", "1", "run:gunicorn_app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "4", "--worker-class", "eventlet", "run:gunicorn_app"]

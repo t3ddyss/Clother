@@ -38,6 +38,10 @@ class GalleryFragment : Fragment() {
         _binding = FragmentGalleryBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
 
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         layoutManager = GridLayoutManager(context, 3)
         adapter = GalleryImagesAdapter {
             (activity as? MainActivity)?.showGenericMessage(getString(R.string.attach_limit_exceeded))
@@ -46,18 +50,6 @@ class GalleryFragment : Fragment() {
         binding.list.layoutManager = layoutManager
         binding.list.adapter = adapter
         binding.list.setItemViewCacheSize(100)
-
-        viewModel.images.observe(viewLifecycleOwner) { images ->
-            val previouslySelectedImages = editorViewModel.images.value!!
-
-            images.filter {
-                it.uri in previouslySelectedImages
-            }.forEach {
-                it.isSelected = true
-            }
-
-            adapter.submitList(images)
-        }
 
         adapterDataObserver = object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
@@ -80,8 +72,7 @@ class GalleryFragment : Fragment() {
         }
 
         viewModel.getImages()
-
-        return binding.root
+        subscribeUi()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -109,5 +100,19 @@ class GalleryFragment : Fragment() {
         super.onDestroyView()
         adapter.unregisterAdapterDataObserver(adapterDataObserver)
         _binding = null
+    }
+
+    private fun subscribeUi() {
+        viewModel.images.observe(viewLifecycleOwner) { images ->
+            val previouslySelectedImages = editorViewModel.images.value!!
+
+            images.filter {
+                it.uri in previouslySelectedImages
+            }.forEach {
+                it.isSelected = true
+            }
+
+            adapter.submitList(images)
+        }
     }
 }

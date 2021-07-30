@@ -9,7 +9,7 @@ import kotlinx.coroutines.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ClotherFirebaseMessagingService : FirebaseMessagingService() {
+class ClotherFCMService : FirebaseMessagingService() {
     private val scope = MainScope()
     @Inject
     lateinit var service: ClotherAuthService

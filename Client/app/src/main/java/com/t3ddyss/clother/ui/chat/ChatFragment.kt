@@ -46,6 +46,10 @@ class ChatFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentChatBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val interlocutor = User(id = args.userId, name = args.userName, image = "", email = "")
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, true)
 
@@ -84,6 +88,18 @@ class ChatFragment : Fragment() {
             binding.editTextMessage.text?.clear()
         }
 
+        viewModel.getMessages(interlocutor) // TODO move user object to viewModel
+        subscribeUi()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        adapter.unregisterAdapterDataObserver(adapterDataObserver)
+        binding.listMessages.removeOnScrollListener(onScrollListener)
+        _binding = null
+    }
+
+    private fun subscribeUi() {
         viewModel.messages.observe(viewLifecycleOwner) {
             adapter.submitList(it)
             binding.emptyState.isVisible = it.isEmpty()
@@ -100,17 +116,6 @@ class ChatFragment : Fragment() {
                 }
             }
         }
-
-        viewModel.getMessages(interlocutor) // TODO move user object to viewModel
-
-        return binding.root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        adapter.unregisterAdapterDataObserver(adapterDataObserver)
-        binding.listMessages.removeOnScrollListener(onScrollListener)
-        _binding = null
     }
 
     companion object {

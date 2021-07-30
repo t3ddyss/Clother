@@ -34,7 +34,10 @@ class FilterDialogFragment : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentFiltersDialogBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         // BottomSheetDialog will close after navigating back from LocationSelectorFragment,
         // but https://issuetracker.google.com/issues/134089818#comment7 says that
         // it is actually an expected BottomSheetDialog behaviour
@@ -64,6 +67,23 @@ class FilterDialogFragment : BottomSheetDialogFragment() {
             findNavController().popBackStack()
         }
 
+        viewModel.getSavedLocation()
+        subscribeUi()
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        val behavior = BottomSheetBehavior.from(requireView().parent as View)
+        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun subscribeUi() {
         viewModel.location.observe(viewLifecycleOwner) {
             location = it
             binding.textViewLocation.text = it.toCoordinatesString()
@@ -80,22 +100,6 @@ class FilterDialogFragment : BottomSheetDialogFragment() {
 
             binding.chipGroupSize.chipGroupSize.check(it)
         }
-
-        viewModel.getSavedLocation()
-
-        return binding.root
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        val behavior = BottomSheetBehavior.from(requireView().parent as View)
-        behavior.state = BottomSheetBehavior.STATE_EXPANDED
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     private fun getSelectedDistance(): Int? {

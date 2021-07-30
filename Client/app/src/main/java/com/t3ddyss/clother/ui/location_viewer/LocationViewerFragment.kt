@@ -32,7 +32,14 @@ class LocationViewerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentLocationViewerBinding.inflate(inflater, container, false)
-        val (lat, lng) = args.coordinates.split(",").map { it.toDoubleOrNull() }
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val (lat, lng) = args.coordinates
+            .split(",")
+            .map { it.toDoubleOrNull() }
 
         if (lat == null || lng == null) {
             (activity as? MainActivity)?.showGenericMessage(getString(R.string.error_showing_location))
@@ -61,23 +68,6 @@ class LocationViewerFragment : Fragment() {
                 )
             )
         }
-
-        return binding.root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-    override fun onLowMemory() {
-        super.onLowMemory()
-        mapView?.onLowMemory()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        mapView?.onResume()
     }
 
     override fun onStart() {
@@ -85,12 +75,14 @@ class LocationViewerFragment : Fragment() {
         mapView?.onStart()
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        val mapViewBundle = outState.getBundle(MAPVIEW_BUNDLE) ?: Bundle().also {
-            outState.putBundle(MAPVIEW_BUNDLE, it)
-        }
-        mapView?.onSaveInstanceState(mapViewBundle)
+    override fun onResume() {
+        super.onResume()
+        mapView?.onResume()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mapView?.onLowMemory()
     }
 
     override fun onPause() {
@@ -101,6 +93,19 @@ class LocationViewerFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         mapView?.onStop()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val mapViewBundle = outState.getBundle(MAPVIEW_BUNDLE) ?: Bundle().also {
+            outState.putBundle(MAPVIEW_BUNDLE, it)
+        }
+        mapView?.onSaveInstanceState(mapViewBundle)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onDestroy() {

@@ -49,15 +49,18 @@ class ProfileFragment : Fragment() {
     @Inject
     lateinit var prefs: SharedPreferences
 
-    @ExperimentalPagingApi
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
-        val layoutManager = GridLayoutManager(context, 2)
 
+        return binding.root
+    }
+
+    @ExperimentalPagingApi
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         loadStateListener = {
             when (it.refresh) {
                 is LoadState.Loading -> {
@@ -94,6 +97,7 @@ class ProfileFragment : Fragment() {
         }
         adapter.addLoadStateListener(loadStateListener)
 
+        val layoutManager = GridLayoutManager(context, 2)
         binding.list.layoutManager = layoutManager
         binding.list.adapter = adapter
 
@@ -103,6 +107,17 @@ class ProfileFragment : Fragment() {
             binding.list.addItemDecoration(horizontalDecorator)
         }
 
+        subscribeUi()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        adapter.removeLoadStateListener(loadStateListener)
+        _binding = null
+    }
+
+    @ExperimentalPagingApi
+    private fun subscribeUi() {
         profileViewModel.offers.observe(viewLifecycleOwner) {
             lifecycleScope.launch {
                 adapter.submitData(it)
@@ -114,13 +129,5 @@ class ProfileFragment : Fragment() {
         }
 
         profileViewModel.getOffers(prefs.getInt(CURRENT_USER_ID, 0))
-
-        return binding.root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        adapter.removeLoadStateListener(loadStateListener)
-        _binding = null
     }
 }

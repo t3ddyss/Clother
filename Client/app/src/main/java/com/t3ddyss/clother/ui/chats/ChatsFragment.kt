@@ -39,22 +39,28 @@ class ChatsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentChatsBinding.inflate(inflater, container, false)
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.listChats.adapter = adapter
 
+        viewModel.getChats()
+        subscribeUi()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun subscribeUi() {
         viewModel.chats.observe(viewLifecycleOwner) {
             adapter.submitList(it.content)
 
             binding.emptyState.isVisible = it.content?.isEmpty() == true
             binding.layoutLoading.isVisible = it is Loading && it.content.isNullOrEmpty()
         }
-
-        viewModel.getChats()
-
-        return binding.root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

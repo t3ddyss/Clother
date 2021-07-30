@@ -1,13 +1,13 @@
 plugins {
     id 'com.android.application'
-    id 'kotlin-android'
-    id 'kotlin-kapt'
-    id 'dagger.hilt.android.plugin'
-    id 'androidx.navigation.safeargs.kotlin'
     id 'com.google.gms.google-services'
     id 'com.google.secrets_gradle_plugin' version '0.5'
     id 'com.google.android.gms.strict-version-matcher-plugin'
     id 'com.google.firebase.crashlytics'
+    id 'dagger.hilt.android.plugin'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'androidx.navigation.safeargs.kotlin'
 }
 
 android {
@@ -128,4 +128,5 @@ dependencies {
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:$ok_http_version"
     androidTestImplementation "junit:junit:$junit_version"
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_test_version"
-    androidTestImplementation "org.mockito:mockito-android:$mockito_version"}
+    androidTestImplementation "org.mockito:mockito-android:$mockito_version"
+}

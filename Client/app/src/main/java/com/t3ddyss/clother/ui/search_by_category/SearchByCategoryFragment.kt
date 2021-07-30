@@ -24,12 +24,18 @@ class SearchByCategoryFragment : Fragment() {
     private val binding get() = _binding!!
     private val args by navArgs<SearchByCategoryFragmentArgs>()
 
+    private lateinit var adapter: CategoriesAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSearchByCategoryBinding.inflate(inflater, container, false)
 
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val parentId = args.parentId.let { if (it == 0) null else it }
         (activity as? MainActivity)?.setNavIconVisibility(parentId != null)
         setHasOptionsMenu(parentId == null)
@@ -40,7 +46,7 @@ class SearchByCategoryFragment : Fragment() {
             false
         )
 
-        val adapter = CategoriesAdapter {
+        adapter = CategoriesAdapter {
             if (!it.isLastLevel) {
                 val action = SearchByCategoryFragmentDirections
                     .openSubcategoriesAction(it.id)
@@ -55,10 +61,6 @@ class SearchByCategoryFragment : Fragment() {
         binding.listCategories.layoutManager = layoutManager
         binding.listCategories.adapter = adapter
 
-        viewModel.categories.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
-        }
-
         val verticalDecorator = DividerItemDecoration(activity, DividerItemDecoration.VERTICAL)
 
         ContextCompat.getDrawable(requireContext(), R.drawable.divider_small)?.apply {
@@ -67,9 +69,8 @@ class SearchByCategoryFragment : Fragment() {
             binding.listCategories.addItemDecoration(verticalDecorator)
         }
 
+        subscribeUi()
         viewModel.getCategories(parentId)
-
-        return binding.root
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -84,5 +85,11 @@ class SearchByCategoryFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun subscribeUi() {
+        viewModel.categories.observe(viewLifecycleOwner) {
+            adapter.submitList(it)
+        }
     }
 }

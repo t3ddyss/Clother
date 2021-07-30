@@ -66,6 +66,12 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+
+        return binding.root
+    }
+
+    @ExperimentalPagingApi
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.progressBarFooter.isVisible = false
         val layoutManager = GridLayoutManager(context, 2)
 
@@ -173,33 +179,14 @@ class HomeFragment : Fragment() {
             adapter.refresh()
         }
 
-        networkStateViewModel.networkAvailability.observe(viewLifecycleOwner, {
-            if (it) {
-                adapter.retry()
-            }
-        })
-
-        viewModel.offers.observe(viewLifecycleOwner) {
-            lifecycleScope.launch {
-                adapter.submitData(it)
-            }
-        }
-
-        viewModel.newOfferAdded.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?: return@observe
-
-            (activity as? MainActivity)?.showGenericMessage(getString(R.string.offer_created))
-        }
-
         viewModel.getOffers()
 
         if (args.createdOfferId != 0) {
             viewModel.setNewOfferAdded(args.createdOfferId)
         }
 
-        return binding.root
+        subscribeUi()
     }
-
 
     override fun onStart() {
         super.onStart()
@@ -222,5 +209,25 @@ class HomeFragment : Fragment() {
         adapter.removeLoadStateListener(loadStateListener)
         adapter.unregisterAdapterDataObserver(adapterDataObserver)
         _binding = null
+    }
+
+    private fun subscribeUi() {
+        networkStateViewModel.networkAvailability.observe(viewLifecycleOwner, {
+            if (it) {
+                adapter.retry()
+            }
+        })
+
+        viewModel.offers.observe(viewLifecycleOwner) {
+            lifecycleScope.launch {
+                adapter.submitData(it)
+            }
+        }
+
+        viewModel.newOfferAdded.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?: return@observe
+
+            (activity as? MainActivity)?.showGenericMessage(getString(R.string.offer_created))
+        }
     }
 }

@@ -26,21 +26,22 @@ class OfferCategoryFragment : Fragment() {
     private val binding get() = _binding!!
     private val args by navArgs<OfferCategoryFragmentArgs>()
 
+    private lateinit var adapter: CategoriesAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentOfferCategoryBinding.inflate(inflater, container, false)
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val parentId = args.parentId.let { if (it == 0) null else it }
         (activity as? MainActivity)?.setNavIconVisibility(parentId != null)
 
-        val layoutManager = LinearLayoutManager(
-            context,
-            LinearLayoutManager.VERTICAL,
-            false
-        )
-
-        val adapter = CategoriesAdapter {
+        adapter = CategoriesAdapter {
             if (!it.isLastLevel) {
                 val action = OfferCategoryFragmentDirections
                     .openSubcategoriesAction(it.id)
@@ -52,12 +53,10 @@ class OfferCategoryFragment : Fragment() {
             }
         }
 
+        val layoutManager = LinearLayoutManager(context)
+
         binding.listCategories.layoutManager = layoutManager
         binding.listCategories.adapter = adapter
-
-        viewModel.categories.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
-        }
 
         val verticalDecorator = DividerItemDecoration(activity, DividerItemDecoration.VERTICAL)
 
@@ -67,13 +66,18 @@ class OfferCategoryFragment : Fragment() {
             binding.listCategories.addItemDecoration(verticalDecorator)
         }
 
+        subscribeUi()
         viewModel.getCategories(parentId)
-
-        return binding.root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun subscribeUi() {
+        viewModel.categories.observe(viewLifecycleOwner) {
+            adapter.submitList(it)
+        }
     }
 }

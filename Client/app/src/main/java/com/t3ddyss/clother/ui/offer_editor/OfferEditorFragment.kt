@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -34,6 +35,7 @@ class OfferEditorFragment : Fragment() {
     private val binding get() = _binding!!
     private val args by navArgs<OfferEditorFragmentArgs>()
 
+    private lateinit var requestGalleryPermissionLauncher: ActivityResultLauncher<String>
     private lateinit var adapter: OfferEditorImagesAdapter
     private lateinit var layoutManager: LinearLayoutManager
 
@@ -44,12 +46,7 @@ class OfferEditorFragment : Fragment() {
     ): View {
         _binding = FragmentOfferEditorBinding.inflate(inflater, container, false)
 
-        val category = args.category
-        binding.category.icon.isVisible = false
-        binding.category.textViewTitle.text = category.title
-        binding.textViewLocation.text = getString(R.string.select_location)
-
-        val requestGalleryPermissionLauncher =
+        requestGalleryPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
                 if (isGranted) {
                     findNavController().navigate(R.id.action_offerEditorFragment_to_galleryFragment)
@@ -62,6 +59,27 @@ class OfferEditorFragment : Fragment() {
                 }
             }
 
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val category = args.category
+        binding.category.icon.isVisible = false
+        binding.category.textViewTitle.text = category.title
+        binding.textViewLocation.text = getString(R.string.select_location)
+
+        binding.location.setOnClickListener {
+            val action = OfferEditorFragmentDirections
+                .actionOfferEditorFragmentToLocationFragment(
+                    calledFromId = R.id.offer_editor_graph
+                )
+            findNavController().navigate(action)
+        }
+
+        binding.buttonPublish.setOnClickListener {
+            postOffer(category)
+        }
+
         layoutManager = LinearLayoutManager(
             context,
             LinearLayoutManager.HORIZONTAL,
@@ -69,6 +87,21 @@ class OfferEditorFragment : Fragment() {
         )
         binding.listImages.layoutManager = layoutManager
 
+        val horizontalDecorator = DividerItemDecoration(activity, DividerItemDecoration.HORIZONTAL)
+        ContextCompat.getDrawable(requireContext(), R.drawable.divider_large)?.apply {
+            horizontalDecorator.setDrawable(this)
+        }
+        binding.listImages.addItemDecoration(horizontalDecorator)
+
+        subscribeUi()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun subscribeUi() {
         viewModel.images.observe(viewLifecycleOwner) { images ->
             adapter = OfferEditorImagesAdapter(images) {
                 requestGalleryPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -100,26 +133,6 @@ class OfferEditorFragment : Fragment() {
                 }
             }
         }
-
-        val horizontalDecorator = DividerItemDecoration(activity, DividerItemDecoration.HORIZONTAL)
-        ContextCompat.getDrawable(requireContext(), R.drawable.divider_large)?.apply {
-            horizontalDecorator.setDrawable(this)
-        }
-        binding.listImages.addItemDecoration(horizontalDecorator)
-
-        binding.location.setOnClickListener {
-            val action = OfferEditorFragmentDirections
-                .actionOfferEditorFragmentToLocationFragment(
-                    calledFromId = R.id.offer_editor_graph
-                )
-            findNavController().navigate(action)
-        }
-
-        binding.buttonPublish.setOnClickListener {
-            postOffer(category)
-        }
-
-        return binding.root
     }
 
     private fun postOffer(categoryEntity: Category) {
@@ -158,10 +171,5 @@ class OfferEditorFragment : Fragment() {
         }
 
         viewModel.postOffer(offer, images)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }
