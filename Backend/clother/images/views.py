@@ -7,7 +7,7 @@ from clother.utils import base_prefix
 blueprint = Blueprint('images', __name__, url_prefix=(base_prefix + '/images'))
 
 
-@blueprint.route('/<filename>')
+@blueprint.get('/<filename>')
 def get_image(filename):
     try:
         extension = filename.split('.')[-1]

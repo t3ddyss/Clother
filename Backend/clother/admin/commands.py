@@ -1,18 +1,15 @@
-import math
 import json
-import random
-import datetime
 import time
 
 import click
 from flask import Blueprint
-
 from sqlalchemy.exc import IntegrityError
 
 from clother import db
+from clother.admin.utils import get_random_user, get_random_size, generate_random_time, generate_random_location
 from clother.chat.models import Chat, Message
-from clother.users.models import User
 from clother.offers.models import Offer, Category, Image, Location
+from clother.users.models import User
 
 blueprint = Blueprint('admin', __name__)
 
@@ -43,12 +40,16 @@ def demote(email):
         print(f"Admin with email {email} doesn't exist")
 
 
-@blueprint.cli.command('create_db')
+@blueprint.cli.command('create-db')
 def create_database():
+    db.drop_all()
     db.create_all()
+    db.session.commit()
+
+    print('Database tables were successfully created')
 
 
-@blueprint.cli.command('populate_categories')
+@blueprint.cli.command('populate-categories')
 def populate_categories():
     categories = json.load(open("clother/static/categories.json", 'r'))
 
@@ -68,11 +69,12 @@ def populate_categories():
             category.last_level = False
             db.session.commit()
 
+    print('Successfully populated categories')
 
-@blueprint.cli.command('mock_users')
+
+@blueprint.cli.command('mock-users')
 def mock_users():
     User.query.delete()
-
     users = json.load(open("clother/static/users.json", 'r'))
 
     for item in users:
@@ -84,19 +86,15 @@ def mock_users():
         db.session.add(user)
         db.session.commit()
 
-    print("Finished mocking users")
+    print('Successfully mocked users')
 
 
-@blueprint.cli.command('mock_offers')
-@click.argument('count', required=False)
-def mock_offers(count):
+@blueprint.cli.command('mock-offers')
+def mock_offers():
     Offer.query.delete()
-    Image.query.delete()
-    Location.query.delete()
     db.session.commit()
 
     offers = json.load(open("clother/static/offers.json", 'r'))
-    # limit = int(count)
 
     for i, item in enumerate(offers):
         offer = Offer(title=item['title'],
@@ -113,19 +111,13 @@ def mock_offers(count):
         try:
             db.session.add(offer)
             db.session.commit()
-            # print(f'i = {i}')
-            # print(f'limit = {limit}')
-            # if i + 1 >= limit:
-            #     break
-
-        except IntegrityError as ex:
-            print(repr(ex))
+        except IntegrityError:
             db.session.rollback()
 
-    print("Finished mocking offers")
+    print('Successfully mocked offers')
 
 
-@blueprint.cli.command('mock_messages')
+@blueprint.cli.command('mock-messages')
 def mock_messages():
     messages = ["Hello!",
                 "Hi!",
@@ -134,7 +126,6 @@ def mock_messages():
                 "Are you free on Friday?",
                 "Yes"]
     Chat.query.delete()
-    Message.query.delete()
     db.session.commit()
 
     users = User.query.order_by(User.id.asc()).limit(3).all()
@@ -157,37 +148,4 @@ def mock_messages():
                 db.session.commit()
                 time.sleep(0.25)
 
-    print("Finished mocking chats")
-
-
-def generate_random_time():
-    min_time = datetime.datetime(year=2021, month=1, day=1)
-    max_time = datetime.datetime(year=2021, month=3, day=31)
-
-    min_time_ts = int(time.mktime(min_time.timetuple()))
-    max_time_ts = int(time.mktime(max_time.timetuple()))
-
-    random_ts = random.randint(min_time_ts, max_time_ts)
-    return datetime.datetime.fromtimestamp(random_ts)
-
-
-def generate_random_location(x0=55.7541, y0=37.62082, radius=17_500):
-    radius_in_degrees = radius / (111.32 * 1000 * math.cos(x0 * (math.pi / 180)))
-
-    u = random.uniform(0, 1)
-    v = random.uniform(0, 1)
-    w = radius_in_degrees * math.sqrt(u)
-    t = 2 * math.pi * v
-    x = w * math.cos(t)
-    y = w * math.sin(t)
-
-    return [x / math.cos(math.radians(y0)) + x0, y + y0]
-
-
-def get_random_size():
-    sizes = ["XS", "S", "M", "L", "XL"] + [str(x) for x in range(6, 12)]
-    return random.choice(sizes)
-
-
-def get_random_user():
-    return random.choice(User.query.all()).id
+    print('Successfully mocked messages')

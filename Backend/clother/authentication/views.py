@@ -27,7 +27,7 @@ def check_if_token_revoked(jwt_header, jwt_payload):
     return token is not None
 
 
-@blueprint.route('/refresh')
+@blueprint.get('/refresh')
 @jwt_required(refresh=True)
 def refresh_tokens():
     user_id = get_jwt_identity()
@@ -45,7 +45,7 @@ def refresh_tokens():
             }
 
 
-@blueprint.route('/device/<token>', methods=['POST'])
+@blueprint.post('/device/<token>')
 @jwt_required()
 def set_device_token(token):
     user = User.query.get(get_jwt_identity())
@@ -54,7 +54,7 @@ def set_device_token(token):
     return {'message': 'Success'}
 
 
-@blueprint.route('/register', methods=['POST'])
+@blueprint.post('/register')
 def register():
     if not request.is_json:
         return {'message': 'Expected JSON in the request body'}, 400
@@ -106,7 +106,7 @@ def register():
     return {'message': 'Check your inbox'}
 
 
-@blueprint.route('/confirm_email/<token>')
+@blueprint.get('/confirm_email/<token>')
 def confirm_email(token):
     ts = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
     try:
@@ -129,7 +129,7 @@ def confirm_email(token):
     return 'Your account was successfully activated!'
 
 
-@blueprint.route('/login', methods=['POST'])
+@blueprint.post('/login')
 def login():
     if not request.is_json:
         return {"message": "Missing JSON in request"}, 400
@@ -155,7 +155,7 @@ def login():
         return {"message": "Wrong email or password"}, 403
 
 
-@blueprint.route('/forgot_password', methods=['POST'])
+@blueprint.post('/forgot_password')
 def forgot_password():
     if not request.is_json:
         return {"message": "Missing JSON in request"}, 400

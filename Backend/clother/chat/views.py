@@ -9,7 +9,7 @@ from ..utils import base_prefix, default_chat_page_size
 blueprint = Blueprint('chats', __name__, url_prefix=(base_prefix + '/chats'))
 
 
-@blueprint.route('')
+@blueprint.get('')
 @jwt_required()
 def get_chats():
     user = User.query.get(get_jwt_identity())
@@ -19,7 +19,7 @@ def get_chats():
     return jsonify([chat.to_dict(user_id_to=user.id) for chat in chats])
 
 
-@blueprint.route('/<int:interlocutor_id>')
+@blueprint.get('/<int:interlocutor_id>')
 @jwt_required()
 def get_messages(interlocutor_id):
     after = request.args.get('after', default=None, type=int)

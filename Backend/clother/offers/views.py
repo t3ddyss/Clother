@@ -1,5 +1,4 @@
 import json
-import math
 import os
 import secrets
 import time
@@ -9,15 +8,15 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy.exc import IntegrityError
 from werkzeug.utils import secure_filename
 
-from .models import Offer, Category, Location, Image, distance
+from .models import Offer, Category, Location, Image
 from .. import db
 from ..users.models import User
-from ..utils import response_delay, base_prefix, allowed_file, default_page_size
+from ..utils import response_delay, base_prefix, is_allowed_image, default_page_size
 
 blueprint = Blueprint('offers', __name__, url_prefix=(base_prefix + '/offers'))
 
 
-@blueprint.route('')
+@blueprint.get('')
 @jwt_required()
 def get_offers():
     after = request.args.get('after', default=None, type=int)
@@ -39,15 +38,8 @@ def get_offers():
     if size:
         offers_query = offers_query.filter(Offer.size.ilike(f'{size}'))
     if coordinates and radius:
-        create_math_functions()
         lat, lng = [float(x) for x in coordinates.split(',')]
-        offers_query = offers_query.join(Location).filter(
-            distance(Location.latitude,
-                     lat,
-                     Location.longitude,
-                     lng,
-                     db.func) <= radius
-        )
+        offers_query = offers_query.join(Location).filter(Location.distance(lat, lng) <= radius)
     if user:
         offers_query = offers_query.filter(Offer.user_id == user)
 
@@ -64,7 +56,7 @@ def get_offers():
     return jsonify([offer.to_dict(url_root=request.url_root) for offer in offers])
 
 
-@blueprint.route('/new', methods=['POST'])
+@blueprint.post('/new')
 @jwt_required()
 def post_offer():
     data = json.loads(request.form['request'])
@@ -85,7 +77,7 @@ def post_offer():
     if len(files) > 10:
         return {"message": "You cannot upload more than 10 images"}, 400
     for file in files:
-        if not (file and allowed_file(file.filename)):
+        if not (file and is_allowed_image(file.filename)):
             return {"message": "This file type is not allowed"}, 400
 
     try:
@@ -103,15 +95,15 @@ def post_offer():
 
         for file in files:
             filename = secrets.token_urlsafe(10) + secure_filename(file.filename)
-            image = Image(uri="api/images/" + filename)
-
-            file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+            image = Image(uri=filename)
             offer.images.append(image)
+
+            file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], image.uri))
 
         db.session.add(offer)
         db.session.commit()
 
-    except (IntegrityError, Exception) as ex:
+    except (IntegrityError, Exception):
         db.session.rollback()
         return {"message": "Unknown error"}, 400
 
@@ -119,7 +111,7 @@ def post_offer():
             'message': 'Successfully created a new offer'}
 
 
-@blueprint.route('/delete', methods=['DELETE'])
+@blueprint.delete('/delete')
 @jwt_required()
 def delete_offer():
     user = User.query.get(get_jwt_identity())
@@ -133,17 +125,10 @@ def delete_offer():
         abort(400)
 
 
-@blueprint.route('/categories')
+@blueprint.get('/categories')
 @jwt_required()
 def get_categories():
     return jsonify([category.to_dict() for category in Category.query.order_by(Category.id.asc())])
-
-
-def create_math_functions():
-    db.session.connection().connection.create_function('sin', 1, math.sin)
-    db.session.connection().connection.create_function('cos', 1, math.cos)
-    db.session.connection().connection.create_function('acos', 1, math.acos)
-    db.session.connection().connection.create_function('radians', 1, math.radians)
 
 
 # Simulate response delay while testing app on localhost

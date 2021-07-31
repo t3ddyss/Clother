@@ -27,6 +27,9 @@ https://user-images.githubusercontent.com/36851587/117014198-3de23080-acf9-11eb-
 
 Follow the steps below to run the application.
 
+### Notice
+Docker is temporarily unsupported after 84970e1 commit.
+
 ### Prerequisites
 1. Install [Docker](https://www.docker.com/get-started)
 2. Obtain Google Maps API key as described [here](https://developers.google.com/maps/gmp-get-started#create-project)

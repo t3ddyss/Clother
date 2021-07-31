@@ -1,14 +1,15 @@
 import re
 from threading import Thread
+
 from flask import current_app
 from flask_mail import Message
+
 from .extensions import mail
 
 base_prefix = '/api'
 default_page_size = 10
 default_chat_page_size = 25
 response_delay = 1.5
-allowed_extensions = {'png', 'jpg', 'jpeg'}
 
 
 def send_email_async(app, message):
@@ -31,7 +32,6 @@ def get_password_regex():
     return re.compile(r'^(?=\S{8,25}$)(?=.*?\d)(?=.*?[a-z])(?=.*?[A-Z])(?=\S+$)(?=.*?[^A-Za-z\s0-9])')
 
 
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in allowed_extensions
+def is_allowed_image(filename):
+    return '.' in filename and filename.split('.')[-1].lower() in {'png', 'jpg', 'jpeg'}
 

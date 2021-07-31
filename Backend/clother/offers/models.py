@@ -1,5 +1,9 @@
-import math
+import os
 from datetime import datetime
+
+from flask import current_app
+from sqlalchemy import func, event
+from sqlalchemy.ext.hybrid import hybrid_method
 
 from clother import db
 
@@ -15,7 +19,7 @@ class Offer(db.Model):
 
     user = db.relationship('User', uselist=False, backref=db.backref('offers', lazy=True))
     category = db.relationship('Category', uselist=False, backref=db.backref('offers', lazy=True))
-    images = db.relationship('Image', cascade="all, delete", passive_deletes=True)
+    images = db.relationship('Image', passive_deletes=True)
     location = db.relationship('Location', uselist=False, passive_deletes=True)
 
     def to_dict(self, url_root):
@@ -28,7 +32,7 @@ class Offer(db.Model):
                  'size': self.size,
                  'user_name': self.user.name,
                  'category': self.category.title,
-                 'images': [image.to_dict(url_root) for image in self.images]}
+                 'images': [image.get_uri(url_root) for image in self.images]}
         if self.location:
             offer['location'] = self.location.to_string()
         return offer
@@ -51,26 +55,42 @@ class Category(db.Model):
                 'last_level': self.last_level}
 
 
-# TODO add event for deleting images from folder when image object is deleted
 class Image(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    offer_id = db.Column(db.Integer, db.ForeignKey('offer.id', ondelete='CASCADE'))
+    offer_id = db.Column(db.Integer, db.ForeignKey('offer.id', ondelete='CASCADE'), nullable=False)
     uri = db.Column(db.String, unique=True, nullable=False)
 
-    def to_dict(self, url_root):
-        return self.uri if self.uri.startswith('https://lp2.hm.com') else url_root + self.uri
+    def get_uri(self, url_root):
+        if self.is_local():
+            return f'{url_root}api/images/{self.uri}'
+        else:
+            return self.uri
+
+    def is_local(self):
+        return not self.uri.startswith('https://')
 
 
 class Location(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    offer_id = db.Column(db.Integer, db.ForeignKey('offer.id', ondelete='CASCADE'))
+    offer_id = db.Column(db.Integer, db.ForeignKey('offer.id', ondelete='CASCADE'), nullable=False)
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
+
+    @hybrid_method
+    def distance(self, lat2, lon2):
+        return func.acos(func.sin(func.radians(self.latitude)) *
+                         func.sin(func.radians(lat2)) +
+                         func.cos(func.radians(self.latitude)) *
+                         func.cos(func.radians(lat2)) *
+                         func.cos(func.radians(lon2) -
+                         func.radians(self.longitude))) * 6371
 
     def to_string(self):
         return f'{self.latitude},{self.longitude}'
 
 
-def distance(lat1, lat2, lon1, lon2, func=math):
-    return func.acos(func.sin(func.radians(lat1)) * func.sin(func.radians(lat2)) + func.cos(func.radians(lat1))
-                     * func.cos(func.radians(lat2)) * func.cos(func.radians(lon2) - func.radians(lon1))) * 6371
+@event.listens_for(Offer, 'before_delete')
+def execute_before_offer_deletion(mapper, connection, offer):
+    for image in offer.images:
+        if image.is_local():
+            os.remove(os.path.join(current_app.config['UPLOAD_FOLDER'], image.uri))

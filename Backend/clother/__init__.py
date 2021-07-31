@@ -1,33 +1,21 @@
-import math
-
 import eventlet
 from eventlet import wsgi
 from flask import Flask
-from sqlalchemy import event
 
 from clother.extensions import db, migrate, jwt, mail, socketio
 from clother import admin, authentication, users, offers, images, chat
 
 
-def create_app(config_filename='config.py'):
+def create_app(config_file='config.py'):
     app = Flask(__name__, instance_relative_config=True)
-    app.config.from_pyfile(f"../{config_filename}")
-    app.config.from_pyfile(config_filename)
+    app.config.from_pyfile(f"../{config_file}")
+    app.config.from_pyfile(config_file)
 
     register_extensions(app)
     register_blueprints(app)
 
     # Uncomment this line if you are going to run this server without gunicorn (e.g. using flask run)
     # wsgi.server(eventlet.listen(('', 5000)), app)
-
-    # TODO database events don't seem to work with eventlet
-    with app.app_context():
-        @event.listens_for(db.engine, 'connect')
-        def on_connect(dbapi_con, connection_record):
-            dbapi_con.create_function('sin', 1, math.sin)
-            dbapi_con.create_function('cos', 1, math.cos)
-            dbapi_con.create_function('acos', 1, math.acos)
-            dbapi_con.create_function('radians', 1, math.radians)
 
     return app
 
