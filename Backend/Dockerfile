@@ -1,21 +1,23 @@
 # syntax=docker/dockerfile:1
 
-FROM python:3.8-slim-buster
+FROM python:3.9.5-slim-buster
 
-COPY . /app
-WORKDIR /app
-RUN mkdir ./instance/images
+WORKDIR /usr/src/app
+COPY . /usr/src/app
+RUN mkdir -p ./instance/images
 
-RUN pip3 install -r requirements.txt
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
 
-ENV FLASK_ENV=development
-ENV FLASK_DEBUG=0
-ENV FLASK_APP=run.py
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-RUN ["flask", "admin", "create_db"]
-RUN ["flask", "admin", "populate_categories"]
-RUN ["flask", "admin", "mock_users"]
-RUN ["flask", "admin", "mock_messages"]
-RUN ["flask", "admin", "mock_offers"]
+RUN apt-get update && apt-get install -y \
+    curl \
+    netcat \
+    && apt-get -y autoclean
 
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "4", "--worker-class", "eventlet", "run:gunicorn_app"]
+EXPOSE 5000
+
+RUN chmod +x ./entrypoint.sh
+ENTRYPOINT ["./entrypoint.sh"]

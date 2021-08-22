@@ -1,4 +1,5 @@
 import json
+import random
 import time
 
 import click
@@ -95,6 +96,7 @@ def mock_offers():
     db.session.commit()
 
     offers = json.load(open("clother/static/offers.json", 'r'))
+    random.Random(5).shuffle(offers)
 
     for i, item in enumerate(offers):
         offer = Offer(title=item['title'],

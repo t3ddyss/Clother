@@ -1,7 +1,6 @@
 package com.t3ddyss.clother.di
 
 import android.content.Context
-import android.content.SharedPreferences
 import androidx.room.Room
 import com.t3ddyss.clother.db.*
 import dagger.Module
@@ -22,7 +21,7 @@ object DatabaseModule {
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
         return Room
             .databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME)
-            .createFromAsset("clother_category.db")
+            .createFromAsset("clother.db")
             .build()
     }
 

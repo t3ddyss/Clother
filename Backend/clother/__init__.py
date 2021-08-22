@@ -1,5 +1,3 @@
-import eventlet
-from eventlet import wsgi
 from flask import Flask
 
 from clother.extensions import db, migrate, jwt, mail, socketio
@@ -13,9 +11,6 @@ def create_app(config_file='config.py'):
 
     register_extensions(app)
     register_blueprints(app)
-
-    # Uncomment this line if you are going to run this server without gunicorn (e.g. using flask run)
-    # wsgi.server(eventlet.listen(('', 5000)), app)
 
     return app
 
