@@ -27,7 +27,7 @@ data class OfferEntity(
     val categoryId: Int,
 
     @ColumnInfo(name = "created_at")
-    val createdAt: Date, // TODO add timezone support
+    val createdAt: Date,
 
     val title: String,
     val description: String?,

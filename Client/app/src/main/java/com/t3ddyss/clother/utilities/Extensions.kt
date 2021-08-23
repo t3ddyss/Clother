@@ -2,6 +2,7 @@ package com.t3ddyss.clother.utilities
 
 import android.content.Context
 import android.text.Editable
+import android.util.Log
 import android.util.TypedValue
 import androidx.annotation.AttrRes
 import androidx.core.graphics.BlendModeColorFilterCompat

@@ -26,7 +26,7 @@ class Offer(db.Model):
         offer = {'id': self.id,
                  'user_id': self.user_id,
                  'category_id': self.category_id,
-                 'created_at': self.created_at.isoformat(' ', 'seconds'),
+                 'created_at': self.created_at.isoformat(sep=' ', timespec='seconds'),
                  'title': self.title,
                  'description': self.description,
                  'size': self.size,

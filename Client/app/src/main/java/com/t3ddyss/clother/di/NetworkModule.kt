@@ -6,6 +6,7 @@ import com.t3ddyss.clother.api.ClotherAuthService
 import com.t3ddyss.clother.api.ClotherChatService
 import com.t3ddyss.clother.api.ClotherOffersService
 import com.t3ddyss.clother.api.TokenAuthenticator
+import com.t3ddyss.clother.utilities.GsonUTCDateAdapter
 import com.t3ddyss.clother.utilities.getBaseUrlForCurrentDevice
 import dagger.Module
 import dagger.Provides
@@ -16,6 +17,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.*
 import javax.inject.Singleton
 
 
@@ -54,7 +56,7 @@ object NetworkModule {
     @Provides
     fun provideGson(): Gson {
         return GsonBuilder()
-            .setDateFormat("yyyy-MM-dd HH:mm:ss")
+            .registerTypeAdapter(Date::class.java, GsonUTCDateAdapter())
             .create()
     }
 

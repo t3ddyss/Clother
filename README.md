@@ -50,10 +50,10 @@ Follow the steps below to run the application.
 
 ## Roadmap
 
-* ~~Migrate to [PostgreSQL](https://www.postgresql.org/) and add advanced triggers to the database~~
 * Implement deep linking for push notifications
-* Support different timezones
 * Support images in chat
+* ~~Migrate to [PostgreSQL](https://www.postgresql.org/) and add advanced database triggers~~
+* ~~Support different timezones~~
 
 
 ## License
