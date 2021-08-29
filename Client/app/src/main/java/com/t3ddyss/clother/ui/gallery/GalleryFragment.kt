@@ -1,9 +1,11 @@
 package com.t3ddyss.clother.ui.gallery
 
 import android.os.Bundle
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
@@ -14,34 +16,22 @@ import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.GalleryImagesAdapter
 import com.t3ddyss.clother.databinding.FragmentGalleryBinding
+import com.t3ddyss.clother.ui.BaseFragment
 import com.t3ddyss.clother.ui.offer_editor.OfferEditorViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @AndroidEntryPoint
-class GalleryFragment : Fragment() {
+class GalleryFragment : BaseFragment<FragmentGalleryBinding>(FragmentGalleryBinding::inflate) {
     private val viewModel by viewModels<GalleryViewModel>()
     private val editorViewModel by hiltNavGraphViewModels<OfferEditorViewModel>(R.id.offer_editor_graph)
-
-    private var _binding: FragmentGalleryBinding? = null
-    private val binding get() = _binding!!
 
     private lateinit var adapter: GalleryImagesAdapter
     private lateinit var adapterDataObserver: RecyclerView.AdapterDataObserver
     private lateinit var layoutManager: GridLayoutManager
 
-    @ExperimentalCoroutinesApi
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentGalleryBinding.inflate(inflater, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setHasOptionsMenu(true)
 
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         layoutManager = GridLayoutManager(context, 3)
         adapter = GalleryImagesAdapter {
             (activity as? MainActivity)?.showGenericMessage(getString(R.string.attach_limit_exceeded))
@@ -97,9 +87,8 @@ class GalleryFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         adapter.unregisterAdapterDataObserver(adapterDataObserver)
-        _binding = null
+        super.onDestroyView()
     }
 
     private fun subscribeUi() {

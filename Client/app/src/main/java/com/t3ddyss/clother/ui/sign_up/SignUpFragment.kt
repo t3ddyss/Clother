@@ -1,12 +1,9 @@
 package com.t3ddyss.clother.ui.sign_up
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.t3ddyss.clother.MainActivity
@@ -14,31 +11,19 @@ import com.t3ddyss.clother.R
 import com.t3ddyss.clother.data.*
 import com.t3ddyss.clother.databinding.FragmentSignUpBinding
 import com.t3ddyss.clother.models.domain.*
+import com.t3ddyss.clother.ui.BaseFragment
 import com.t3ddyss.clother.utilities.*
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @AndroidEntryPoint
-class SignUpFragment : Fragment() {
+class SignUpFragment
+    : BaseFragment<FragmentSignUpBinding>(FragmentSignUpBinding::inflate) {
     private val viewModel by viewModels<SignUpViewModel>()
-
-    private var _binding: FragmentSignUpBinding? = null
-    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
-    }
-
-    @ExperimentalCoroutinesApi
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentSignUpBinding.inflate(inflater, container, false)
-
-        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -62,11 +47,6 @@ class SignUpFragment : Fragment() {
         viewModel.saveName(binding.editTextName.text())
         viewModel.saveEmail(binding.editTextEmail.text())
         viewModel.savePassword(binding.editTextPassword.text())
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     private fun subscribeUi() {

@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.*
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
@@ -26,6 +25,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentLocationSelectorBinding
+import com.t3ddyss.clother.ui.BaseFragment
 import com.t3ddyss.clother.ui.filters.FiltersViewModel
 import com.t3ddyss.clother.ui.offer_editor.OfferEditorViewModel
 import com.t3ddyss.clother.utilities.MAPVIEW_BUNDLE
@@ -33,7 +33,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @AndroidEntryPoint
-class LocationSelectorFragment : Fragment() {
+class LocationSelectorFragment
+    : BaseFragment<FragmentLocationSelectorBinding>(FragmentLocationSelectorBinding::inflate) {
 
     private val viewModel by viewModels<LocationSelectorViewModel>()
     private val editorViewModel by hiltNavGraphViewModels<OfferEditorViewModel>(
@@ -42,9 +43,6 @@ class LocationSelectorFragment : Fragment() {
     private val filtersViewModel by hiltNavGraphViewModels<FiltersViewModel>(
         R.id.search_results_graph
     )
-
-    private var _binding: FragmentLocationSelectorBinding? = null
-    private val binding get() = _binding!!
 
     private val args by navArgs<LocationSelectorFragmentArgs>()
 
@@ -71,7 +69,7 @@ class LocationSelectorFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentLocationSelectorBinding.inflate(inflater, container, false)
+        super.onCreateView(inflater, container, savedInstanceState)
         setHasOptionsMenu(true)
 
         mapView = binding.mapView
@@ -147,11 +145,10 @@ class LocationSelectorFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
         mapView?.onDestroy()
         mapView = null
         map = null
+        super.onDestroyView()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

@@ -2,12 +2,9 @@ package com.t3ddyss.clother.ui.home
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -23,6 +20,7 @@ import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OffersAdapter
 import com.t3ddyss.clother.databinding.FragmentHomeBinding
+import com.t3ddyss.clother.ui.BaseFragment
 import com.t3ddyss.clother.ui.offer.OfferViewModel
 import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
 import com.t3ddyss.clother.utilities.getThemeColor
@@ -33,17 +31,14 @@ import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import javax.inject.Inject
 
-
 @AndroidEntryPoint
-class HomeFragment : Fragment() {
+class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate) {
     // Using activityViewModels delegate here to save data across different instances of HomeFragment
     private val viewModel by activityViewModels<HomeViewModel>()
     private val offerViewModel by activityViewModels<OfferViewModel>()
     private val messagesViewModel by activityViewModels<MessagesViewModel>()
     private val networkStateViewModel by activityViewModels<NetworkStateViewModel>()
 
-    private var _binding: FragmentHomeBinding? = null
-    private val binding get() = _binding!!
     private val args by navArgs<HomeFragmentArgs>()
 
     @Inject
@@ -58,17 +53,6 @@ class HomeFragment : Fragment() {
     private lateinit var loadStateListener: (CombinedLoadStates) -> Unit
     private lateinit var adapterDataObserver: RecyclerView.AdapterDataObserver
     private lateinit var onScrollListener: RecyclerView.OnScrollListener
-
-    @ExperimentalPagingApi
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
-
-        return binding.root
-    }
 
     @ExperimentalPagingApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -204,11 +188,10 @@ class HomeFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         binding.list.removeOnScrollListener(onScrollListener)
         adapter.removeLoadStateListener(loadStateListener)
         adapter.unregisterAdapterDataObserver(adapterDataObserver)
-        _binding = null
+        super.onDestroyView()
     }
 
     private fun subscribeUi() {

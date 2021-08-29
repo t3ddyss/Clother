@@ -2,26 +2,21 @@ package com.t3ddyss.clother.ui.chats
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.adapters.ChatsAdapter
 import com.t3ddyss.clother.databinding.FragmentChatsBinding
 import com.t3ddyss.clother.models.domain.Loading
+import com.t3ddyss.clother.ui.BaseFragment
 import com.t3ddyss.clother.utilities.CURRENT_USER_ID
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ChatsFragment : Fragment() {
+class ChatsFragment : BaseFragment<FragmentChatsBinding>(FragmentChatsBinding::inflate) {
     private val viewModel by viewModels<ChatsViewModel>()
-    private var _binding: FragmentChatsBinding? = null
-    private val binding get() = _binding!!
 
     @Inject
     lateinit var prefs: SharedPreferences
@@ -34,25 +29,11 @@ class ChatsFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentChatsBinding.inflate(inflater, container, false)
-
-        return binding.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.listChats.adapter = adapter
 
         viewModel.getChats()
         subscribeUi()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     private fun subscribeUi() {

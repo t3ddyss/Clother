@@ -1,12 +1,9 @@
 package com.t3ddyss.clother.ui.chat
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,16 +13,13 @@ import com.t3ddyss.clother.adapters.MessagesAdapter
 import com.t3ddyss.clother.databinding.FragmentChatBinding
 import com.t3ddyss.clother.models.domain.LoadResult
 import com.t3ddyss.clother.models.domain.User
+import com.t3ddyss.clother.ui.BaseFragment
 import com.t3ddyss.clother.utilities.text
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
-class ChatFragment : Fragment() {
+class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::inflate) {
     private val viewModel by viewModels<ChatViewModel>()
-
-    private var _binding: FragmentChatBinding? = null
-    private val binding get() = _binding!!
     private val args by navArgs<ChatFragmentArgs>()
 
     private val adapter by lazy {
@@ -39,14 +33,6 @@ class ChatFragment : Fragment() {
 
         // Deprecated, but alternative requires API level 30
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        _binding = FragmentChatBinding.inflate(inflater, container, false)
-        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -93,10 +79,9 @@ class ChatFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         adapter.unregisterAdapterDataObserver(adapterDataObserver)
         binding.listMessages.removeOnScrollListener(onScrollListener)
-        _binding = null
+        super.onDestroyView()
     }
 
     private fun subscribeUi() {

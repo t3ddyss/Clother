@@ -1,11 +1,8 @@
 package com.t3ddyss.clother.ui.location_viewer
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -16,25 +13,15 @@ import com.google.android.gms.maps.model.LatLng
 import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentLocationViewerBinding
+import com.t3ddyss.clother.ui.BaseFragment
 import com.t3ddyss.clother.utilities.MAPVIEW_BUNDLE
 
-class LocationViewerFragment : Fragment() {
-
-    private var _binding: FragmentLocationViewerBinding? = null
-    private val binding get() = _binding!!
+class LocationViewerFragment
+    : BaseFragment<FragmentLocationViewerBinding>(FragmentLocationViewerBinding::inflate) {
     private val args by navArgs<LocationViewerFragmentArgs>()
 
     private var mapView: MapView? = null
     private lateinit var map: GoogleMap
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentLocationViewerBinding.inflate(inflater, container, false)
-
-        return binding.root
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val (lat, lng) = args.coordinates
@@ -104,14 +91,9 @@ class LocationViewerFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
         mapView?.onDestroy()
         mapView = null
+        super.onDestroyView()
     }
 
     companion object {

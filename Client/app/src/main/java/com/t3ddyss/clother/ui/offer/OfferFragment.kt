@@ -4,7 +4,6 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.*
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -15,31 +14,20 @@ import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OfferImagesAdapter
 import com.t3ddyss.clother.databinding.FragmentOfferBinding
 import com.t3ddyss.clother.models.domain.*
+import com.t3ddyss.clother.ui.BaseFragment
 import com.t3ddyss.clother.utilities.CURRENT_USER_ID
 import com.t3ddyss.clother.utilities.formatDate
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class OfferFragment : Fragment() {
+class OfferFragment : BaseFragment<FragmentOfferBinding>(FragmentOfferBinding::inflate){
 
     private val viewModel by activityViewModels<OfferViewModel>()
-    private var _binding: FragmentOfferBinding? = null
-    private val binding get() = _binding!!
-
     private val args by navArgs<OfferFragmentArgs>()
 
     @Inject
     lateinit var prefs: SharedPreferences
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentOfferBinding.inflate(inflater, container, false)
-
-        return binding.root
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val currentUserId = prefs.getInt(CURRENT_USER_ID, 0)
@@ -68,11 +56,6 @@ class OfferFragment : Fragment() {
                 .show()
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     private fun subscribeUi(currentUserId: Int) {

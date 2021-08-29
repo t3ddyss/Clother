@@ -2,10 +2,12 @@ package com.t3ddyss.clother.ui.search_results
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.lifecycle.lifecycleScope
@@ -20,23 +22,22 @@ import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OffersAdapter
 import com.t3ddyss.clother.databinding.FragmentSearchResultsBinding
+import com.t3ddyss.clother.ui.BaseFragment
 import com.t3ddyss.clother.ui.offer.OfferViewModel
 import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class SearchResultsFragment : Fragment() {
+class SearchResultsFragment
+    : BaseFragment<FragmentSearchResultsBinding>(FragmentSearchResultsBinding::inflate) {
 
     private val viewModel by hiltNavGraphViewModels<SearchResultsViewModel>(
         R.id.search_results_graph
     )
     private val offerViewModel by activityViewModels<OfferViewModel>()
-    private var _binding: FragmentSearchResultsBinding? = null
-    private val binding get() = _binding!!
     private val args by navArgs<SearchResultsFragmentArgs>()
 
     @Inject
@@ -51,18 +52,9 @@ class SearchResultsFragment : Fragment() {
     private lateinit var loadStateListener: (CombinedLoadStates) -> Unit
     private lateinit var onScrollListener: RecyclerView.OnScrollListener
 
-    @ExperimentalCoroutinesApi
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentSearchResultsBinding.inflate(inflater, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setHasOptionsMenu(true)
 
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         loadStateListener = {
             when (it.refresh) {
                 is LoadState.Loading -> {
@@ -170,10 +162,9 @@ class SearchResultsFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         adapter.removeLoadStateListener(loadStateListener)
         binding.list.removeOnScrollListener(onScrollListener)
-        _binding = null
+        super.onDestroyView()
     }
 
     private fun subscribeUi() {

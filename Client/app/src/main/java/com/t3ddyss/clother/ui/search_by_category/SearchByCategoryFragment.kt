@@ -1,9 +1,11 @@
 package com.t3ddyss.clother.ui.search_by_category
 
 import android.os.Bundle
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -13,27 +15,17 @@ import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.CategoriesAdapter
 import com.t3ddyss.clother.databinding.FragmentSearchByCategoryBinding
+import com.t3ddyss.clother.ui.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SearchByCategoryFragment : Fragment() {
+class SearchByCategoryFragment
+    : BaseFragment<FragmentSearchByCategoryBinding>(FragmentSearchByCategoryBinding::inflate) {
 
     private val viewModel by viewModels<SearchByCategoryViewModel>()
-
-    private var _binding: FragmentSearchByCategoryBinding? = null
-    private val binding get() = _binding!!
     private val args by navArgs<SearchByCategoryFragmentArgs>()
 
     private lateinit var adapter: CategoriesAdapter
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentSearchByCategoryBinding.inflate(inflater, container, false)
-
-        return binding.root
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val parentId = args.parentId.let { if (it == 0) null else it }
@@ -80,11 +72,6 @@ class SearchByCategoryFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         findNavController().navigate(R.id.action_searchByCategoryFragment_to_searchFragment)
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     private fun subscribeUi() {

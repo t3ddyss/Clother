@@ -2,12 +2,9 @@ package com.t3ddyss.clother.ui.profile
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -20,6 +17,7 @@ import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OffersAdapter
 import com.t3ddyss.clother.databinding.FragmentProfileBinding
+import com.t3ddyss.clother.ui.BaseFragment
 import com.t3ddyss.clother.ui.offer.OfferViewModel
 import com.t3ddyss.clother.utilities.CURRENT_USER_ID
 import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
@@ -28,15 +26,12 @@ import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import javax.inject.Inject
 
-
 @AndroidEntryPoint
-class ProfileFragment : Fragment() {
+class ProfileFragment
+    : BaseFragment<FragmentProfileBinding>(FragmentProfileBinding::inflate) {
     // Using activityViewModels delegate here to save data across different instances of ProfileFragment
     private val profileViewModel by activityViewModels<ProfileViewModel>()
     private val offerViewModel by activityViewModels<OfferViewModel>()
-
-    private var _binding: FragmentProfileBinding? = null
-    private val binding get() = _binding!!
 
     private val adapter = OffersAdapter {
         offerViewModel.selectOffer(it)
@@ -48,16 +43,6 @@ class ProfileFragment : Fragment() {
 
     @Inject
     lateinit var prefs: SharedPreferences
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentProfileBinding.inflate(inflater, container, false)
-
-        return binding.root
-    }
 
     @ExperimentalPagingApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -111,9 +96,8 @@ class ProfileFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         adapter.removeLoadStateListener(loadStateListener)
-        _binding = null
+        super.onDestroyView()
     }
 
     @ExperimentalPagingApi

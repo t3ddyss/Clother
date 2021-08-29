@@ -9,7 +9,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -22,17 +21,15 @@ import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OfferEditorImagesAdapter
 import com.t3ddyss.clother.databinding.FragmentOfferEditorBinding
 import com.t3ddyss.clother.models.domain.*
+import com.t3ddyss.clother.ui.BaseFragment
 import com.t3ddyss.clother.utilities.text
 import com.t3ddyss.clother.utilities.toCoordinatesString
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
-class OfferEditorFragment : Fragment() {
+class OfferEditorFragment
+    : BaseFragment<FragmentOfferEditorBinding>(FragmentOfferEditorBinding::inflate) {
     private val viewModel by hiltNavGraphViewModels<OfferEditorViewModel>(R.id.offer_editor_graph)
-
-    private var _binding: FragmentOfferEditorBinding? = null
-    private val binding get() = _binding!!
     private val args by navArgs<OfferEditorFragmentArgs>()
 
     private lateinit var requestGalleryPermissionLauncher: ActivityResultLauncher<String>
@@ -44,7 +41,7 @@ class OfferEditorFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentOfferEditorBinding.inflate(inflater, container, false)
+        super.onCreateView(inflater, container, savedInstanceState)
 
         requestGalleryPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -94,11 +91,6 @@ class OfferEditorFragment : Fragment() {
         binding.listImages.addItemDecoration(horizontalDecorator)
 
         subscribeUi()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     private fun subscribeUi() {
