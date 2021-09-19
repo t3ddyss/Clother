@@ -16,7 +16,6 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OffersAdapter
 import com.t3ddyss.clother.databinding.FragmentHomeBinding
@@ -86,16 +85,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                     if (error is HttpException && error.code() == 401) {
                         findNavController().navigate(R.id.action_global_signUpFragment)
 
-                        (activity as? MainActivity)
-                            ?.showGenericMessage(getString(R.string.session_expired))
+                        showGenericMessage(getString(R.string.session_expired))
                         prefs.edit().remove(IS_AUTHENTICATED).apply()
                     } else {
                         binding.shimmer.isVisible = false
                         binding.containerHome.isVisible = true
                         binding.swipeRefresh.isRefreshing = false
 
-                        (activity as? MainActivity)
-                            ?.showGenericMessage(error)
+                        showErrorMessage(error)
                     }
                 }
             }
@@ -163,8 +160,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
             adapter.refresh()
         }
 
-        viewModel.getOffers()
-
         if (args.createdOfferId != 0) {
             viewModel.setNewOfferAdded(args.createdOfferId)
         }
@@ -194,6 +189,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         super.onDestroyView()
     }
 
+    @ExperimentalPagingApi
     private fun subscribeUi() {
         networkStateViewModel.networkAvailability.observe(viewLifecycleOwner, {
             if (it) {
@@ -210,7 +206,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         viewModel.newOfferAdded.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?: return@observe
 
-            (activity as? MainActivity)?.showGenericMessage(getString(R.string.offer_created))
+            showGenericMessage(getString(R.string.offer_created))
         }
     }
 }

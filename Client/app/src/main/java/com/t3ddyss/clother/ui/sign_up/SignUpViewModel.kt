@@ -38,7 +38,6 @@ class SignUpViewModel @Inject constructor(
     val signUpResult: LiveData<Event<Resource<Response>>> = _signUpResult
 
     fun createUserWithCredentials(name: String, email: String, password: String) {
-
         if (!name.validateName()) {
             _nameError.value = true
             return

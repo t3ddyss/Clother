@@ -1,19 +1,13 @@
-package com.t3ddyss.clother.utilities
+package com.t3ddyss.clother.models.dto
 
-import com.google.gson.JsonParseException
-import com.google.gson.JsonDeserializationContext
-import com.google.gson.JsonElement
-import com.google.gson.JsonPrimitive
-import com.google.gson.JsonSerializationContext
-import com.google.gson.JsonDeserializer
-import com.google.gson.JsonSerializer
+import com.google.gson.*
 import java.lang.reflect.Type
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class GsonUTCDateAdapter : JsonSerializer<Date>, JsonDeserializer<Date?> {
+class GsonDateAdapter : JsonSerializer<Date>, JsonDeserializer<Date?> {
     private val dateFormat: DateFormat
 
     init {

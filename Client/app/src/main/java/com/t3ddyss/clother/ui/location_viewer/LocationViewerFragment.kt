@@ -10,7 +10,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
-import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentLocationViewerBinding
 import com.t3ddyss.clother.ui.BaseFragment
@@ -29,7 +28,7 @@ class LocationViewerFragment
             .map { it.toDoubleOrNull() }
 
         if (lat == null || lng == null) {
-            (activity as? MainActivity)?.showGenericMessage(getString(R.string.error_showing_location))
+            showGenericMessage(getString(R.string.error_showing_location))
             findNavController().popBackStack()
         }
         val point = LatLng(lat!!, lng!!)

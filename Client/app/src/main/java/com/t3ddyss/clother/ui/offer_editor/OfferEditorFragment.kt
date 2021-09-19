@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
 import com.google.gson.JsonObject
-import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OfferEditorImagesAdapter
 import com.t3ddyss.clother.databinding.FragmentOfferEditorBinding
@@ -48,11 +47,10 @@ class OfferEditorFragment
                 if (isGranted) {
                     findNavController().navigate(R.id.action_offerEditorFragment_to_galleryFragment)
                 } else {
-                    (activity as? MainActivity)
-                        ?.showSnackbarWithAction(
+                    showSnackbarWithAction(
                             message = getString(R.string.no_gallery_access),
                             actionText = getString(R.string.grant_access)
-                        )
+                    )
                 }
             }
 
@@ -117,11 +115,11 @@ class OfferEditorFragment
                 }
                 is Error<*> -> {
                     binding.layoutLoading.isVisible = false
-                    (activity as? MainActivity)?.showGenericMessage(it.message)
+                    showGenericMessage(it.message)
                 }
                 is Failed<*> -> {
                     binding.layoutLoading.isVisible = false
-                    (activity as? MainActivity)?.showGenericMessage(getString(R.string.no_connection))
+                    showGenericMessage(getString(R.string.no_connection))
                 }
             }
         }
@@ -141,7 +139,7 @@ class OfferEditorFragment
 
         val images = viewModel.images.value!!.toList()
         if (images.isEmpty()) {
-            (activity as? MainActivity)?.showGenericMessage(getString(R.string.provide_image))
+            showGenericMessage(getString(R.string.provide_image))
             return
         }
 

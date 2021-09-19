@@ -12,7 +12,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.GalleryImagesAdapter
 import com.t3ddyss.clother.databinding.FragmentGalleryBinding
@@ -34,7 +33,7 @@ class GalleryFragment : BaseFragment<FragmentGalleryBinding>(FragmentGalleryBind
 
         layoutManager = GridLayoutManager(context, 3)
         adapter = GalleryImagesAdapter {
-            (activity as? MainActivity)?.showGenericMessage(getString(R.string.attach_limit_exceeded))
+            showGenericMessage(getString(R.string.attach_limit_exceeded))
         }
 
         binding.list.layoutManager = layoutManager

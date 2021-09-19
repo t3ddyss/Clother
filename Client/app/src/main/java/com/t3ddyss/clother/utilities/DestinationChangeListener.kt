@@ -24,24 +24,23 @@ class DestinationChangeListener(
     private val fragmentsWithoutToolbar = setOf(R.id.searchFragment)
 
     private val fragmentsWithToolbarLabel = setOf(
+        R.id.offerFragment,
         R.id.offerCategoryFragment,
         R.id.offerEditorFragment, R.id.galleryFragment, R.id.locationFragment,
         R.id.locationViewerFragment, R.id.searchByCategoryFragment, R.id.chatFragment,
         R.id.homeFragment, R.id.chatsFragment, R.id.profileFragment
     )
 
-    private val fragmentsWithCustomUpIcon = setOf(
-        R.id.offerEditorFragment,
-        R.id.galleryFragment, R.id.locationFragment
-    )
-
     private val fragmentsWithoutNavIcon = setOf(
         R.id.homeFragment,
-        R.id.profileFragment, R.id.searchByCategoryFragment,
+        R.id.profileFragment, R.id.searchByCategoryFragment, R.id.offerCategoryFragment,
         R.id.searchFragment, R.id.signUpFragment, R.id.chatsFragment
     )
 
-    private val fragmentsOverlayingToolbar = setOf(R.id.offerFragment)
+    private val fragmentsWithCloseIcon = setOf(
+        R.id.offerEditorFragment,
+        R.id.galleryFragment, R.id.locationFragment
+    )
 
     override fun onDestinationChanged(
         controller: NavController,
@@ -65,17 +64,27 @@ class DestinationChangeListener(
             } else if (destination.id in fragmentsWithoutToolbar && toolbar.isVisible) {
                 toolbar.isVisible = false
             }
-            binding.navHostFragmentMarginTop.isVisible =
-                destination.id !in fragmentsOverlayingToolbar
-                        && destination.id !in fragmentsWithoutToolbar
 
             // Toolbar icon
-            if (destination.id !in fragmentsWithoutNavIcon
-                && destination.id in fragmentsWithCustomUpIcon
-            ) {
-                setIconClose(toolbar)
-            } else if (destination.id !in fragmentsWithoutNavIcon) {
-                setIconUp(toolbar)
+            when (destination.id) {
+                R.id.searchByCategoryFragment, R.id.offerCategoryFragment -> {
+                    val isRoot = arguments?.getInt("parent_id")?.let { it == 0 } ?: true
+                    if (isRoot) {
+                        toolbar.navigationIcon = null
+                    }
+                    else {
+                        setIconUp(toolbar)
+                    }
+                }
+                in fragmentsWithCloseIcon -> {
+                    setIconClose(toolbar)
+                }
+                !in fragmentsWithoutNavIcon -> {
+                    setIconUp(toolbar)
+                }
+                else -> {
+                    toolbar.navigationIcon = null
+                }
             }
 
             // Toolbar title
@@ -84,11 +93,6 @@ class DestinationChangeListener(
             } else {
                 activity.supportActionBar?.setDisplayShowTitleEnabled(false)
             }
-
-            // Profile icon
-            binding.cardViewAvatar.imageViewAvatar.isVisible =
-                destination.id == R.id.profileFragment
-
         }
     }
 

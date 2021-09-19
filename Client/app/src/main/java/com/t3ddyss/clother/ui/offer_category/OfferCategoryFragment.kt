@@ -8,7 +8,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.CategoriesAdapter
 import com.t3ddyss.clother.databinding.FragmentOfferCategoryBinding
@@ -26,7 +25,6 @@ class OfferCategoryFragment : BaseFragment<FragmentOfferCategoryBinding>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val parentId = args.parentId.let { if (it == 0) null else it }
-        (activity as? MainActivity)?.setNavIconVisibility(parentId != null)
 
         adapter = CategoriesAdapter {
             if (!it.isLastLevel) {

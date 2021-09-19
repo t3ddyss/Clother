@@ -5,7 +5,6 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.data.*
 import com.t3ddyss.clother.databinding.FragmentPasswordRecoveryBinding
@@ -67,11 +66,11 @@ class PasswordRecoveryFragment
                 }
                 is Error<Response> -> {
                     binding.layoutLoading.isVisible = false
-                    (activity as? MainActivity)?.showGenericMessage(response.message)
+                    showGenericMessage(response.message)
                 }
                 is Failed<Response> -> {
                     binding.layoutLoading.isVisible = false
-                    (activity as? MainActivity)?.showGenericMessage(getString(R.string.no_connection))
+                    showGenericMessage(getString(R.string.no_connection))
                 }
             }
         }

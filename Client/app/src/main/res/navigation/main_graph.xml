@@ -176,7 +176,7 @@
     <fragment
         android:id="@+id/offerFragment"
         android:name="com.t3ddyss.clother.ui.offer.OfferFragment"
-        android:label="fragment_offer"
+        android:label="@string/offer"
         tools:layout="@layout/fragment_offer">
         <argument
             android:name="poster_id"
@@ -207,7 +207,7 @@
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.t3ddyss.clother.ui.search.SearchFragment"
-        android:label="fragment_search"
+        android:label="@string/search"
         tools:layout="@layout/fragment_search">
         <action
             android:id="@+id/searchFragment_to_searchResultsGraph"

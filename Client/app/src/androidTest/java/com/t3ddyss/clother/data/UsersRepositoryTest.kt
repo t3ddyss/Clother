@@ -19,8 +19,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.RuleChain
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers.anyString
-import org.mockito.Mockito
 import java.net.HttpURLConnection
 import javax.inject.Inject
 

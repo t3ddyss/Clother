@@ -5,8 +5,6 @@
     <string name="new_offer">New offer</string>
     <string name="messages">Messages</string>
     <string name="profile">Profile</string>
-
-    <!-- Authentication -->
     <string name="name">Name</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
@@ -31,8 +29,6 @@
     <string name="retry">Retry</string>
     <string name="session_expired">Your session has expired</string>
     <string name="default_notification_channel_id">Messages</string>
-
-    <!-- Main -->
     <string name="unknown_error">Something went wrong…</string>
     <string name="create_new_offer">Create new offer</string>
     <string name="description">Description</string>
@@ -90,4 +86,5 @@
         This cannot be undone</string>
     <string name="cancel">Cancel</string>
     <string name="offer_deleted">Offer was successfully deleted</string>
+    <string name="offer">Offer</string>
 </resources>

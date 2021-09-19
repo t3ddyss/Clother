@@ -9,7 +9,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayoutMediator
-import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OfferImagesAdapter
 import com.t3ddyss.clother.databinding.FragmentOfferBinding
@@ -120,17 +119,15 @@ class OfferFragment : BaseFragment<FragmentOfferBinding>(FragmentOfferBinding::i
             when (result) {
                 is Success<*> -> {
                     findNavController().popBackStack()
-                    (activity as? MainActivity)?.showGenericMessage(
-                        getString(R.string.offer_deleted)
-                    )
+                    showGenericMessage(getString(R.string.offer_deleted))
                 }
                 is Error<*> -> {
                     binding.layoutLoading.isVisible = false
-                    (activity as? MainActivity)?.showGenericMessage(result.message)
+                    showGenericMessage(result.message)
                 }
                 is Failed<*> -> {
                     binding.layoutLoading.isVisible = false
-                    (activity as? MainActivity)?.showGenericMessage(getString(R.string.no_connection))
+                    showGenericMessage(getString(R.string.no_connection))
                 }
                 else -> {
                     binding.layoutLoading.isVisible = false

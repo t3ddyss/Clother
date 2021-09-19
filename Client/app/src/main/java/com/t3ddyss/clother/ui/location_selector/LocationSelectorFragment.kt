@@ -22,7 +22,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentLocationSelectorBinding
 import com.t3ddyss.clother.ui.BaseFragment
@@ -59,9 +58,7 @@ class LocationSelectorFragment
             getLocation()
         } else {
             setOnMapLongClickListener()
-            (activity as? MainActivity)?.showGenericMessage(
-                message = getString(R.string.no_location_access)
-            )
+            showGenericMessage(getString(R.string.no_location_access))
         }
     }
 
@@ -92,11 +89,10 @@ class LocationSelectorFragment
                 }
                 checkIfLocationEnabled()
             } else {
-                (activity as? MainActivity)
-                    ?.showSnackbarWithAction(
+                showSnackbarWithAction(
                         message = getString(R.string.no_location_access),
                         actionText = getString(R.string.grant_permission)
-                    )
+                )
                 setOnMapLongClickListener()
             }
         }.launch(

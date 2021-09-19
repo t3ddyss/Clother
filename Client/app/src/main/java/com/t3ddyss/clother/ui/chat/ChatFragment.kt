@@ -8,7 +8,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.adapters.MessagesAdapter
 import com.t3ddyss.clother.databinding.FragmentChatBinding
 import com.t3ddyss.clother.models.domain.LoadResult
@@ -97,7 +96,7 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::infl
                 }
 
                 is LoadResult.Error -> {
-                    (activity as? MainActivity)?.showGenericMessage(it.exception)
+                    showErrorMessage(it.exception)
                 }
             }
         }

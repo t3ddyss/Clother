@@ -6,7 +6,7 @@ import com.t3ddyss.clother.api.ClotherAuthService
 import com.t3ddyss.clother.api.ClotherChatService
 import com.t3ddyss.clother.api.ClotherOffersService
 import com.t3ddyss.clother.api.TokenAuthenticator
-import com.t3ddyss.clother.utilities.GsonUTCDateAdapter
+import com.t3ddyss.clother.models.dto.GsonDateAdapter
 import com.t3ddyss.clother.utilities.getBaseUrlForCurrentDevice
 import dagger.Module
 import dagger.Provides
@@ -19,7 +19,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 import javax.inject.Singleton
-
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -54,14 +53,6 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideGson(): Gson {
-        return GsonBuilder()
-            .registerTypeAdapter(Date::class.java, GsonUTCDateAdapter())
-            .create()
-    }
-
-    @Singleton
-    @Provides
     fun provideRetrofit(httpClient: OkHttpClient, gson: Gson): Retrofit {
         return Retrofit.Builder()
             .baseUrl(getBaseUrlForCurrentDevice())
@@ -70,18 +61,30 @@ object NetworkModule {
             .build()
     }
 
-    @Singleton
-    @Provides
-    fun provideClotherAuthService(retrofit: Retrofit): ClotherAuthService =
-        retrofit.create(ClotherAuthService::class.java)
+    @Module
+    @InstallIn(SingletonComponent::class)
+    object NetworkServiceModule {
+        @Singleton
+        @Provides
+        fun provideClotherAuthService(retrofit: Retrofit): ClotherAuthService =
+            retrofit.create(ClotherAuthService::class.java)
 
-    @Singleton
-    @Provides
-    fun provideClotherOffersService(retrofit: Retrofit): ClotherOffersService =
-        retrofit.create(ClotherOffersService::class.java)
+        @Singleton
+        @Provides
+        fun provideClotherOffersService(retrofit: Retrofit): ClotherOffersService =
+            retrofit.create(ClotherOffersService::class.java)
 
-    @Singleton
-    @Provides
-    fun provideClotherChatService(retrofit: Retrofit): ClotherChatService =
-        retrofit.create(ClotherChatService::class.java)
+        @Singleton
+        @Provides
+        fun provideClotherChatService(retrofit: Retrofit): ClotherChatService =
+            retrofit.create(ClotherChatService::class.java)
+
+        @Singleton
+        @Provides
+        fun provideGson(): Gson {
+            return GsonBuilder()
+                .registerTypeAdapter(Date::class.java, GsonDateAdapter())
+                .create()
+        }
+    }
 }
