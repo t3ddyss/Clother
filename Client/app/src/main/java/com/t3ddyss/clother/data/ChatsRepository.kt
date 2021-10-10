@@ -19,8 +19,8 @@ class ChatsRepository @Inject constructor(
     private val messageDao: MessageDao,
     private val prefs: SharedPreferences
 ) {
-    fun getChats() = networkBoundResource(
-        query = { chatDao.getAllChats() },
+    fun observeChats() = networkBoundResource(
+        query = { chatDao.observeChats() },
         fetch = { service.getChats(prefs.getString(ACCESS_TOKEN, null)) },
         saveFetchResult = {
             db.withTransaction {

@@ -37,7 +37,8 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/SplashScreenTheme"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -45,7 +46,7 @@
         </activity>
 
         <service
-            android:name=".services.ClotherFCMService"
+            android:name=".services.ClotherFirebaseService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

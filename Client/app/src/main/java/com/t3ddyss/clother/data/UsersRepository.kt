@@ -3,6 +3,7 @@ package com.t3ddyss.clother.data
 import android.content.SharedPreferences
 import com.t3ddyss.clother.api.ClotherAuthService
 import com.t3ddyss.clother.db.UserDao
+import com.t3ddyss.clother.models.domain.AuthState
 import com.t3ddyss.clother.models.domain.Resource
 import com.t3ddyss.clother.models.domain.Response
 import com.t3ddyss.clother.models.domain.Success
@@ -12,11 +13,11 @@ import com.t3ddyss.clother.models.mappers.mapUserDtoToEntity
 import com.t3ddyss.clother.utilities.*
 import javax.inject.Inject
 
-
 class UsersRepository @Inject constructor(
     private val service: ClotherAuthService,
-    private val prefs: SharedPreferences,
-    private val userDao: UserDao
+    private val userDao: UserDao,
+    private val authStateObserver: AuthStateObserver,
+    private val prefs: SharedPreferences
 ) {
     suspend fun createUser(name: String, email: String, password: String):
             Resource<Response> {
@@ -33,7 +34,7 @@ class UsersRepository @Inject constructor(
 
         return handleNetworkException {
             val response = service.signInWithCredentials(user)
-            saveAuthData(response)
+            processAuthData(response)
             Success(response)
         }
     }
@@ -45,12 +46,12 @@ class UsersRepository @Inject constructor(
         }
     }
 
-    private suspend fun saveAuthData(data: AuthDataDto) {
-        prefs.edit().putString(ACCESS_TOKEN, "Bearer ${data.accessToken}").apply()
-        prefs.edit().putString(REFRESH_TOKEN, "Bearer ${data.refreshToken}").apply()
+    private suspend fun processAuthData(data: AuthDataDto) {
+        prefs.edit().putString(ACCESS_TOKEN, data.accessToken.toBearer()).apply()
+        prefs.edit().putString(REFRESH_TOKEN, data.refreshToken.toBearer()).apply()
         prefs.edit().putInt(CURRENT_USER_ID, data.user.id).apply()
-        prefs.edit().putBoolean(IS_AUTHENTICATED, true).apply()
 
         userDao.insert(mapUserDtoToEntity(data.user))
+        authStateObserver.authState.value = AuthState.Authenticated(data.accessToken.toBearer())
     }
 }

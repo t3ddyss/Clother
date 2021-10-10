@@ -4,9 +4,8 @@ import android.os.Build
 import kotlin.math.abs
 import kotlin.math.floor
 
-private fun isEmulator() = Build.FINGERPRINT.contains("generic")
-
-fun getBaseUrlForCurrentDevice() = if (isEmulator()) BASE_URL_EMULATOR else BASE_URL_DEVICE
+val isEmulator = Build.FINGERPRINT.contains("generic")
+val baseUrl get() = if (isEmulator) BASE_URL_EMULATOR else BASE_URL_DEVICE
 
 fun convertToDms(coordinate: Double): String {
     val absolute = abs(coordinate)

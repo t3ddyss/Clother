@@ -15,7 +15,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class NotificationUtil @Inject constructor(
+class NotificationHelper @Inject constructor(
     @ApplicationContext private val context: Context,
 ) {
     private val notificationId = AtomicInteger(1)

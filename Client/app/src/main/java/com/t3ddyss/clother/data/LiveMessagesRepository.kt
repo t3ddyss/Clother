@@ -2,10 +2,14 @@ package com.t3ddyss.clother.data
 
 import android.content.SharedPreferences
 import androidx.room.withTransaction
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
+import com.t3ddyss.clother.api.ClotherAuthService
 import com.t3ddyss.clother.db.AppDatabase
 import com.t3ddyss.clother.db.ChatDao
 import com.t3ddyss.clother.db.MessageDao
+import com.t3ddyss.clother.di.NetworkModule
+import com.t3ddyss.clother.models.domain.AuthState
 import com.t3ddyss.clother.models.domain.MessageStatus
 import com.t3ddyss.clother.models.domain.User
 import com.t3ddyss.clother.models.dto.ChatDto
@@ -15,8 +19,8 @@ import com.t3ddyss.clother.models.entity.MessageEntity
 import com.t3ddyss.clother.models.mappers.*
 import com.t3ddyss.clother.utilities.ACCESS_TOKEN
 import com.t3ddyss.clother.utilities.CURRENT_USER_ID
-import com.t3ddyss.clother.utilities.NotificationUtil
-import com.t3ddyss.clother.utilities.getBaseUrlForCurrentDevice
+import com.t3ddyss.clother.utilities.IS_DEVICE_TOKEN_RETRIEVED
+import com.t3ddyss.clother.utilities.NotificationHelper
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
@@ -24,44 +28,56 @@ import io.socket.engineio.client.transports.WebSocket
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resume
 
-// TODO find out how to refresh access token without creating "racing" condition with HTTP requests
+// TODO find out how to refresh access token without creating racing condition with HTTP requests
 @Singleton
 class LiveMessagesRepository @Inject constructor(
-    private val prefs: SharedPreferences,
+    @NetworkModule.BaseUrl
+    private val baseUrl: String,
+    private val authService: ClotherAuthService,
     private val db: AppDatabase,
     private val chatDao: ChatDao,
     private val messageDao: MessageDao,
-    private val notificationUtil: NotificationUtil,
+    private val authStateObserver: AuthStateObserver,
+    private val notificationHelper: NotificationHelper,
+    private val prefs: SharedPreferences,
     private val gson: Gson,
 ) {
+    private var job: Job? = null
     private var socket: Socket? = null
-    private val userId by lazy {
-        prefs.getInt(CURRENT_USER_ID, 0)
+    private val currentUserId get() = prefs.getInt(CURRENT_USER_ID, 0)
+    private val currentAccessToken get() = prefs.getString(ACCESS_TOKEN, "")
+
+    fun initialize() {
+        MainScope().launch {
+            authStateObserver.authState.collect {
+                when (it) {
+                    is AuthState.None -> {
+                        job?.cancel()
+                    }
+                    is AuthState.Refreshing -> {
+                        // TODO Pause observing?
+                    }
+                    is AuthState.Authenticated -> {
+                        sendDeviceTokenToServerIfNeeded()
+
+                        job?.cancel()
+                        job = MainScope().launch {
+                            observeMessages().collect()
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    val isConnected get() = socket?.connected() ?: false
-
-    private fun initializeSocket(): Socket {
-        val options = IO.Options.builder()
-            .setTransports(arrayOf(WebSocket.NAME))
-            .setExtraHeaders(
-                mapOf(
-                    "Authorization" to listOf(prefs.getString(ACCESS_TOKEN, "")),
-                    "Content-type" to listOf("application/json")
-                )
-            )
-            .build()
-        return IO.socket(getBaseUrlForCurrentDevice(), options)
-    }
-
-    @ExperimentalCoroutinesApi
-    suspend fun getMessagesStream() = callbackFlow {
+    private suspend fun observeMessages() = callbackFlow {
         socket = initializeSocket()
 
         val onConnectListener = Emitter.Listener {
@@ -70,24 +86,22 @@ class LiveMessagesRepository @Inject constructor(
 
         val onNewMessageListener = Emitter.Listener {
             val message = gson.fromJson(it[0] as? String, MessageDto::class.java)
-
             launch {
                 addNewMessage(message)
             }
 
-            notificationUtil.showNotificationIfShould(
+            notificationHelper.showNotificationIfShould(
                 mapMessageDtoToDomain(message)
             )
         }
 
         val onNewChatListener = Emitter.Listener {
             val chat = gson.fromJson(it[0] as? String, ChatDto::class.java)
-
             launch {
                 addNewChat(chat)
             }
 
-            notificationUtil.showNotificationIfShould(
+            notificationHelper.showNotificationIfShould(
                 mapMessageDtoToDomain(chat.lastMessage)
             )
         }
@@ -98,18 +112,18 @@ class LiveMessagesRepository @Inject constructor(
         socket?.connect()
 
         awaitClose {
-            socket?.disconnect()
+            disconnect()
         }
     }.flowOn(Dispatchers.IO)
 
     suspend fun sendMessage(to: User, messageBody: String) {
         val localChatId = chatDao.getChatByInterlocutorId(to.id)?.localId
-            ?: return sendMessageInNewChat(to, messageBody)
+            ?: return sendMessageToNewChat(to, messageBody)
 
         val message = MessageEntity(
-            localId = 0, // will be autogenerated after insertion
+            localId = 0,
             localChatId = localChatId,
-            userId = userId,
+            userId = currentUserId,
             status = MessageStatus.DELIVERING,
             createdAt = Calendar.getInstance().time,
             body = messageBody,
@@ -135,7 +149,7 @@ class LiveMessagesRepository @Inject constructor(
         }
     }
 
-    private suspend fun sendMessageInNewChat(to: User, messageBody: String) {
+    private suspend fun sendMessageToNewChat(to: User, messageBody: String) {
         val chat = ChatEntity(
             interlocutor = mapUserDomainToEntity(to)
         )
@@ -145,9 +159,9 @@ class LiveMessagesRepository @Inject constructor(
             chat.localId = localChatId
 
             MessageEntity(
-                localId = 0, // will be autogenerated after insertion
+                localId = 0,
                 localChatId = localChatId,
-                userId = userId,
+                userId = currentUserId,
                 status = MessageStatus.DELIVERING,
                 createdAt = Calendar.getInstance().time,
                 body = messageBody,
@@ -230,11 +244,48 @@ class LiveMessagesRepository @Inject constructor(
         }
     }
 
-    fun setCurrentInterlocutor(interlocutorId: Int) {
-        notificationUtil.currentInterlocutorId = interlocutorId
+    private suspend fun sendDeviceTokenToServerIfNeeded() {
+        if (prefs.getBoolean(IS_DEVICE_TOKEN_RETRIEVED, false)) return
+
+        val token = setupCloudMessaging()
+        sendDeviceTokenToServer(token)
     }
 
-    fun disconnectFromServer() {
+    private suspend fun sendDeviceTokenToServer(token: String?) = runCatching {
+        token?.let {
+            authService.sendDeviceToken(prefs.getString(ACCESS_TOKEN, null), token)
+            prefs.edit().putBoolean(IS_DEVICE_TOKEN_RETRIEVED, true).apply()
+        }
+    }
+
+    private suspend fun setupCloudMessaging() = suspendCancellableCoroutine<String?> { cont ->
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                cont.resume(null)
+            }
+
+            cont.resume(task.result)
+        }
+    }
+
+    fun setCurrentInterlocutorId(interlocutorId: Int) {
+        notificationHelper.currentInterlocutorId = interlocutorId
+    }
+
+    private fun initializeSocket(): Socket {
+        val options = IO.Options.builder()
+            .setTransports(arrayOf(WebSocket.NAME))
+            .setExtraHeaders(
+                mapOf(
+                    "Authorization" to listOf(currentAccessToken),
+                    "Content-type" to listOf("application/json")
+                )
+            )
+            .build()
+        return IO.socket(baseUrl, options)
+    }
+
+    private fun disconnect() {
         socket?.off()
         socket?.disconnect()
     }

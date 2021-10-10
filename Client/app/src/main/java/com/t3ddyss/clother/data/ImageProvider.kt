@@ -5,13 +5,9 @@ import android.database.ContentObserver
 import android.net.Uri
 import android.os.Handler
 import android.provider.MediaStore
-import android.util.Log
 import com.bumptech.glide.Glide
-import com.t3ddyss.clother.utilities.DEBUG_TAG
 import id.zelory.compressor.Compressor
-import kotlinx.coroutines.DEBUG_PROPERTY_NAME
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
@@ -24,15 +20,14 @@ class ImageProvider @Inject constructor(
 ) {
     private val uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 
-    @ExperimentalCoroutinesApi
-    suspend fun getImagesStream() = callbackFlow {
-        trySend(loadImagesFromGallery())
+    suspend fun observeImages() = callbackFlow {
+        trySend(loadGalleryImages())
 
         val imageUpdatesObserver =
             object : ContentObserver(Handler(application.applicationContext.mainLooper)) {
                 override fun onChange(selfChange: Boolean) {
                     if (selfChange) return
-                    trySend(loadImagesFromGallery())
+                    trySend(loadGalleryImages())
                 }
             }
         application.contentResolver.registerContentObserver(
@@ -45,7 +40,7 @@ class ImageProvider @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
-    private fun loadImagesFromGallery(): List<Uri> {
+    private fun loadGalleryImages(): List<Uri> {
         val images = mutableListOf<Uri>()
 
         val projection = arrayOf(

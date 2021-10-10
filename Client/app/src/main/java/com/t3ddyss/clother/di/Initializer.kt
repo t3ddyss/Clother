@@ -1,0 +1,40 @@
+package com.t3ddyss.clother.di
+
+import android.content.Context
+import com.google.android.gms.maps.MapView
+import com.t3ddyss.clother.data.LiveMessagesRepository
+import com.t3ddyss.clother.utilities.NotificationHelper
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import javax.inject.Singleton
+
+@Singleton
+class Initializer @Inject constructor(
+    @ApplicationContext
+    private val context: Context,
+    private val notificationHelper: NotificationHelper,
+    private val liveMessagesRepository: LiveMessagesRepository
+) {
+    fun initialize() {
+        notificationHelper.createNotificationChannel()
+        liveMessagesRepository.initialize()
+
+        MainScope().launch {
+            preloadGoogleMap()
+        }
+    }
+
+    private suspend fun preloadGoogleMap() = withContext(
+        CoroutineExceptionHandler { _, _ -> }
+    ) {
+        MapView(context).apply {
+            onCreate(null)
+            onPause()
+            onDestroy()
+        }
+    }
+}

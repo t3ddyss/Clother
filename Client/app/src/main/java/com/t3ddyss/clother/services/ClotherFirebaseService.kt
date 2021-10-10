@@ -5,11 +5,14 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.t3ddyss.clother.api.ClotherAuthService
 import com.t3ddyss.clother.utilities.ACCESS_TOKEN
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ClotherFCMService : FirebaseMessagingService() {
+class ClotherFirebaseService : FirebaseMessagingService() {
     private val scope = MainScope()
     @Inject
     lateinit var service: ClotherAuthService

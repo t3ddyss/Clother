@@ -29,7 +29,6 @@ import com.t3ddyss.clother.ui.filters.FiltersViewModel
 import com.t3ddyss.clother.ui.offer_editor.OfferEditorViewModel
 import com.t3ddyss.clother.utilities.MAPVIEW_BUNDLE
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @AndroidEntryPoint
 class LocationSelectorFragment
@@ -50,7 +49,6 @@ class LocationSelectorFragment
 
     private var isPermissionGranted = false
 
-    @ExperimentalCoroutinesApi
     private val enableLocationDialogLauncher = registerForActivityResult(
         ActivityResultContracts.StartIntentSenderForResult()
     ) { result ->
@@ -75,7 +73,6 @@ class LocationSelectorFragment
         return binding.root
     }
 
-    @ExperimentalCoroutinesApi
     @SuppressLint("MissingPermission")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { isGranted ->
@@ -89,7 +86,7 @@ class LocationSelectorFragment
                 }
                 checkIfLocationEnabled()
             } else {
-                showSnackbarWithAction(
+                showMessageWithAction(
                         message = getString(R.string.no_location_access),
                         actionText = getString(R.string.grant_permission)
                 )
@@ -188,7 +185,6 @@ class LocationSelectorFragment
         }
     }
 
-    @ExperimentalCoroutinesApi
     private fun getLocation() {
         viewModel.getLocation()
     }
@@ -213,7 +209,6 @@ class LocationSelectorFragment
         }
     }
 
-    @ExperimentalCoroutinesApi
     private fun checkIfLocationEnabled() {
         if (viewModel.isEnablingLocationRequested) return
         viewModel.isEnablingLocationRequested = true

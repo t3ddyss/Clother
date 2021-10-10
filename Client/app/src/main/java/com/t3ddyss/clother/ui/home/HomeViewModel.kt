@@ -17,7 +17,7 @@ class HomeViewModel @Inject constructor(
     @ExperimentalPagingApi
     val offers = liveData {
         repository
-            .getOffers()
+            .observeOffers()
             .cachedIn(viewModelScope)
             .collectLatest {
                 emit(it)

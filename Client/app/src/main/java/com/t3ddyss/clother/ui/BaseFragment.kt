@@ -8,11 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.snackbar.Snackbar
+import com.t3ddyss.clother.NavMenuState
 import com.t3ddyss.clother.R
-import com.t3ddyss.clother.viewmodels.NetworkStateViewModel
 import java.net.ConnectException
 
 abstract class BaseFragment<B: ViewBinding>(
@@ -20,8 +19,7 @@ abstract class BaseFragment<B: ViewBinding>(
 ) : Fragment() {
     private var _binding: B? = null
     protected val binding get() = _binding!!
-
-    private val networkStateViewModel by activityViewModels<NetworkStateViewModel>()
+    private lateinit var navMenuState: NavMenuState
 
     private val openSettingsAction = {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
@@ -36,6 +34,7 @@ abstract class BaseFragment<B: ViewBinding>(
         savedInstanceState: Bundle?
     ): View? {
         _binding = inflate.invoke(inflater, container, false)
+        navMenuState = activity as NavMenuState
         return binding.root
     }
 
@@ -58,10 +57,10 @@ abstract class BaseFragment<B: ViewBinding>(
             message ?: getString(R.string.unknown_error),
             Snackbar.LENGTH_SHORT
         )
-        snackbar.show()
+        showSnackBar(snackbar)
     }
 
-    fun showSnackbarWithAction(
+    fun showMessageWithAction(
         message: String,
         actionText: String,
         action: (() -> Unit) = openSettingsAction
@@ -73,6 +72,13 @@ abstract class BaseFragment<B: ViewBinding>(
         )
         snackbar.setAction(actionText) {
                 action.invoke()
+        }
+        showSnackBar(snackbar)
+    }
+
+    private fun showSnackBar(snackbar: Snackbar) {
+        if (navMenuState.isNavMenuVisible) {
+            snackbar.setAnchorView(R.id.nav_view)
         }
         snackbar.show()
     }

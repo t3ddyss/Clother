@@ -13,7 +13,6 @@ import com.google.android.gms.tasks.OnSuccessListener
 import com.t3ddyss.clother.db.LocationDao
 import com.t3ddyss.clother.models.domain.LocationData
 import com.t3ddyss.clother.models.entity.LocationEntity
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.merge
@@ -26,8 +25,7 @@ class LocationProvider @Inject constructor(
     private val locationProviderClient = LocationServices
         .getFusedLocationProviderClient(application.applicationContext)
 
-    @ExperimentalCoroutinesApi
-    suspend fun getLocationStream() = merge(getInitialLocation(), getLocationUpdates())
+    suspend fun observeLocation() = merge(getInitialLocation(), observeLocationUpdates())
 
     suspend fun getLatestSavedLocation() = locationDao.getLatestLocation()
 
@@ -40,29 +38,24 @@ class LocationProvider @Inject constructor(
         )
     }
 
-    @ExperimentalCoroutinesApi
     @SuppressLint("MissingPermission")
     private suspend fun getInitialLocation() = callbackFlow {
+        val initialLocationListener = OnSuccessListener<Location> {
+            val latLng = LocationData(
+                latLng = LatLng(it.latitude, it.longitude),
+                isInitialValue = false,
+                isManuallySelected = false
+            )
 
-        val initialLocationListener = OnSuccessListener<Location?> {
-            if (it != null) {
-                val latLng = LocationData(
-                    latLng = LatLng(it.latitude, it.longitude),
-                    isInitialValue = false,
-                    isManuallySelected = false
-                )
-
-                trySend(latLng)
-            }
+            trySend(latLng)
         }
         locationProviderClient.lastLocation.addOnSuccessListener(initialLocationListener)
 
         awaitClose()
     }
 
-    @ExperimentalCoroutinesApi
     @SuppressLint("MissingPermission")
-    private suspend fun getLocationUpdates() = callbackFlow<LocationData> {
+    private suspend fun observeLocationUpdates() = callbackFlow {
         val locationRequest = LocationRequest.create()
         locationRequest.interval = 5_000
         locationRequest.fastestInterval = 1000

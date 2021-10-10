@@ -34,12 +34,12 @@ class ChatViewModel @Inject constructor(
         if (messages.value != null) return
 
         viewModelScope.launch {
-            repository.getMessages(interlocutor).collectLatest {
+            repository.observeMessages(interlocutor).collectLatest {
                 _messages.postValue(it)
             }
         }
 
-        liveRepository.setCurrentInterlocutor(interlocutor.id)
+        liveRepository.setCurrentInterlocutorId(interlocutor.id)
         getMoreMessages(interlocutor)
     }
 

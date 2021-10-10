@@ -25,7 +25,7 @@ class ChatsViewModel @Inject constructor(
         if (isChatsLoaded.getAndSet(true)) return
 
         viewModelScope.launch {
-            repository.getChats().collectLatest {
+            repository.observeChats().collectLatest {
                 _chats.postValue(it)
             }
         }

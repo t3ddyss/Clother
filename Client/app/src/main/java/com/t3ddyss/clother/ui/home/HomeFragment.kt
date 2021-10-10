@@ -16,18 +16,15 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.t3ddyss.clother.MainViewModel
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OffersAdapter
 import com.t3ddyss.clother.databinding.FragmentHomeBinding
 import com.t3ddyss.clother.ui.BaseFragment
 import com.t3ddyss.clother.ui.offer.OfferViewModel
-import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
 import com.t3ddyss.clother.utilities.getThemeColor
-import com.t3ddyss.clother.viewmodels.MessagesViewModel
-import com.t3ddyss.clother.viewmodels.NetworkStateViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -35,8 +32,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     // Using activityViewModels delegate here to save data across different instances of HomeFragment
     private val viewModel by activityViewModels<HomeViewModel>()
     private val offerViewModel by activityViewModels<OfferViewModel>()
-    private val messagesViewModel by activityViewModels<MessagesViewModel>()
-    private val networkStateViewModel by activityViewModels<NetworkStateViewModel>()
+    private val networkStateViewModel by activityViewModels<MainViewModel>()
 
     private val args by navArgs<HomeFragmentArgs>()
 
@@ -82,18 +78,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                 is LoadState.Error -> {
                     val error = (it.refresh as LoadState.Error).error
 
-                    if (error is HttpException && error.code() == 401) {
-                        findNavController().navigate(R.id.action_global_signUpFragment)
-
-                        showGenericMessage(getString(R.string.session_expired))
-                        prefs.edit().remove(IS_AUTHENTICATED).apply()
-                    } else {
-                        binding.shimmer.isVisible = false
-                        binding.containerHome.isVisible = true
-                        binding.swipeRefresh.isRefreshing = false
-
-                        showErrorMessage(error)
-                    }
+                    binding.shimmer.isVisible = false
+                    binding.containerHome.isVisible = true
+                    binding.swipeRefresh.isRefreshing = false
+                    showErrorMessage(error)
                 }
             }
 
@@ -167,11 +155,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         subscribeUi()
     }
 
-    override fun onStart() {
-        super.onStart()
-        messagesViewModel.sendDeviceTokenToServer()
-    }
-
     override fun onResume() {
         super.onResume()
         binding.swipeRefresh.isEnabled = true
@@ -204,7 +187,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         }
 
         viewModel.newOfferAdded.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?: return@observe
+            it.getContentIfNotHandled() ?: return@observe
 
             showGenericMessage(getString(R.string.offer_created))
         }

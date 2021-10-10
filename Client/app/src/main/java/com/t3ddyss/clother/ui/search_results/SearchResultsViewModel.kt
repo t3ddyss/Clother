@@ -39,7 +39,7 @@ class SearchResultsViewModel @Inject constructor(
 
         viewModelScope.launch {
             repository
-                .getOffers(query)
+                .observeOffers(query)
                 .cachedIn(viewModelScope)
                 .collectLatest {
                     _offers.postValue(it)

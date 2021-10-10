@@ -7,7 +7,7 @@ import com.t3ddyss.clother.api.ClotherChatService
 import com.t3ddyss.clother.api.ClotherOffersService
 import com.t3ddyss.clother.api.TokenAuthenticator
 import com.t3ddyss.clother.models.dto.GsonDateAdapter
-import com.t3ddyss.clother.utilities.getBaseUrlForCurrentDevice
+import com.t3ddyss.clother.utilities.baseUrl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -53,9 +53,19 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideRetrofit(httpClient: OkHttpClient, gson: Gson): Retrofit {
+    @BaseUrl
+    fun provideBaseUrl(): String = baseUrl
+
+    @Singleton
+    @Provides
+    fun provideRetrofit(
+        httpClient: OkHttpClient,
+        @BaseUrl
+        baseUrl: String,
+        gson: Gson
+    ): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(getBaseUrlForCurrentDevice())
+            .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .client(httpClient)
             .build()
@@ -87,4 +97,6 @@ object NetworkModule {
                 .create()
         }
     }
+
+    annotation class BaseUrl
 }

@@ -32,7 +32,7 @@ class ProfileViewModel
 
         viewModelScope.launch {
             offersRepository
-                .getOffers(query = mapOf("user" to userId.toString()), userId = userId)
+                .observeOffers(query = mapOf("user" to userId.toString()), userId = userId)
                 .cachedIn(viewModelScope)
                 .collectLatest {
                     _offers.postValue(it)

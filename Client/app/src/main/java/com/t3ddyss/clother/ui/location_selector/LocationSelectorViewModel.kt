@@ -8,7 +8,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.t3ddyss.clother.data.LocationProvider
 import com.t3ddyss.clother.models.domain.LocationData
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,12 +23,11 @@ class LocationSelectorViewModel
     var isEnablingLocationRequested = false
     private var isLocationRequested = false
 
-    @ExperimentalCoroutinesApi
     fun getLocation() {
         if (isLocationRequested) return
         viewModelScope.launch {
             isLocationRequested = true
-            repository.getLocationStream().collectLatest {
+            repository.observeLocation().collectLatest {
                 _location.postValue(it)
             }
         }

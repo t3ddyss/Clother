@@ -22,7 +22,7 @@ interface MessageDao {
                     OR message.server_chat_id == chat.server_id)
                     ORDER BY message.created_at DESC"""
     )
-    fun getMessagesByInterlocutorId(interlocutorId: Int): Flow<List<MessageEntity>>
+    fun observeMessagesByInterlocutorId(interlocutorId: Int): Flow<List<MessageEntity>>
 
     @Query("DELETE FROM message WHERE server_chat_id == :serverChatId")
     suspend fun deleteAllMessagesFromChat(serverChatId: Int?)

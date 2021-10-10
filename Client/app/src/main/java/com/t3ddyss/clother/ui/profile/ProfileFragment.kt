@@ -19,10 +19,8 @@ import com.t3ddyss.clother.databinding.FragmentProfileBinding
 import com.t3ddyss.clother.ui.BaseFragment
 import com.t3ddyss.clother.ui.offer.OfferViewModel
 import com.t3ddyss.clother.utilities.CURRENT_USER_ID
-import com.t3ddyss.clother.utilities.IS_AUTHENTICATED
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -64,16 +62,9 @@ class ProfileFragment
                 is LoadState.Error -> {
                     val error = (it.refresh as LoadState.Error).error
 
-                    if (error is HttpException && error.code() == 401) {
-                        findNavController().navigate(R.id.action_global_signUpFragment)
-
-                        showGenericMessage(getString(R.string.session_expired))
-                        prefs.edit().remove(IS_AUTHENTICATED).apply()
-                    } else {
-                        binding.shimmer.isVisible = false
-                        binding.list.isVisible = true
-                        showErrorMessage(error)
-                    }
+                    binding.shimmer.isVisible = false
+                    binding.list.isVisible = true
+                    showErrorMessage(error)
                 }
             }
         }

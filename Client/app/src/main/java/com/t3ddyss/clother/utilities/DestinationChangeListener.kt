@@ -12,7 +12,7 @@ import com.t3ddyss.clother.databinding.ActivityMainBinding
 class DestinationChangeListener(
     private val binding: ActivityMainBinding,
     private val activity: MainActivity,
-    private val notificationUtil: NotificationUtil
+    private val notificationHelper: NotificationHelper
 ) : NavController.OnDestinationChangedListener {
     private val fragmentsWithoutBottomNav = setOf(
         R.id.emailActionFragment,
@@ -47,8 +47,8 @@ class DestinationChangeListener(
         destination: NavDestination,
         arguments: Bundle?
     ) {
-        notificationUtil.isChatFragment = destination.id == R.id.chatFragment
-        notificationUtil.isChatsFragment = destination.id == R.id.chatsFragment
+        notificationHelper.isChatFragment = destination.id == R.id.chatFragment
+        notificationHelper.isChatsFragment = destination.id == R.id.chatsFragment
 
         with(binding) {
             // NavView visibility
@@ -102,7 +102,7 @@ class DestinationChangeListener(
             activity.getThemeColor(R.attr.colorOnPrimary).toColorFilter()
     }
 
-    fun setIconUp(toolbar: Toolbar) {
+    private fun setIconUp(toolbar: Toolbar) {
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
         toolbar.navigationIcon?.colorFilter =
             activity.getThemeColor(R.attr.colorOnPrimary).toColorFilter()

@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.t3ddyss.clother.data.ImageProvider
 import com.t3ddyss.clother.models.domain.MediaImage
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -22,12 +21,11 @@ class GalleryViewModel @Inject constructor(
     val images: LiveData<List<MediaImage>> = _images
     private var isInitialImagesLoaded = AtomicBoolean(false)
 
-    @ExperimentalCoroutinesApi
     fun getImages() {
         if (isInitialImagesLoaded.getAndSet(true)) return
 
         viewModelScope.launch {
-            repository.getImagesStream()
+            repository.observeImages()
                 .map { list -> list.map { MediaImage(it) } }
                 .collectLatest {
                     _images.postValue(it)

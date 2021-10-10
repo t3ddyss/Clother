@@ -12,7 +12,6 @@ const val CLOTHER_PAGE_SIZE_CHAT = 25
 const val ACCESS_TOKEN = "access_token"
 const val REFRESH_TOKEN = "refresh_token"
 const val CURRENT_USER_ID = "current_user_id"
-const val IS_AUTHENTICATED = "is_authenticated"
 const val IS_DEVICE_TOKEN_RETRIEVED = "is_device_token_retrieved"
 
 // SavedStateHandle keys

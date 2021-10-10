@@ -42,7 +42,7 @@ class OffersRepository
      * Gets offers and saves them in database
      */
     @ExperimentalPagingApi
-    fun getOffers(query: Map<String, String> = mapOf(), userId: Int? = null):
+    fun observeOffers(query: Map<String, String> = mapOf(), userId: Int? = null):
             Flow<PagingData<Offer>> {
         val listKey = LIST_KEY_OFFERS + (userId ?: "")
         return Pager(
@@ -73,7 +73,7 @@ class OffersRepository
     /**
      * Gets offers without saving them in database
      */
-    fun getOffers(query: Map<String, String>): Flow<PagingData<Offer>> {
+    fun observeOffers(query: Map<String, String>): Flow<PagingData<Offer>> {
         return Pager(
             config = PagingConfig(
                 pageSize = CLOTHER_PAGE_SIZE,

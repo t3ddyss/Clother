@@ -10,13 +10,13 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 
-class ConnectivityUtil @Inject constructor(
+class ConnectivityObserver @Inject constructor(
     @ApplicationContext context: Context
 ) {
     private val connectivityManager = context
         .getSystemService(AppCompatActivity.CONNECTIVITY_SERVICE) as? ConnectivityManager
 
-    fun getConnectivityStatusStream() = callbackFlow {
+    fun observeConnectivityStatus() = callbackFlow {
         trySend(isNetworkAvailable())
 
         val connectivityListener = object : ConnectivityManager.NetworkCallback() {

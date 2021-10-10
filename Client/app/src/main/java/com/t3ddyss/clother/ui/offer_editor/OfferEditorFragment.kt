@@ -47,7 +47,7 @@ class OfferEditorFragment
                 if (isGranted) {
                     findNavController().navigate(R.id.action_offerEditorFragment_to_galleryFragment)
                 } else {
-                    showSnackbarWithAction(
+                    showMessageWithAction(
                             message = getString(R.string.no_gallery_access),
                             actionText = getString(R.string.grant_access)
                     )

@@ -1,27 +1,34 @@
-package com.t3ddyss.clother.viewmodels
+package com.t3ddyss.clother
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.t3ddyss.clother.utilities.ConnectivityUtil
+import androidx.lifecycle.*
+import com.t3ddyss.clother.data.AuthStateObserver
+import com.t3ddyss.clother.models.domain.AuthState
+import com.t3ddyss.clother.utilities.ConnectivityObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NetworkStateViewModel @Inject constructor(
-    private val connectivityUtil: ConnectivityUtil
+class MainViewModel @Inject constructor(
+    private val connectivityObserver: ConnectivityObserver,
+    authStateObserver: AuthStateObserver
 ) : ViewModel() {
     private val _networkAvailability = MutableLiveData<Boolean>()
     val networkAvailability: LiveData<Boolean> = _networkAvailability
+    val authStateFlow: StateFlow<AuthState> = authStateObserver.authState
+    val unauthorizedEvent =
+        authStateFlow
+            .filter { it is AuthState.None }
+            .asLiveData()
 
     private var isNetworkPreviouslyAvailable: Boolean? = null
 
     init {
         viewModelScope.launch {
-            connectivityUtil.getConnectivityStatusStream().collect { isNetworkAvailable ->
+            connectivityObserver.observeConnectivityStatus().collect { isNetworkAvailable ->
                 if (isNetworkPreviouslyAvailable == null && !isNetworkAvailable) {
                     _networkAvailability.postValue(isNetworkAvailable)
                 } else if (isNetworkPreviouslyAvailable != null

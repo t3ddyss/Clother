@@ -37,7 +37,7 @@ interface ChatDao {
                     ORDER BY m1.max_created_at DESC
                 """
     )
-    fun getAllChats(): Flow<List<ChatWithLastMessage>>
+    fun observeChats(): Flow<List<ChatWithLastMessage>>
 
     @Query("SELECT * FROM chat WHERE local_id == :localId LIMIT 1")
     suspend fun getChatByLocalId(localId: Int): ChatEntity?
