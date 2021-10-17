@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder
 import com.t3ddyss.clother.api.ClotherAuthService
 import com.t3ddyss.clother.api.ClotherChatService
 import com.t3ddyss.clother.api.ClotherOffersService
-import com.t3ddyss.clother.api.TokenAuthenticator
+import com.t3ddyss.clother.data.TokenAuthenticator
 import com.t3ddyss.clother.models.dto.GsonDateAdapter
 import com.t3ddyss.clother.utilities.baseUrl
 import dagger.Module

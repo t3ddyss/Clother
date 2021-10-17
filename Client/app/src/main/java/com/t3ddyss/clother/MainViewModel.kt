@@ -1,7 +1,7 @@
 package com.t3ddyss.clother
 
 import androidx.lifecycle.*
-import com.t3ddyss.clother.data.AuthStateObserver
+import com.t3ddyss.clother.data.UsersRepository
 import com.t3ddyss.clother.models.domain.AuthState
 import com.t3ddyss.clother.utilities.ConnectivityObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,11 +14,12 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val connectivityObserver: ConnectivityObserver,
-    authStateObserver: AuthStateObserver
+    usersRepository: UsersRepository
 ) : ViewModel() {
     private val _networkAvailability = MutableLiveData<Boolean>()
     val networkAvailability: LiveData<Boolean> = _networkAvailability
-    val authStateFlow: StateFlow<AuthState> = authStateObserver.authState
+
+    val authStateFlow: StateFlow<AuthState> = usersRepository.observeAuthState()
     val unauthorizedEvent =
         authStateFlow
             .filter { it is AuthState.None }

@@ -29,7 +29,7 @@ class MessagesRepository @Inject constructor(
         .observeMessagesByInterlocutorId(interlocutor.id)
         .map { messages ->
             messages.map {
-                mapMessageEntityToDomain(it)
+                mapMessageEntityToDomain(it, it.userId == interlocutor.id)
             }
         }
 

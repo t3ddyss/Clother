@@ -10,6 +10,7 @@ import com.t3ddyss.clother.models.domain.LocationData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,12 +22,11 @@ class LocationSelectorViewModel
     val location: LiveData<LocationData> = _location
 
     var isEnablingLocationRequested = false
-    private var isLocationRequested = false
+    private var isLocationRequested = AtomicBoolean(false)
 
     fun getLocation() {
-        if (isLocationRequested) return
+        if (isLocationRequested.getAndSet(true)) return
         viewModelScope.launch {
-            isLocationRequested = true
             repository.observeLocation().collectLatest {
                 _location.postValue(it)
             }

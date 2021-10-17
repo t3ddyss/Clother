@@ -7,9 +7,11 @@ import com.t3ddyss.clother.db.AppDatabase
 import com.t3ddyss.clother.db.ChatDao
 import com.t3ddyss.clother.db.MessageDao
 import com.t3ddyss.clother.models.mappers.mapChatDtoToEntity
+import com.t3ddyss.clother.models.mappers.mapChatWithLastMessageEntityToDomain
 import com.t3ddyss.clother.models.mappers.mapMessageDtoToEntity
 import com.t3ddyss.clother.utilities.ACCESS_TOKEN
 import com.t3ddyss.clother.utilities.networkBoundResource
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class ChatsRepository @Inject constructor(
@@ -20,7 +22,11 @@ class ChatsRepository @Inject constructor(
     private val prefs: SharedPreferences
 ) {
     fun observeChats() = networkBoundResource(
-        query = { chatDao.observeChats() },
+        query = {
+            chatDao.observeChats().map {
+                    chats -> chats.map { mapChatWithLastMessageEntityToDomain(it) }
+            }
+        },
         fetch = { service.getChats(prefs.getString(ACCESS_TOKEN, null)) },
         saveFetchResult = {
             db.withTransaction {

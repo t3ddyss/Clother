@@ -1,8 +1,8 @@
 package com.t3ddyss.clother.db
 
 import androidx.room.*
-import com.t3ddyss.clother.models.domain.ChatWithLastMessage
 import com.t3ddyss.clother.models.entity.ChatEntity
+import com.t3ddyss.clother.models.entity.ChatWithLastMessageEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -18,11 +18,19 @@ interface ChatDao {
 
     @Transaction
     @Query(
-        """SELECT 
-                    c.server_id AS server_chat_id,
-                    c.interlocutor_id,
-                    c.interlocutor_name,
+        """SELECT
+                    c.local_id AS chat_local_id,
+                    c.server_id AS chat_server_id,
+                    c.interlocutor_id AS chat_interlocutor_id,
+                    c.interlocutor_name AS chat_interlocutor_name,
+                    c.interlocutor_email AS chat_interlocutor_email,
+                    c.interlocutor_image AS chat_interlocutor_image,
+                    m.local_id AS message_local_id,
+                    m.server_id AS message_server_id,
+                    m.local_chat_id AS message_local_chat_id,
+                    m.server_chat_id AS message_server_chat_id,
                     m.user_id AS message_user_id,
+                    m.status AS message_status,
                     m.created_at AS message_created_at,
                     m.body AS message_body,
                     m.image AS message_image
@@ -37,7 +45,7 @@ interface ChatDao {
                     ORDER BY m1.max_created_at DESC
                 """
     )
-    fun observeChats(): Flow<List<ChatWithLastMessage>>
+    fun observeChats(): Flow<List<ChatWithLastMessageEntity>>
 
     @Query("SELECT * FROM chat WHERE local_id == :localId LIMIT 1")
     suspend fun getChatByLocalId(localId: Int): ChatEntity?

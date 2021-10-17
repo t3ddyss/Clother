@@ -70,7 +70,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/fragment_horizontal_margin"
-        android:layout_marginTop="@dimen/margin_padding_size_small"
+        android:layout_marginTop="@dimen/margin_padding_8dp"
         android:layout_marginBottom="@dimen/fragment_vertical_margin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView_distance" />
@@ -89,7 +89,7 @@
         android:id="@+id/scrollView_sizes"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_padding_size_small"
+        android:layout_marginTop="@dimen/margin_padding_8dp"
         android:layout_marginBottom="@dimen/fragment_vertical_margin"
         android:clipToPadding="false"
         android:paddingHorizontal="@dimen/fragment_horizontal_margin"

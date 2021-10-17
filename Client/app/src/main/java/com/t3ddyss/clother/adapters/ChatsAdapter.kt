@@ -7,13 +7,12 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.ListItemChatBinding
-import com.t3ddyss.clother.models.domain.ChatWithLastMessage
+import com.t3ddyss.clother.models.domain.Chat
 import com.t3ddyss.clother.utilities.formatDate
 
 class ChatsAdapter(
-    private val userId: Int,
-    private val clickListener: (ChatWithLastMessage) -> Unit
-) : ListAdapter<ChatWithLastMessage, ChatsAdapter.ChatViewHolder>(ChatWithMessageDiffCallback()) {
+    private val clickListener: (Chat) -> Unit
+) : ListAdapter<Chat, ChatsAdapter.ChatViewHolder>(ChatDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
         return ChatViewHolder(
@@ -31,7 +30,7 @@ class ChatsAdapter(
 
     inner class ChatViewHolder(
         private val binding: ListItemChatBinding,
-        private val clickListener: (ChatWithLastMessage) -> Unit
+        private val clickListener: (Chat) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         init {
             binding.root.setOnClickListener {
@@ -40,16 +39,16 @@ class ChatsAdapter(
         }
 
         @SuppressLint("SetTextI18n")
-        fun bind(chat: ChatWithLastMessage) {
+        fun bind(chat: Chat) {
             with(binding) {
-                textViewName.text = chat.interlocutorName
-                textViewTime.text = chat.messageCreatedAt.formatDate()
+                textViewName.text = chat.interlocutor.name
+                textViewTime.text = chat.lastMessage.createdAt.formatDate()
 
-                if (chat.messageUserId == userId) {
-                    textViewMessage.text = "${binding.root.context.getString(R.string.you)}: " +
-                            "${chat.messageBody}"
+                if (chat.lastMessage.isIncoming) {
+                    textViewMessage.text = chat.lastMessage.body
                 } else {
-                    textViewMessage.text = chat.messageBody
+                    textViewMessage.text = "${binding.root.context.getString(R.string.you)}: " +
+                            "${chat.lastMessage.body}"
                 }
             }
         }

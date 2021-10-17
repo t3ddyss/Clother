@@ -181,7 +181,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/fragment_horizontal_margin"
             android:layout_marginTop="@dimen/fragment_vertical_margin"
-            android:layout_marginBottom="@dimen/margin_padding_size_xlarge"
+            android:layout_marginBottom="@dimen/margin_padding_32dp"
             android:clipToPadding="false"
             android:paddingHorizontal="@dimen/fragment_horizontal_margin"
             android:scrollbars="none"

@@ -2,7 +2,6 @@ package com.t3ddyss.clother.data
 
 import android.content.SharedPreferences
 import android.util.Log
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
@@ -17,7 +16,6 @@ import com.t3ddyss.clother.models.mappers.mapOfferDtoToEntity
 import com.t3ddyss.clother.utilities.ACCESS_TOKEN
 import com.t3ddyss.clother.utilities.DEBUG_TAG
 
-@ExperimentalPagingApi
 class OffersRemoteMediator(
     private val service: ClotherOffersService,
     private val prefs: SharedPreferences,

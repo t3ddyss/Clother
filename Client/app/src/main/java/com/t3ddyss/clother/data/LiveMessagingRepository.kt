@@ -37,7 +37,7 @@ import kotlin.coroutines.resume
 
 // TODO find out how to refresh access token without creating racing condition with HTTP requests
 @Singleton
-class LiveMessagesRepository @Inject constructor(
+class LiveMessagingRepository @Inject constructor(
     @NetworkModule.BaseUrl
     private val baseUrl: String,
     private val authService: ClotherAuthService,
@@ -91,7 +91,7 @@ class LiveMessagesRepository @Inject constructor(
             }
 
             notificationHelper.showNotificationIfShould(
-                mapMessageDtoToDomain(message)
+                mapMessageDtoToDomain(message, true)
             )
         }
 
@@ -102,7 +102,7 @@ class LiveMessagesRepository @Inject constructor(
             }
 
             notificationHelper.showNotificationIfShould(
-                mapMessageDtoToDomain(chat.lastMessage)
+                mapMessageDtoToDomain(chat.lastMessage, true)
             )
         }
 

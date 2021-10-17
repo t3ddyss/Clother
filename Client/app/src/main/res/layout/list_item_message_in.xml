@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginVertical="@dimen/margin_padding_size_small"
+    android:layout_marginVertical="@dimen/margin_padding_8dp"
     android:background="@android:color/transparent">
 
     <androidx.constraintlayout.widget.Guideline
@@ -29,9 +29,9 @@
             android:id="@+id/textView_body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_padding_size_large"
-            android:layout_marginEnd="@dimen/margin_padding_size_small"
-            android:padding="@dimen/margin_padding_size_small"
+            android:layout_marginStart="@dimen/margin_padding_24dp"
+            android:layout_marginEnd="@dimen/margin_padding_8dp"
+            android:padding="@dimen/margin_padding_8dp"
             android:textSize="@dimen/text_size_medium"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -44,7 +44,7 @@
         android:id="@+id/textView_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_padding_size_small"
+        android:layout_marginStart="@dimen/margin_padding_8dp"
         android:layout_marginEnd="@dimen/fragment_horizontal_margin"
         android:textColor="@color/grey_500"
         android:textSize="@dimen/time_text_size"

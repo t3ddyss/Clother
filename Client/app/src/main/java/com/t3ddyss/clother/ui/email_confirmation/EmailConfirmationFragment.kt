@@ -15,9 +15,9 @@ class EmailConfirmationFragment
 
     private val args: EmailConfirmationFragmentArgs by navArgs()
 
+    // TODO move this logic from fragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val message = SpannableStringBuilder()
-            .append(args.emailActionMessage)
+        val message = SpannableStringBuilder().append(args.emailActionMessage)
         if (args.emailAddress.isEmpty()) {
             message.append(getString(R.string.your_email))
         } else {

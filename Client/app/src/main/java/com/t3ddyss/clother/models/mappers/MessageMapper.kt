@@ -16,17 +16,17 @@ fun mapMessageDtoToEntity(input: MessageDto): MessageEntity {
     )
 }
 
-fun mapMessageDtoToDomain(input: MessageDto): Message {
+fun mapMessageDtoToDomain(input: MessageDto, isIncoming: Boolean): Message {
     return Message(
         localId = 0,
         serverId = input.id,
-        localChatId = input.chatId,
         userId = input.userId,
         userName = input.userName,
         createdAt = input.createdAt,
         status = MessageStatus.DELIVERED,
         body = input.body,
-        image = input.image
+        image = input.image,
+        isIncoming = isIncoming
     )
 }
 
@@ -42,16 +42,16 @@ fun mapMessageEntityToDto(input: MessageEntity): MessageDto {
     )
 }
 
-fun mapMessageEntityToDomain(input: MessageEntity): Message {
+fun mapMessageEntityToDomain(input: MessageEntity, isIncoming: Boolean): Message {
     return Message(
         localId = input.localId,
         serverId = input.serverId,
-        localChatId = input.localChatId,
         userId = input.userId,
         userName = "",
         createdAt = input.createdAt,
         status = input.status,
         body = input.body,
-        image = input.image
+        image = input.image,
+        isIncoming = isIncoming
     )
 }

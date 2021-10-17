@@ -9,7 +9,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.CombinedLoadStates
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
@@ -18,7 +17,6 @@ import com.t3ddyss.clother.adapters.OffersAdapter
 import com.t3ddyss.clother.databinding.FragmentProfileBinding
 import com.t3ddyss.clother.ui.BaseFragment
 import com.t3ddyss.clother.ui.offer.OfferViewModel
-import com.t3ddyss.clother.utilities.CURRENT_USER_ID
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -41,7 +39,6 @@ class ProfileFragment
     @Inject
     lateinit var prefs: SharedPreferences
 
-    @ExperimentalPagingApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         loadStateListener = {
             when (it.refresh) {
@@ -88,7 +85,6 @@ class ProfileFragment
         super.onDestroyView()
     }
 
-    @ExperimentalPagingApi
     private fun subscribeUi() {
         profileViewModel.offers.observe(viewLifecycleOwner) {
             lifecycleScope.launch {
@@ -99,7 +95,5 @@ class ProfileFragment
         offerViewModel.removedOffers.observe(viewLifecycleOwner) {
             profileViewModel.removeOffers(it)
         }
-
-        profileViewModel.getOffers(prefs.getInt(CURRENT_USER_ID, 0))
     }
 }

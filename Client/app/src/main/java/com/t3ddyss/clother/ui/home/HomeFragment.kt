@@ -11,7 +11,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.CombinedLoadStates
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
@@ -49,7 +48,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     private lateinit var adapterDataObserver: RecyclerView.AdapterDataObserver
     private lateinit var onScrollListener: RecyclerView.OnScrollListener
 
-    @ExperimentalPagingApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.progressBarFooter.isVisible = false
         val layoutManager = GridLayoutManager(context, 2)
@@ -172,7 +170,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         super.onDestroyView()
     }
 
-    @ExperimentalPagingApi
     private fun subscribeUi() {
         networkStateViewModel.networkAvailability.observe(viewLifecycleOwner, {
             if (it) {

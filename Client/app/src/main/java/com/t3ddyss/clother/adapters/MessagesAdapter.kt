@@ -12,9 +12,7 @@ import com.t3ddyss.clother.models.domain.Message
 import com.t3ddyss.clother.models.domain.MessageStatus
 import com.t3ddyss.clother.utilities.formatTime
 
-class MessagesAdapter(
-    private val interlocutorId: Int
-) : ListAdapter<Message, RecyclerView.ViewHolder>(MessageDiffCallback()) {
+class MessagesAdapter : ListAdapter<Message, RecyclerView.ViewHolder>(MessageDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -50,7 +48,7 @@ class MessagesAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (getItem(position).userId == interlocutorId) R.layout.list_item_message_in
+        return if (getItem(position).isIncoming) R.layout.list_item_message_in
         else R.layout.list_item_message_out
     }
 

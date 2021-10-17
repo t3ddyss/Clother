@@ -67,7 +67,6 @@ class FilterDialogFragment : BottomSheetDialogFragment() {
             findNavController().popBackStack()
         }
 
-        viewModel.getSavedLocation()
         subscribeUi()
     }
 

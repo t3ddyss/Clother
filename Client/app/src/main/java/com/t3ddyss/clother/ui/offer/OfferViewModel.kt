@@ -18,7 +18,7 @@ class OfferViewModel @Inject constructor(
     private val repository: OffersRepository
 ) : ViewModel() {
     private val _offer = MutableLiveData<Offer>()
-    val offerEntity: LiveData<Offer> = _offer
+    val offer: LiveData<Offer> = _offer
 
     private val _removedOffers = MutableLiveData<Set<Int>>(setOf())
     val removedOffers: LiveData<Set<Int>> = _removedOffers

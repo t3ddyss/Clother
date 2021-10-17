@@ -5,13 +5,11 @@ import android.view.View
 import android.view.WindowManager
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.adapters.MessagesAdapter
 import com.t3ddyss.clother.databinding.FragmentChatBinding
 import com.t3ddyss.clother.models.domain.LoadResult
-import com.t3ddyss.clother.models.domain.User
 import com.t3ddyss.clother.ui.BaseFragment
 import com.t3ddyss.clother.utilities.text
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,10 +17,9 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::inflate) {
     private val viewModel by viewModels<ChatViewModel>()
-    private val args by navArgs<ChatFragmentArgs>()
 
     private val adapter by lazy {
-        MessagesAdapter(args.userId)
+        MessagesAdapter()
     }
     private lateinit var adapterDataObserver: RecyclerView.AdapterDataObserver
     private lateinit var onScrollListener: RecyclerView.OnScrollListener
@@ -35,7 +32,6 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::infl
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val interlocutor = User(id = args.userId, name = args.userName, image = "", email = "")
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, true)
 
         adapterDataObserver = object : RecyclerView.AdapterDataObserver() {
@@ -61,7 +57,7 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::infl
                         >= totalItemCount
                     ) {
                         // TODO add loading indicator (header) like on home fragment
-                        viewModel.getMoreMessages(interlocutor)
+                        viewModel.requestMessages()
                     }
                 }
             }
@@ -69,11 +65,10 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::infl
         binding.listMessages.addOnScrollListener(onScrollListener)
 
         binding.buttonSend.setOnClickListener {
-            viewModel.sendMessage(binding.editTextMessage.text(), interlocutor)
+            viewModel.sendMessage(binding.editTextMessage.text())
             binding.editTextMessage.text?.clear()
         }
 
-        viewModel.getMessages(interlocutor) // TODO move user object to viewModel
         subscribeUi()
     }
 

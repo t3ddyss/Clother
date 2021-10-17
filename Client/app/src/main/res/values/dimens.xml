@@ -17,11 +17,11 @@
     <dimen name="time_text_size">10sp</dimen>
 
     <!-- Margin & Padding, 8 dp baseline, https://material.io/design/layout/understanding-layout.html -->
-    <dimen name="margin_padding_size_small">8dp</dimen>
-    <dimen name="margin_padding_size_medium">16dp</dimen>
-    <dimen name="margin_padding_size_large">24dp</dimen>
-    <dimen name="margin_padding_size_xlarge">32dp</dimen>
-    <dimen name="margin_padding_size_xxlarge">40dp</dimen>
+    <dimen name="margin_padding_8dp">8dp</dimen>
+    <dimen name="margin_padding_16dp">16dp</dimen>
+    <dimen name="margin_padding_24dp">24dp</dimen>
+    <dimen name="margin_padding_32dp">32dp</dimen>
+    <dimen name="margin_padding_40dp">40dp</dimen>
 
     <!-- Font sizes, https://material.io/design/typography/the-type-system.html#type-scale -->
     <dimen name="text_size_micro">12sp</dimen>

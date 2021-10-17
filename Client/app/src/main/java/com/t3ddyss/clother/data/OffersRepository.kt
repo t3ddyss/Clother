@@ -2,7 +2,10 @@ package com.t3ddyss.clother.data
 
 import android.content.SharedPreferences
 import android.net.Uri
-import androidx.paging.*
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
 import com.google.gson.JsonObject
 import com.t3ddyss.clother.api.ClotherOffersService
 import com.t3ddyss.clother.db.AppDatabase
@@ -39,9 +42,8 @@ class OffersRepository
     private val categoryDao: CategoryDao
 ) {
     /**
-     * Gets offers and saves them in database
+     * Gets offers from API and stores them in database
      */
-    @ExperimentalPagingApi
     fun observeOffers(query: Map<String, String> = mapOf(), userId: Int? = null):
             Flow<PagingData<Offer>> {
         val listKey = LIST_KEY_OFFERS + (userId ?: "")
@@ -71,7 +73,7 @@ class OffersRepository
     }
 
     /**
-     * Gets offers without saving them in database
+     * Gets offers without storing them in database
      */
     fun observeOffers(query: Map<String, String>): Flow<PagingData<Offer>> {
         return Pager(

@@ -10,7 +10,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,11 +18,8 @@ class GalleryViewModel @Inject constructor(
 ) : ViewModel() {
     private val _images = MutableLiveData<List<MediaImage>>()
     val images: LiveData<List<MediaImage>> = _images
-    private var isInitialImagesLoaded = AtomicBoolean(false)
 
-    fun getImages() {
-        if (isInitialImagesLoaded.getAndSet(true)) return
-
+    init {
         viewModelScope.launch {
             repository.observeImages()
                 .map { list -> list.map { MediaImage(it) } }

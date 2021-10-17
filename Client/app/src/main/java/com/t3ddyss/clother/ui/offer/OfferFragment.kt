@@ -58,7 +58,7 @@ class OfferFragment : BaseFragment<FragmentOfferBinding>(FragmentOfferBinding::i
     }
 
     private fun subscribeUi(currentUserId: Int) {
-        viewModel.offerEntity.observe(viewLifecycleOwner) {
+        viewModel.offer.observe(viewLifecycleOwner) {
             with(binding) {
                 images.adapter = OfferImagesAdapter(it.images) {
                 }
@@ -105,9 +105,10 @@ class OfferFragment : BaseFragment<FragmentOfferBinding>(FragmentOfferBinding::i
                     return@observe
                 }
 
+                // TODO add User to Offer
                 buttonMessage.setOnClickListener { _ ->
                     val action = OfferFragmentDirections
-                        .actionOfferFragmentToChatFragment(it.userId, it.userName)
+                        .actionOfferFragmentToChatFragment(User(it.userId, it.userName))
                     findNavController().navigate(action)
                 }
             }

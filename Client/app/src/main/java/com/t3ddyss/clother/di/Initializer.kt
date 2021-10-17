@@ -2,7 +2,7 @@ package com.t3ddyss.clother.di
 
 import android.content.Context
 import com.google.android.gms.maps.MapView
-import com.t3ddyss.clother.data.LiveMessagesRepository
+import com.t3ddyss.clother.data.LiveMessagingRepository
 import com.t3ddyss.clother.utilities.NotificationHelper
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -17,11 +17,11 @@ class Initializer @Inject constructor(
     @ApplicationContext
     private val context: Context,
     private val notificationHelper: NotificationHelper,
-    private val liveMessagesRepository: LiveMessagesRepository
+    private val liveMessagingRepository: LiveMessagingRepository
 ) {
     fun initialize() {
         notificationHelper.createNotificationChannel()
-        liveMessagesRepository.initialize()
+        liveMessagingRepository.initialize()
 
         MainScope().launch {
             preloadGoogleMap()

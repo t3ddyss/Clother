@@ -24,8 +24,6 @@ class OfferCategoryFragment : BaseFragment<FragmentOfferCategoryBinding>
     private lateinit var adapter: CategoriesAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val parentId = args.parentId.let { if (it == 0) null else it }
-
         adapter = CategoriesAdapter {
             if (!it.isLastLevel) {
                 val action = OfferCategoryFragmentDirections
@@ -52,7 +50,6 @@ class OfferCategoryFragment : BaseFragment<FragmentOfferCategoryBinding>
         }
 
         subscribeUi()
-        viewModel.getCategories(parentId)
     }
 
     private fun subscribeUi() {

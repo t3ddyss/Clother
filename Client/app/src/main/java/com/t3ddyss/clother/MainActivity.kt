@@ -48,9 +48,9 @@ class MainActivity : AppCompatActivity(), NavMenuState {
         val navGraph = navController.navInflater.inflate(R.navigation.main_graph)
 
         if (viewModel.authStateFlow.value is AuthState.Authenticated) {
-            navGraph.startDestination = R.id.homeFragment
+            navGraph.setStartDestination(R.id.homeFragment)
         } else {
-            navGraph.startDestination = R.id.signUpFragment
+            navGraph.setStartDestination(R.id.signUpFragment)
         }
         navController.graph = navGraph
 

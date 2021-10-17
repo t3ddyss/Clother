@@ -1,7 +1,6 @@
 package com.t3ddyss.clother.ui.home
 
 import androidx.lifecycle.*
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.cachedIn
 import com.t3ddyss.clother.data.OffersRepository
 import com.t3ddyss.clother.utilities.Event
@@ -14,7 +13,6 @@ class HomeViewModel @Inject constructor(
     private val repository: OffersRepository
 ) : ViewModel() {
 
-    @ExperimentalPagingApi
     val offers = liveData {
         repository
             .observeOffers()

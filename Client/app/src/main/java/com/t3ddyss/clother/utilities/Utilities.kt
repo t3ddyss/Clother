@@ -1,6 +1,7 @@
 package com.t3ddyss.clother.utilities
 
 import android.os.Build
+import android.util.Log
 import kotlin.math.abs
 import kotlin.math.floor
 
@@ -14,4 +15,8 @@ fun convertToDms(coordinate: Double): String {
     val minutes = floor(minutesNotTruncated).toInt()
     val seconds = floor((minutesNotTruncated - minutes) * 60).toInt()
     return "$degrees°$minutes'$seconds\""
+}
+
+fun log(message: String) {
+    Log.d(DEBUG_TAG, message)
 }

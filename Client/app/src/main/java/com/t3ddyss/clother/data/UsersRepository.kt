@@ -19,6 +19,8 @@ class UsersRepository @Inject constructor(
     private val authStateObserver: AuthStateObserver,
     private val prefs: SharedPreferences
 ) {
+    fun observeAuthState() = authStateObserver.authState
+
     suspend fun createUser(name: String, email: String, password: String):
             Resource<Response> {
         val user = mapOf("name" to name, "email" to email, "password" to password)
@@ -46,12 +48,17 @@ class UsersRepository @Inject constructor(
         }
     }
 
+    fun getCurrentUserId() = authStateObserver.currentUserId
+
     private suspend fun processAuthData(data: AuthDataDto) {
         prefs.edit().putString(ACCESS_TOKEN, data.accessToken.toBearer()).apply()
         prefs.edit().putString(REFRESH_TOKEN, data.refreshToken.toBearer()).apply()
         prefs.edit().putInt(CURRENT_USER_ID, data.user.id).apply()
 
         userDao.insert(mapUserDtoToEntity(data.user))
-        authStateObserver.authState.value = AuthState.Authenticated(data.accessToken.toBearer())
+        authStateObserver.authState.value = AuthState.Authenticated(
+            data.accessToken.toBearer(),
+            userId = data.user.id
+        )
     }
 }

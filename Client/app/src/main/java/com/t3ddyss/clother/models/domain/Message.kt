@@ -5,13 +5,13 @@ import java.util.*
 data class Message(
     val localId: Int,
     val serverId: Int?,
-    val localChatId: Int,
     val userId: Int,
     val userName: String,
     val createdAt: Date,
     var status: MessageStatus,
     val body: String?,
-    val image: String?
+    val image: String?,
+    val isIncoming: Boolean
 ) {
     // "It is not required that if two objects are unequal according to the equals(java.lang.Object)
     // method, then calling the hashCode method on each of the two objects must produce
@@ -27,7 +27,7 @@ data class Message(
 
         other as Message
 
-        if (userName != other.userName) return false
+        if (userId != other.userId) return false
         if (createdAt != other.createdAt) return false
         if (status != other.status) return false
         if (body != other.body) return false

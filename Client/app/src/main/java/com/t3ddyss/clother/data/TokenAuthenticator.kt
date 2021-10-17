@@ -1,8 +1,7 @@
-package com.t3ddyss.clother.api
+package com.t3ddyss.clother.data
 
 import android.content.SharedPreferences
-import android.util.Log
-import com.t3ddyss.clother.data.AuthStateObserver
+import com.t3ddyss.clother.api.ClotherAuthService
 import com.t3ddyss.clother.models.domain.AuthState
 import com.t3ddyss.clother.utilities.*
 import dagger.Lazy
@@ -27,7 +26,7 @@ class TokenAuthenticator @Inject constructor(
             }
         }
 
-        Log.d(DEBUG_TAG, "Need new access token")
+        log("Need new access token")
         authStateObserver.authState.value = AuthState.Refreshing
 
         val refreshToken = prefs.getString(REFRESH_TOKEN, null) ?: return unauthorized()
@@ -39,15 +38,18 @@ class TokenAuthenticator @Inject constructor(
             null
         }
 
-        val tokens = refreshResponse?.body() ?: return unauthorized()
-        prefs.edit().putString(ACCESS_TOKEN, tokens.accessToken.toBearer()).apply()
-        prefs.edit().putString(REFRESH_TOKEN, tokens.refreshToken.toBearer()).apply()
-        authStateObserver.authState.tryEmit(AuthState.Authenticated(tokens.accessToken.toBearer()))
+        val authData = refreshResponse?.body() ?: return unauthorized()
+        prefs.edit().putString(ACCESS_TOKEN, authData.accessToken.toBearer()).apply()
+        prefs.edit().putString(REFRESH_TOKEN, authData.refreshToken.toBearer()).apply()
+        authStateObserver.authState.tryEmit(AuthState.Authenticated(
+            authData.accessToken.toBearer(),
+            authData.user.id)
+        )
 
         return response
             .request
             .newBuilder()
-            .header("Authorization", tokens.accessToken.toBearer())
+            .header("Authorization", authData.accessToken.toBearer())
             .build()
     }
 

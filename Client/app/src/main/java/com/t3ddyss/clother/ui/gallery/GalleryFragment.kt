@@ -60,7 +60,6 @@ class GalleryFragment : BaseFragment<FragmentGalleryBinding>(FragmentGalleryBind
             binding.list.addItemDecoration(verticalDecorator)
         }
 
-        viewModel.getImages()
         subscribeUi()
     }
 

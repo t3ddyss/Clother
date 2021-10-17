@@ -9,7 +9,7 @@ fun mapUserDtoToDomain(input: UserDto): User {
         id = input.id,
         name = input.name,
         email = input.email.orEmpty(),
-        image = input.image
+        image = input.image ?: ""
     )
 }
 
@@ -28,5 +28,14 @@ fun mapUserDomainToEntity(input: User): UserEntity {
         name = input.name,
         email = input.email,
         image = input.image
+    )
+}
+
+fun mapUserEntityToDomain(input: UserEntity): User {
+    return User(
+        id = input.id,
+        name = input.name,
+        email = input.email ?: "",
+        image = input.image ?: ""
     )
 }

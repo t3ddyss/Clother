@@ -18,6 +18,7 @@ class SearchByCategoryViewModel @Inject constructor(
     val categories: LiveData<List<Category>> = _categories
     private var currentParentId: Int? = -1 // Since null indicates root categories
 
+    // TODO extract base ViewModel
     fun getCategories(parentId: Int?) {
         if (parentId == currentParentId) return
 

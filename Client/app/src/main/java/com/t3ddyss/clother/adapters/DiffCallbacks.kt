@@ -37,18 +37,12 @@ class CategoryDiffCallback : DiffUtil.ItemCallback<Category>() {
     }
 }
 
-class ChatWithMessageDiffCallback : DiffUtil.ItemCallback<ChatWithLastMessage>() {
-    override fun areItemsTheSame(
-        oldItem: ChatWithLastMessage,
-        newItem: ChatWithLastMessage
-    ): Boolean {
-        return oldItem.serverChatId == newItem.serverChatId
+class ChatDiffCallback : DiffUtil.ItemCallback<Chat>() {
+    override fun areItemsTheSame(oldItem: Chat, newItem: Chat): Boolean {
+        return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(
-        oldItem: ChatWithLastMessage,
-        newItem: ChatWithLastMessage
-    ): Boolean {
+    override fun areContentsTheSame(oldItem: Chat, newItem: Chat): Boolean {
         return oldItem == newItem
     }
 }

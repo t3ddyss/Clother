@@ -63,7 +63,7 @@
                 android:hint="@string/message"
                 android:imeOptions="actionSend"
                 android:inputType="text"
-                android:padding="@dimen/margin_padding_size_medium"
+                android:padding="@dimen/margin_padding_16dp"
                 android:textSize="@dimen/text_size_medium" />
         </com.google.android.material.textfield.TextInputLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

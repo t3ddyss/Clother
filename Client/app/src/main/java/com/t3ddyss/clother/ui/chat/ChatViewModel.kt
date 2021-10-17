@@ -1,14 +1,10 @@
 package com.t3ddyss.clother.ui.chat
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.t3ddyss.clother.data.LiveMessagesRepository
+import androidx.lifecycle.*
+import com.t3ddyss.clother.data.LiveMessagingRepository
 import com.t3ddyss.clother.data.MessagesRepository
 import com.t3ddyss.clother.models.domain.LoadResult
 import com.t3ddyss.clother.models.domain.Message
-import com.t3ddyss.clother.models.domain.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -19,8 +15,12 @@ import javax.inject.Inject
 @HiltViewModel
 class ChatViewModel @Inject constructor(
     private val repository: MessagesRepository,
-    private val liveRepository: LiveMessagesRepository,
+    private val liveRepository: LiveMessagingRepository,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+    private val args = ChatFragmentArgs.fromSavedStateHandle(savedStateHandle)
+    private val interlocutor = args.user
+
     private val _messages = MutableLiveData<List<Message>>()
     val messages: LiveData<List<Message>> = _messages
 
@@ -30,9 +30,7 @@ class ChatViewModel @Inject constructor(
     private val isLoading = AtomicBoolean(false)
     var isEndOfPaginationReached = false
 
-    fun getMessages(interlocutor: User) {
-        if (messages.value != null) return
-
+    init {
         viewModelScope.launch {
             repository.observeMessages(interlocutor).collectLatest {
                 _messages.postValue(it)
@@ -40,10 +38,10 @@ class ChatViewModel @Inject constructor(
         }
 
         liveRepository.setCurrentInterlocutorId(interlocutor.id)
-        getMoreMessages(interlocutor)
+        requestMessages()
     }
 
-    fun getMoreMessages(interlocutor: User) {
+    fun requestMessages() {
         if (isEndOfPaginationReached || isLoading.getAndSet(true)) return
 
         viewModelScope.launch {
@@ -52,9 +50,9 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun sendMessage(message: String, to: User) {
+    fun sendMessage(message: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            liveRepository.sendMessage(to, message)
+            liveRepository.sendMessage(interlocutor, message)
         }
     }
 }
