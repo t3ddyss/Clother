@@ -8,7 +8,7 @@ import androidx.navigation.fragment.findNavController
 import com.t3ddyss.clother.adapters.ChatsAdapter
 import com.t3ddyss.clother.databinding.FragmentChatsBinding
 import com.t3ddyss.clother.models.domain.Loading
-import com.t3ddyss.clother.ui.BaseFragment
+import com.t3ddyss.core.presentation.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

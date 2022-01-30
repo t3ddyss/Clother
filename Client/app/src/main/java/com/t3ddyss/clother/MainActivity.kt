@@ -17,18 +17,25 @@ import com.t3ddyss.clother.databinding.ActivityMainBinding
 import com.t3ddyss.clother.models.domain.AuthState
 import com.t3ddyss.clother.utilities.DestinationChangeListener
 import com.t3ddyss.clother.utilities.NotificationHelper
+import com.t3ddyss.core.presentation.NavMenuController
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), NavMenuState {
+class MainActivity : AppCompatActivity(), NavMenuController {
     private val viewModel by viewModels<MainViewModel>()
     private lateinit var binding: ActivityMainBinding
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navController: NavController
     private lateinit var destinationChangeListener: DestinationChangeListener
-    override val isNavMenuVisible get() = binding.navView.isVisible
+
+    override var isMenuVisible
+        get() = binding.navView.isVisible
+        set(value) {
+            binding.navView.isVisible = value
+        }
+    override val menuView get() = binding.navView
 
     @Inject
     lateinit var notificationHelper: NotificationHelper
@@ -92,8 +99,4 @@ class MainActivity : AppCompatActivity(), NavMenuState {
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
-}
-
-interface NavMenuState {
-    val isNavMenuVisible: Boolean
 }

@@ -6,14 +6,12 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.t3ddyss.clother.R
-import com.t3ddyss.clother.data.*
 import com.t3ddyss.clother.databinding.FragmentPasswordRecoveryBinding
-import com.t3ddyss.clother.models.*
 import com.t3ddyss.clother.models.domain.*
-import com.t3ddyss.clother.ui.BaseFragment
 import com.t3ddyss.clother.utilities.text
 import com.t3ddyss.clother.utilities.toEditable
 import com.t3ddyss.clother.utilities.validateEmail
+import com.t3ddyss.core.presentation.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -48,7 +46,7 @@ class PasswordRecoveryFragment
         }
 
         viewModel.passwordRecoveryResult.observe(viewLifecycleOwner) {
-            if (it.hasBeenHandled && it is Success<*>) return@observe
+            if (it.hasBeenHandled && it.peekContent() is Success<*>) return@observe
 
             when (val response = it.getContentIfNotHandled() ?: return@observe) {
                 is Loading<*> ->

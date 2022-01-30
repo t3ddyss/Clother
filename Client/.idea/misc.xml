@@ -12,6 +12,9 @@
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/activity_main.xml" value="0.25416666666666665" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/item_circular_image_view.xml" value="0.536" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2703125" />
+        <entry key="..\:/Projects/Clother/Client/feature_location/src/main/res/layout/fragment_blank.xml" value="0.2359375" />
+        <entry key="..\:/Projects/Clother/Client/feature_location/src/main/res/layout/fragment_location_selector.xml" value="0.25" />
+        <entry key="..\:/Projects/Clother/Client/feature_location/src/main/res/layout/fragment_location_viewer.xml" value="0.25" />
       </map>
     </option>
   </component>

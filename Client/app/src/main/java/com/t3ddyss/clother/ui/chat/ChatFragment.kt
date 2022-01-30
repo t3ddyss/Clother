@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.adapters.MessagesAdapter
 import com.t3ddyss.clother.databinding.FragmentChatBinding
 import com.t3ddyss.clother.models.domain.LoadResult
-import com.t3ddyss.clother.ui.BaseFragment
 import com.t3ddyss.clother.utilities.text
+import com.t3ddyss.core.presentation.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -24,6 +24,7 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::infl
     private lateinit var adapterDataObserver: RecyclerView.AdapterDataObserver
     private lateinit var onScrollListener: RecyclerView.OnScrollListener
 
+    @Suppress("Deprecated")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

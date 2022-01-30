@@ -3,6 +3,7 @@ package com.t3ddyss.clother.di
 import android.content.Context
 import androidx.room.Room
 import com.t3ddyss.clother.db.*
+import com.t3ddyss.feature_location.domain.LocationDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

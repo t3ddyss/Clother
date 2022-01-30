@@ -10,12 +10,12 @@ import com.t3ddyss.clother.db.MessageDao
 import com.t3ddyss.clother.db.RemoteKeyDao
 import com.t3ddyss.clother.models.domain.LoadResult
 import com.t3ddyss.clother.models.domain.LoadType
-import com.t3ddyss.clother.models.domain.User
 import com.t3ddyss.clother.models.entity.RemoteKeyEntity
 import com.t3ddyss.clother.models.mappers.mapMessageDtoToEntity
 import com.t3ddyss.clother.utilities.ACCESS_TOKEN
 import com.t3ddyss.clother.utilities.CLOTHER_PAGE_SIZE_CHAT
 import com.t3ddyss.clother.utilities.DEBUG_TAG
+import com.t3ddyss.core.domain.User
 
 class MessagesPagingLoader(
     private val service: ClotherChatService,

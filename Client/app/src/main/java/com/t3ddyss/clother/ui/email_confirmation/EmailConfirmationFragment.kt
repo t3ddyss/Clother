@@ -8,7 +8,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentEmailConfirmationBinding
-import com.t3ddyss.clother.ui.BaseFragment
+import com.t3ddyss.core.presentation.BaseFragment
 
 class EmailConfirmationFragment
     : BaseFragment<FragmentEmailConfirmationBinding>(FragmentEmailConfirmationBinding::inflate) {

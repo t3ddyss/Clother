@@ -15,8 +15,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.GalleryImagesAdapter
 import com.t3ddyss.clother.databinding.FragmentGalleryBinding
-import com.t3ddyss.clother.ui.BaseFragment
 import com.t3ddyss.clother.ui.offer_editor.OfferEditorViewModel
+import com.t3ddyss.core.presentation.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

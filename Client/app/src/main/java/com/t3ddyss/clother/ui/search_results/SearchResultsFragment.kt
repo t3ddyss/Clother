@@ -21,8 +21,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OffersAdapter
 import com.t3ddyss.clother.databinding.FragmentSearchResultsBinding
-import com.t3ddyss.clother.ui.BaseFragment
 import com.t3ddyss.clother.ui.offer.OfferViewModel
+import com.t3ddyss.core.presentation.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject

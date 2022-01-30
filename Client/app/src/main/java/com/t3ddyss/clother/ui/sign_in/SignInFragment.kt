@@ -6,12 +6,15 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.t3ddyss.clother.R
-import com.t3ddyss.clother.data.*
 import com.t3ddyss.clother.databinding.FragmentSignInBinding
-import com.t3ddyss.clother.models.*
-import com.t3ddyss.clother.models.domain.*
-import com.t3ddyss.clother.ui.BaseFragment
-import com.t3ddyss.clother.utilities.*
+import com.t3ddyss.clother.models.domain.Error
+import com.t3ddyss.clother.models.domain.Failed
+import com.t3ddyss.clother.models.domain.Loading
+import com.t3ddyss.clother.models.domain.Success
+import com.t3ddyss.clother.utilities.text
+import com.t3ddyss.clother.utilities.toEditable
+import com.t3ddyss.clother.utilities.validateEmail
+import com.t3ddyss.core.presentation.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -47,15 +50,15 @@ class SignInFragment
     }
 
     private fun subscribeUi() {
-        viewModel.email.observe(viewLifecycleOwner, {
+        viewModel.email.observe(viewLifecycleOwner) {
             binding.editTextEmail.text = it.toEditable()
-        })
+        }
 
-        viewModel.password.observe(viewLifecycleOwner, {
+        viewModel.password.observe(viewLifecycleOwner) {
             binding.editTextPassword.text = it.toEditable()
-        })
+        }
 
-        viewModel.signInResult.observe(viewLifecycleOwner, {
+        viewModel.signInResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Loading<*> ->
                     binding.layoutLoading.isVisible = true
@@ -71,6 +74,6 @@ class SignInFragment
                     showGenericMessage(getString(R.string.no_connection))
                 }
             }
-        })
+        }
     }
 }

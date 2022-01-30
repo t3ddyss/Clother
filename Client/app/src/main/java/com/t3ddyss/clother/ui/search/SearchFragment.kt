@@ -2,14 +2,14 @@ package com.t3ddyss.clother.ui.search
 
 import android.content.Context
 import android.os.Bundle
-import android.view.*
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.t3ddyss.clother.databinding.FragmentSearchBinding
-import com.t3ddyss.clother.ui.BaseFragment
 import com.t3ddyss.clother.utilities.toEditable
+import com.t3ddyss.core.presentation.BaseFragment
 
 class SearchFragment
     : BaseFragment<FragmentSearchBinding>(FragmentSearchBinding::inflate) {

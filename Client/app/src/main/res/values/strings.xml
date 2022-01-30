@@ -1,16 +1,9 @@
 <resources>
     <string name="app_name">Clother</string>
-    <string name="home">Home</string>
-    <string name="search">Search</string>
-    <string name="new_offer">New offer</string>
-    <string name="messages">Messages</string>
     <string name="profile">Profile</string>
     <string name="name">Name</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
-    <string name="sign_up">Sign up</string>
-    <string name="sign_in">Sign in</string>
-    <string name="reset_password">Reset password</string>
     <string name="already_registered">Already have an account? Sign in</string>
     <string name="forgot_password">Forgot your password?</string>
     <string name="email_activation">To activate your account,
@@ -23,13 +16,10 @@
     <string name="password_requirements">Password should be at least 8 and less than 25 characters,
         contain at least 1 digit, 1 uppercase letter, 1 lowercase letter
         and 1 special character</string>
-    <string name="check_inbox">Check your inbox</string>
     <string name="your_email">your email address</string>
-    <string name="no_connection">You are offline</string>
     <string name="retry">Retry</string>
     <string name="session_expired">Your session has expired</string>
     <string name="default_notification_channel_id">Messages</string>
-    <string name="unknown_error">Something went wrong…</string>
     <string name="create_new_offer">Create new offer</string>
     <string name="description">Description</string>
     <string name="title">Title</string>
@@ -42,26 +32,18 @@
     <string name="discard_changes_warning">The changes you made will be lost. Are you sure?</string>
     <string name="grant_access">Grant access</string>
     <string name="publish">Publish</string>
-    <string name="select_location">Select location</string>
     <string name="size_xs">XS</string>
     <string name="size_xl">XL</string>
     <string name="size_l">L</string>
     <string name="size_m">M</string>
     <string name="size_s">S</string>
-    <string name="select_category">Select category</string>
-    <string name="select_images">Select images</string>
-    <string name="grant_permission">Grant permission</string>
     <string name="enable_location">Choose your location manually or enable location services in settings</string>
     <string name="enable">Enable</string>
-    <string name="no_location_access">Cannot find your location automatically, please select it manually</string>
     <string name="updating_location">Updating your location…</string>
-    <string name="apply">Apply</string>
     <string name="provide_title">Offer must have a title</string>
     <string name="provide_image">Please select at least 1 image</string>
     <string name="category">Category</string>
-    <string name="location">Location</string>
     <string name="size">Size</string>
-    <string name="error_showing_location">Error showing location</string>
     <string name="search_hint">Search on Clother</string>
     <string name="nothing_found">Nothing found</string>
     <string name="filters">Filters</string>
@@ -79,12 +61,10 @@
     <string name="image">Image</string>
     <string name="you">You</string>
     <string name="offer_created">Offer was successfully created</string>
-    <string name="your_offers">Your offers</string>
     <string name="delete">Delete</string>
     <string name="delete_offer">Delete offer?</string>
     <string name="deletion_confirmation">Are you sure you want to delete offer?
         This cannot be undone</string>
     <string name="cancel">Cancel</string>
     <string name="offer_deleted">Offer was successfully deleted</string>
-    <string name="offer">Offer</string>
 </resources>

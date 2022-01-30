@@ -19,10 +19,17 @@ class OfferEditorViewModel
 @Inject constructor(
     private val repository: OffersRepository
 ) : ViewModel() {
+
     private val _newOfferResponse = MutableLiveData<Resource<*>>()
     val newNewOfferResponse: LiveData<Resource<*>> = _newOfferResponse
+    private val _location = MutableLiveData<LatLng>()
+    val location: LiveData<LatLng> = _location
     val images = MutableLiveData<MutableList<Uri>>(mutableListOf())
-    val location = MutableLiveData<LatLng>()
+
+    fun selectLocation(location: String) {
+        val (lat, lng) = location.split(",").map { it.toDouble() }
+        _location.value = LatLng(lat, lng)
+    }
 
     fun postOffer(offer: JsonObject, images: List<Uri>) {
         _newOfferResponse.value = Loading(null)

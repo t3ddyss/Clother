@@ -7,11 +7,14 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.t3ddyss.clother.R
-import com.t3ddyss.clother.data.*
 import com.t3ddyss.clother.databinding.FragmentSignUpBinding
-import com.t3ddyss.clother.models.domain.*
-import com.t3ddyss.clother.ui.BaseFragment
-import com.t3ddyss.clother.utilities.*
+import com.t3ddyss.clother.models.domain.Error
+import com.t3ddyss.clother.models.domain.Failed
+import com.t3ddyss.clother.models.domain.Loading
+import com.t3ddyss.clother.models.domain.Success
+import com.t3ddyss.clother.utilities.text
+import com.t3ddyss.clother.utilities.toEditable
+import com.t3ddyss.core.presentation.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -49,24 +52,24 @@ class SignUpFragment
     }
 
     private fun subscribeUi() {
-        viewModel.name.observe(viewLifecycleOwner,
-            {
-                it?.let {
-                    binding.editTextName.text = it.toEditable()
-                }
-            })
-        viewModel.email.observe(viewLifecycleOwner,
-            {
-                it?.let {
-                    binding.editTextEmail.text = it.toEditable()
-                }
-            })
-        viewModel.password.observe(viewLifecycleOwner,
-            {
-                it?.let {
-                    binding.editTextPassword.text = it.toEditable()
-                }
-            })
+        viewModel.name.observe(viewLifecycleOwner
+        ) {
+            it?.let {
+                binding.editTextName.text = it.toEditable()
+            }
+        }
+        viewModel.email.observe(viewLifecycleOwner
+        ) {
+            it?.let {
+                binding.editTextEmail.text = it.toEditable()
+            }
+        }
+        viewModel.password.observe(viewLifecycleOwner
+        ) {
+            it?.let {
+                binding.editTextPassword.text = it.toEditable()
+            }
+        }
 
         viewModel.nameError.observe(viewLifecycleOwner) {
             binding.textInputName.error = getString(R.string.name_requirements)
@@ -83,33 +86,33 @@ class SignUpFragment
             binding.textInputPassword.isErrorEnabled = it
         }
 
-        viewModel.signUpResult.observe(viewLifecycleOwner,
-            {
-                if (it.hasBeenHandled && it is Success<*>) return@observe
+        viewModel.signUpResult.observe(viewLifecycleOwner
+        ) {
+            if (it.hasBeenHandled && it.peekContent() is Success<*>) return@observe
 
-                when (val response = it.getContentIfNotHandled()
-                    ?: return@observe) {
-                    is Loading<*> ->
-                        binding.layoutLoading.isVisible = true
-                    is Success<*> -> {
-                        findNavController().navigate(
-                            SignUpFragmentDirections.actionSignUpFragmentToEmailActionFragment(
-                                getString(R.string.email_activation),
-                                binding.editTextEmail.text()
-                            )
+            when (val response = it.getContentIfNotHandled()
+                ?: return@observe) {
+                is Loading<*> ->
+                    binding.layoutLoading.isVisible = true
+                is Success<*> -> {
+                    findNavController().navigate(
+                        SignUpFragmentDirections.actionSignUpFragmentToEmailActionFragment(
+                            getString(R.string.email_activation),
+                            binding.editTextEmail.text()
                         )
-                        binding.layoutLoading.isVisible = false
-                        viewModel.clearCredentials()
-                    }
-                    is Error<*> -> {
-                        binding.layoutLoading.isVisible = false
-                        showGenericMessage(response.message)
-                    }
-                    is Failed<*> -> {
-                        binding.layoutLoading.isVisible = false
-                        showGenericMessage(getString(R.string.no_connection))
-                    }
+                    )
+                    binding.layoutLoading.isVisible = false
+                    viewModel.clearCredentials()
                 }
-            })
+                is Error<*> -> {
+                    binding.layoutLoading.isVisible = false
+                    showGenericMessage(response.message)
+                }
+                is Failed<*> -> {
+                    binding.layoutLoading.isVisible = false
+                    showGenericMessage(getString(R.string.no_connection))
+                }
+            }
+        }
     }
 }

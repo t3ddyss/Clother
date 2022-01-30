@@ -2,7 +2,10 @@ package com.t3ddyss.clother.ui.offer
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -12,10 +15,13 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OfferImagesAdapter
 import com.t3ddyss.clother.databinding.FragmentOfferBinding
-import com.t3ddyss.clother.models.domain.*
-import com.t3ddyss.clother.ui.BaseFragment
+import com.t3ddyss.clother.models.domain.Error
+import com.t3ddyss.clother.models.domain.Failed
+import com.t3ddyss.clother.models.domain.Success
 import com.t3ddyss.clother.utilities.CURRENT_USER_ID
 import com.t3ddyss.clother.utilities.formatDate
+import com.t3ddyss.core.domain.User
+import com.t3ddyss.core.presentation.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

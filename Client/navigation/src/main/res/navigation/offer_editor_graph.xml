@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/offer_editor_graph"
+    app:startDestination="@id/offerEditorFragment">
+    <fragment
+        android:id="@+id/offerEditorFragment"
+        android:name="com.t3ddyss.clother.ui.offer_editor.OfferEditorFragment"
+        android:label="@string/new_offer"
+        tools:layout="@layout/fragment_offer_editor">
+        <argument
+            android:name="category"
+            app:argType="com.t3ddyss.core.domain.Category" />
+        <action
+            android:id="@+id/action_offerEditorFragment_to_galleryFragment"
+            app:destination="@id/galleryFragment" />
+        <action
+            android:id="@+id/action_offerEditorFragment_to_locationFragment"
+            app:destination="@id/locationFragment" />
+
+        <action
+            android:id="@+id/action_offerEditorFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/main_graph"
+            app:popUpToInclusive="true">
+            <argument
+                android:name="created_offer_id"
+                android:defaultValue="0"
+                app:argType="integer" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/galleryFragment"
+        android:name="com.t3ddyss.clother.ui.gallery.GalleryFragment"
+        android:label="@string/select_images"
+        tools:layout="@layout/fragment_gallery" />
+    <fragment
+        android:id="@+id/locationFragment"
+        android:name="com.t3ddyss.feature_location.presentation.LocationSelectorFragment"
+        android:label="@string/select_location"
+        tools:layout="@layout/fragment_location_selector">
+        <argument
+            android:name="called_from_id"
+            android:defaultValue="0"
+            app:argType="integer" />
+    </fragment>
+</navigation>

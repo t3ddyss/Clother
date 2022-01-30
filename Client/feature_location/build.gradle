@@ -1,0 +1,61 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
+}
+
+android {
+    compileSdk rootProject.compileSdkVersion
+
+    defaultConfig {
+        minSdk rootProject.minSdkVersion
+        targetSdk rootProject.targetSdkVersion
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+        incremental = true
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+        useIR = true
+    }
+}
+
+dependencies {
+    kapt "androidx.hilt:hilt-compiler:$hilt_compiler_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    kapt "com.google.dagger:hilt-compiler:$hilt_version"
+
+    implementation project(":core")
+    implementation project(":navigation")
+
+    implementation "androidx.appcompat:appcompat:$app_compat_version"
+    implementation "androidx.activity:activity-ktx:$activity_version"
+    implementation "androidx.core:core-ktx:$ktx_version"
+    implementation "androidx.fragment:fragment-ktx:$fragment_version"
+    implementation "androidx.hilt:hilt-navigation-fragment:$hilt_nav_version"
+    implementation "androidx.legacy:legacy-support-v4:$legacy_version"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
+    api "com.google.android.gms:play-services-maps:$google_maps_version"
+    implementation "com.google.android.gms:play-services-tasks:$google_tasks_version"
+    implementation "com.google.android.gms:play-services-location:$google_location_version"
+    implementation "com.google.android.material:material:$material_version"
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+
+    testImplementation "junit:junit:$junit_version"
+    androidTestImplementation "androidx.test.ext:junit:$test_ext_junit_version"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+}

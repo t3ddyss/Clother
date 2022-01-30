@@ -19,9 +19,9 @@ import com.t3ddyss.clother.MainViewModel
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.adapters.OffersAdapter
 import com.t3ddyss.clother.databinding.FragmentHomeBinding
-import com.t3ddyss.clother.ui.BaseFragment
 import com.t3ddyss.clother.ui.offer.OfferViewModel
 import com.t3ddyss.clother.utilities.getThemeColor
+import com.t3ddyss.core.presentation.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -171,11 +171,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     }
 
     private fun subscribeUi() {
-        networkStateViewModel.networkAvailability.observe(viewLifecycleOwner, {
+        networkStateViewModel.networkAvailability.observe(viewLifecycleOwner) {
             if (it) {
                 adapter.retry()
             }
-        })
+        }
 
         viewModel.offers.observe(viewLifecycleOwner) {
             lifecycleScope.launch {

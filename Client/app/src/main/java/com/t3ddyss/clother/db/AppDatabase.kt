@@ -4,6 +4,8 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.t3ddyss.clother.models.entity.*
+import com.t3ddyss.feature_location.domain.LocationDao
+import com.t3ddyss.feature_location.domain.LocationEntity
 
 @Database(
     entities = [OfferEntity::class, RemoteKeyEntity::class, CategoryEntity::class, ChatEntity::class,

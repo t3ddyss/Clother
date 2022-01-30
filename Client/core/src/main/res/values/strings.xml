@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="no_connection">You are offline</string>
+    <string name="unknown_error">Something went wrong…</string>
+    <string name="apply">Apply</string>
+    <string name="home">Home</string>
+    <string name="search">Search</string>
+    <string name="select_category">Select category</string>
+    <string name="your_offers">Your offers</string>
+    <string name="sign_up">Sign up</string>
+    <string name="check_inbox">Check your inbox</string>
+    <string name="sign_in">Sign in</string>
+    <string name="reset_password">Reset password</string>
+    <string name="offer">Offer</string>
+    <string name="location">Location</string>
+    <string name="messages">Messages</string>
+    <string name="new_offer">New offer</string>
+    <string name="select_images">Select images</string>
+    <string name="select_location">Select location</string>
+</resources>

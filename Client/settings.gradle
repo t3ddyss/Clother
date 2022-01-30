@@ -1,2 +1,5 @@
-include ':app'
 rootProject.name = "Clother"
+include ':app'
+include ':core'
+include ':feature_location'
+include ':navigation'

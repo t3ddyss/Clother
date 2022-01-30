@@ -1,8 +1,8 @@
 package com.t3ddyss.clother.models.mappers
 
-import com.t3ddyss.clother.models.domain.User
 import com.t3ddyss.clother.models.dto.UserDto
 import com.t3ddyss.clother.models.entity.UserEntity
+import com.t3ddyss.core.domain.User
 
 fun mapUserDtoToDomain(input: UserDto): User {
     return User(

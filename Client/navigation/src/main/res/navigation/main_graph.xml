@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_graph"
+    tools:ignore="InvalidNavigation">
+
+    <include app:graph="@navigation/offer_editor_graph" />
+    <include app:graph="@navigation/search_results_graph" />
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.t3ddyss.clother.ui.home.HomeFragment"
+        android:label="@string/home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_offerFragment"
+            app:destination="@id/offerFragment">
+            <argument
+                android:name="offer_id"
+                android:defaultValue="0" />
+        </action>
+        <argument
+            android:name="created_offer_id"
+            android:defaultValue="0"
+            app:argType="integer" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/searchByCategoryFragment"
+        android:name="com.t3ddyss.clother.ui.search_by_category.SearchByCategoryFragment"
+        android:label="@string/search"
+        tools:layout="@layout/fragment_search_by_category">
+        <argument
+            android:name="parent_id"
+            android:defaultValue="0"
+            app:argType="integer" />
+        <action
+            android:id="@+id/openSubcategoriesAction"
+            app:destination="@id/searchByCategoryFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_searchByCategoryFragment_to_searchFragment"
+            app:destination="@id/searchFragment"
+            app:enterAnim="@anim/slide_in_bottom"
+            app:popExitAnim="@anim/slide_out_bottom">
+            <argument
+                android:name="query"
+                android:defaultValue=""
+                app:argType="string" />
+        </action>
+        <action
+            android:id="@+id/searchByCategory_to_searchResultsGraph"
+            app:destination="@id/search_results_graph">
+            <argument
+                android:name="category"
+                app:argType="com.t3ddyss.core.domain.Category" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/offerCategoryFragment"
+        android:name="com.t3ddyss.clother.ui.offer_category.OfferCategoryFragment"
+        android:label="@string/select_category"
+        tools:layout="@layout/fragment_offer_category">
+        <argument
+            android:name="parent_id"
+            android:defaultValue="0"
+            app:argType="integer" />
+        <action
+            android:id="@+id/openSubcategoriesAction"
+            app:destination="@id/offerCategoryFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/offerCategory_to_offerEditorGraph"
+            app:destination="@id/offer_editor_graph">
+            <argument
+                android:name="category"
+                app:argType="com.t3ddyss.core.domain.Category" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.t3ddyss.clother.ui.profile.ProfileFragment"
+        android:label="@string/your_offers"
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_profileFragment_to_offerFragment"
+            app:destination="@id/offerFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.t3ddyss.clother.ui.sign_up.SignUpFragment"
+        android:label="@string/sign_up"
+        tools:layout="@layout/fragment_sign_up">
+        <action
+            android:id="@+id/action_signUpFragment_to_emailActionFragment"
+            app:destination="@id/emailActionFragment"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_signUpFragment_to_signInFragment"
+            app:destination="@id/signInFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_signUpFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/signUpFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/emailActionFragment"
+        android:name="com.t3ddyss.clother.ui.email_confirmation.EmailConfirmationFragment"
+        android:label="@string/check_inbox"
+        tools:layout="@layout/fragment_email_confirmation">
+        <argument
+            android:name="email_action_message"
+            app:argType="string" />
+        <argument
+            android:name="email_address"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_emailActionFragment_to_signInFragment"
+            app:destination="@id/signInFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:launchSingleTop="false"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/emailActionFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/signInFragment"
+        android:name="com.t3ddyss.clother.ui.sign_in.SignInFragment"
+        android:label="@string/sign_in"
+        tools:layout="@layout/fragment_sign_in">
+        <action
+            android:id="@+id/action_signInFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/signUpFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_signInFragment_to_resetPasswordFragment"
+            app:destination="@id/resetPasswordFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/resetPasswordFragment"
+        android:name="com.t3ddyss.clother.ui.password_recovery.PasswordRecoveryFragment"
+        android:label="@string/reset_password"
+        tools:layout="@layout/fragment_password_recovery">
+        <action
+            android:id="@+id/action_resetPasswordFragment_to_emailActionFragment"
+            app:destination="@id/emailActionFragment"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/offerFragment"
+        android:name="com.t3ddyss.clother.ui.offer.OfferFragment"
+        android:label="@string/offer"
+        tools:layout="@layout/fragment_offer">
+        <argument
+            android:name="poster_id"
+            android:defaultValue="-1"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_offerFragment_to_locationViewerFragment"
+            app:destination="@id/locationViewerFragment" />
+        <action
+            android:id="@+id/action_offerFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/locationViewerFragment"
+        android:name="com.t3ddyss.feature_location.presentation.LocationViewerFragment"
+        android:label="@string/location"
+        tools:layout="@layout/fragment_location_viewer">
+        <argument
+            android:name="coordinates"
+            android:defaultValue="0,0"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.t3ddyss.clother.ui.search.SearchFragment"
+        android:label="@string/search"
+        tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/searchFragment_to_searchResultsGraph"
+            app:destination="@id/search_results_graph">
+            <argument
+                android:name="query"
+                app:argType="string" />
+        </action>
+        <argument
+            android:name="query"
+            android:defaultValue=""
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/chatsFragment"
+        android:name="com.t3ddyss.clother.ui.chats.ChatsFragment"
+        android:label="@string/messages"
+        tools:layout="@layout/fragment_chats">
+        <action
+            android:id="@+id/action_chatsFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.t3ddyss.clother.ui.chat.ChatFragment"
+        android:label="{user}"
+        tools:layout="@layout/fragment_chat">
+        <argument
+            android:name="user"
+            app:argType="com.t3ddyss.core.domain.User" />
+    </fragment>
+    <action
+        android:id="@+id/action_global_signUpFragment"
+        app:destination="@id/signUpFragment"
+        app:popUpTo="@id/homeFragment"
+        app:popUpToInclusive="true" />
+</navigation>

@@ -11,7 +11,6 @@ import com.t3ddyss.clother.db.MessageDao
 import com.t3ddyss.clother.di.NetworkModule
 import com.t3ddyss.clother.models.domain.AuthState
 import com.t3ddyss.clother.models.domain.MessageStatus
-import com.t3ddyss.clother.models.domain.User
 import com.t3ddyss.clother.models.dto.ChatDto
 import com.t3ddyss.clother.models.dto.MessageDto
 import com.t3ddyss.clother.models.entity.ChatEntity
@@ -21,6 +20,7 @@ import com.t3ddyss.clother.utilities.ACCESS_TOKEN
 import com.t3ddyss.clother.utilities.CURRENT_USER_ID
 import com.t3ddyss.clother.utilities.IS_DEVICE_TOKEN_RETRIEVED
 import com.t3ddyss.clother.utilities.NotificationHelper
+import com.t3ddyss.core.domain.User
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
