@@ -1,11 +1,11 @@
-package com.t3ddyss.clother.adapters
+package com.t3ddyss.clother.ui.adapters
 
 import androidx.recyclerview.widget.DiffUtil
 import com.t3ddyss.clother.models.domain.Chat
 import com.t3ddyss.clother.models.domain.MediaImage
 import com.t3ddyss.clother.models.domain.Message
 import com.t3ddyss.clother.models.domain.Offer
-import com.t3ddyss.core.domain.Category
+import com.t3ddyss.core.domain.models.Category
 
 class OfferDiffCallback : DiffUtil.ItemCallback<Offer>() {
     override fun areItemsTheSame(oldItem: Offer, newItem: Offer): Boolean {

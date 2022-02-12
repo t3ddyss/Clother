@@ -72,6 +72,6 @@ abstract class BaseLocationFragment<B: ViewBinding>(
     }
 
     companion object {
-        private const val MAPVIEW_BUNDLE = "MAPVIEW_BUNDLE"
+        private const val MAPVIEW_BUNDLE = "mapview_bundle"
     }
 }

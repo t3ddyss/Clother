@@ -13,14 +13,14 @@ import androidx.navigation.fragment.navArgs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayoutMediator
 import com.t3ddyss.clother.R
-import com.t3ddyss.clother.adapters.OfferImagesAdapter
 import com.t3ddyss.clother.databinding.FragmentOfferBinding
 import com.t3ddyss.clother.models.domain.Error
 import com.t3ddyss.clother.models.domain.Failed
 import com.t3ddyss.clother.models.domain.Success
+import com.t3ddyss.clother.ui.adapters.OfferImagesAdapter
 import com.t3ddyss.clother.utilities.CURRENT_USER_ID
 import com.t3ddyss.clother.utilities.formatDate
-import com.t3ddyss.core.domain.User
+import com.t3ddyss.core.domain.models.User
 import com.t3ddyss.core.presentation.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

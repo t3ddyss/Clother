@@ -1,11 +1,11 @@
-package com.t3ddyss.clother.adapters
+package com.t3ddyss.clother.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.databinding.ListItemCategoryBinding
-import com.t3ddyss.core.domain.Category
+import com.t3ddyss.core.domain.models.Category
 
 class CategoriesAdapter(
     private val clickListener: (Category) -> Unit

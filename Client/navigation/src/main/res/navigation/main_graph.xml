@@ -57,7 +57,7 @@
             app:destination="@id/search_results_graph">
             <argument
                 android:name="category"
-                app:argType="com.t3ddyss.core.domain.Category" />
+                app:argType="com.t3ddyss.core.domain.models.Category" />
         </action>
     </fragment>
 
@@ -82,7 +82,7 @@
             app:destination="@id/offer_editor_graph">
             <argument
                 android:name="category"
-                app:argType="com.t3ddyss.core.domain.Category" />
+                app:argType="com.t3ddyss.core.domain.models.Category" />
         </action>
     </fragment>
 
@@ -173,6 +173,7 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
     </fragment>
+
     <fragment
         android:id="@+id/offerFragment"
         android:name="com.t3ddyss.clother.ui.offer.OfferFragment"
@@ -189,6 +190,7 @@
             android:id="@+id/action_offerFragment_to_chatFragment"
             app:destination="@id/chatFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/locationViewerFragment"
         android:name="com.t3ddyss.feature_location.presentation.LocationViewerFragment"
@@ -199,6 +201,7 @@
             android:defaultValue="0,0"
             app:argType="string" />
     </fragment>
+
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.t3ddyss.clother.ui.search.SearchFragment"
@@ -216,6 +219,7 @@
             android:defaultValue=""
             app:argType="string" />
     </fragment>
+
     <fragment
         android:id="@+id/chatsFragment"
         android:name="com.t3ddyss.clother.ui.chats.ChatsFragment"
@@ -225,6 +229,7 @@
             android:id="@+id/action_chatsFragment_to_chatFragment"
             app:destination="@id/chatFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/chatFragment"
         android:name="com.t3ddyss.clother.ui.chat.ChatFragment"
@@ -232,8 +237,9 @@
         tools:layout="@layout/fragment_chat">
         <argument
             android:name="user"
-            app:argType="com.t3ddyss.core.domain.User" />
+            app:argType="com.t3ddyss.core.domain.models.User" />
     </fragment>
+
     <action
         android:id="@+id/action_global_signUpFragment"
         app:destination="@id/signUpFragment"

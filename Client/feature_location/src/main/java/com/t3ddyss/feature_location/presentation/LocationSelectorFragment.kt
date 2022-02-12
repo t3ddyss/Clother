@@ -18,6 +18,7 @@ import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.t3ddyss.core.util.SettingsUtils
 import com.t3ddyss.feature_location.R
 import com.t3ddyss.feature_location.databinding.FragmentLocationSelectorBinding
 import com.t3ddyss.navigation.util.setNavigationResult
@@ -67,7 +68,8 @@ class LocationSelectorFragment
             } else {
                 showMessageWithAction(
                         message = getString(R.string.no_location_access),
-                        actionText = getString(R.string.grant_permission)
+                        actionText = getString(R.string.grant_permission),
+                        action = { SettingsUtils.openApplicationSettings(requireContext())}
                 )
                 setOnMapLongClickListener()
             }

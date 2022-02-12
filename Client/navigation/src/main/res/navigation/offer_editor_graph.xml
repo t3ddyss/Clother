@@ -11,7 +11,7 @@
         tools:layout="@layout/fragment_offer_editor">
         <argument
             android:name="category"
-            app:argType="com.t3ddyss.core.domain.Category" />
+            app:argType="com.t3ddyss.core.domain.models.Category" />
         <action
             android:id="@+id/action_offerEditorFragment_to_galleryFragment"
             app:destination="@id/galleryFragment" />

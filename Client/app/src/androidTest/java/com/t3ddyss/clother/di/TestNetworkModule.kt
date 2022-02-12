@@ -1,6 +1,7 @@
 package com.t3ddyss.clother.di
 
 import com.google.gson.Gson
+import com.t3ddyss.clother.utilities.baseUrl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.components.SingletonComponent
@@ -44,4 +45,9 @@ object TestNetworkModule {
             .client(httpClient)
             .build()
     }
+
+    @Singleton
+    @Provides
+    @NetworkModule.BaseUrl
+    fun provideBaseUrl(): String = baseUrl
 }

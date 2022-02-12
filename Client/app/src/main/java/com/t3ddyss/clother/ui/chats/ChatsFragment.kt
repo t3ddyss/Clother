@@ -5,9 +5,9 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.t3ddyss.clother.adapters.ChatsAdapter
 import com.t3ddyss.clother.databinding.FragmentChatsBinding
 import com.t3ddyss.clother.models.domain.Loading
+import com.t3ddyss.clother.ui.adapters.ChatsAdapter
 import com.t3ddyss.core.presentation.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 

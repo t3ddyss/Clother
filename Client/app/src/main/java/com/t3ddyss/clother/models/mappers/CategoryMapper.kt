@@ -1,7 +1,7 @@
 package com.t3ddyss.clother.models.mappers
 
 import com.t3ddyss.clother.models.entity.CategoryEntity
-import com.t3ddyss.core.domain.Category
+import com.t3ddyss.core.domain.models.Category
 
 fun mapCategoryEntityToDomain(input: CategoryEntity): Category {
     return Category(

@@ -3,7 +3,11 @@ package com.t3ddyss.clother.data
 import android.content.SharedPreferences
 import com.t3ddyss.clother.api.ClotherAuthService
 import com.t3ddyss.clother.models.domain.AuthState
-import com.t3ddyss.clother.utilities.*
+import com.t3ddyss.clother.utilities.ACCESS_TOKEN
+import com.t3ddyss.clother.utilities.CURRENT_USER_ID
+import com.t3ddyss.clother.utilities.REFRESH_TOKEN
+import com.t3ddyss.clother.utilities.toBearer
+import com.t3ddyss.core.util.log
 import dagger.Lazy
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator

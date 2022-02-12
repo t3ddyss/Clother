@@ -1,7 +1,6 @@
 package com.t3ddyss.clother.data
 
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.room.withTransaction
 import com.t3ddyss.clother.api.ClotherChatService
 import com.t3ddyss.clother.db.AppDatabase
@@ -14,8 +13,8 @@ import com.t3ddyss.clother.models.entity.RemoteKeyEntity
 import com.t3ddyss.clother.models.mappers.mapMessageDtoToEntity
 import com.t3ddyss.clother.utilities.ACCESS_TOKEN
 import com.t3ddyss.clother.utilities.CLOTHER_PAGE_SIZE_CHAT
-import com.t3ddyss.clother.utilities.DEBUG_TAG
-import com.t3ddyss.core.domain.User
+import com.t3ddyss.core.domain.models.User
+import com.t3ddyss.core.util.log
 
 class MessagesPagingLoader(
     private val service: ClotherChatService,
@@ -84,7 +83,7 @@ class MessagesPagingLoader(
 
             LoadResult.Success(isEndOfPaginationReached = items.isEmpty())
         } catch (ex: Exception) {
-            Log.d(DEBUG_TAG, "${this.javaClass.simpleName} $ex")
+            log("${this.javaClass.simpleName} $ex")
             LoadResult.Error(ex)
         }
     }

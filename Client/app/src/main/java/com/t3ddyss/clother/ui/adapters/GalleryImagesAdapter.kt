@@ -1,4 +1,4 @@
-package com.t3ddyss.clother.adapters
+package com.t3ddyss.clother.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

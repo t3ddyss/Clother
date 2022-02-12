@@ -17,8 +17,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.MainViewModel
 import com.t3ddyss.clother.R
-import com.t3ddyss.clother.adapters.OffersAdapter
 import com.t3ddyss.clother.databinding.FragmentHomeBinding
+import com.t3ddyss.clother.ui.adapters.OffersAdapter
 import com.t3ddyss.clother.ui.offer.OfferViewModel
 import com.t3ddyss.clother.utilities.getThemeColor
 import com.t3ddyss.core.presentation.BaseFragment

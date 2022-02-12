@@ -18,7 +18,3 @@ const val IS_DEVICE_TOKEN_RETRIEVED = "is_device_token_retrieved"
 const val NAME = "name"
 const val EMAIL = "email"
 const val PASSWORD = "password"
-const val MAPVIEW_BUNDLE = "mapview"
-
-// Debug
-const val DEBUG_TAG = "ClotherLogs"

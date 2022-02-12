@@ -1,7 +1,6 @@
 package com.t3ddyss.clother.data
 
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
@@ -14,7 +13,7 @@ import com.t3ddyss.clother.models.entity.OfferEntity
 import com.t3ddyss.clother.models.entity.RemoteKeyEntity
 import com.t3ddyss.clother.models.mappers.mapOfferDtoToEntity
 import com.t3ddyss.clother.utilities.ACCESS_TOKEN
-import com.t3ddyss.clother.utilities.DEBUG_TAG
+import com.t3ddyss.core.util.log
 
 class OffersRemoteMediator(
     private val service: ClotherOffersService,
@@ -74,7 +73,7 @@ class OffersRemoteMediator(
 
             MediatorResult.Success(endOfPaginationReached = items.isEmpty())
         } catch (ex: Exception) {
-            Log.d(DEBUG_TAG, "${this.javaClass.simpleName} $ex")
+            log("${this.javaClass.simpleName} $ex")
             MediatorResult.Error(ex)
         }
     }

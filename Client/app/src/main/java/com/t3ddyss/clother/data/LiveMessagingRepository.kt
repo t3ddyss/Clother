@@ -20,7 +20,7 @@ import com.t3ddyss.clother.utilities.ACCESS_TOKEN
 import com.t3ddyss.clother.utilities.CURRENT_USER_ID
 import com.t3ddyss.clother.utilities.IS_DEVICE_TOKEN_RETRIEVED
 import com.t3ddyss.clother.utilities.NotificationHelper
-import com.t3ddyss.core.domain.User
+import com.t3ddyss.core.domain.models.User
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.emitter.Emitter

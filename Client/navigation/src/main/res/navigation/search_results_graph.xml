@@ -12,7 +12,7 @@
         <argument
             android:name="category"
             android:defaultValue="@null"
-            app:argType="com.t3ddyss.core.domain.Category"
+            app:argType="com.t3ddyss.core.domain.models.Category"
             app:nullable="true" />
         <argument
             android:name="query"

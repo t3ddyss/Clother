@@ -17,16 +17,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
 import com.google.gson.JsonObject
 import com.t3ddyss.clother.R
-import com.t3ddyss.clother.adapters.OfferEditorImagesAdapter
 import com.t3ddyss.clother.databinding.FragmentOfferEditorBinding
 import com.t3ddyss.clother.models.domain.Error
 import com.t3ddyss.clother.models.domain.Failed
 import com.t3ddyss.clother.models.domain.Loading
 import com.t3ddyss.clother.models.domain.Success
+import com.t3ddyss.clother.ui.adapters.OfferEditorImagesAdapter
 import com.t3ddyss.clother.utilities.text
 import com.t3ddyss.clother.utilities.toCoordinatesString
-import com.t3ddyss.core.domain.Category
+import com.t3ddyss.core.domain.models.Category
 import com.t3ddyss.core.presentation.BaseFragment
+import com.t3ddyss.core.util.SettingsUtils
 import com.t3ddyss.feature_location.presentation.LocationSelectorFragment
 import com.t3ddyss.navigation.util.observeNavigationResult
 import dagger.hilt.android.AndroidEntryPoint
@@ -54,8 +55,9 @@ class OfferEditorFragment
                     findNavController().navigate(R.id.action_offerEditorFragment_to_galleryFragment)
                 } else {
                     showMessageWithAction(
-                            message = getString(R.string.no_gallery_access),
-                            actionText = getString(R.string.grant_access)
+                        message = getString(R.string.no_gallery_access),
+                        actionText = getString(R.string.grant_access),
+                        action = { SettingsUtils.openApplicationSettings(requireContext()) }
                     )
                 }
             }

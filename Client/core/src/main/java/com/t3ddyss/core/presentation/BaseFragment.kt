@@ -1,9 +1,6 @@
 package com.t3ddyss.core.presentation
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,13 +17,6 @@ abstract class BaseFragment<B: ViewBinding>(
     private var _binding: B? = null
     protected val binding get() = _binding!!
     private var navMenuController: NavMenuController? = null
-
-    private val openSettingsAction = {
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-        val uri = Uri.fromParts("package", context?.packageName, null)
-        intent.data = uri
-        startActivity(intent)
-    }
 
     @CallSuper
     override fun onCreateView(
@@ -65,7 +55,7 @@ abstract class BaseFragment<B: ViewBinding>(
     protected fun showMessageWithAction(
         message: String,
         actionText: String,
-        action: (() -> Unit) = openSettingsAction
+        action: (() -> Unit)
     ) {
         val snackbar = Snackbar.make(
             requireView(),

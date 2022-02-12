@@ -1,4 +1,4 @@
-package com.t3ddyss.core.domain
+package com.t3ddyss.core.domain.models
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

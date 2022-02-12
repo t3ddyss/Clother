@@ -9,8 +9,8 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.t3ddyss.clother.R
-import com.t3ddyss.clother.adapters.CategoriesAdapter
 import com.t3ddyss.clother.databinding.FragmentOfferCategoryBinding
+import com.t3ddyss.clother.ui.adapters.CategoriesAdapter
 import com.t3ddyss.core.presentation.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 

@@ -13,8 +13,8 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import com.t3ddyss.clother.R
-import com.t3ddyss.clother.adapters.OffersAdapter
 import com.t3ddyss.clother.databinding.FragmentProfileBinding
+import com.t3ddyss.clother.ui.adapters.OffersAdapter
 import com.t3ddyss.clother.ui.offer.OfferViewModel
 import com.t3ddyss.core.presentation.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint

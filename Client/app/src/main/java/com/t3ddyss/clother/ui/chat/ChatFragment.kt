@@ -7,9 +7,9 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.t3ddyss.clother.adapters.MessagesAdapter
 import com.t3ddyss.clother.databinding.FragmentChatBinding
 import com.t3ddyss.clother.models.domain.LoadResult
+import com.t3ddyss.clother.ui.adapters.MessagesAdapter
 import com.t3ddyss.clother.utilities.text
 import com.t3ddyss.core.presentation.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
