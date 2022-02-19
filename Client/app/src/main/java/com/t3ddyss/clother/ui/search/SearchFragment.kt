@@ -8,7 +8,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.t3ddyss.clother.databinding.FragmentSearchBinding
-import com.t3ddyss.clother.utilities.toEditable
+import com.t3ddyss.clother.util.toEditable
 import com.t3ddyss.core.presentation.BaseFragment
 
 class SearchFragment

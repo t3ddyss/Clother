@@ -20,8 +20,9 @@ import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentHomeBinding
 import com.t3ddyss.clother.ui.adapters.OffersAdapter
 import com.t3ddyss.clother.ui.offer.OfferViewModel
-import com.t3ddyss.clother.utilities.getThemeColor
+import com.t3ddyss.clother.util.getThemeColor
 import com.t3ddyss.core.presentation.BaseFragment
+import com.t3ddyss.core.util.showSnackbarWithText
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -79,7 +80,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                     binding.shimmer.isVisible = false
                     binding.containerHome.isVisible = true
                     binding.swipeRefresh.isRefreshing = false
-                    showErrorMessage(error)
+                    showSnackbarWithText(error)
                 }
             }
 
@@ -185,8 +186,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
         viewModel.newOfferAdded.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled() ?: return@observe
-
-            showGenericMessage(getString(R.string.offer_created))
+            showSnackbarWithText(R.string.offer_created)
         }
     }
 }

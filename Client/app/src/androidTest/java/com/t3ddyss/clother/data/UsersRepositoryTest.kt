@@ -5,9 +5,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.google.common.truth.Truth.assertThat
 import com.t3ddyss.clother.MainCoroutineRule
-import com.t3ddyss.clother.models.domain.Error
-import com.t3ddyss.clother.models.domain.Success
 import com.t3ddyss.clother.models.dto.AuthDataDto
+import com.t3ddyss.core.domain.models.Error
+import com.t3ddyss.core.domain.models.Success
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking

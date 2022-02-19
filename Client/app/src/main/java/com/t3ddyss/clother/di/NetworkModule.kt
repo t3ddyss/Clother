@@ -2,12 +2,12 @@ package com.t3ddyss.clother.di
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.t3ddyss.clother.api.ClotherAuthService
-import com.t3ddyss.clother.api.ClotherChatService
-import com.t3ddyss.clother.api.ClotherOffersService
 import com.t3ddyss.clother.data.TokenAuthenticator
 import com.t3ddyss.clother.models.dto.GsonDateAdapter
-import com.t3ddyss.clother.utilities.baseUrl
+import com.t3ddyss.clother.remote.RemoteAuthService
+import com.t3ddyss.clother.remote.RemoteChatService
+import com.t3ddyss.clother.remote.RemoteOffersService
+import com.t3ddyss.core.util.Utils
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -54,7 +54,11 @@ object NetworkModule {
     @Singleton
     @Provides
     @BaseUrl
-    fun provideBaseUrl(): String = baseUrl
+    fun provideBaseUrl(): String = if (Utils.isEmulator) {
+        "http://10.0.2.2:5000/"
+    } else {
+        "http://192.168.0.104:5000/"
+    }
 
     @Singleton
     @Provides
@@ -76,18 +80,18 @@ object NetworkModule {
     object NetworkServiceModule {
         @Singleton
         @Provides
-        fun provideClotherAuthService(retrofit: Retrofit): ClotherAuthService =
-            retrofit.create(ClotherAuthService::class.java)
+        fun provideRemoteAuthService(retrofit: Retrofit): RemoteAuthService =
+            retrofit.create(RemoteAuthService::class.java)
 
         @Singleton
         @Provides
-        fun provideClotherOffersService(retrofit: Retrofit): ClotherOffersService =
-            retrofit.create(ClotherOffersService::class.java)
+        fun provideRemoteOffersService(retrofit: Retrofit): RemoteOffersService =
+            retrofit.create(RemoteOffersService::class.java)
 
         @Singleton
         @Provides
-        fun provideClotherChatService(retrofit: Retrofit): ClotherChatService =
-            retrofit.create(ClotherChatService::class.java)
+        fun provideRemoteChatService(retrofit: Retrofit): RemoteChatService =
+            retrofit.create(RemoteChatService::class.java)
 
         @Singleton
         @Provides

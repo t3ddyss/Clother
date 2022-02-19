@@ -1,4 +1,4 @@
-package com.t3ddyss.clother.utilities
+package com.t3ddyss.clother.util
 
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar

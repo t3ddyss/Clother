@@ -4,22 +4,24 @@ import android.content.SharedPreferences
 import androidx.room.withTransaction
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
-import com.t3ddyss.clother.api.ClotherAuthService
 import com.t3ddyss.clother.db.AppDatabase
 import com.t3ddyss.clother.db.ChatDao
 import com.t3ddyss.clother.db.MessageDao
 import com.t3ddyss.clother.di.NetworkModule
+import com.t3ddyss.clother.models.Mappers.toDomain
+import com.t3ddyss.clother.models.Mappers.toDto
+import com.t3ddyss.clother.models.Mappers.toEntity
 import com.t3ddyss.clother.models.domain.AuthState
 import com.t3ddyss.clother.models.domain.MessageStatus
 import com.t3ddyss.clother.models.dto.ChatDto
 import com.t3ddyss.clother.models.dto.MessageDto
 import com.t3ddyss.clother.models.entity.ChatEntity
 import com.t3ddyss.clother.models.entity.MessageEntity
-import com.t3ddyss.clother.models.mappers.*
-import com.t3ddyss.clother.utilities.ACCESS_TOKEN
-import com.t3ddyss.clother.utilities.CURRENT_USER_ID
-import com.t3ddyss.clother.utilities.IS_DEVICE_TOKEN_RETRIEVED
-import com.t3ddyss.clother.utilities.NotificationHelper
+import com.t3ddyss.clother.remote.RemoteAuthService
+import com.t3ddyss.clother.util.ACCESS_TOKEN
+import com.t3ddyss.clother.util.CURRENT_USER_ID
+import com.t3ddyss.clother.util.IS_DEVICE_TOKEN_RETRIEVED
+import com.t3ddyss.clother.util.NotificationHelper
 import com.t3ddyss.core.domain.models.User
 import io.socket.client.IO
 import io.socket.client.Socket
@@ -40,7 +42,7 @@ import kotlin.coroutines.resume
 class LiveMessagingRepository @Inject constructor(
     @NetworkModule.BaseUrl
     private val baseUrl: String,
-    private val authService: ClotherAuthService,
+    private val authService: RemoteAuthService,
     private val db: AppDatabase,
     private val chatDao: ChatDao,
     private val messageDao: MessageDao,
@@ -55,6 +57,7 @@ class LiveMessagingRepository @Inject constructor(
     private val currentAccessToken get() = prefs.getString(ACCESS_TOKEN, "")
 
     fun initialize() {
+        // Don't hold reference to scope because it is a singleton
         MainScope().launch {
             authStateObserver.authState.collect {
                 when (it) {
@@ -91,7 +94,7 @@ class LiveMessagingRepository @Inject constructor(
             }
 
             notificationHelper.showNotificationIfShould(
-                mapMessageDtoToDomain(message, true)
+                message.toDomain(true)
             )
         }
 
@@ -102,7 +105,7 @@ class LiveMessagingRepository @Inject constructor(
             }
 
             notificationHelper.showNotificationIfShould(
-                mapMessageDtoToDomain(chat.lastMessage, true)
+                chat.lastMessage.toDomain(true)
             )
         }
 
@@ -131,7 +134,7 @@ class LiveMessagingRepository @Inject constructor(
         )
 
         message.localId = messageDao.insert(message).toInt()
-        socket?.emit("send_message", gson.toJson(mapMessageEntityToDto(message)), to.id)
+        socket?.emit("send_message", gson.toJson(message.toDto()), to.id)
 
         val newMessageResult = withTimeoutOrNull(RESPONSE_TIMEOUT) {
             getNewMessageResult(message.localId)
@@ -149,9 +152,9 @@ class LiveMessagingRepository @Inject constructor(
         }
     }
 
-    private suspend fun sendMessageToNewChat(to: User, messageBody: String) {
+    private suspend fun sendMessageToNewChat(addressee: User, messageBody: String) {
         val chat = ChatEntity(
-            interlocutor = mapUserDomainToEntity(to)
+            interlocutor = addressee.toEntity()
         )
 
         val message = db.withTransaction {
@@ -173,7 +176,7 @@ class LiveMessagingRepository @Inject constructor(
         }
 
 
-        socket?.emit("send_message", gson.toJson(mapMessageEntityToDto(message)), to.id)
+        socket?.emit("send_message", gson.toJson(message.toDto()), addressee.id)
 
         val newChatResult = withTimeoutOrNull(RESPONSE_TIMEOUT) {
             getNewChatResult(message.localId)
@@ -230,7 +233,7 @@ class LiveMessagingRepository @Inject constructor(
 
         // TODO handle situation when chat is not yet in cache
         chat?.let {
-            messageDao.insert(mapMessageDtoToEntity(message).also {
+            messageDao.insert(message.toEntity().also {
                 it.localChatId = chat.localId
             })
         }
@@ -238,8 +241,8 @@ class LiveMessagingRepository @Inject constructor(
 
     private suspend fun addNewChat(chat: ChatDto) {
         db.withTransaction {
-            val message = mapMessageDtoToEntity(chat.lastMessage)
-            message.localChatId = chatDao.insert(mapChatDtoToEntity(chat)).toInt()
+            val message = chat.lastMessage.toEntity()
+            message.localChatId = chatDao.insert(chat.toEntity()).toInt()
             messageDao.insert(message)
         }
     }

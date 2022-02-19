@@ -1,8 +1,4 @@
-package com.t3ddyss.clother.utilities
-
-// Base urls
-const val BASE_URL_EMULATOR = "http://10.0.2.2:5000/"
-const val BASE_URL_DEVICE = "http://192.168.0.104:5000/"
+package com.t3ddyss.clother.util
 
 // Default parameters
 const val CLOTHER_PAGE_SIZE = 10

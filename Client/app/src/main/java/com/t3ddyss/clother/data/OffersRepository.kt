@@ -7,19 +7,18 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.google.gson.JsonObject
-import com.t3ddyss.clother.api.ClotherOffersService
 import com.t3ddyss.clother.db.AppDatabase
 import com.t3ddyss.clother.db.CategoryDao
 import com.t3ddyss.clother.db.OfferDao
 import com.t3ddyss.clother.db.RemoteKeyDao
+import com.t3ddyss.clother.models.Mappers.toDomain
 import com.t3ddyss.clother.models.domain.Offer
-import com.t3ddyss.clother.models.domain.Resource
-import com.t3ddyss.clother.models.domain.Success
-import com.t3ddyss.clother.models.mappers.mapCategoryEntityToDomain
-import com.t3ddyss.clother.models.mappers.mapOfferEntityToDomain
-import com.t3ddyss.clother.utilities.ACCESS_TOKEN
-import com.t3ddyss.clother.utilities.CLOTHER_PAGE_SIZE
-import com.t3ddyss.clother.utilities.handleNetworkException
+import com.t3ddyss.clother.remote.RemoteOffersService
+import com.t3ddyss.clother.util.ACCESS_TOKEN
+import com.t3ddyss.clother.util.CLOTHER_PAGE_SIZE
+import com.t3ddyss.clother.util.handleNetworkError
+import com.t3ddyss.core.domain.models.Resource
+import com.t3ddyss.core.domain.models.Success
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -33,7 +32,7 @@ import javax.inject.Inject
 
 class OffersRepository
 @Inject constructor(
-    private val service: ClotherOffersService,
+    private val service: RemoteOffersService,
     private val imageProvider: ImageProvider,
     private val prefs: SharedPreferences,
     private val db: AppDatabase,
@@ -66,9 +65,7 @@ class OffersRepository
             }
         ).flow
             .map {
-                it.map { offerEntity ->
-                    mapOfferEntityToDomain(offerEntity)
-                }
+                it.map { offerEntity -> offerEntity.toDomain() }
             }
     }
 
@@ -93,26 +90,29 @@ class OffersRepository
 
     suspend fun getCategories(parentId: Int? = null) =
         categoryDao.getSubcategories(parentId)
-            .map { mapCategoryEntityToDomain(it) }
+            .map { it.toDomain() }
 
     suspend fun postOffer(offer: JsonObject, images: List<Uri>): Resource<Int> {
         val body = offer.toString()
             .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
-        val imageFiles = images.map {
-            coroutineScope {
-                async {
-                    imageProvider.getCompressedImageFile(it)
+        val imageFiles = coroutineScope {
+            images
+                .map {
+                    async {
+                        imageProvider.getCompressedImageFile(it)
+                    }
                 }
-            }
-        }.awaitAll().map {
-            MultipartBody.Part.createFormData(
-                name = "file",
-                it.name,
-                it.asRequestBody("multipart/form-data".toMediaTypeOrNull())
-            )
+                .awaitAll()
+                .map {
+                    MultipartBody.Part.createFormData(
+                        name = "file",
+                        it.name,
+                        it.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    )
+                }
         }
 
-        return handleNetworkException {
+        return handleNetworkError {
             val response = service.postOffer(
                 prefs.getString(ACCESS_TOKEN, null),
                 body,
@@ -123,7 +123,7 @@ class OffersRepository
     }
 
     suspend fun deleteOffer(offerEntity: Offer): Resource<*> {
-        return handleNetworkException {
+        return handleNetworkError {
             service.deleteOffer(
                 prefs.getString(ACCESS_TOKEN, null),
                 offerEntity.id

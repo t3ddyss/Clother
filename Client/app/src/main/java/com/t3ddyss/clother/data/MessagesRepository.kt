@@ -1,13 +1,13 @@
 package com.t3ddyss.clother.data
 
 import android.content.SharedPreferences
-import com.t3ddyss.clother.api.ClotherChatService
 import com.t3ddyss.clother.db.AppDatabase
 import com.t3ddyss.clother.db.ChatDao
 import com.t3ddyss.clother.db.MessageDao
 import com.t3ddyss.clother.db.RemoteKeyDao
+import com.t3ddyss.clother.models.Mappers.toDomain
 import com.t3ddyss.clother.models.domain.LoadResult
-import com.t3ddyss.clother.models.mappers.mapMessageEntityToDomain
+import com.t3ddyss.clother.remote.RemoteChatService
 import com.t3ddyss.core.domain.models.User
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.map
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @ViewModelScoped
 class MessagesRepository @Inject constructor(
-    private val service: ClotherChatService,
+    private val service: RemoteChatService,
     private val prefs: SharedPreferences,
     private val db: AppDatabase,
     private val chatDao: ChatDao,
@@ -28,7 +28,7 @@ class MessagesRepository @Inject constructor(
         .observeMessagesByInterlocutorId(interlocutor.id)
         .map { messages ->
             messages.map {
-                mapMessageEntityToDomain(it, it.userId == interlocutor.id)
+                it.toDomain(it.userId == interlocutor.id)
             }
         }
 

@@ -8,13 +8,13 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentSignUpBinding
-import com.t3ddyss.clother.models.domain.Error
-import com.t3ddyss.clother.models.domain.Failed
-import com.t3ddyss.clother.models.domain.Loading
-import com.t3ddyss.clother.models.domain.Success
-import com.t3ddyss.clother.utilities.text
-import com.t3ddyss.clother.utilities.toEditable
+import com.t3ddyss.clother.util.text
+import com.t3ddyss.clother.util.toEditable
+import com.t3ddyss.core.domain.models.Error
+import com.t3ddyss.core.domain.models.Loading
+import com.t3ddyss.core.domain.models.Success
 import com.t3ddyss.core.presentation.BaseFragment
+import com.t3ddyss.core.util.showSnackbarWithText
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -106,11 +106,7 @@ class SignUpFragment
                 }
                 is Error<*> -> {
                     binding.layoutLoading.isVisible = false
-                    showGenericMessage(response.message)
-                }
-                is Failed<*> -> {
-                    binding.layoutLoading.isVisible = false
-                    showGenericMessage(getString(R.string.no_connection))
+                    showSnackbarWithText(response.message)
                 }
             }
         }

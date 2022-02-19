@@ -10,7 +10,7 @@ import com.t3ddyss.clother.databinding.ListItemMessageInBinding
 import com.t3ddyss.clother.databinding.ListItemMessageOutBinding
 import com.t3ddyss.clother.models.domain.Message
 import com.t3ddyss.clother.models.domain.MessageStatus
-import com.t3ddyss.clother.utilities.formatTime
+import com.t3ddyss.clother.util.formatTime
 
 class MessagesAdapter : ListAdapter<Message, RecyclerView.ViewHolder>(MessageDiffCallback()) {
 

@@ -23,6 +23,7 @@ import com.t3ddyss.clother.databinding.FragmentSearchResultsBinding
 import com.t3ddyss.clother.ui.adapters.OffersAdapter
 import com.t3ddyss.clother.ui.offer.OfferViewModel
 import com.t3ddyss.core.presentation.BaseFragment
+import com.t3ddyss.core.util.showSnackbarWithText
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -75,7 +76,7 @@ class SearchResultsFragment
 
                     binding.shimmer.isVisible = false
                     binding.containerSearch.isVisible = true
-                    showErrorMessage(error)
+                    showSnackbarWithText(error)
                 }
             }
 

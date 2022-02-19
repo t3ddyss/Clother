@@ -1,8 +1,8 @@
-package com.t3ddyss.clother.utilities
+package com.t3ddyss.clother.util
 
-import com.t3ddyss.clother.models.domain.Error
-import com.t3ddyss.clother.models.domain.Loading
-import com.t3ddyss.clother.models.domain.Success
+import com.t3ddyss.core.domain.models.Error
+import com.t3ddyss.core.domain.models.Loading
+import com.t3ddyss.core.domain.models.Success
 import kotlinx.coroutines.flow.*
 
 inline fun <ResultType, RequestType> networkBoundResource(
@@ -19,9 +19,8 @@ inline fun <ResultType, RequestType> networkBoundResource(
         try {
             saveFetchResult(fetch())
             query().map { Success(it) }
-
         } catch (throwable: Throwable) {
-            query().map { Error(message = throwable.message, data) }
+            query().map { Error<ResultType>(throwable, null) }
         }
 
     } else {

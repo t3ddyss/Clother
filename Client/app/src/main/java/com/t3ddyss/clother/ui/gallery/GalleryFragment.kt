@@ -17,6 +17,7 @@ import com.t3ddyss.clother.databinding.FragmentGalleryBinding
 import com.t3ddyss.clother.ui.adapters.GalleryImagesAdapter
 import com.t3ddyss.clother.ui.offer_editor.OfferEditorViewModel
 import com.t3ddyss.core.presentation.BaseFragment
+import com.t3ddyss.core.util.showSnackbarWithText
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -33,7 +34,7 @@ class GalleryFragment : BaseFragment<FragmentGalleryBinding>(FragmentGalleryBind
 
         layoutManager = GridLayoutManager(context, 3)
         adapter = GalleryImagesAdapter {
-            showGenericMessage(getString(R.string.attach_limit_exceeded))
+            showSnackbarWithText(R.string.attach_limit_exceeded)
         }
 
         binding.list.layoutManager = layoutManager

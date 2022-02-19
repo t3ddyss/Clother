@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.t3ddyss.clother.data.ChatsRepository
 import com.t3ddyss.clother.models.domain.Chat
-import com.t3ddyss.clother.models.domain.Resource
+import com.t3ddyss.core.domain.models.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

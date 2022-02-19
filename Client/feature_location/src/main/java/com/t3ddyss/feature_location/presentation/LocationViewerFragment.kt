@@ -8,6 +8,7 @@ import androidx.navigation.fragment.navArgs
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
+import com.t3ddyss.core.util.showSnackbarWithText
 import com.t3ddyss.feature_location.R
 import com.t3ddyss.feature_location.databinding.FragmentLocationViewerBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,7 +25,7 @@ class LocationViewerFragment
             .map { it.toDoubleOrNull() }
 
         if (lat == null || lng == null) {
-            showGenericMessage(getString(R.string.error_showing_location))
+            showSnackbarWithText(getString(R.string.error_showing_location))
             findNavController().popBackStack()
         }
         val point = LatLng(lat!!, lng!!)

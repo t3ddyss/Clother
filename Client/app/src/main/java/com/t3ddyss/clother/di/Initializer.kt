@@ -3,7 +3,7 @@ package com.t3ddyss.clother.di
 import android.content.Context
 import com.google.android.gms.maps.MapView
 import com.t3ddyss.clother.data.LiveMessagingRepository
-import com.t3ddyss.clother.utilities.NotificationHelper
+import com.t3ddyss.clother.util.NotificationHelper
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.MainScope

@@ -2,8 +2,8 @@ package com.t3ddyss.clother.data
 
 import android.content.SharedPreferences
 import com.t3ddyss.clother.models.domain.AuthState
-import com.t3ddyss.clother.utilities.ACCESS_TOKEN
-import com.t3ddyss.clother.utilities.CURRENT_USER_ID
+import com.t3ddyss.clother.util.ACCESS_TOKEN
+import com.t3ddyss.clother.util.CURRENT_USER_ID
 import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 import javax.inject.Singleton

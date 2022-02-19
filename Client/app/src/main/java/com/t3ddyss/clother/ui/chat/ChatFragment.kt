@@ -10,8 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.databinding.FragmentChatBinding
 import com.t3ddyss.clother.models.domain.LoadResult
 import com.t3ddyss.clother.ui.adapters.MessagesAdapter
-import com.t3ddyss.clother.utilities.text
+import com.t3ddyss.clother.util.text
 import com.t3ddyss.core.presentation.BaseFragment
+import com.t3ddyss.core.util.showSnackbarWithText
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -92,7 +93,7 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::infl
                 }
 
                 is LoadResult.Error -> {
-                    showErrorMessage(it.exception)
+                    showSnackbarWithText(it.exception)
                 }
             }
         }

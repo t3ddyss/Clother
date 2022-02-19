@@ -10,59 +10,44 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.OnSuccessListener
-import com.t3ddyss.feature_location.domain.LocationDao
 import com.t3ddyss.feature_location.domain.LocationData
-import com.t3ddyss.feature_location.domain.LocationEntity
+import com.t3ddyss.feature_location.domain.LocationRepository
+import com.t3ddyss.feature_location.domain.LocationType
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.merge
 import javax.inject.Inject
 
-class LocationProvider @Inject constructor(
+class LocationRepositoryImpl @Inject constructor(
+    private val locationDao: LocationDao,
     @ApplicationContext
-    context: Context,
-    private val locationDao: LocationDao
-) {
-    private val locationProviderClient = LocationServices
-        .getFusedLocationProviderClient(context)
+    context: Context
+) : LocationRepository {
+    private val locationProviderClient by lazy {
+        LocationServices.getFusedLocationProviderClient(context)
+    }
 
-    suspend fun observeLocation() = merge(getInitialLocation(), observeLocationUpdates())
+    override suspend fun getLastLocation() = locationDao.getLatestLocation()?.toDomain()
 
-    suspend fun getLatestSavedLocation() = locationDao.getLatestLocation()
-
-    suspend fun saveSelectedLocation(location: LocationData) {
-        locationDao.insert(
-            (LocationEntity(
-                lat = location.latLng.latitude,
-                lng = location.latLng.longitude
-            ))
-        )
+    override suspend fun saveLocation(location: LocationData) {
+        locationDao.insert(location.toEntity())
     }
 
     @SuppressLint("MissingPermission")
-    private suspend fun getInitialLocation() = callbackFlow {
+    override suspend fun observeLocation() = callbackFlow {
+        val locationRequest = LocationRequest.create()
+        locationRequest.interval = 5_000
+        locationRequest.fastestInterval = 1_000
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+
         val initialLocationListener = OnSuccessListener<Location> {
             val latLng = LocationData(
                 latLng = LatLng(it.latitude, it.longitude),
-                isInitialValue = false,
-                isManuallySelected = false
+                locationType = LocationType.DETECTED_BY_GPS
             )
 
             trySend(latLng)
         }
-        locationProviderClient.lastLocation.addOnSuccessListener(initialLocationListener)
-
-        awaitClose()
-    }
-
-    @SuppressLint("MissingPermission")
-    private suspend fun observeLocationUpdates() = callbackFlow {
-        val locationRequest = LocationRequest.create()
-        locationRequest.interval = 5_000
-        locationRequest.fastestInterval = 1000
-        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-
         val locationUpdatesObserver = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 val location = locationResult.locations.lastOrNull()
@@ -70,8 +55,7 @@ class LocationProvider @Inject constructor(
                 if (location != null) {
                     val latLng = LocationData(
                         latLng = LatLng(location.latitude, location.longitude),
-                        isInitialValue = false,
-                        isManuallySelected = false
+                        locationType = LocationType.DETECTED_BY_GPS
                     )
 
                     trySend(latLng)
@@ -79,6 +63,7 @@ class LocationProvider @Inject constructor(
             }
         }
 
+        locationProviderClient.lastLocation.addOnSuccessListener(initialLocationListener)
         locationProviderClient.requestLocationUpdates(
             locationRequest,
             locationUpdatesObserver,
@@ -88,5 +73,19 @@ class LocationProvider @Inject constructor(
         awaitClose {
             locationProviderClient.removeLocationUpdates(locationUpdatesObserver)
         }
+    }
+
+    private fun LocationEntity.toDomain(): LocationData {
+        return LocationData(
+            latLng = LatLng(this.lat, this.lng),
+            locationType = LocationType.MANUALLY_SELECTED
+        )
+    }
+
+    private fun LocationData.toEntity(): LocationEntity {
+        return LocationEntity(
+            lat = this.latLng.latitude,
+            lng = this.latLng.longitude
+        )
     }
 }

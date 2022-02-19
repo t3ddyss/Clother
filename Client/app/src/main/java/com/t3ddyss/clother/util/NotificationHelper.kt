@@ -1,4 +1,4 @@
-package com.t3ddyss.clother.utilities
+package com.t3ddyss.clother.util
 
 import android.app.Application
 import android.app.NotificationChannel
@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import javax.inject.Singleton
 
+// TODO refactor to interactor
 @Singleton
 class NotificationHelper @Inject constructor(
     @ApplicationContext private val context: Context,

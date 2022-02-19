@@ -1,4 +1,4 @@
-package com.t3ddyss.feature_location.domain
+package com.t3ddyss.feature_location.data
 
 import androidx.room.Dao
 import androidx.room.Insert

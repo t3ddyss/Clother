@@ -1,4 +1,4 @@
-package com.t3ddyss.clother.utilities
+package com.t3ddyss.clother.util
 
 import android.content.Context
 import android.net.ConnectivityManager
@@ -10,6 +10,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 
+// TODO refactor to interactor
 class ConnectivityObserver @Inject constructor(
     @ApplicationContext context: Context
 ) {

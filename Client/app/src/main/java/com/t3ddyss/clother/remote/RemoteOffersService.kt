@@ -1,4 +1,4 @@
-package com.t3ddyss.clother.api
+package com.t3ddyss.clother.remote
 
 import com.t3ddyss.clother.models.dto.OfferDto
 import com.t3ddyss.clother.models.dto.OfferPostResponseDto
@@ -7,7 +7,7 @@ import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.*
 
-interface ClotherOffersService {
+interface RemoteOffersService {
     @GET("api/offers")
     suspend fun getOffers(
         @Header("Authorization") accessToken: String?,

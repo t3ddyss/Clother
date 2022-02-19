@@ -1,6 +1,8 @@
-package com.t3ddyss.clother.utilities
+package com.t3ddyss.clother.util
 
-class Event<out T>(private val content: T) {
+class Event<out T>(
+    private val content: T
+) {
     var hasBeenHandled = false
         private set
 

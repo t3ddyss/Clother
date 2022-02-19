@@ -2,10 +2,10 @@ package com.t3ddyss.clother.ui.sign_in
 
 import androidx.lifecycle.*
 import com.t3ddyss.clother.data.UsersRepository
-import com.t3ddyss.clother.models.domain.Loading
-import com.t3ddyss.clother.models.domain.Resource
-import com.t3ddyss.clother.utilities.EMAIL
-import com.t3ddyss.clother.utilities.PASSWORD
+import com.t3ddyss.clother.util.EMAIL
+import com.t3ddyss.clother.util.PASSWORD
+import com.t3ddyss.core.domain.models.Loading
+import com.t3ddyss.core.domain.models.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

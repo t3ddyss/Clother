@@ -2,10 +2,14 @@ package com.t3ddyss.clother.ui.sign_up
 
 import androidx.lifecycle.*
 import com.t3ddyss.clother.data.UsersRepository
-import com.t3ddyss.clother.models.domain.Loading
-import com.t3ddyss.clother.models.domain.Resource
 import com.t3ddyss.clother.models.domain.Response
-import com.t3ddyss.clother.utilities.*
+import com.t3ddyss.clother.util.EMAIL
+import com.t3ddyss.clother.util.Event
+import com.t3ddyss.clother.util.NAME
+import com.t3ddyss.clother.util.PASSWORD
+import com.t3ddyss.core.domain.models.Loading
+import com.t3ddyss.core.domain.models.Resource
+import com.t3ddyss.core.util.StringUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -38,19 +42,19 @@ class SignUpViewModel @Inject constructor(
     val signUpResult: LiveData<Event<Resource<Response>>> = _signUpResult
 
     fun createUserWithCredentials(name: String, email: String, password: String) {
-        if (!name.validateName()) {
+        if (!StringUtils.isValidName(name)) {
             _nameError.value = true
             return
         }
         _nameError.value = false
 
-        if (!email.validateEmail()) {
+        if (!StringUtils.isValidEmail(email)) {
             _emailError.value = true
             return
         }
         _emailError.value = false
 
-        if (!password.validatePassword()) {
+        if (!StringUtils.isValidPassword(password)) {
             _passwordError.value = true
             return
         }

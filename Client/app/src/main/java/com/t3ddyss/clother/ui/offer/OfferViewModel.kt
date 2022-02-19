@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.t3ddyss.clother.data.OffersRepository
 import com.t3ddyss.clother.models.domain.Offer
-import com.t3ddyss.clother.models.domain.Resource
-import com.t3ddyss.clother.models.domain.Success
-import com.t3ddyss.clother.utilities.Event
+import com.t3ddyss.clother.util.Event
+import com.t3ddyss.core.domain.models.Resource
+import com.t3ddyss.core.domain.models.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

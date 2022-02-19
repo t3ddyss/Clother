@@ -2,22 +2,22 @@ package com.t3ddyss.clother.data
 
 import android.content.SharedPreferences
 import androidx.room.withTransaction
-import com.t3ddyss.clother.api.ClotherChatService
 import com.t3ddyss.clother.db.AppDatabase
 import com.t3ddyss.clother.db.ChatDao
 import com.t3ddyss.clother.db.MessageDao
 import com.t3ddyss.clother.db.RemoteKeyDao
+import com.t3ddyss.clother.models.Mappers.toEntity
 import com.t3ddyss.clother.models.domain.LoadResult
 import com.t3ddyss.clother.models.domain.LoadType
 import com.t3ddyss.clother.models.entity.RemoteKeyEntity
-import com.t3ddyss.clother.models.mappers.mapMessageDtoToEntity
-import com.t3ddyss.clother.utilities.ACCESS_TOKEN
-import com.t3ddyss.clother.utilities.CLOTHER_PAGE_SIZE_CHAT
+import com.t3ddyss.clother.remote.RemoteChatService
+import com.t3ddyss.clother.util.ACCESS_TOKEN
+import com.t3ddyss.clother.util.CLOTHER_PAGE_SIZE_CHAT
 import com.t3ddyss.core.domain.models.User
 import com.t3ddyss.core.util.log
 
 class MessagesPagingLoader(
-    private val service: ClotherChatService,
+    private val service: RemoteChatService,
     private val prefs: SharedPreferences,
     private val db: AppDatabase,
     private val chatDao: ChatDao,
@@ -67,7 +67,7 @@ class MessagesPagingLoader(
                 if (chat != null) {
                     messageDao.insertAll(
                         items.map { messageDto ->
-                            mapMessageDtoToEntity(messageDto).also {
+                            messageDto.toEntity().also {
                                 it.localChatId = chat.localId
                             }
                         }

@@ -17,6 +17,7 @@ import com.t3ddyss.clother.databinding.FragmentProfileBinding
 import com.t3ddyss.clother.ui.adapters.OffersAdapter
 import com.t3ddyss.clother.ui.offer.OfferViewModel
 import com.t3ddyss.core.presentation.BaseFragment
+import com.t3ddyss.core.util.showSnackbarWithText
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -61,7 +62,7 @@ class ProfileFragment
 
                     binding.shimmer.isVisible = false
                     binding.list.isVisible = true
-                    showErrorMessage(error)
+                    showSnackbarWithText(error)
                 }
             }
         }

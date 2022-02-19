@@ -13,7 +13,7 @@ import com.google.android.material.chip.Chip
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentFiltersDialogBinding
 import com.t3ddyss.clother.ui.search_results.SearchResultsViewModel
-import com.t3ddyss.clother.utilities.toCoordinatesString
+import com.t3ddyss.clother.util.toCoordinatesString
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

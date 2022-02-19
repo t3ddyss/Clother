@@ -7,11 +7,15 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentPasswordRecoveryBinding
-import com.t3ddyss.clother.models.domain.*
-import com.t3ddyss.clother.utilities.text
-import com.t3ddyss.clother.utilities.toEditable
-import com.t3ddyss.clother.utilities.validateEmail
+import com.t3ddyss.clother.models.domain.Response
+import com.t3ddyss.clother.util.text
+import com.t3ddyss.clother.util.toEditable
+import com.t3ddyss.core.domain.models.Error
+import com.t3ddyss.core.domain.models.Loading
+import com.t3ddyss.core.domain.models.Success
 import com.t3ddyss.core.presentation.BaseFragment
+import com.t3ddyss.core.util.StringUtils
+import com.t3ddyss.core.util.showSnackbarWithText
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -23,7 +27,7 @@ class PasswordRecoveryFragment
         binding.buttonResetPassword.setOnClickListener {
             val email = binding.editTextEmail.text()
 
-            if (!email.validateEmail()) {
+            if (!StringUtils.isValidEmail(email)) {
                 binding.textInputEmail.error = getString(R.string.email_invalid)
                 return@setOnClickListener
             }
@@ -64,11 +68,7 @@ class PasswordRecoveryFragment
                 }
                 is Error<Response> -> {
                     binding.layoutLoading.isVisible = false
-                    showGenericMessage(response.message)
-                }
-                is Failed<Response> -> {
-                    binding.layoutLoading.isVisible = false
-                    showGenericMessage(getString(R.string.no_connection))
+                    showSnackbarWithText(response.message)
                 }
             }
         }

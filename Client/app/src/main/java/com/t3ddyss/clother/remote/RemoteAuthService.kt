@@ -1,11 +1,11 @@
-package com.t3ddyss.clother.api
+package com.t3ddyss.clother.remote
 
 import com.t3ddyss.clother.models.dto.AuthDataDto
 import com.t3ddyss.clother.models.dto.ResponseDto
 import retrofit2.Response
 import retrofit2.http.*
 
-interface ClotherAuthService {
+interface RemoteAuthService {
     @GET("api/auth/refresh")
     suspend fun refreshTokens(
         @Header("Authorization") refreshToken: String?

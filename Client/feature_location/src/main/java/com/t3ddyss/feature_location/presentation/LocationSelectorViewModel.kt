@@ -1,13 +1,15 @@
 package com.t3ddyss.feature_location.presentation
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
-import com.t3ddyss.feature_location.data.LocationProvider
 import com.t3ddyss.feature_location.domain.LocationData
+import com.t3ddyss.feature_location.domain.LocationInteractor
+import com.t3ddyss.feature_location.domain.LocationType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicBoolean
@@ -16,34 +18,31 @@ import javax.inject.Inject
 @HiltViewModel
 class LocationSelectorViewModel
 @Inject constructor(
-    private val repository: LocationProvider
+    private val interactor: LocationInteractor
 ) : ViewModel() {
-    private val _location = MutableLiveData(LocationData())
-    val location: LiveData<LocationData> = _location
+    private val _location = MutableStateFlow(LocationData.DEFAULT)
+    val location: LiveData<LocationData> = _location.asLiveData()
 
-    var isEnablingLocationRequested = false
-    private var isLocationRequested = AtomicBoolean(false)
+    private val isLocationRequested = AtomicBoolean(false)
+    val isLocationEnablingRequested = AtomicBoolean(false)
 
-    fun getLocation() {
+    fun requestLocation() {
         if (isLocationRequested.getAndSet(true)) return
         viewModelScope.launch {
-            repository.observeLocation().collectLatest {
-                _location.postValue(it)
-            }
+            interactor.observeLocation().collectLatest(_location::emit)
         }
     }
 
     fun setLocationManually(latLng: LatLng) {
         _location.value = LocationData(
             latLng = latLng,
-            isInitialValue = false,
-            isManuallySelected = true,
+            locationType = LocationType.MANUALLY_SELECTED
         )
     }
 
-    fun saveSelectedLocation(latLng: LocationData) {
+    fun saveLocation() {
         viewModelScope.launch {
-            repository.saveSelectedLocation(latLng)
+            interactor.saveLocationIfNeeded(_location.value)
         }
     }
 }

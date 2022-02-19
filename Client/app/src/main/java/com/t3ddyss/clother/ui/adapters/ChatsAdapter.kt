@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.ListItemChatBinding
 import com.t3ddyss.clother.models.domain.Chat
-import com.t3ddyss.clother.utilities.formatDate
+import com.t3ddyss.clother.util.formatDate
 
 class ChatsAdapter(
     private val clickListener: (Chat) -> Unit

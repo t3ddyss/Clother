@@ -18,9 +18,12 @@ import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.t3ddyss.core.util.SettingsUtils
+import com.t3ddyss.core.util.IntentUtils
+import com.t3ddyss.core.util.showSnackbarWithAction
+import com.t3ddyss.core.util.showSnackbarWithText
 import com.t3ddyss.feature_location.R
 import com.t3ddyss.feature_location.databinding.FragmentLocationSelectorBinding
+import com.t3ddyss.feature_location.domain.LocationType
 import com.t3ddyss.navigation.util.setNavigationResult
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -36,10 +39,10 @@ class LocationSelectorFragment
         ActivityResultContracts.StartIntentSenderForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            getLocation()
+            requestLocation()
         } else {
             setOnMapLongClickListener()
-            showGenericMessage(getString(R.string.no_location_access))
+            showSnackbarWithText(getString(R.string.no_location_access))
         }
     }
 
@@ -66,10 +69,10 @@ class LocationSelectorFragment
                 }
                 checkIfLocationEnabled()
             } else {
-                showMessageWithAction(
-                        message = getString(R.string.no_location_access),
-                        actionText = getString(R.string.grant_permission),
-                        action = { SettingsUtils.openApplicationSettings(requireContext())}
+                showSnackbarWithAction(
+                        text = R.string.no_location_access,
+                        actionText = R.string.grant_permission,
+                        action = { IntentUtils.openApplicationSettings(requireContext())}
                 )
                 setOnMapLongClickListener()
             }
@@ -96,10 +99,10 @@ class LocationSelectorFragment
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.apply) {
+            viewModel.saveLocation()
             viewModel.location.value?.let {
-                if (!it.isInitialValue) {
+                if (it.locationType != LocationType.INITIAL) {
                     val latLng = it.latLng
-                    viewModel.saveSelectedLocation(it)
                     setNavigationResult(COORDINATES_KEY, "${latLng.latitude},${latLng.longitude}")
                     findNavController().popBackStack()
                     return true
@@ -111,23 +114,16 @@ class LocationSelectorFragment
 
     private fun subscribeUi() {
         viewModel.location.observe(viewLifecycleOwner) {
-            when {
-                it.isInitialValue -> setInitialLocation(it.latLng)
-                it.isManuallySelected -> setLocationWithMarker(it.latLng)
-                else -> {
-                    map?.moveCamera(
-                        CameraUpdateFactory.newLatLngZoom(
-                            it.latLng,
-                            DEFAULT_CAMERA_ZOOM
-                        )
-                    )
-                }
+            when (it.locationType) {
+                LocationType.INITIAL -> setInitialLocation(it.latLng)
+                LocationType.MANUALLY_SELECTED -> setLocationWithMarker(it.latLng)
+                LocationType.DETECTED_BY_GPS -> moveCameraToLocation(it.latLng)
             }
         }
     }
 
-    private fun getLocation() {
-        viewModel.getLocation()
+    private fun requestLocation() {
+        viewModel.requestLocation()
     }
 
     private fun setInitialLocation(latLng: LatLng) {
@@ -144,15 +140,21 @@ class LocationSelectorFragment
         )
     }
 
+    private fun moveCameraToLocation(latLng: LatLng) {
+        map?.moveCamera(
+            CameraUpdateFactory.newLatLngZoom(
+                latLng,
+                DEFAULT_CAMERA_ZOOM
+            )
+        )
+    }
+
     private fun setOnMapLongClickListener() {
-        map?.setOnMapLongClickListener {
-            viewModel.setLocationManually(it)
-        }
+        map?.setOnMapLongClickListener(viewModel::setLocationManually)
     }
 
     private fun checkIfLocationEnabled() {
-        if (viewModel.isEnablingLocationRequested) return
-        viewModel.isEnablingLocationRequested = true
+        if (viewModel.isLocationEnablingRequested.getAndSet(true)) return
 
         val locationRequest = LocationRequest.create().also {
             it.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
@@ -165,7 +167,7 @@ class LocationSelectorFragment
         result.addOnCompleteListener {
             try {
                 it.getResult(ApiException::class.java)
-                getLocation()
+                requestLocation()
             } catch (exception: ApiException) {
                 when (exception.statusCode) {
                     LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> {

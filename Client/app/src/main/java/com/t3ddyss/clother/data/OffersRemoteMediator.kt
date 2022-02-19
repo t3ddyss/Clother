@@ -5,18 +5,18 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
-import com.t3ddyss.clother.api.ClotherOffersService
 import com.t3ddyss.clother.db.AppDatabase
 import com.t3ddyss.clother.db.OfferDao
 import com.t3ddyss.clother.db.RemoteKeyDao
+import com.t3ddyss.clother.models.Mappers.toEntity
 import com.t3ddyss.clother.models.entity.OfferEntity
 import com.t3ddyss.clother.models.entity.RemoteKeyEntity
-import com.t3ddyss.clother.models.mappers.mapOfferDtoToEntity
-import com.t3ddyss.clother.utilities.ACCESS_TOKEN
+import com.t3ddyss.clother.remote.RemoteOffersService
+import com.t3ddyss.clother.util.ACCESS_TOKEN
 import com.t3ddyss.core.util.log
 
 class OffersRemoteMediator(
-    private val service: ClotherOffersService,
+    private val service: RemoteOffersService,
     private val prefs: SharedPreferences,
     private val db: AppDatabase,
     private val offerDao: OfferDao,
@@ -58,7 +58,7 @@ class OffersRemoteMediator(
                 },
                 filters = query
             )
-                .map { mapOfferDtoToEntity(it) }
+                .map { it.toEntity() }
             items.forEach { it.listKey = listKey }
 
             db.withTransaction {

@@ -2,6 +2,9 @@ package com.t3ddyss.clother.utilities
 
 import androidx.test.filters.SmallTest
 import com.google.common.truth.Truth.assertThat
+import com.t3ddyss.clother.util.validateEmail
+import com.t3ddyss.clother.util.validateName
+import com.t3ddyss.clother.util.validatePassword
 import org.junit.Test
 
 @SmallTest

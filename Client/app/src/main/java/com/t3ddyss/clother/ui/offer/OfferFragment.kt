@@ -14,14 +14,15 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayoutMediator
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentOfferBinding
-import com.t3ddyss.clother.models.domain.Error
-import com.t3ddyss.clother.models.domain.Failed
-import com.t3ddyss.clother.models.domain.Success
 import com.t3ddyss.clother.ui.adapters.OfferImagesAdapter
-import com.t3ddyss.clother.utilities.CURRENT_USER_ID
-import com.t3ddyss.clother.utilities.formatDate
+import com.t3ddyss.clother.util.CURRENT_USER_ID
+import com.t3ddyss.clother.util.formatDate
+import com.t3ddyss.core.domain.models.Error
+import com.t3ddyss.core.domain.models.Success
 import com.t3ddyss.core.domain.models.User
 import com.t3ddyss.core.presentation.BaseFragment
+import com.t3ddyss.core.util.errorText
+import com.t3ddyss.core.util.showSnackbarWithText
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -126,15 +127,11 @@ class OfferFragment : BaseFragment<FragmentOfferBinding>(FragmentOfferBinding::i
             when (result) {
                 is Success<*> -> {
                     findNavController().popBackStack()
-                    showGenericMessage(getString(R.string.offer_deleted))
+                    showSnackbarWithText(R.string.offer_deleted)
                 }
                 is Error<*> -> {
                     binding.layoutLoading.isVisible = false
-                    showGenericMessage(result.message)
-                }
-                is Failed<*> -> {
-                    binding.layoutLoading.isVisible = false
-                    showGenericMessage(getString(R.string.no_connection))
+                    showSnackbarWithText(result.errorText())
                 }
                 else -> {
                     binding.layoutLoading.isVisible = false

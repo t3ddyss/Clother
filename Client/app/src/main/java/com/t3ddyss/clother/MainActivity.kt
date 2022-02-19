@@ -15,8 +15,8 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.snackbar.Snackbar
 import com.t3ddyss.clother.databinding.ActivityMainBinding
 import com.t3ddyss.clother.models.domain.AuthState
-import com.t3ddyss.clother.utilities.DestinationChangeListener
-import com.t3ddyss.clother.utilities.NotificationHelper
+import com.t3ddyss.clother.util.DestinationChangeListener
+import com.t3ddyss.clother.util.NotificationHelper
 import com.t3ddyss.core.presentation.NavMenuController
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -52,14 +52,16 @@ class MainActivity : AppCompatActivity(), NavMenuController {
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
-        val navGraph = navController.navInflater.inflate(R.navigation.main_graph)
 
-        if (viewModel.authStateFlow.value is AuthState.Authenticated) {
-            navGraph.setStartDestination(R.id.homeFragment)
-        } else {
-            navGraph.setStartDestination(R.id.signUpFragment)
+        if (savedInstanceState == null) {
+            val navGraph = navController.navInflater.inflate(R.navigation.main_graph)
+            if (viewModel.authStateFlow.value is AuthState.Authenticated) {
+                navGraph.setStartDestination(R.id.homeFragment)
+            } else {
+                navGraph.setStartDestination(R.id.signUpFragment)
+            }
+            navController.graph = navGraph
         }
-        navController.graph = navGraph
 
         // Do not represent actual top-level destinations, just for UP navigation purposes
         appBarConfiguration = AppBarConfiguration(

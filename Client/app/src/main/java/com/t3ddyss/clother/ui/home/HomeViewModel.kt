@@ -3,7 +3,7 @@ package com.t3ddyss.clother.ui.home
 import androidx.lifecycle.*
 import androidx.paging.cachedIn
 import com.t3ddyss.clother.data.OffersRepository
-import com.t3ddyss.clother.utilities.Event
+import com.t3ddyss.clother.util.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject

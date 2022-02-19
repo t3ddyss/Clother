@@ -1,4 +1,4 @@
-package com.t3ddyss.clother.api
+package com.t3ddyss.clother.remote
 
 import com.t3ddyss.clother.models.dto.ChatDto
 import com.t3ddyss.clother.models.dto.MessageDto
@@ -7,7 +7,7 @@ import retrofit2.http.Header
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface ClotherChatService {
+interface RemoteChatService {
     @GET("api/chats")
     suspend fun getChats(@Header("Authorization") accessToken: String?): List<ChatDto>
 

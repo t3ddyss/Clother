@@ -3,7 +3,7 @@ package com.t3ddyss.clother
 import androidx.lifecycle.*
 import com.t3ddyss.clother.data.UsersRepository
 import com.t3ddyss.clother.models.domain.AuthState
-import com.t3ddyss.clother.utilities.ConnectivityObserver
+import com.t3ddyss.clother.util.ConnectivityObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect

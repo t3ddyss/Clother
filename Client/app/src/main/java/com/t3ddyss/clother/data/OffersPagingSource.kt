@@ -5,13 +5,13 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingSource.LoadParams.Append
 import androidx.paging.PagingSource.LoadParams.Prepend
 import androidx.paging.PagingState
-import com.t3ddyss.clother.api.ClotherOffersService
+import com.t3ddyss.clother.models.Mappers.toDomain
 import com.t3ddyss.clother.models.domain.Offer
-import com.t3ddyss.clother.models.mappers.mapOfferDtoToDomain
-import com.t3ddyss.clother.utilities.ACCESS_TOKEN
+import com.t3ddyss.clother.remote.RemoteOffersService
+import com.t3ddyss.clother.util.ACCESS_TOKEN
 
 class OffersPagingSource(
-    private val service: ClotherOffersService,
+    private val service: RemoteOffersService,
     private val prefs: SharedPreferences,
     private val query: Map<String, String>
 ) : PagingSource<Int, Offer>() {
@@ -25,7 +25,7 @@ class OffersPagingSource(
                 limit = params.loadSize,
                 filters = query
             )
-                .map { mapOfferDtoToDomain(it) }
+                .map { it.toDomain() }
 
             LoadResult.Page(
                 data = items,
