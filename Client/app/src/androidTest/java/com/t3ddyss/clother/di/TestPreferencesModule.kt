@@ -1,6 +1,7 @@
 package com.t3ddyss.clother.di
 
 import android.content.SharedPreferences
+import com.t3ddyss.clother.di.common.PreferencesModule
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.components.SingletonComponent

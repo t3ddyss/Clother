@@ -28,7 +28,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/cardView_avatar"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Фёдор Соколов" />
+        tools:text="Fedor Sokolov" />
 
     <TextView
         android:id="@+id/textView_email"

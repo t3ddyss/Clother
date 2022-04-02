@@ -5,14 +5,13 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
-import com.t3ddyss.clother.MainActivity
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.ActivityMainBinding
+import com.t3ddyss.clother.presentation.MainActivity
 
 class DestinationChangeListener(
     private val binding: ActivityMainBinding,
     private val activity: MainActivity,
-    private val notificationHelper: NotificationHelper
 ) : NavController.OnDestinationChangedListener {
     private val fragmentsWithoutBottomNav = setOf(
         R.id.emailActionFragment,
@@ -47,8 +46,6 @@ class DestinationChangeListener(
         destination: NavDestination,
         arguments: Bundle?
     ) {
-        notificationHelper.isChatFragment = destination.id == R.id.chatFragment
-        notificationHelper.isChatsFragment = destination.id == R.id.chatsFragment
 
         with(binding) {
             // NavView visibility

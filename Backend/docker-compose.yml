@@ -14,9 +14,11 @@ services:
   db:
     image: postgres:latest
     container_name: clother_db
+    ports:
+      - "5433:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
+      - clother_postgres_data:/var/lib/postgresql/data/
     env_file: ./db.dev.env
 
 volumes:
-  postgres_data:
+  clother_postgres_data:

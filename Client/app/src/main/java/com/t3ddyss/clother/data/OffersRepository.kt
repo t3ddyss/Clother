@@ -7,16 +7,16 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.google.gson.JsonObject
-import com.t3ddyss.clother.db.AppDatabase
-import com.t3ddyss.clother.db.CategoryDao
-import com.t3ddyss.clother.db.OfferDao
-import com.t3ddyss.clother.db.RemoteKeyDao
-import com.t3ddyss.clother.models.Mappers.toDomain
-import com.t3ddyss.clother.models.domain.Offer
-import com.t3ddyss.clother.remote.RemoteOffersService
+import com.t3ddyss.clother.data.Mappers.toDomain
+import com.t3ddyss.clother.data.db.AppDatabase
+import com.t3ddyss.clother.data.db.CategoryDao
+import com.t3ddyss.clother.data.db.OfferDao
+import com.t3ddyss.clother.data.db.RemoteKeyDao
+import com.t3ddyss.clother.data.remote.RemoteOffersService
+import com.t3ddyss.clother.domain.models.Offer
 import com.t3ddyss.clother.util.ACCESS_TOKEN
 import com.t3ddyss.clother.util.CLOTHER_PAGE_SIZE
-import com.t3ddyss.clother.util.handleNetworkError
+import com.t3ddyss.clother.util.handleHttpException
 import com.t3ddyss.core.domain.models.Resource
 import com.t3ddyss.core.domain.models.Success
 import kotlinx.coroutines.async
@@ -112,18 +112,18 @@ class OffersRepository
                 }
         }
 
-        return handleNetworkError {
+        return handleHttpException {
             val response = service.postOffer(
                 prefs.getString(ACCESS_TOKEN, null),
                 body,
                 imageFiles
             )
-            Success(response.id)
+            response.id
         }
     }
 
     suspend fun deleteOffer(offerEntity: Offer): Resource<*> {
-        return handleNetworkError {
+        return handleHttpException {
             service.deleteOffer(
                 prefs.getString(ACCESS_TOKEN, null),
                 offerEntity.id

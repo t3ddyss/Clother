@@ -4,24 +4,25 @@ import android.content.SharedPreferences
 import androidx.room.withTransaction
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
-import com.t3ddyss.clother.db.AppDatabase
-import com.t3ddyss.clother.db.ChatDao
-import com.t3ddyss.clother.db.MessageDao
-import com.t3ddyss.clother.di.NetworkModule
-import com.t3ddyss.clother.models.Mappers.toDomain
-import com.t3ddyss.clother.models.Mappers.toDto
-import com.t3ddyss.clother.models.Mappers.toEntity
-import com.t3ddyss.clother.models.domain.AuthState
-import com.t3ddyss.clother.models.domain.MessageStatus
-import com.t3ddyss.clother.models.dto.ChatDto
-import com.t3ddyss.clother.models.dto.MessageDto
-import com.t3ddyss.clother.models.entity.ChatEntity
-import com.t3ddyss.clother.models.entity.MessageEntity
-import com.t3ddyss.clother.remote.RemoteAuthService
+import com.t3ddyss.clother.data.Mappers.toDomain
+import com.t3ddyss.clother.data.Mappers.toDto
+import com.t3ddyss.clother.data.Mappers.toEntity
+import com.t3ddyss.clother.data.db.AppDatabase
+import com.t3ddyss.clother.data.db.ChatDao
+import com.t3ddyss.clother.data.db.MessageDao
+import com.t3ddyss.clother.data.db.entity.ChatEntity
+import com.t3ddyss.clother.data.db.entity.MessageEntity
+import com.t3ddyss.clother.data.remote.RemoteAuthService
+import com.t3ddyss.clother.data.remote.dto.ChatDto
+import com.t3ddyss.clother.data.remote.dto.MessageDto
+import com.t3ddyss.clother.di.common.NetworkModule
+import com.t3ddyss.clother.domain.NotificationHelper
+import com.t3ddyss.clother.domain.auth.AuthInteractor
+import com.t3ddyss.clother.domain.models.AuthState
+import com.t3ddyss.clother.domain.models.MessageStatus
 import com.t3ddyss.clother.util.ACCESS_TOKEN
 import com.t3ddyss.clother.util.CURRENT_USER_ID
 import com.t3ddyss.clother.util.IS_DEVICE_TOKEN_RETRIEVED
-import com.t3ddyss.clother.util.NotificationHelper
 import com.t3ddyss.core.domain.models.User
 import io.socket.client.IO
 import io.socket.client.Socket
@@ -46,7 +47,7 @@ class LiveMessagingRepository @Inject constructor(
     private val db: AppDatabase,
     private val chatDao: ChatDao,
     private val messageDao: MessageDao,
-    private val authStateObserver: AuthStateObserver,
+    private val authInteractor: AuthInteractor,
     private val notificationHelper: NotificationHelper,
     private val prefs: SharedPreferences,
     private val gson: Gson,
@@ -59,13 +60,10 @@ class LiveMessagingRepository @Inject constructor(
     fun initialize() {
         // Don't hold reference to scope because it is a singleton
         MainScope().launch {
-            authStateObserver.authState.collect {
+            authInteractor.authState.collect {
                 when (it) {
                     is AuthState.None -> {
                         job?.cancel()
-                    }
-                    is AuthState.Refreshing -> {
-                        // TODO Pause observing?
                     }
                     is AuthState.Authenticated -> {
                         sendDeviceTokenToServerIfNeeded()

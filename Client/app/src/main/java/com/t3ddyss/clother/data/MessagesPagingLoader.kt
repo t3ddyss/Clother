@@ -2,15 +2,15 @@ package com.t3ddyss.clother.data
 
 import android.content.SharedPreferences
 import androidx.room.withTransaction
-import com.t3ddyss.clother.db.AppDatabase
-import com.t3ddyss.clother.db.ChatDao
-import com.t3ddyss.clother.db.MessageDao
-import com.t3ddyss.clother.db.RemoteKeyDao
-import com.t3ddyss.clother.models.Mappers.toEntity
-import com.t3ddyss.clother.models.domain.LoadResult
-import com.t3ddyss.clother.models.domain.LoadType
-import com.t3ddyss.clother.models.entity.RemoteKeyEntity
-import com.t3ddyss.clother.remote.RemoteChatService
+import com.t3ddyss.clother.data.Mappers.toEntity
+import com.t3ddyss.clother.data.db.AppDatabase
+import com.t3ddyss.clother.data.db.ChatDao
+import com.t3ddyss.clother.data.db.MessageDao
+import com.t3ddyss.clother.data.db.RemoteKeyDao
+import com.t3ddyss.clother.data.db.entity.RemoteKeyEntity
+import com.t3ddyss.clother.data.remote.RemoteChatService
+import com.t3ddyss.clother.domain.models.LoadResult
+import com.t3ddyss.clother.domain.models.LoadType
 import com.t3ddyss.clother.util.ACCESS_TOKEN
 import com.t3ddyss.clother.util.CLOTHER_PAGE_SIZE_CHAT
 import com.t3ddyss.core.domain.models.User

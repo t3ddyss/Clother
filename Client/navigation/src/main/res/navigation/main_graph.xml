@@ -10,7 +10,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.t3ddyss.clother.ui.home.HomeFragment"
+        android:name="com.t3ddyss.clother.presentation.home.HomeFragment"
         android:label="@string/home"
         tools:layout="@layout/fragment_home">
         <action
@@ -28,7 +28,7 @@
 
     <fragment
         android:id="@+id/searchByCategoryFragment"
-        android:name="com.t3ddyss.clother.ui.search_by_category.SearchByCategoryFragment"
+        android:name="com.t3ddyss.clother.presentation.categories.SearchByCategoryFragment"
         android:label="@string/search"
         tools:layout="@layout/fragment_search_by_category">
         <argument
@@ -63,7 +63,7 @@
 
     <fragment
         android:id="@+id/offerCategoryFragment"
-        android:name="com.t3ddyss.clother.ui.offer_category.OfferCategoryFragment"
+        android:name="com.t3ddyss.clother.presentation.categories.OfferCategoryFragment"
         android:label="@string/select_category"
         tools:layout="@layout/fragment_offer_category">
         <argument
@@ -88,7 +88,7 @@
 
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.t3ddyss.clother.ui.profile.ProfileFragment"
+        android:name="com.t3ddyss.clother.presentation.profile.ProfileFragment"
         android:label="@string/your_offers"
         tools:layout="@layout/fragment_profile">
         <action
@@ -98,7 +98,7 @@
 
     <fragment
         android:id="@+id/signUpFragment"
-        android:name="com.t3ddyss.clother.ui.sign_up.SignUpFragment"
+        android:name="com.t3ddyss.clother.presentation.auth.SignUpFragment"
         android:label="@string/sign_up"
         tools:layout="@layout/fragment_sign_up">
         <action
@@ -122,7 +122,7 @@
 
     <fragment
         android:id="@+id/emailActionFragment"
-        android:name="com.t3ddyss.clother.ui.email_confirmation.EmailConfirmationFragment"
+        android:name="com.t3ddyss.clother.presentation.auth.EmailConfirmationFragment"
         android:label="@string/check_inbox"
         tools:layout="@layout/fragment_email_confirmation">
         <argument
@@ -145,7 +145,7 @@
 
     <fragment
         android:id="@+id/signInFragment"
-        android:name="com.t3ddyss.clother.ui.sign_in.SignInFragment"
+        android:name="com.t3ddyss.clother.presentation.auth.SignInFragment"
         android:label="@string/sign_in"
         tools:layout="@layout/fragment_sign_in">
         <action
@@ -164,7 +164,7 @@
 
     <fragment
         android:id="@+id/resetPasswordFragment"
-        android:name="com.t3ddyss.clother.ui.password_recovery.PasswordRecoveryFragment"
+        android:name="com.t3ddyss.clother.presentation.auth.PasswordRecoveryFragment"
         android:label="@string/reset_password"
         tools:layout="@layout/fragment_password_recovery">
         <action
@@ -176,7 +176,7 @@
 
     <fragment
         android:id="@+id/offerFragment"
-        android:name="com.t3ddyss.clother.ui.offer.OfferFragment"
+        android:name="com.t3ddyss.clother.presentation.offer.OfferFragment"
         android:label="@string/offer"
         tools:layout="@layout/fragment_offer">
         <argument
@@ -204,7 +204,7 @@
 
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.t3ddyss.clother.ui.search.SearchFragment"
+        android:name="com.t3ddyss.clother.presentation.search.SearchFragment"
         android:label="@string/search"
         tools:layout="@layout/fragment_search">
         <action
@@ -222,7 +222,7 @@
 
     <fragment
         android:id="@+id/chatsFragment"
-        android:name="com.t3ddyss.clother.ui.chats.ChatsFragment"
+        android:name="com.t3ddyss.clother.presentation.chat.ChatsFragment"
         android:label="@string/messages"
         tools:layout="@layout/fragment_chats">
         <action
@@ -232,7 +232,7 @@
 
     <fragment
         android:id="@+id/chatFragment"
-        android:name="com.t3ddyss.clother.ui.chat.ChatFragment"
+        android:name="com.t3ddyss.clother.presentation.chat.ChatFragment"
         android:label="{user}"
         tools:layout="@layout/fragment_chat">
         <argument

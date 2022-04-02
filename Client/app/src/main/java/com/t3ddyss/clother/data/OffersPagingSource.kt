@@ -5,9 +5,9 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingSource.LoadParams.Append
 import androidx.paging.PagingSource.LoadParams.Prepend
 import androidx.paging.PagingState
-import com.t3ddyss.clother.models.Mappers.toDomain
-import com.t3ddyss.clother.models.domain.Offer
-import com.t3ddyss.clother.remote.RemoteOffersService
+import com.t3ddyss.clother.data.Mappers.toDomain
+import com.t3ddyss.clother.data.remote.RemoteOffersService
+import com.t3ddyss.clother.domain.models.Offer
 import com.t3ddyss.clother.util.ACCESS_TOKEN
 
 class OffersPagingSource(

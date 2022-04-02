@@ -6,7 +6,7 @@
     app:startDestination="@id/searchResultsFragment">
     <fragment
         android:id="@+id/searchResultsFragment"
-        android:name="com.t3ddyss.clother.ui.search_results.SearchResultsFragment"
+        android:name="com.t3ddyss.clother.presentation.search.SearchResultsFragment"
         android:label="fragment_search_results"
         tools:layout="@layout/fragment_search_results">
         <argument
@@ -40,7 +40,7 @@
     </fragment>
     <dialog
         android:id="@+id/filterDialogFragment"
-        android:name="com.t3ddyss.clother.ui.filters.FilterDialogFragment"
+        android:name="com.t3ddyss.clother.presentation.search.FilterDialogFragment"
         android:label="FilterDialogFragment">
         <action
             android:id="@+id/action_filterDialogFragment_to_locationFragment"
