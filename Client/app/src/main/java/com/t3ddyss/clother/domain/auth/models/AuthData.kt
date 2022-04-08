@@ -1,4 +1,4 @@
-package com.t3ddyss.clother.domain.models
+package com.t3ddyss.clother.domain.auth.models
 
 import com.t3ddyss.core.domain.models.User
 

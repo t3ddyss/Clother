@@ -6,7 +6,7 @@ import com.t3ddyss.clother.data.Mappers.toEntity
 import com.t3ddyss.clother.data.db.UserDao
 import com.t3ddyss.clother.data.remote.RemoteAuthService
 import com.t3ddyss.clother.domain.auth.AuthRepository
-import com.t3ddyss.clother.domain.models.AuthData
+import com.t3ddyss.clother.domain.auth.models.AuthData
 import com.t3ddyss.clother.domain.models.Response
 import com.t3ddyss.clother.util.ACCESS_TOKEN
 import com.t3ddyss.clother.util.CURRENT_USER_ID

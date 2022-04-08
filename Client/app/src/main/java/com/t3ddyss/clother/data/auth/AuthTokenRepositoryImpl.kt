@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
+import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
@@ -23,7 +24,7 @@ import javax.inject.Singleton
 class AuthTokenRepositoryImpl @Inject constructor(
     private val remoteAuthServiceLazy: Lazy<RemoteAuthService>,
     private val prefs: SharedPreferences
-) : AuthTokenRepository {
+) : AuthTokenRepository, Authenticator {
     private val remoteAuthService get() = remoteAuthServiceLazy.get()
 
     private val _tokenStateFlow: MutableStateFlow<AuthDataDto?> = MutableStateFlow(null)

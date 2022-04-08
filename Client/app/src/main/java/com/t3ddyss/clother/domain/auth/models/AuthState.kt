@@ -1,4 +1,4 @@
-package com.t3ddyss.clother.domain.models
+package com.t3ddyss.clother.domain.auth.models
 
 sealed class AuthState {
     object None : AuthState()

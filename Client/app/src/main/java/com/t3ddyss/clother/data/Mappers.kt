@@ -2,6 +2,7 @@ package com.t3ddyss.clother.data
 
 import com.t3ddyss.clother.data.db.entity.*
 import com.t3ddyss.clother.data.remote.dto.*
+import com.t3ddyss.clother.domain.auth.models.AuthData
 import com.t3ddyss.clother.domain.models.*
 import com.t3ddyss.core.domain.models.Category
 import com.t3ddyss.core.domain.models.User

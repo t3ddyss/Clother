@@ -14,6 +14,7 @@ import com.t3ddyss.clother.data.db.OfferDao
 import com.t3ddyss.clother.data.db.RemoteKeyDao
 import com.t3ddyss.clother.data.remote.RemoteOffersService
 import com.t3ddyss.clother.domain.models.Offer
+import com.t3ddyss.clother.domain.offer.ImagesRepository
 import com.t3ddyss.clother.util.ACCESS_TOKEN
 import com.t3ddyss.clother.util.CLOTHER_PAGE_SIZE
 import com.t3ddyss.clother.util.handleHttpException
@@ -33,7 +34,7 @@ import javax.inject.Inject
 class OffersRepository
 @Inject constructor(
     private val service: RemoteOffersService,
-    private val imageProvider: ImageProvider,
+    private val imagesRepository: ImagesRepository,
     private val prefs: SharedPreferences,
     private val db: AppDatabase,
     private val offerDao: OfferDao,
@@ -99,7 +100,7 @@ class OffersRepository
             images
                 .map {
                     async {
-                        imageProvider.getCompressedImageFile(it)
+                        imagesRepository.getCompressedImage(it)
                     }
                 }
                 .awaitAll()

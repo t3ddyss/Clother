@@ -1,7 +1,7 @@
 package com.t3ddyss.clother.domain.auth
 
-import com.t3ddyss.clother.domain.models.AuthData
-import com.t3ddyss.clother.domain.models.AuthState
+import com.t3ddyss.clother.domain.auth.models.AuthData
+import com.t3ddyss.clother.domain.auth.models.AuthState
 import com.t3ddyss.clother.util.handleHttpException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map

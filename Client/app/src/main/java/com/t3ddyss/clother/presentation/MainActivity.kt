@@ -16,7 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.ActivityMainBinding
 import com.t3ddyss.clother.domain.NotificationHelper
-import com.t3ddyss.clother.domain.models.AuthState
+import com.t3ddyss.clother.domain.auth.models.AuthState
 import com.t3ddyss.clother.util.DestinationChangeListener
 import com.t3ddyss.core.presentation.NavMenuController
 import dagger.hilt.android.AndroidEntryPoint

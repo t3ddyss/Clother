@@ -18,7 +18,7 @@ import com.t3ddyss.clother.data.remote.dto.MessageDto
 import com.t3ddyss.clother.di.common.NetworkModule
 import com.t3ddyss.clother.domain.NotificationHelper
 import com.t3ddyss.clother.domain.auth.AuthInteractor
-import com.t3ddyss.clother.domain.models.AuthState
+import com.t3ddyss.clother.domain.auth.models.AuthState
 import com.t3ddyss.clother.domain.models.MessageStatus
 import com.t3ddyss.clother.util.ACCESS_TOKEN
 import com.t3ddyss.clother.util.CURRENT_USER_ID

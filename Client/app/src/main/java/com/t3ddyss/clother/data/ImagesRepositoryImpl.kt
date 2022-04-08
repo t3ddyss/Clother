@@ -6,41 +6,50 @@ import android.net.Uri
 import android.os.Handler
 import android.provider.MediaStore
 import com.bumptech.glide.Glide
+import com.t3ddyss.clother.domain.offer.ImagesRepository
 import id.zelory.compressor.Compressor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
-import java.io.File
 import javax.inject.Inject
 
-class ImageProvider @Inject constructor(
+class ImagesRepositoryImpl @Inject constructor(
     private val application: Application
-) {
+) : ImagesRepository {
     private val uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 
-    suspend fun observeImages() = callbackFlow {
-        trySend(loadGalleryImages())
+    override suspend fun observeImages() = callbackFlow {
+        trySend(queryLocalImages())
 
-        val imageUpdatesObserver =
+        val imagesUpdatesObserver =
             object : ContentObserver(Handler(application.applicationContext.mainLooper)) {
                 override fun onChange(selfChange: Boolean) {
                     if (selfChange) return
-                    trySend(loadGalleryImages())
+                    trySend(queryLocalImages())
                 }
             }
         application.contentResolver.registerContentObserver(
             uri,
             true,
-            imageUpdatesObserver
+            imagesUpdatesObserver
         )
         awaitClose {
-            application.contentResolver.unregisterContentObserver(imageUpdatesObserver)
+            application.contentResolver.unregisterContentObserver(imagesUpdatesObserver)
         }
     }.flowOn(Dispatchers.IO)
 
-    private fun loadGalleryImages(): List<Uri> {
+    override suspend fun getCompressedImage(uri: Uri) = withContext(Dispatchers.IO) {
+        val imageFile = Glide.with(application).asFile().load(uri).submit().get()
+        Compressor.compress(
+            application.applicationContext,
+            imageFile,
+            Dispatchers.IO
+        )
+    }
+
+    private fun queryLocalImages(): List<Uri> {
         val images = mutableListOf<Uri>()
 
         val projection = arrayOf(
@@ -72,14 +81,4 @@ class ImageProvider @Inject constructor(
 
         return images
     }
-
-    suspend fun getCompressedImageFile(uri: Uri) = withContext(Dispatchers.IO) {
-        compressImage(Glide.with(application).asFile().load(uri).submit().get())
-    }
-
-    private suspend fun compressImage(image: File) = Compressor.compress(
-        application.applicationContext,
-        image,
-        Dispatchers.IO
-    )
 }
