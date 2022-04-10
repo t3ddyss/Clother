@@ -1,11 +1,10 @@
 package com.t3ddyss.clother.data.auth
 
-import android.content.SharedPreferences
 import com.t3ddyss.clother.data.Mappers.toDomain
+import com.t3ddyss.clother.data.Storage
 import com.t3ddyss.clother.data.remote.RemoteAuthService
 import com.t3ddyss.clother.data.remote.dto.AuthDataDto
 import com.t3ddyss.clother.domain.auth.AuthTokenRepository
-import com.t3ddyss.clother.util.REFRESH_TOKEN
 import com.t3ddyss.clother.util.toBearer
 import com.t3ddyss.core.util.log
 import dagger.Lazy
@@ -23,7 +22,7 @@ import javax.inject.Singleton
 @Singleton
 class AuthTokenRepositoryImpl @Inject constructor(
     private val remoteAuthServiceLazy: Lazy<RemoteAuthService>,
-    private val prefs: SharedPreferences
+    private val storage: Storage
 ) : AuthTokenRepository, Authenticator {
     private val remoteAuthService get() = remoteAuthServiceLazy.get()
 
@@ -40,7 +39,7 @@ class AuthTokenRepositoryImpl @Inject constructor(
         }
         log("AuthTokenRepositoryImpl.authenticate(). Requesting auth tokens...")
 
-        val refreshToken = prefs.getString(REFRESH_TOKEN, null) ?: return unauthorized()
+        val refreshToken = storage.refreshToken ?: return unauthorized()
         val refreshResponse = try {
             runBlocking {
                 remoteAuthService.refreshTokens(refreshToken)

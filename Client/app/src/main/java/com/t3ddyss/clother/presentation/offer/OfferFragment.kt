@@ -1,6 +1,5 @@
 package com.t3ddyss.clother.presentation.offer
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -14,7 +13,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayoutMediator
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentOfferBinding
-import com.t3ddyss.clother.util.CURRENT_USER_ID
 import com.t3ddyss.clother.util.formatDate
 import com.t3ddyss.core.domain.models.Error
 import com.t3ddyss.core.domain.models.Success
@@ -23,7 +21,6 @@ import com.t3ddyss.core.presentation.BaseFragment
 import com.t3ddyss.core.util.errorText
 import com.t3ddyss.core.util.showSnackbarWithText
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class OfferFragment : BaseFragment<FragmentOfferBinding>(FragmentOfferBinding::inflate){
@@ -31,14 +28,11 @@ class OfferFragment : BaseFragment<FragmentOfferBinding>(FragmentOfferBinding::i
     private val viewModel by activityViewModels<OfferViewModel>()
     private val args by navArgs<OfferFragmentArgs>()
 
-    @Inject
-    lateinit var prefs: SharedPreferences
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val currentUserId = prefs.getInt(CURRENT_USER_ID, 0)
-        setHasOptionsMenu(args.posterId == currentUserId)
+        val userId = viewModel.userId
+        setHasOptionsMenu(args.posterId == userId)
 
-        subscribeUi(currentUserId)
+        subscribeUi(userId)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -63,7 +57,7 @@ class OfferFragment : BaseFragment<FragmentOfferBinding>(FragmentOfferBinding::i
         return super.onOptionsItemSelected(item)
     }
 
-    private fun subscribeUi(currentUserId: Int) {
+    private fun subscribeUi(currentUserId: Int?) {
         viewModel.offer.observe(viewLifecycleOwner) {
             with(binding) {
                 images.adapter = OfferImagesAdapter(it.images) {

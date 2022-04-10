@@ -1,18 +1,17 @@
 package com.t3ddyss.clother.data.offer
 
-import android.content.SharedPreferences
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.t3ddyss.clother.data.Mappers.toEntity
+import com.t3ddyss.clother.data.Storage
 import com.t3ddyss.clother.data.db.AppDatabase
 import com.t3ddyss.clother.data.db.OfferDao
 import com.t3ddyss.clother.data.db.RemoteKeyDao
 import com.t3ddyss.clother.data.db.entity.OfferEntity
 import com.t3ddyss.clother.data.db.entity.RemoteKeyEntity
 import com.t3ddyss.clother.data.remote.RemoteOffersService
-import com.t3ddyss.clother.util.ACCESS_TOKEN
 import com.t3ddyss.core.util.ignoreCancellationException
 import com.t3ddyss.core.util.log
 import dagger.assisted.Assisted
@@ -21,7 +20,7 @@ import dagger.assisted.AssistedInject
 
 class OffersRemoteMediator @AssistedInject constructor(
     private val service: RemoteOffersService,
-    private val prefs: SharedPreferences,
+    private val storage: Storage,
     private val db: AppDatabase,
     private val offerDao: OfferDao,
     private val remoteKeyDao: RemoteKeyDao,
@@ -53,7 +52,7 @@ class OffersRemoteMediator @AssistedInject constructor(
 
         return try {
             val items = service.getOffers(
-                accessToken = prefs.getString(ACCESS_TOKEN, null),
+                accessToken = storage.accessToken,
                 afterKey = key,
                 beforeKey = null,
                 limit = when (loadType) {

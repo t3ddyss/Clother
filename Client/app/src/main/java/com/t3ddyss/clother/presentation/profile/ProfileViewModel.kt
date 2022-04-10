@@ -8,7 +8,6 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
 import com.t3ddyss.clother.domain.auth.AuthInteractor
-import com.t3ddyss.clother.domain.auth.models.AuthState
 import com.t3ddyss.clother.domain.models.Offer
 import com.t3ddyss.clother.domain.offer.OffersInteractor
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,9 +25,7 @@ class ProfileViewModel
     val offers: LiveData<PagingData<Offer>> = _offers
 
     init {
-        val authState = authInteractor.authState.value as AuthState.Authenticated
-        val userId = authState.authData.user.id
-
+        val userId =  authInteractor.authState.value.userId ?: 0
         viewModelScope.launch {
             offersInteractor
                 .observeOffersFromDatabase(query = mapOf("user" to userId.toString()), userId = userId)

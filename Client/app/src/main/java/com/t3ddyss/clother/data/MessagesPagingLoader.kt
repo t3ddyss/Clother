@@ -1,6 +1,5 @@
 package com.t3ddyss.clother.data
 
-import android.content.SharedPreferences
 import androidx.room.withTransaction
 import com.t3ddyss.clother.data.Mappers.toEntity
 import com.t3ddyss.clother.data.db.AppDatabase
@@ -11,20 +10,21 @@ import com.t3ddyss.clother.data.db.entity.RemoteKeyEntity
 import com.t3ddyss.clother.data.remote.RemoteChatService
 import com.t3ddyss.clother.domain.models.LoadResult
 import com.t3ddyss.clother.domain.models.LoadType
-import com.t3ddyss.clother.util.ACCESS_TOKEN
-import com.t3ddyss.clother.util.CLOTHER_PAGE_SIZE_CHAT
 import com.t3ddyss.core.domain.models.User
 import com.t3ddyss.core.util.log
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 
-class MessagesPagingLoader(
+class MessagesPagingLoader @AssistedInject constructor(
     private val service: RemoteChatService,
-    private val prefs: SharedPreferences,
     private val db: AppDatabase,
     private val chatDao: ChatDao,
     private val messageDao: MessageDao,
     private val remoteKeyDao: RemoteKeyDao,
-    private val listKey: String,
-    private val interlocutor: User
+    private val storage: Storage,
+    @Assisted private val listKey: String,
+    @Assisted private val interlocutor: User
 ) {
     private var loadType = LoadType.REFRESH
 
@@ -46,10 +46,10 @@ class MessagesPagingLoader(
         return try {
             val items = service.getMessages(
                 interlocutorId = interlocutor.id,
-                accessToken = prefs.getString(ACCESS_TOKEN, null),
+                accessToken = storage.accessToken,
                 afterKey = key,
                 beforeKey = null,
-                limit = CLOTHER_PAGE_SIZE_CHAT
+                limit = PAGE_SIZE
             )
 
             db.withTransaction {
@@ -87,4 +87,13 @@ class MessagesPagingLoader(
             LoadResult.Error(ex)
         }
     }
+
+    private companion object {
+        const val PAGE_SIZE = 25
+    }
+}
+
+@AssistedFactory
+interface MessagesPagingLoaderFactory {
+    fun create(listKey: String, interlocutor: User): MessagesPagingLoader
 }

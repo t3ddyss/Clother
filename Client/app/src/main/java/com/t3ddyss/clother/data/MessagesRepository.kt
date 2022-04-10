@@ -1,12 +1,7 @@
 package com.t3ddyss.clother.data
 
-import android.content.SharedPreferences
 import com.t3ddyss.clother.data.Mappers.toDomain
-import com.t3ddyss.clother.data.db.AppDatabase
-import com.t3ddyss.clother.data.db.ChatDao
 import com.t3ddyss.clother.data.db.MessageDao
-import com.t3ddyss.clother.data.db.RemoteKeyDao
-import com.t3ddyss.clother.data.remote.RemoteChatService
 import com.t3ddyss.clother.domain.models.LoadResult
 import com.t3ddyss.core.domain.models.User
 import dagger.hilt.android.scopes.ViewModelScoped
@@ -15,14 +10,10 @@ import javax.inject.Inject
 
 @ViewModelScoped
 class MessagesRepository @Inject constructor(
-    private val service: RemoteChatService,
-    private val prefs: SharedPreferences,
-    private val db: AppDatabase,
-    private val chatDao: ChatDao,
     private val messageDao: MessageDao,
-    private val remoteKeyDao: RemoteKeyDao,
+    private val messagesPagingLoaderFactory: MessagesPagingLoaderFactory
 ) {
-    private lateinit var messageLoader: MessagesPagingLoader
+    private var messagesPagingLoader: MessagesPagingLoader? = null
 
     fun observeMessages(interlocutor: User) = messageDao
         .observeMessagesByInterlocutorId(interlocutor.id)
@@ -33,20 +24,12 @@ class MessagesRepository @Inject constructor(
         }
 
     suspend fun fetchMessages(interlocutor: User): LoadResult {
-        if (!this@MessagesRepository::messageLoader.isInitialized) {
-            messageLoader = MessagesPagingLoader(
-                service = service,
-                prefs = prefs,
-                db = db,
-                chatDao = chatDao,
-                messageDao = messageDao,
-                remoteKeyDao = remoteKeyDao,
-                listKey = LIST_KEY_MESSAGES + interlocutor.id,
-                interlocutor = interlocutor
-            )
+        if (messagesPagingLoader == null) {
+            val listKey = LIST_KEY_MESSAGES + interlocutor.id
+            messagesPagingLoader = messagesPagingLoaderFactory.create(listKey, interlocutor)
         }
 
-        return messageLoader.load()
+        return messagesPagingLoader!!.load()
     }
 
     companion object {

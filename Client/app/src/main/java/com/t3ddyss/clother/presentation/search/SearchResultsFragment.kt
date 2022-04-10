@@ -1,6 +1,5 @@
 package com.t3ddyss.clother.presentation.search
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -26,7 +25,6 @@ import com.t3ddyss.core.presentation.BaseFragment
 import com.t3ddyss.core.util.showSnackbarWithText
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class SearchResultsFragment
@@ -37,9 +35,6 @@ class SearchResultsFragment
     )
     private val offerViewModel by activityViewModels<OfferViewModel>()
     private val args by navArgs<SearchResultsFragmentArgs>()
-
-    @Inject
-    lateinit var prefs: SharedPreferences
 
     private val adapter = OffersAdapter { offer ->
         offerViewModel.selectOffer(offer)

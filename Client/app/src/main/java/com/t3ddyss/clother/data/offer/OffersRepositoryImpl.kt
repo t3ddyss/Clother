@@ -1,18 +1,17 @@
 package com.t3ddyss.clother.data.offer
 
-import android.content.SharedPreferences
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.google.gson.JsonObject
 import com.t3ddyss.clother.data.Mappers.toDomain
+import com.t3ddyss.clother.data.Storage
 import com.t3ddyss.clother.data.db.CategoryDao
 import com.t3ddyss.clother.data.db.OfferDao
 import com.t3ddyss.clother.data.remote.RemoteOffersService
 import com.t3ddyss.clother.domain.models.Offer
 import com.t3ddyss.clother.domain.offer.OffersRepository
-import com.t3ddyss.clother.util.ACCESS_TOKEN
 import com.t3ddyss.core.domain.models.Category
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -25,7 +24,7 @@ import javax.inject.Inject
 
 class OffersRepositoryImpl @Inject constructor(
     private val service: RemoteOffersService,
-    private val prefs: SharedPreferences,
+    private val storage: Storage,
     private val offerDao: OfferDao,
     private val categoryDao: CategoryDao,
     private val offersRemoteMediatorFactory: OffersRemoteMediatorFactory,
@@ -79,7 +78,7 @@ class OffersRepositoryImpl @Inject constructor(
         }
 
         return service.postOffer(
-            prefs.getString(ACCESS_TOKEN, null),
+            storage.accessToken,
             body,
             multipartBodyFiles
         ).id
@@ -87,7 +86,7 @@ class OffersRepositoryImpl @Inject constructor(
 
     override suspend fun deleteOffer(offerId: Int) {
         service.deleteOffer(
-            prefs.getString(ACCESS_TOKEN, null),
+            storage.accessToken,
             offerId
         )
         offerDao.deleteOfferById(offerId)

@@ -2,8 +2,6 @@ package com.t3ddyss.clother.presentation.auth
 
 import androidx.lifecycle.*
 import com.t3ddyss.clother.domain.auth.AuthInteractor
-import com.t3ddyss.clother.util.EMAIL
-import com.t3ddyss.clother.util.PASSWORD
 import com.t3ddyss.core.domain.models.Loading
 import com.t3ddyss.core.domain.models.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,11 +14,11 @@ class SignInViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _email = savedStateHandle
-        .getLiveData(EMAIL, "")
+        .getLiveData(SavedStateHandleKeys.EMAIL, "")
     val email: LiveData<String> = _email
 
     private val _password = savedStateHandle
-        .getLiveData(PASSWORD, "")
+        .getLiveData(SavedStateHandleKeys.PASSWORD, "")
     val password: LiveData<String> = _password
 
     private val _signInResult = MutableLiveData<Resource<*>>()
@@ -39,10 +37,10 @@ class SignInViewModel @Inject constructor(
     }
 
     fun saveEmail(email: String) {
-        savedStateHandle.set(EMAIL, email)
+        savedStateHandle.set(SavedStateHandleKeys.EMAIL, email)
     }
 
     fun savePassword(password: String) {
-        savedStateHandle.set(PASSWORD, password)
+        savedStateHandle.set(SavedStateHandleKeys.PASSWORD, password)
     }
 }

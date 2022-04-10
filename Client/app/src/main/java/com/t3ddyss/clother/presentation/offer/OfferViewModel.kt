@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.t3ddyss.clother.domain.auth.AuthInteractor
 import com.t3ddyss.clother.domain.models.Offer
 import com.t3ddyss.clother.domain.offer.OffersInteractor
 import com.t3ddyss.clother.util.Event
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class OfferViewModel @Inject constructor(
-    private val offersInteractor: OffersInteractor
+    private val offersInteractor: OffersInteractor,
+    private val authInteractor: AuthInteractor
 ) : ViewModel() {
     private val _offer = MutableLiveData<Offer>()
     val offer: LiveData<Offer> = _offer
@@ -27,6 +29,8 @@ class OfferViewModel @Inject constructor(
     val deletionResponse: LiveData<Event<Resource<*>>> = _deletionResponse
 
     private val deletedOffers = mutableSetOf<Int>()
+
+    val userId: Int? get() = authInteractor.authState.value.userId
 
     fun selectOffer(offer: Offer) {
         _offer.value = offer

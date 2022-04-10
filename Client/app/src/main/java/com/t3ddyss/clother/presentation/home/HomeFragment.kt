@@ -1,6 +1,5 @@
 package com.t3ddyss.clother.presentation.home
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -25,7 +24,6 @@ import com.t3ddyss.core.presentation.BaseFragment
 import com.t3ddyss.core.util.showSnackbarWithText
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate) {
@@ -35,9 +33,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     private val networkStateViewModel by activityViewModels<MainViewModel>()
 
     private val args by navArgs<HomeFragmentArgs>()
-
-    @Inject
-    lateinit var prefs: SharedPreferences
 
     private val adapter = OffersAdapter { offer ->
         offerViewModel.selectOffer(offer)

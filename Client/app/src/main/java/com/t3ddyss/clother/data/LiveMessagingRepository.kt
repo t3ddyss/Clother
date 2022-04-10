@@ -1,6 +1,5 @@
 package com.t3ddyss.clother.data
 
-import android.content.SharedPreferences
 import androidx.room.withTransaction
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
@@ -20,9 +19,6 @@ import com.t3ddyss.clother.domain.NotificationHelper
 import com.t3ddyss.clother.domain.auth.AuthInteractor
 import com.t3ddyss.clother.domain.auth.models.AuthState
 import com.t3ddyss.clother.domain.models.MessageStatus
-import com.t3ddyss.clother.util.ACCESS_TOKEN
-import com.t3ddyss.clother.util.CURRENT_USER_ID
-import com.t3ddyss.clother.util.IS_DEVICE_TOKEN_RETRIEVED
 import com.t3ddyss.core.domain.models.User
 import io.socket.client.IO
 import io.socket.client.Socket
@@ -49,13 +45,11 @@ class LiveMessagingRepository @Inject constructor(
     private val messageDao: MessageDao,
     private val authInteractor: AuthInteractor,
     private val notificationHelper: NotificationHelper,
-    private val prefs: SharedPreferences,
+    private val storage: Storage,
     private val gson: Gson,
 ) {
     private var job: Job? = null
     private var socket: Socket? = null
-    private val currentUserId get() = prefs.getInt(CURRENT_USER_ID, 0)
-    private val currentAccessToken get() = prefs.getString(ACCESS_TOKEN, "")
 
     fun initialize() {
         // Don't hold reference to scope because it is a singleton
@@ -124,7 +118,7 @@ class LiveMessagingRepository @Inject constructor(
         val message = MessageEntity(
             localId = 0,
             localChatId = localChatId,
-            userId = currentUserId,
+            userId = storage.userId,
             status = MessageStatus.DELIVERING,
             createdAt = Calendar.getInstance().time,
             body = messageBody,
@@ -162,7 +156,7 @@ class LiveMessagingRepository @Inject constructor(
             MessageEntity(
                 localId = 0,
                 localChatId = localChatId,
-                userId = currentUserId,
+                userId = storage.userId,
                 status = MessageStatus.DELIVERING,
                 createdAt = Calendar.getInstance().time,
                 body = messageBody,
@@ -246,16 +240,16 @@ class LiveMessagingRepository @Inject constructor(
     }
 
     private suspend fun sendDeviceTokenToServerIfNeeded() {
-        if (prefs.getBoolean(IS_DEVICE_TOKEN_RETRIEVED, false)) return
-
-        val token = setupCloudMessaging()
-        sendDeviceTokenToServer(token)
+        if (!storage.isDeviceTokenRetrieved) {
+            val token = setupCloudMessaging()
+            sendDeviceTokenToServer(token)
+        }
     }
 
     private suspend fun sendDeviceTokenToServer(token: String?) = runCatching {
         token?.let {
-            authService.sendDeviceToken(prefs.getString(ACCESS_TOKEN, null), token)
-            prefs.edit().putBoolean(IS_DEVICE_TOKEN_RETRIEVED, true).apply()
+            authService.sendDeviceToken(storage.accessToken, token)
+            storage.isDeviceTokenRetrieved = true
         }
     }
 
@@ -278,7 +272,7 @@ class LiveMessagingRepository @Inject constructor(
             .setTransports(arrayOf(WebSocket.NAME))
             .setExtraHeaders(
                 mapOf(
-                    "Authorization" to listOf(currentAccessToken),
+                    "Authorization" to listOf(storage.accessToken),
                     "Content-type" to listOf("application/json")
                 )
             )

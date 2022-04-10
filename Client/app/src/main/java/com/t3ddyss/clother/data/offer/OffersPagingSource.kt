@@ -1,13 +1,12 @@
 package com.t3ddyss.clother.data.offer
 
-import android.content.SharedPreferences
 import androidx.paging.PagingSource
 import androidx.paging.PagingSource.LoadParams.Append
 import androidx.paging.PagingSource.LoadParams.Prepend
 import androidx.paging.PagingState
+import com.t3ddyss.clother.data.Storage
 import com.t3ddyss.clother.data.remote.RemoteOffersService
 import com.t3ddyss.clother.data.remote.dto.OfferDto
-import com.t3ddyss.clother.util.ACCESS_TOKEN
 import com.t3ddyss.core.util.ignoreCancellationException
 import com.t3ddyss.core.util.log
 import dagger.assisted.Assisted
@@ -16,14 +15,14 @@ import dagger.assisted.AssistedInject
 
 class OffersPagingSource @AssistedInject constructor(
     private val service: RemoteOffersService,
-    private val prefs: SharedPreferences,
+    private val storage: Storage,
     @Assisted private val query: Map<String, String>
 ) : PagingSource<Int, OfferDto>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, OfferDto> {
         return try {
             val items = service.getOffers(
-                accessToken = prefs.getString(ACCESS_TOKEN, null),
+                accessToken = storage.accessToken,
                 afterKey = if (params is Append) params.key else null,
                 beforeKey = if (params is Prepend) params.key else null,
                 limit = params.loadSize,
