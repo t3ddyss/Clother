@@ -42,7 +42,12 @@ object NetworkModule {
         })
 
         val logging = HttpLoggingInterceptor()
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val loggingLevel = if (Utils.isDebug) {
+            HttpLoggingInterceptor.Level.BASIC
+        } else {
+            HttpLoggingInterceptor.Level.NONE
+        }
+        logging.level = loggingLevel
 
         return clientBuilder
             .authenticator(authenticator)
@@ -57,7 +62,7 @@ object NetworkModule {
     fun provideBaseUrl(): String = if (Utils.isEmulator) {
         "http://10.0.2.2:5000/"
     } else {
-        "http://192.168.0.104:5000/"
+        "http://192.168.0.102:5000/"
     }
 
     @Singleton

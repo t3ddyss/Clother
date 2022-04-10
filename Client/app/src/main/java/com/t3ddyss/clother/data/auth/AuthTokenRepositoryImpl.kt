@@ -9,8 +9,8 @@ import com.t3ddyss.clother.util.REFRESH_TOKEN
 import com.t3ddyss.clother.util.toBearer
 import com.t3ddyss.core.util.log
 import dagger.Lazy
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
@@ -27,9 +27,9 @@ class AuthTokenRepositoryImpl @Inject constructor(
 ) : AuthTokenRepository, Authenticator {
     private val remoteAuthService get() = remoteAuthServiceLazy.get()
 
-    private val _tokenStateFlow: MutableStateFlow<AuthDataDto?> = MutableStateFlow(null)
+    private val _tokenStateFlow: MutableSharedFlow<AuthDataDto?> =
+        MutableSharedFlow(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
     override val tokenStateFlow = _tokenStateFlow
-        .drop(1)
         .map { it?.toDomain() }
 
     override fun authenticate(route: Route?, response: Response): Request? {
@@ -38,7 +38,7 @@ class AuthTokenRepositoryImpl @Inject constructor(
                 return unauthorized()
             }
         }
-        log("Requesting auth tokens...")
+        log("AuthTokenRepositoryImpl.authenticate(). Requesting auth tokens...")
 
         val refreshToken = prefs.getString(REFRESH_TOKEN, null) ?: return unauthorized()
         val refreshResponse = try {
@@ -49,9 +49,9 @@ class AuthTokenRepositoryImpl @Inject constructor(
             null
         }
         val authData = refreshResponse?.body() ?: return unauthorized()
-        log("Requesting new auth tokens: success")
+        log("AuthTokenRepositoryImpl.authenticate(). Requesting auth tokens: success")
 
-        _tokenStateFlow.value = authData
+        _tokenStateFlow.tryEmit(authData)
         return response
             .request
             .newBuilder()
@@ -60,8 +60,8 @@ class AuthTokenRepositoryImpl @Inject constructor(
     }
 
     private fun unauthorized(): Request? {
-        log("Requesting new auth tokens: refresh token expired")
-        _tokenStateFlow.value = null
+        log("AuthTokenRepositoryImpl.authenticate(). Requesting auth tokens: refresh token expired")
+        _tokenStateFlow.tryEmit(null)
         return null
     }
 }

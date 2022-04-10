@@ -1,4 +1,4 @@
-package com.t3ddyss.clother.data
+package com.t3ddyss.clother.data.offer
 
 import android.app.Application
 import android.database.ContentObserver
@@ -12,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.withContext
+import java.io.File
 import javax.inject.Inject
 
 class ImagesRepositoryImpl @Inject constructor(
@@ -40,12 +40,11 @@ class ImagesRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
-    override suspend fun getCompressedImage(uri: Uri) = withContext(Dispatchers.IO) {
+    override suspend fun getCompressedImage(uri: Uri): File {
         val imageFile = Glide.with(application).asFile().load(uri).submit().get()
-        Compressor.compress(
+        return Compressor.compress(
             application.applicationContext,
-            imageFile,
-            Dispatchers.IO
+            imageFile
         )
     }
 

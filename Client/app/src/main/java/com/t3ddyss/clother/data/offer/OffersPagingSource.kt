@@ -1,22 +1,26 @@
-package com.t3ddyss.clother.data
+package com.t3ddyss.clother.data.offer
 
 import android.content.SharedPreferences
 import androidx.paging.PagingSource
 import androidx.paging.PagingSource.LoadParams.Append
 import androidx.paging.PagingSource.LoadParams.Prepend
 import androidx.paging.PagingState
-import com.t3ddyss.clother.data.Mappers.toDomain
 import com.t3ddyss.clother.data.remote.RemoteOffersService
-import com.t3ddyss.clother.domain.models.Offer
+import com.t3ddyss.clother.data.remote.dto.OfferDto
 import com.t3ddyss.clother.util.ACCESS_TOKEN
+import com.t3ddyss.core.util.ignoreCancellationException
+import com.t3ddyss.core.util.log
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 
-class OffersPagingSource(
+class OffersPagingSource @AssistedInject constructor(
     private val service: RemoteOffersService,
     private val prefs: SharedPreferences,
-    private val query: Map<String, String>
-) : PagingSource<Int, Offer>() {
+    @Assisted private val query: Map<String, String>
+) : PagingSource<Int, OfferDto>() {
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Offer> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, OfferDto> {
         return try {
             val items = service.getOffers(
                 accessToken = prefs.getString(ACCESS_TOKEN, null),
@@ -25,7 +29,6 @@ class OffersPagingSource(
                 limit = params.loadSize,
                 filters = query
             )
-                .map { it.toDomain() }
 
             LoadResult.Page(
                 data = items,
@@ -34,13 +37,20 @@ class OffersPagingSource(
             )
 
         } catch (ex: Exception) {
+            ex.ignoreCancellationException()
+            log("OffersPagingSource.load(params=$params) $ex")
             LoadResult.Error(ex)
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, Offer>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, OfferDto>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
             state.closestItemToPosition(anchorPosition)?.id
         }
     }
+}
+
+@AssistedFactory
+interface OffersPagingSourceFactory {
+    fun create(query: Map<String, String>): OffersPagingSource
 }

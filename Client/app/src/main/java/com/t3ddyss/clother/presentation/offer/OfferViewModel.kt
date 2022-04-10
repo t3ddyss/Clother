@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.t3ddyss.clother.data.OffersRepository
 import com.t3ddyss.clother.domain.models.Offer
+import com.t3ddyss.clother.domain.offer.OffersInteractor
 import com.t3ddyss.clother.util.Event
 import com.t3ddyss.core.domain.models.Resource
 import com.t3ddyss.core.domain.models.Success
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class OfferViewModel @Inject constructor(
-    private val repository: OffersRepository
+    private val offersInteractor: OffersInteractor
 ) : ViewModel() {
     private val _offer = MutableLiveData<Offer>()
     val offer: LiveData<Offer> = _offer
@@ -37,7 +37,7 @@ class OfferViewModel @Inject constructor(
 
         if (currentOffer != null && _removedOffers.value?.contains(currentOffer.id) == false) {
             viewModelScope.launch {
-                val result = repository.deleteOffer(currentOffer)
+                val result = offersInteractor.deleteOffer(currentOffer.id)
 
                 if (result is Success) {
                     deletedOffers.add(currentOffer.id)

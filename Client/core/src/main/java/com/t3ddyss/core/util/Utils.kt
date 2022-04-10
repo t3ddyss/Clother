@@ -5,5 +5,5 @@ import com.t3ddyss.core.BuildConfig
 
 object Utils {
     val isDebug = BuildConfig.DEBUG
-    val isEmulator = Build.FINGERPRINT.contains("generic")
+    val isEmulator = Build.MODEL.contains("sdk_gphone")
 }

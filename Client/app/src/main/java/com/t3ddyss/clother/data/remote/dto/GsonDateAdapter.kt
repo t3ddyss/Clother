@@ -12,7 +12,7 @@ class GsonDateAdapter : JsonSerializer<Date>, JsonDeserializer<Date?> {
 
     init {
         dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"))
+        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
     }
 
     @Synchronized

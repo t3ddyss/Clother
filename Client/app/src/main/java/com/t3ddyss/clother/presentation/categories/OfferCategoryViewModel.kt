@@ -1,7 +1,7 @@
 package com.t3ddyss.clother.presentation.categories
 
 import androidx.lifecycle.*
-import com.t3ddyss.clother.data.OffersRepository
+import com.t3ddyss.clother.domain.offer.OffersInteractor
 import com.t3ddyss.core.domain.models.Category
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -10,7 +10,7 @@ import javax.inject.Inject
 @HiltViewModel
 class OfferCategoryViewModel
 @Inject constructor(
-    private val repository: OffersRepository,
+    private val offersInteractor: OffersInteractor,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val args =
@@ -21,7 +21,7 @@ class OfferCategoryViewModel
     init {
         val parentId = args.parentId.takeIf { it != 0 }
         viewModelScope.launch {
-            _categories.postValue(repository.getCategories(parentId))
+            _categories.postValue(offersInteractor.getOfferCategories(parentId))
         }
     }
 }

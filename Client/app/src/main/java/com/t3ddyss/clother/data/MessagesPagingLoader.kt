@@ -83,7 +83,7 @@ class MessagesPagingLoader(
 
             LoadResult.Success(isEndOfPaginationReached = items.isEmpty())
         } catch (ex: Exception) {
-            log("${this.javaClass.simpleName} $ex")
+            log("MessagesPagingLoader.load() $ex")
             LoadResult.Error(ex)
         }
     }

@@ -1,7 +1,6 @@
 package com.t3ddyss.clother.util
 
 // Default parameters
-const val CLOTHER_PAGE_SIZE = 10
 const val CLOTHER_PAGE_SIZE_CHAT = 25
 
 // Shared preferences keys

@@ -1,4 +1,4 @@
-package com.t3ddyss.clother.data
+package com.t3ddyss.clother.data.offer
 
 import android.content.SharedPreferences
 import androidx.paging.LoadType
@@ -13,16 +13,20 @@ import com.t3ddyss.clother.data.db.entity.OfferEntity
 import com.t3ddyss.clother.data.db.entity.RemoteKeyEntity
 import com.t3ddyss.clother.data.remote.RemoteOffersService
 import com.t3ddyss.clother.util.ACCESS_TOKEN
+import com.t3ddyss.core.util.ignoreCancellationException
 import com.t3ddyss.core.util.log
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 
-class OffersRemoteMediator(
+class OffersRemoteMediator @AssistedInject constructor(
     private val service: RemoteOffersService,
     private val prefs: SharedPreferences,
     private val db: AppDatabase,
     private val offerDao: OfferDao,
     private val remoteKeyDao: RemoteKeyDao,
-    private val listKey: String,
-    private val query: Map<String, String>
+    @Assisted private val listKey: String,
+    @Assisted private val query: Map<String, String>
 ) : RemoteMediator<Int, OfferEntity>() {
 
     override suspend fun load(
@@ -73,8 +77,14 @@ class OffersRemoteMediator(
 
             MediatorResult.Success(endOfPaginationReached = items.isEmpty())
         } catch (ex: Exception) {
-            log("${this.javaClass.simpleName} $ex")
+            ex.ignoreCancellationException()
+            log("OffersRemoteMediator.load() $ex")
             MediatorResult.Error(ex)
         }
     }
+}
+
+@AssistedFactory
+interface OffersRemoteMediatorFactory {
+    fun create(listKey: String, query: Map<String, String>): OffersRemoteMediator
 }

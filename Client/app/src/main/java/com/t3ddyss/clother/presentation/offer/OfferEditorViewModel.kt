@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.JsonObject
-import com.t3ddyss.clother.data.OffersRepository
+import com.t3ddyss.clother.domain.offer.OffersInteractor
 import com.t3ddyss.core.domain.models.Loading
 import com.t3ddyss.core.domain.models.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class OfferEditorViewModel
 @Inject constructor(
-    private val repository: OffersRepository
+    private val offersInteractor: OffersInteractor
 ) : ViewModel() {
 
     private val _newOfferResponse = MutableLiveData<Resource<*>>()
@@ -34,7 +34,7 @@ class OfferEditorViewModel
     fun postOffer(offer: JsonObject, images: List<Uri>) {
         _newOfferResponse.value = Loading(null)
         viewModelScope.launch {
-            _newOfferResponse.postValue(repository.postOffer(offer, images))
+            _newOfferResponse.postValue(offersInteractor.postOffer(offer, images))
         }
     }
 }

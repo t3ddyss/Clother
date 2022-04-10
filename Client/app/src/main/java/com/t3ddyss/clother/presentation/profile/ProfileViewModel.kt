@@ -7,10 +7,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
-import com.t3ddyss.clother.data.OffersRepository
 import com.t3ddyss.clother.domain.auth.AuthInteractor
 import com.t3ddyss.clother.domain.auth.models.AuthState
 import com.t3ddyss.clother.domain.models.Offer
+import com.t3ddyss.clother.domain.offer.OffersInteractor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -19,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel
 @Inject constructor(
-    private val offersRepository: OffersRepository,
+    private val offersInteractor: OffersInteractor,
     authInteractor: AuthInteractor
 ) : ViewModel() {
     private val _offers = MutableLiveData<PagingData<Offer>>()
@@ -30,8 +30,8 @@ class ProfileViewModel
         val userId = authState.authData.user.id
 
         viewModelScope.launch {
-            offersRepository
-                .observeOffers(query = mapOf("user" to userId.toString()), userId = userId)
+            offersInteractor
+                .observeOffersFromDatabase(query = mapOf("user" to userId.toString()), userId = userId)
                 .cachedIn(viewModelScope)
                 .collectLatest {
                     _offers.postValue(it)

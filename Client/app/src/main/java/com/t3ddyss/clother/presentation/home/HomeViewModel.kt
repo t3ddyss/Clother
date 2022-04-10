@@ -2,7 +2,7 @@ package com.t3ddyss.clother.presentation.home
 
 import androidx.lifecycle.*
 import androidx.paging.cachedIn
-import com.t3ddyss.clother.data.OffersRepository
+import com.t3ddyss.clother.domain.offer.OffersInteractor
 import com.t3ddyss.clother.util.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -10,12 +10,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val repository: OffersRepository
+    private val offersInteractor: OffersInteractor
 ) : ViewModel() {
 
     val offers = liveData {
-        repository
-            .observeOffers()
+        offersInteractor
+            .observeOffersFromDatabase()
             .cachedIn(viewModelScope)
             .collectLatest {
                 emit(it)

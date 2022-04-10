@@ -1,26 +1,25 @@
 package com.t3ddyss.clother.domain.offer
 
-import android.net.Uri
 import androidx.paging.PagingData
 import com.google.gson.JsonObject
 import com.t3ddyss.clother.domain.models.Offer
 import com.t3ddyss.core.domain.models.Category
-import com.t3ddyss.core.domain.models.Resource
 import kotlinx.coroutines.flow.Flow
+import java.io.File
 
-interface OffersInteractor {
+interface OffersRepository {
     fun observeOffersFromDatabase(
-        query: Map<String, String> = emptyMap(),
-        userId: Int? = null
+        query: Map<String, String>,
+        userId: Int?
     ): Flow<PagingData<Offer>>
 
     fun observeOffersFromNetwork(
         query: Map<String, String> = emptyMap()
     ): Flow<PagingData<Offer>>
 
-    suspend fun postOffer(offer: JsonObject, images: List<Uri>): Resource<Int>
+    suspend fun postOffer(offer: JsonObject, images: List<File>): Int
 
-    suspend fun deleteOffer(offerId: Int): Resource<*>
+    suspend fun deleteOffer(offerId: Int)
 
     suspend fun getOfferCategories(parentCategoryId: Int?): List<Category>
 }

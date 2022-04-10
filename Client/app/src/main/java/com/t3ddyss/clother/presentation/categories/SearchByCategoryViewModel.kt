@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.t3ddyss.clother.data.OffersRepository
+import com.t3ddyss.clother.domain.offer.OffersInteractor
 import com.t3ddyss.core.domain.models.Category
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchByCategoryViewModel @Inject constructor(
-    private val repository: OffersRepository
+    private val offersInteractor: OffersInteractor
 ) : ViewModel() {
     private val _categories = MutableLiveData<List<Category>>()
     val categories: LiveData<List<Category>> = _categories
@@ -23,7 +23,7 @@ class SearchByCategoryViewModel @Inject constructor(
         if (parentId == currentParentId) return
 
         viewModelScope.launch {
-            _categories.postValue(repository.getCategories(parentId))
+            _categories.postValue(offersInteractor.getOfferCategories(parentId))
         }
         currentParentId = parentId
     }

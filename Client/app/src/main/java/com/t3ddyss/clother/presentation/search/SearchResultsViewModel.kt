@@ -4,8 +4,8 @@ import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.google.android.gms.maps.model.LatLng
-import com.t3ddyss.clother.data.OffersRepository
 import com.t3ddyss.clother.domain.models.Offer
+import com.t3ddyss.clother.domain.offer.OffersInteractor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchResultsViewModel @Inject constructor(
-    private val repository: OffersRepository
+    private val offersInteractor: OffersInteractor
 ) : ViewModel() {
     private val _offers = MutableLiveData<PagingData<Offer>>()
     val offers: LiveData<PagingData<Offer>> = _offers
@@ -38,8 +38,8 @@ class SearchResultsViewModel @Inject constructor(
         currentQuery = query
 
         viewModelScope.launch {
-            repository
-                .observeOffers(query)
+            offersInteractor
+                .observeOffersFromNetwork(query)
                 .cachedIn(viewModelScope)
                 .collectLatest {
                     _offers.postValue(it)

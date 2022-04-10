@@ -21,7 +21,7 @@ class GalleryViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            imagesInteractor.observeImages()
+            imagesInteractor.observeLocalImages()
                 .map { list -> list.map { MediaImage(it) } }
                 .collectLatest {
                     _images.postValue(it)
