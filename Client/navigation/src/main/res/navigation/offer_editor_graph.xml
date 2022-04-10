@@ -6,7 +6,7 @@
     app:startDestination="@id/offerEditorFragment">
     <fragment
         android:id="@+id/offerEditorFragment"
-        android:name="com.t3ddyss.clother.presentation.offer.OfferEditorFragment"
+        android:name="com.t3ddyss.clother.presentation.offers.OfferEditorFragment"
         android:label="@string/new_offer"
         tools:layout="@layout/fragment_offer_editor">
         <argument
@@ -32,7 +32,7 @@
     </fragment>
     <fragment
         android:id="@+id/galleryFragment"
-        android:name="com.t3ddyss.clother.presentation.offer.GalleryFragment"
+        android:name="com.t3ddyss.clother.presentation.offers.GalleryFragment"
         android:label="@string/select_images"
         tools:layout="@layout/fragment_gallery" />
     <fragment

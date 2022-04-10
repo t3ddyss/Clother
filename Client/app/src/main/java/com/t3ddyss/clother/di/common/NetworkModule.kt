@@ -2,10 +2,10 @@ package com.t3ddyss.clother.di.common
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.t3ddyss.clother.data.remote.RemoteAuthService
-import com.t3ddyss.clother.data.remote.RemoteChatService
-import com.t3ddyss.clother.data.remote.RemoteOffersService
-import com.t3ddyss.clother.data.remote.dto.GsonDateAdapter
+import com.t3ddyss.clother.data.auth.remote.RemoteAuthService
+import com.t3ddyss.clother.data.chat.remote.RemoteChatService
+import com.t3ddyss.clother.data.common.remote.GsonDateAdapter
+import com.t3ddyss.clother.data.offers.remote.RemoteOffersService
 import com.t3ddyss.core.util.Utils
 import dagger.Module
 import dagger.Provides

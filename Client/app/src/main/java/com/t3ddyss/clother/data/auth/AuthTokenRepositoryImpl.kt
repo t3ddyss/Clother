@@ -1,9 +1,9 @@
 package com.t3ddyss.clother.data.auth
 
-import com.t3ddyss.clother.data.Mappers.toDomain
-import com.t3ddyss.clother.data.Storage
-import com.t3ddyss.clother.data.remote.RemoteAuthService
-import com.t3ddyss.clother.data.remote.dto.AuthDataDto
+import com.t3ddyss.clother.data.auth.remote.RemoteAuthService
+import com.t3ddyss.clother.data.auth.remote.models.AuthDataDto
+import com.t3ddyss.clother.data.common.Mappers.toDomain
+import com.t3ddyss.clother.data.common.Storage
 import com.t3ddyss.clother.domain.auth.AuthTokenRepository
 import com.t3ddyss.clother.util.toBearer
 import com.t3ddyss.core.util.log

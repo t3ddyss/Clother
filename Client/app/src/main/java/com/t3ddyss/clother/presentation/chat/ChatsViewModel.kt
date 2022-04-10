@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.t3ddyss.clother.data.ChatsRepository
-import com.t3ddyss.clother.domain.models.Chat
+import com.t3ddyss.clother.data.chat.ChatsRepository
+import com.t3ddyss.clother.domain.chat.models.Chat
 import com.t3ddyss.core.domain.models.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest

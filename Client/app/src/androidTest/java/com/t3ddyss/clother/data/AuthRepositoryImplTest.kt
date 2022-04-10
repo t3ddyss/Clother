@@ -6,7 +6,7 @@ import androidx.test.filters.MediumTest
 import com.google.common.truth.Truth.assertThat
 import com.t3ddyss.clother.MainCoroutineRule
 import com.t3ddyss.clother.data.auth.AuthRepositoryImpl
-import com.t3ddyss.clother.data.remote.dto.AuthDataDto
+import com.t3ddyss.clother.data.auth.remote.models.AuthDataDto
 import com.t3ddyss.core.domain.models.Error
 import com.t3ddyss.core.domain.models.Success
 import dagger.hilt.android.testing.HiltAndroidRule

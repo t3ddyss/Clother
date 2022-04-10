@@ -1,8 +1,8 @@
 package com.t3ddyss.clother.presentation.chat
 
 import com.google.firebase.messaging.FirebaseMessagingService
-import com.t3ddyss.clother.data.Storage
-import com.t3ddyss.clother.data.remote.RemoteAuthService
+import com.t3ddyss.clother.data.auth.remote.RemoteAuthService
+import com.t3ddyss.clother.data.common.Storage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.MainScope

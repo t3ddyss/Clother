@@ -4,8 +4,8 @@ import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.google.android.gms.maps.model.LatLng
-import com.t3ddyss.clother.domain.models.Offer
-import com.t3ddyss.clother.domain.offer.OffersInteractor
+import com.t3ddyss.clother.domain.offers.OffersInteractor
+import com.t3ddyss.clother.domain.offers.models.Offer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

@@ -1,12 +1,12 @@
 package com.t3ddyss.clother.util
 
 import com.google.gson.Gson
-import com.t3ddyss.clother.data.remote.dto.ResponseDto
+import com.t3ddyss.clother.data.common.remote.models.ResponseDto
 import com.t3ddyss.core.domain.models.Error
 import com.t3ddyss.core.domain.models.Resource
 import com.t3ddyss.core.domain.models.Success
+import com.t3ddyss.core.util.rethrowIfCancellationException
 import retrofit2.HttpException
-import java.util.concurrent.CancellationException
 
 suspend inline fun <ResultType> handleHttpException(
     crossinline request: suspend () -> ResultType
@@ -21,10 +21,10 @@ suspend inline fun <ResultType> handleHttpException(
         ).message
         Error(ex, errorText)
     } catch (exception: Exception) {
-        if (exception is CancellationException) throw exception
+        ex.rethrowIfCancellationException()
         Error(ex, null)
     }
 } catch (ex: Exception) {
-    if (ex is CancellationException) throw ex
+    ex.rethrowIfCancellationException()
     Error(ex, null)
 }

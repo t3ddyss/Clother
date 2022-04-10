@@ -2,7 +2,13 @@ package com.t3ddyss.clother.di.common
 
 import android.content.Context
 import androidx.room.Room
-import com.t3ddyss.clother.data.db.*
+import com.t3ddyss.clother.data.auth.db.UserDao
+import com.t3ddyss.clother.data.chat.db.ChatDao
+import com.t3ddyss.clother.data.chat.db.MessageDao
+import com.t3ddyss.clother.data.common.db.AppDatabase
+import com.t3ddyss.clother.data.offers.db.CategoryDao
+import com.t3ddyss.clother.data.offers.db.OfferDao
+import com.t3ddyss.clother.data.offers.db.RemoteKeyDao
 import com.t3ddyss.feature_location.data.LocationDao
 import dagger.Module
 import dagger.Provides

@@ -2,7 +2,7 @@ package com.t3ddyss.clother.presentation.auth
 
 import androidx.lifecycle.*
 import com.t3ddyss.clother.domain.auth.AuthInteractor
-import com.t3ddyss.clother.domain.models.Response
+import com.t3ddyss.clother.domain.common.models.Response
 import com.t3ddyss.clother.util.Event
 import com.t3ddyss.core.domain.models.Loading
 import com.t3ddyss.core.domain.models.Resource

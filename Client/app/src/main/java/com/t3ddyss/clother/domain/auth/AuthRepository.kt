@@ -1,7 +1,7 @@
 package com.t3ddyss.clother.domain.auth
 
 import com.t3ddyss.clother.domain.auth.models.AuthData
-import com.t3ddyss.clother.domain.models.Response
+import com.t3ddyss.clother.domain.common.models.Response
 
 interface AuthRepository {
     val authData: AuthData

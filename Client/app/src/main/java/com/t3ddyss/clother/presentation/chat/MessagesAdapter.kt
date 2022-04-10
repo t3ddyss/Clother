@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.ListItemMessageInBinding
 import com.t3ddyss.clother.databinding.ListItemMessageOutBinding
-import com.t3ddyss.clother.domain.models.Message
-import com.t3ddyss.clother.domain.models.MessageStatus
+import com.t3ddyss.clother.domain.chat.models.Message
+import com.t3ddyss.clother.domain.chat.models.MessageStatus
 import com.t3ddyss.clother.util.formatTime
 
 class MessagesAdapter : ListAdapter<Message, RecyclerView.ViewHolder>(MessageDiffCallback()) {

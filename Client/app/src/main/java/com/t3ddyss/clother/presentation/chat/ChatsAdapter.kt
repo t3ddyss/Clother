@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.ListItemChatBinding
-import com.t3ddyss.clother.domain.models.Chat
+import com.t3ddyss.clother.domain.chat.models.Chat
 import com.t3ddyss.clother.util.formatDate
 
 class ChatsAdapter(

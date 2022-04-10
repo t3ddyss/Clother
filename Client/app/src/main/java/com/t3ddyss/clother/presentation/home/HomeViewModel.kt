@@ -2,7 +2,7 @@ package com.t3ddyss.clother.presentation.home
 
 import androidx.lifecycle.*
 import androidx.paging.cachedIn
-import com.t3ddyss.clother.domain.offer.OffersInteractor
+import com.t3ddyss.clother.domain.offers.OffersInteractor
 import com.t3ddyss.clother.util.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest

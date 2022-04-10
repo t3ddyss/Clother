@@ -1,7 +1,7 @@
 package com.t3ddyss.clother.presentation.categories
 
 import androidx.lifecycle.*
-import com.t3ddyss.clother.domain.offer.OffersInteractor
+import com.t3ddyss.clother.domain.offers.OffersInteractor
 import com.t3ddyss.core.domain.models.Category
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

@@ -1,7 +1,7 @@
 package com.t3ddyss.clother.di.common
 
-import com.t3ddyss.clother.domain.InitializationInteractor
-import com.t3ddyss.clother.domain.InitializationInteractorImpl
+import com.t3ddyss.clother.domain.common.InitializationInteractor
+import com.t3ddyss.clother.domain.common.InitializationInteractorImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

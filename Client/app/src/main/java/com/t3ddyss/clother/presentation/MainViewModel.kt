@@ -1,12 +1,11 @@
 package com.t3ddyss.clother.presentation
 
 import androidx.lifecycle.*
-import com.t3ddyss.clother.domain.ConnectivityObserver
+import com.t3ddyss.clother.data.common.ConnectivityObserver
 import com.t3ddyss.clother.domain.auth.AuthInteractor
 import com.t3ddyss.clother.domain.auth.models.AuthState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import javax.inject.Inject

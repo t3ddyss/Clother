@@ -1,7 +1,7 @@
 package com.t3ddyss.clother.presentation
 
 import android.app.Application
-import com.t3ddyss.clother.domain.InitializationInteractor
+import com.t3ddyss.clother.domain.common.InitializationInteractor
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 

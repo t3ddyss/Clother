@@ -1,10 +1,10 @@
 package com.t3ddyss.clother.presentation.chat
 
 import androidx.lifecycle.*
-import com.t3ddyss.clother.data.LiveMessagingRepository
-import com.t3ddyss.clother.data.MessagesRepository
-import com.t3ddyss.clother.domain.models.LoadResult
-import com.t3ddyss.clother.domain.models.Message
+import com.t3ddyss.clother.data.chat.LiveMessagingRepository
+import com.t3ddyss.clother.data.chat.MessagesRepository
+import com.t3ddyss.clother.domain.chat.models.Message
+import com.t3ddyss.clother.domain.common.models.LoadResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest

@@ -19,8 +19,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentSearchResultsBinding
-import com.t3ddyss.clother.presentation.offer.OfferViewModel
-import com.t3ddyss.clother.presentation.offer.OffersAdapter
+import com.t3ddyss.clother.presentation.offers.OfferViewModel
+import com.t3ddyss.clother.presentation.offers.OffersAdapter
 import com.t3ddyss.core.presentation.BaseFragment
 import com.t3ddyss.core.util.showSnackbarWithText
 import dagger.hilt.android.AndroidEntryPoint

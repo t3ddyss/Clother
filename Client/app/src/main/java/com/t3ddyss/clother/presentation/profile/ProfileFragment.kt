@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentProfileBinding
-import com.t3ddyss.clother.presentation.offer.OfferViewModel
-import com.t3ddyss.clother.presentation.offer.OffersAdapter
+import com.t3ddyss.clother.presentation.offers.OfferViewModel
+import com.t3ddyss.clother.presentation.offers.OffersAdapter
 import com.t3ddyss.core.presentation.BaseFragment
 import com.t3ddyss.core.util.showSnackbarWithText
 import dagger.hilt.android.AndroidEntryPoint

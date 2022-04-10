@@ -2,7 +2,7 @@ package com.t3ddyss.clother.di
 
 import android.content.Context
 import androidx.room.Room
-import com.t3ddyss.clother.data.db.AppDatabase
+import com.t3ddyss.clother.data.common.db.AppDatabase
 import com.t3ddyss.clother.di.common.DatabaseModule
 import dagger.Module
 import dagger.Provides
