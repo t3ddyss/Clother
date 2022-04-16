@@ -8,18 +8,25 @@ import com.t3ddyss.clother.data.common.Mappers.toDomain
 import com.t3ddyss.clother.data.common.Mappers.toEntity
 import com.t3ddyss.clother.data.common.Storage
 import com.t3ddyss.clother.data.common.db.AppDatabase
+import com.t3ddyss.clother.domain.chat.ChatRepository
+import com.t3ddyss.clother.domain.chat.models.Message
+import com.t3ddyss.clother.domain.common.models.LoadResult
 import com.t3ddyss.clother.util.networkBoundResource
+import com.t3ddyss.core.domain.models.User
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class ChatsRepository @Inject constructor(
+class ChatRepositoryImpl @Inject constructor(
     private val service: RemoteChatService,
     private val db: AppDatabase,
     private val chatDao: ChatDao,
     private val messageDao: MessageDao,
+    private val messagesPagingLoader: MessagesPagingLoader,
     private val storage: Storage
-) {
-    fun observeChats() = networkBoundResource(
+) : ChatRepository {
+
+    override fun observeChatsFromDatabase() = networkBoundResource(
         query = {
             chatDao.observeChats().map {
                     chats -> chats.map { it.toDomain() }
@@ -49,4 +56,25 @@ class ChatsRepository @Inject constructor(
             }
         }
     )
+
+    override fun observeMessagesForChatFromDatabase(interlocutor: User): Flow<List<Message>> {
+        return messageDao
+            .observeMessagesByInterlocutorId(interlocutor.id)
+            .map { messages ->
+                messages.map {
+                    it.toDomain(it.userId == interlocutor.id)
+                }
+            }
+    }
+
+    override suspend fun fetchNextPortionOfMessagesForChat(interlocutor: User): LoadResult {
+        return messagesPagingLoader.load(
+            listKey = LIST_KEY_MESSAGES + interlocutor.id,
+            interlocutorId = interlocutor.id
+        )
+    }
+
+    private companion object {
+        const val LIST_KEY_MESSAGES = "messages"
+    }
 }

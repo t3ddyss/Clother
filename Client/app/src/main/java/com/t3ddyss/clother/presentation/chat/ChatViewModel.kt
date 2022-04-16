@@ -2,7 +2,7 @@ package com.t3ddyss.clother.presentation.chat
 
 import androidx.lifecycle.*
 import com.t3ddyss.clother.data.chat.LiveMessagingRepository
-import com.t3ddyss.clother.data.chat.MessagesRepository
+import com.t3ddyss.clother.domain.chat.ChatInteractor
 import com.t3ddyss.clother.domain.chat.models.Message
 import com.t3ddyss.clother.domain.common.models.LoadResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChatViewModel @Inject constructor(
-    private val repository: MessagesRepository,
+    private val chatInteractor: ChatInteractor,
     private val liveRepository: LiveMessagingRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -32,8 +32,9 @@ class ChatViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            repository.observeMessages(interlocutor).collectLatest {
-                _messages.postValue(it)
+            chatInteractor.observeMessagesForChat(interlocutor)
+                .collectLatest {
+                    _messages.postValue(it)
             }
         }
 
@@ -45,7 +46,7 @@ class ChatViewModel @Inject constructor(
         if (isEndOfPaginationReached || isLoading.getAndSet(true)) return
 
         viewModelScope.launch {
-            _loadStatus.postValue(repository.fetchMessages(interlocutor))
+            _loadStatus.postValue(chatInteractor.fetchNextPortionOfMessagesForChat(interlocutor))
             isLoading.set(false)
         }
     }

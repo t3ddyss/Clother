@@ -11,25 +11,21 @@ import com.t3ddyss.clother.data.offers.db.RemoteKeyDao
 import com.t3ddyss.clother.data.offers.db.models.RemoteKeyEntity
 import com.t3ddyss.clother.domain.common.models.LoadResult
 import com.t3ddyss.clother.domain.common.models.LoadType
-import com.t3ddyss.core.domain.models.User
 import com.t3ddyss.core.util.log
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import javax.inject.Inject
 
-class MessagesPagingLoader @AssistedInject constructor(
+class MessagesPagingLoader @Inject constructor(
     private val service: RemoteChatService,
     private val db: AppDatabase,
     private val chatDao: ChatDao,
     private val messageDao: MessageDao,
     private val remoteKeyDao: RemoteKeyDao,
-    private val storage: Storage,
-    @Assisted private val listKey: String,
-    @Assisted private val interlocutor: User
+    private val storage: Storage
 ) {
-    private var loadType = LoadType.REFRESH
+    private val interlocutorsLoadTypes = mutableMapOf<Int, LoadType>()
 
-    suspend fun load(): LoadResult {
+    suspend fun load(listKey: String, interlocutorId: Int): LoadResult {
+        val loadType = interlocutorsLoadTypes[interlocutorId] ?: LoadType.REFRESH
         val key = when (loadType) {
             LoadType.REFRESH -> {
                 null
@@ -39,14 +35,13 @@ class MessagesPagingLoader @AssistedInject constructor(
                 val afterKey = db.withTransaction {
                     remoteKeyDao.remoteKeyByList(listKey).afterKey
                 }
-
                 afterKey
             }
         }
 
         return try {
             val items = service.getMessages(
-                interlocutorId = interlocutor.id,
+                interlocutorId = interlocutorId,
                 accessToken = storage.accessToken,
                 afterKey = key,
                 beforeKey = null,
@@ -56,13 +51,12 @@ class MessagesPagingLoader @AssistedInject constructor(
             db.withTransaction {
                 // TODO handle situation when user opens existing chat which is not cached yet from
                 //  offer fragment
-                val chat = chatDao.getChatByInterlocutorId(interlocutor.id)
+                val chat = chatDao.getChatByInterlocutorId(interlocutorId)
 
                 if (chat != null && loadType == LoadType.REFRESH) {
                     messageDao.deleteAllMessagesFromChat(chat.serverId)
                     remoteKeyDao.removeByList(listKey)
-
-                    loadType = LoadType.APPEND
+                    interlocutorsLoadTypes[interlocutorId] = LoadType.APPEND
                 }
 
                 if (chat != null) {
@@ -92,9 +86,4 @@ class MessagesPagingLoader @AssistedInject constructor(
     private companion object {
         const val PAGE_SIZE = 25
     }
-}
-
-@AssistedFactory
-interface MessagesPagingLoaderFactory {
-    fun create(listKey: String, interlocutor: User): MessagesPagingLoader
 }
