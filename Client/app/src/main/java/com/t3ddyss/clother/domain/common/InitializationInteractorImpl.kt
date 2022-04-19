@@ -1,23 +1,22 @@
 package com.t3ddyss.clother.domain.common
 
-import com.t3ddyss.clother.data.chat.LiveMessagingRepository
+import com.t3ddyss.clother.domain.auth.AuthInteractor
+import com.t3ddyss.clother.domain.chat.ChatInteractor
 import com.t3ddyss.clother.domain.chat.NotificationHelper
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class InitializationInteractorImpl @Inject constructor(
+    private val authInteractor: AuthInteractor,
+    private val chatInteractor: ChatInteractor,
     private val mapRepository: MapRepository,
-    private val notificationHelper: NotificationHelper,
-    private val liveMessagingRepository: LiveMessagingRepository
+    private val notificationHelper: NotificationHelper
 ) : InitializationInteractor {
     override fun initialize() {
-        MainScope().launch {
-            notificationHelper.createNotificationChannel()
-            liveMessagingRepository.initialize()
-            mapRepository.initialize()
-        }
+        authInteractor.initialize()
+        chatInteractor.initialize()
+        notificationHelper.createNotificationChannel()
+        mapRepository.initialize()
     }
 }

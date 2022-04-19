@@ -9,5 +9,5 @@ interface AuthRepository {
     suspend fun signIn(email: String, password: String): AuthData
     suspend fun resetPassword(email: String): Response
     suspend fun saveAuthData(authData: AuthData)
-    suspend fun deleteAuthData()
+    suspend fun deleteAllUserData()
 }

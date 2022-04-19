@@ -2,26 +2,29 @@ package com.t3ddyss.clother.domain.auth
 
 import com.t3ddyss.clother.domain.auth.models.AuthData
 import com.t3ddyss.clother.domain.auth.models.AuthState
+import com.t3ddyss.clother.util.DispatchersProvider
 import com.t3ddyss.clother.util.handleHttpException
 import com.t3ddyss.core.util.log
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class AuthInteractorImpl @Inject constructor(
     private val authRepository: AuthRepository,
-    private val authTokenRepository: AuthTokenRepository
+    private val authTokenRepository: AuthTokenRepository,
+    private val scope: CoroutineScope,
+    private val dispatchers: DispatchersProvider
 ) : AuthInteractor {
-
-    init {
-        observeTokenState()
-    }
 
     override val authState by lazy {
         MutableStateFlow(authRepository.authData.toAuthState())
+    }
+
+    override fun initialize() {
+        observeTokenState()
     }
 
     override suspend fun signUp(
@@ -46,13 +49,13 @@ class AuthInteractorImpl @Inject constructor(
         authRepository.resetPassword(email)
     }
 
-    private fun observeTokenState() = MainScope().launch {
+    private fun observeTokenState() = scope.launch(dispatchers.io) {
         authTokenRepository.tokenStateFlow
             .map { it.toAuthState() }
+            .onEach { log("AuthInteractorImpl.observeTokenState() $it") }
             .collect {
-                log("AuthInteractorImpl.observeTokenState() $it")
                 when (it) {
-                    is AuthState.None -> authRepository.deleteAuthData()
+                    is AuthState.None -> authRepository.deleteAllUserData()
                     is AuthState.Authenticated -> authRepository.saveAuthData(it.authData)
                 }
                 authState.tryEmit(it)

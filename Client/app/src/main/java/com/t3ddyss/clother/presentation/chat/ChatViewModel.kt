@@ -1,9 +1,9 @@
 package com.t3ddyss.clother.presentation.chat
 
 import androidx.lifecycle.*
-import com.t3ddyss.clother.data.chat.LiveMessagingRepository
 import com.t3ddyss.clother.domain.chat.ChatInteractor
 import com.t3ddyss.clother.domain.chat.models.Message
+import com.t3ddyss.clother.domain.common.NavigationInteractor
 import com.t3ddyss.clother.domain.common.models.LoadResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ChatViewModel @Inject constructor(
     private val chatInteractor: ChatInteractor,
-    private val liveRepository: LiveMessagingRepository,
+    navigationInteractor: NavigationInteractor,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val args = ChatFragmentArgs.fromSavedStateHandle(savedStateHandle)
@@ -38,7 +38,7 @@ class ChatViewModel @Inject constructor(
             }
         }
 
-        liveRepository.setCurrentInterlocutorId(interlocutor.id)
+        navigationInteractor.currentInterlocutorId = interlocutor.id
         requestMessages()
     }
 
@@ -53,7 +53,7 @@ class ChatViewModel @Inject constructor(
 
     fun sendMessage(message: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            liveRepository.sendMessage(interlocutor, message)
+            chatInteractor.sendMessage(message, null, interlocutor)
         }
     }
 }

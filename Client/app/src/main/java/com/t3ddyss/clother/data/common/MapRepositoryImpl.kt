@@ -12,7 +12,7 @@ class MapRepositoryImpl @Inject constructor(
     @ApplicationContext
     private val context: Context
 ) : MapRepository {
-    override suspend fun initialize() {
+    override fun initialize() {
         try {
             MapView(context).apply {
                 onCreate(null)

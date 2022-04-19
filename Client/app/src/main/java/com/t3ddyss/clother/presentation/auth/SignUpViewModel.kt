@@ -68,15 +68,15 @@ class SignUpViewModel @Inject constructor(
     }
 
     fun saveName(name: String) {
-        savedStateHandle.set(SavedStateHandleKeys.NAME, name)
+        savedStateHandle[SavedStateHandleKeys.NAME] = name
     }
 
     fun saveEmail(email: String) {
-        savedStateHandle.set(SavedStateHandleKeys.EMAIL, email)
+        savedStateHandle[SavedStateHandleKeys.EMAIL] = email
     }
 
     fun savePassword(password: String) {
-        savedStateHandle.set(SavedStateHandleKeys.PASSWORD, password)
+        savedStateHandle[SavedStateHandleKeys.PASSWORD] = password
     }
 
     fun clearCredentials() {

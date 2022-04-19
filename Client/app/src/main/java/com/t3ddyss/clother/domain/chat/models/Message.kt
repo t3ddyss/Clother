@@ -5,6 +5,7 @@ import java.util.*
 data class Message(
     val localId: Int,
     val serverId: Int?,
+    val serverChatId: Int?,
     val userId: Int,
     val userName: String,
     val createdAt: Date,

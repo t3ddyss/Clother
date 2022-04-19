@@ -7,7 +7,7 @@ services:
       - db
     image: clother_api:latest
     container_name: clother_api
-    command: gunicorn --bind 0.0.0.0:5000 run:app --workers=4 --worker-class=eventlet --access-logfile '-'
+    command: gunicorn --bind 0.0.0.0:5000 run:app --workers=1 --worker-class=eventlet --access-logfile '-'
     ports:
       - "5000:5000"
     env_file: ./web.dev.env

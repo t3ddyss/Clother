@@ -34,6 +34,10 @@ class Storage @Inject constructor(
             prefs.edit().putBoolean(IS_DEVICE_TOKEN_RETRIEVED, value).apply()
         }
 
+    fun clear() {
+        prefs.edit().clear().apply()
+    }
+
     private companion object {
         const val AUTH_PREFS_NAME = "auth_prefs"
         const val ACCESS_TOKEN = "access_token"

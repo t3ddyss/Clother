@@ -5,7 +5,6 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.t3ddyss.clother.R
@@ -18,7 +17,6 @@ class OfferCategoryFragment : BaseFragment<FragmentOfferCategoryBinding>
     (FragmentOfferCategoryBinding::inflate) {
 
     private val viewModel by viewModels<OfferCategoryViewModel>()
-    private val args by navArgs<OfferCategoryFragmentArgs>()
 
     private lateinit var adapter: CategoriesAdapter
 

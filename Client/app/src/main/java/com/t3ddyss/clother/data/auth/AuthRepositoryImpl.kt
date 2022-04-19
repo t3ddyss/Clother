@@ -49,10 +49,8 @@ class AuthRepositoryImpl @Inject constructor(
         userDao.insert(authData.user.toEntity())
     }
 
-    override suspend fun deleteAuthData() {
-        storage.accessToken = null
-        storage.refreshToken = null
-        storage.userId = 0
+    override suspend fun deleteAllUserData() {
+        storage.clear()
         userDao.deleteAll()
     }
 }

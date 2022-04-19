@@ -8,6 +8,8 @@ import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.textfield.TextInputEditText
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.abs
@@ -57,4 +59,8 @@ fun LatLng.toCoordinatesString(): String {
     val longitude = doubleToDms(this.longitude)
     val longitudeCardinal = if (this.longitude >= 0) "E" else "W"
     return "$latitude$latitudeCardinal $longitude$longitudeCardinal"
+}
+
+inline fun <T, R> Flow<List<T>>.nestedMap(crossinline mapper: (T) -> R): Flow<List<R>> {
+    return this.map { it.map(mapper) }
 }

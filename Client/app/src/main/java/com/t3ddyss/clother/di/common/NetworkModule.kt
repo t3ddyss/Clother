@@ -12,7 +12,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.Authenticator
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -30,16 +29,16 @@ object NetworkModule {
         val clientBuilder = OkHttpClient().newBuilder()
 
         // Unexpected end of stream emulator issue https://github.com/square/okhttp/issues/2738
-        clientBuilder.interceptors().add(Interceptor {
-            it.run {
-                proceed(
-                    request()
-                        .newBuilder()
-                        .addHeader("Connection", "close")
-                        .build()
-                )
-            }
-        })
+//        clientBuilder.interceptors().add(Interceptor {
+//            it.run {
+//                proceed(
+//                    request()
+//                        .newBuilder()
+//                        .addHeader("Connection", "close")
+//                        .build()
+//                )
+//            }
+//        })
 
         val logging = HttpLoggingInterceptor()
         val loggingLevel = if (Utils.isDebug) {

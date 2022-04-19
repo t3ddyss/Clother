@@ -2,10 +2,7 @@ package com.t3ddyss.clother.data.chat.remote
 
 import com.t3ddyss.clother.data.chat.remote.models.ChatDto
 import com.t3ddyss.clother.data.chat.remote.models.MessageDto
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface RemoteChatService {
     @GET("api/chats")
@@ -19,4 +16,18 @@ interface RemoteChatService {
         @Query("before") beforeKey: Int? = null,
         @Query("limit") limit: Int = 10
     ): List<MessageDto>
+
+    @POST("api/chats/message?return_chat=false")
+    suspend fun sendMessageAndGetIt(
+        @Header("Authorization") accessToken: String?,
+        @Query("to") interlocutorId: Int,
+        @Body messageJson: String
+    ): MessageDto
+
+    @POST("api/chats/message?return_chat=true")
+    suspend fun sendMessageAndGetChat(
+        @Header("Authorization") accessToken: String?,
+        @Query("to") interlocutorId: Int,
+        @Body messageJson: String
+    ): ChatDto
 }

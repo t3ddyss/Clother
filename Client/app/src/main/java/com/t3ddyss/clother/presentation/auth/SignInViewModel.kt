@@ -37,10 +37,10 @@ class SignInViewModel @Inject constructor(
     }
 
     fun saveEmail(email: String) {
-        savedStateHandle.set(SavedStateHandleKeys.EMAIL, email)
+        savedStateHandle[SavedStateHandleKeys.EMAIL] = email
     }
 
     fun savePassword(password: String) {
-        savedStateHandle.set(SavedStateHandleKeys.PASSWORD, password)
+        savedStateHandle[SavedStateHandleKeys.PASSWORD] = password
     }
 }

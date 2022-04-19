@@ -38,12 +38,38 @@ object Mappers {
         )
     }
 
+    fun ChatDto.toDomain(isLastMessageIncoming: Boolean): Chat {
+        return Chat(
+            id = this.id,
+            interlocutor = this.interlocutor.toDomain(),
+            lastMessage = this.lastMessage.toDomain(isIncoming = isLastMessageIncoming)
+        )
+    }
+
+    fun Chat.toEntity(): ChatEntity {
+        return ChatEntity(
+            serverId = this.id,
+            interlocutor = this.interlocutor.toEntity()
+        )
+    }
+
     fun ChatWithLastMessageEntity.toDomain(): Chat {
         val isIncoming = this.chat.interlocutor.id == this.message.userId
         return Chat(
             id = this.chat.serverId ?: this.chat.localId,
             interlocutor = this.chat.interlocutor.toDomain(),
             lastMessage = this.message.toDomain(isIncoming)
+        )
+    }
+
+    fun Message.toEntity(): MessageEntity {
+        return MessageEntity(
+            serverId = this.serverId,
+            serverChatId = this.serverChatId,
+            userId = this.userId,
+            createdAt = this.createdAt,
+            body = this.body,
+            image = this.image
         )
     }
 
@@ -62,6 +88,7 @@ object Mappers {
         return Message(
             localId = 0,
             serverId = this.id,
+            serverChatId = this.chatId,
             userId = this.userId,
             userName = this.userName,
             createdAt = this.createdAt,
@@ -76,6 +103,7 @@ object Mappers {
         return Message(
             localId = this.localId,
             serverId = this.serverId,
+            serverChatId = this.serverChatId,
             userId = this.userId,
             userName = "",
             createdAt = this.createdAt,

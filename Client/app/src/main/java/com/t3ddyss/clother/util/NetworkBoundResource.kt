@@ -3,6 +3,7 @@ package com.t3ddyss.clother.util
 import com.t3ddyss.core.domain.models.Error
 import com.t3ddyss.core.domain.models.Loading
 import com.t3ddyss.core.domain.models.Success
+import com.t3ddyss.core.util.log
 import kotlinx.coroutines.flow.*
 
 inline fun <ResultType, RequestType> networkBoundResource(
@@ -20,6 +21,7 @@ inline fun <ResultType, RequestType> networkBoundResource(
             saveFetchResult(fetch())
             query().map { Success(it) }
         } catch (throwable: Throwable) {
+            log(throwable.stackTraceToString())
             query().map { Error<ResultType>(throwable, null) }
         }
 

@@ -31,6 +31,6 @@ class PasswordRecoveryViewModel @Inject constructor(
     }
 
     fun saveEmail(email: String) {
-        savedStateHandle.set(SavedStateHandleKeys.EMAIL, email)
+        savedStateHandle[SavedStateHandleKeys.EMAIL] = email
     }
 }
