@@ -1,7 +1,7 @@
 package com.t3ddyss.clother.util
 
 import com.google.gson.Gson
-import com.t3ddyss.clother.data.common.remote.models.ResponseDto
+import com.t3ddyss.clother.data.common.common.remote.models.ResponseDto
 import com.t3ddyss.core.domain.models.Error
 import com.t3ddyss.core.domain.models.Resource
 import com.t3ddyss.core.domain.models.Success

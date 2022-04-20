@@ -23,7 +23,7 @@ import com.t3ddyss.core.util.showSnackbarWithAction
 import com.t3ddyss.core.util.showSnackbarWithText
 import com.t3ddyss.feature_location.R
 import com.t3ddyss.feature_location.databinding.FragmentLocationSelectorBinding
-import com.t3ddyss.feature_location.domain.LocationType
+import com.t3ddyss.feature_location.domain.models.LocationType
 import com.t3ddyss.navigation.util.setNavigationResult
 import dagger.hilt.android.AndroidEntryPoint
 

@@ -2,12 +2,12 @@ package com.t3ddyss.clother.data.auth
 
 import com.t3ddyss.clother.data.auth.db.UserDao
 import com.t3ddyss.clother.data.auth.remote.RemoteAuthService
-import com.t3ddyss.clother.data.common.Mappers.toDomain
-import com.t3ddyss.clother.data.common.Mappers.toEntity
-import com.t3ddyss.clother.data.common.Storage
+import com.t3ddyss.clother.data.common.common.Mappers.toDomain
+import com.t3ddyss.clother.data.common.common.Mappers.toEntity
+import com.t3ddyss.clother.data.common.common.Storage
 import com.t3ddyss.clother.domain.auth.AuthRepository
 import com.t3ddyss.clother.domain.auth.models.AuthData
-import com.t3ddyss.clother.domain.common.models.Response
+import com.t3ddyss.clother.domain.common.common.models.Response
 import com.t3ddyss.clother.util.toBearer
 import com.t3ddyss.core.domain.models.User
 import javax.inject.Inject

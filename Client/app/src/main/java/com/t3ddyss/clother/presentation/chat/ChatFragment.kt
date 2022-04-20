@@ -8,7 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.databinding.FragmentChatBinding
-import com.t3ddyss.clother.domain.common.models.LoadResult
+import com.t3ddyss.clother.domain.common.common.models.LoadResult
 import com.t3ddyss.clother.util.text
 import com.t3ddyss.core.presentation.BaseFragment
 import com.t3ddyss.core.util.showSnackbarWithText

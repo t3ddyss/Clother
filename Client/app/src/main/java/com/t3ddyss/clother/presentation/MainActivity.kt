@@ -14,9 +14,9 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.snackbar.Snackbar
 import com.t3ddyss.clother.R
+import com.t3ddyss.clother.data.chat.NotificationControllerImpl
 import com.t3ddyss.clother.databinding.ActivityMainBinding
 import com.t3ddyss.clother.domain.auth.models.AuthState
-import com.t3ddyss.clother.domain.chat.NotificationHelper
 import com.t3ddyss.clother.util.DestinationChangeListener
 import com.t3ddyss.core.presentation.NavMenuController
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity(), NavMenuController {
     override val menuView get() = binding.navView
 
     @Inject
-    lateinit var notificationHelper: NotificationHelper
+    lateinit var notificationHelper: NotificationControllerImpl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
@@ -75,11 +75,11 @@ class MainActivity : AppCompatActivity(), NavMenuController {
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
 
-        destinationChangeListener =
-            DestinationChangeListener(binding, this).also {
-                navController.addOnDestinationChangedListener(it)
-            }
-
+        destinationChangeListener = DestinationChangeListener(binding, this)
+        navController.addOnDestinationChangedListener(destinationChangeListener)
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            viewModel.onDestinationChange(destination)
+        }
         viewModel.unauthorizedEvent.observe(this) {
             if (navController.currentDestination?.id != R.id.signUpFragment) {
                 navController.navigate(R.id.action_global_signUpFragment)

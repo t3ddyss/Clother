@@ -5,8 +5,8 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.google.gson.JsonObject
-import com.t3ddyss.clother.data.common.Mappers.toDomain
-import com.t3ddyss.clother.data.common.Storage
+import com.t3ddyss.clother.data.common.common.Mappers.toDomain
+import com.t3ddyss.clother.data.common.common.Storage
 import com.t3ddyss.clother.data.offers.db.CategoryDao
 import com.t3ddyss.clother.data.offers.db.OfferDao
 import com.t3ddyss.clother.data.offers.remote.RemoteOffersService

@@ -2,7 +2,7 @@ package com.t3ddyss.clother.presentation.chat
 
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.t3ddyss.clother.data.auth.remote.RemoteAuthService
-import com.t3ddyss.clother.data.common.Storage
+import com.t3ddyss.clother.data.common.common.Storage
 import com.t3ddyss.core.util.log
 import com.t3ddyss.core.util.rethrowIfCancellationException
 import dagger.hilt.android.AndroidEntryPoint

@@ -167,12 +167,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     }
 
     private fun subscribeUi() {
-        networkStateViewModel.networkAvailability.observe(viewLifecycleOwner) {
-            if (it) {
-                adapter.retry()
-            }
-        }
-
         viewModel.offers.observe(viewLifecycleOwner) {
             lifecycleScope.launch {
                 adapter.submitData(it)

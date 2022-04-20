@@ -2,6 +2,7 @@ package com.t3ddyss.clother.di.chat
 
 import com.t3ddyss.clother.data.chat.ChatListenerRepositoryImpl
 import com.t3ddyss.clother.data.chat.ChatRepositoryImpl
+import com.t3ddyss.clother.data.chat.NotificationControllerImpl
 import com.t3ddyss.clother.domain.chat.*
 import dagger.Binds
 import dagger.Module
@@ -27,4 +28,8 @@ interface ChatModule {
     @Singleton
     @Binds
     fun NotificationInteractorImpl.bindNotificationInteractor(): NotificationInteractor
+
+    @Singleton
+    @Binds
+    fun NotificationControllerImpl.bindNotificationController(): NotificationController
 }

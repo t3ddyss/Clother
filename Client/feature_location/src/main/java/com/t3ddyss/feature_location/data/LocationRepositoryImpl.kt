@@ -10,9 +10,9 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.OnSuccessListener
-import com.t3ddyss.feature_location.domain.LocationData
 import com.t3ddyss.feature_location.domain.LocationRepository
-import com.t3ddyss.feature_location.domain.LocationType
+import com.t3ddyss.feature_location.domain.models.LocationData
+import com.t3ddyss.feature_location.domain.models.LocationType
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
@@ -41,12 +41,13 @@ class LocationRepositoryImpl @Inject constructor(
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
 
         val initialLocationListener = OnSuccessListener<Location> {
-            val latLng = LocationData(
-                latLng = LatLng(it.latitude, it.longitude),
-                locationType = LocationType.DETECTED_BY_GPS
-            )
-
-            trySend(latLng)
+            if (it != null) {
+                val latLng = LocationData(
+                    latLng = LatLng(it.latitude, it.longitude),
+                    locationType = LocationType.DETECTED_BY_GPS
+                )
+                trySend(latLng)
+            }
         }
         val locationUpdatesObserver = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {

@@ -2,9 +2,10 @@ package com.t3ddyss.clother.presentation.chat
 
 import androidx.lifecycle.*
 import com.t3ddyss.clother.domain.chat.ChatInteractor
+import com.t3ddyss.clother.domain.chat.NotificationInteractor
 import com.t3ddyss.clother.domain.chat.models.Message
-import com.t3ddyss.clother.domain.common.NavigationInteractor
-import com.t3ddyss.clother.domain.common.models.LoadResult
+import com.t3ddyss.clother.domain.common.common.models.LoadResult
+import com.t3ddyss.clother.domain.common.navigation.NavigationInteractor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -16,6 +17,7 @@ import javax.inject.Inject
 class ChatViewModel @Inject constructor(
     private val chatInteractor: ChatInteractor,
     navigationInteractor: NavigationInteractor,
+    notificationInteractor: NotificationInteractor,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val args = ChatFragmentArgs.fromSavedStateHandle(savedStateHandle)
@@ -32,13 +34,14 @@ class ChatViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            notificationInteractor.cancelMessageNotifications(interlocutor.id)
             chatInteractor.observeMessagesForChat(interlocutor)
                 .collectLatest {
                     _messages.postValue(it)
             }
         }
 
-        navigationInteractor.currentInterlocutorId = interlocutor.id
+        navigationInteractor.interlocutorId = interlocutor.id
         requestMessages()
     }
 

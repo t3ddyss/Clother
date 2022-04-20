@@ -3,9 +3,9 @@ package com.t3ddyss.clother.data.chat
 import com.google.gson.Gson
 import com.t3ddyss.clother.data.chat.remote.models.ChatDto
 import com.t3ddyss.clother.data.chat.remote.models.MessageDto
-import com.t3ddyss.clother.data.common.Mappers.toDomain
-import com.t3ddyss.clother.data.common.Storage
-import com.t3ddyss.clother.di.common.NetworkModule
+import com.t3ddyss.clother.data.common.common.Mappers.toDomain
+import com.t3ddyss.clother.data.common.common.Storage
+import com.t3ddyss.clother.di.common.common.NetworkModule
 import com.t3ddyss.clother.domain.chat.ChatListenerRepository
 import com.t3ddyss.clother.domain.chat.models.Event
 import io.socket.client.IO

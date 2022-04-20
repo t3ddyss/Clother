@@ -1,7 +1,7 @@
 package com.t3ddyss.clother.di
 
 import com.google.gson.Gson
-import com.t3ddyss.clother.di.common.NetworkModule
+import com.t3ddyss.clother.di.common.common.NetworkModule
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.components.SingletonComponent

@@ -7,7 +7,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentPasswordRecoveryBinding
-import com.t3ddyss.clother.domain.common.models.Response
+import com.t3ddyss.clother.domain.common.common.models.Response
 import com.t3ddyss.clother.util.text
 import com.t3ddyss.clother.util.toEditable
 import com.t3ddyss.core.domain.models.Error

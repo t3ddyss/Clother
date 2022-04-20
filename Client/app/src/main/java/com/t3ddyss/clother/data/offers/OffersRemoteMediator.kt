@@ -4,9 +4,9 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
-import com.t3ddyss.clother.data.common.Mappers.toEntity
-import com.t3ddyss.clother.data.common.Storage
-import com.t3ddyss.clother.data.common.db.AppDatabase
+import com.t3ddyss.clother.data.common.common.Mappers.toEntity
+import com.t3ddyss.clother.data.common.common.Storage
+import com.t3ddyss.clother.data.common.common.db.AppDatabase
 import com.t3ddyss.clother.data.offers.db.OfferDao
 import com.t3ddyss.clother.data.offers.db.RemoteKeyDao
 import com.t3ddyss.clother.data.offers.db.models.OfferEntity

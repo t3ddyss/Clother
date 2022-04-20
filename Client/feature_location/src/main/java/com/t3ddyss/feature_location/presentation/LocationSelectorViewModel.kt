@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
-import com.t3ddyss.feature_location.domain.LocationData
 import com.t3ddyss.feature_location.domain.LocationInteractor
-import com.t3ddyss.feature_location.domain.LocationType
+import com.t3ddyss.feature_location.domain.models.LocationData
+import com.t3ddyss.feature_location.domain.models.LocationType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest

@@ -6,7 +6,7 @@ import com.t3ddyss.clother.domain.auth.models.AuthState
 import com.t3ddyss.clother.domain.chat.models.Chat
 import com.t3ddyss.clother.domain.chat.models.Event
 import com.t3ddyss.clother.domain.chat.models.Message
-import com.t3ddyss.clother.domain.common.models.LoadResult
+import com.t3ddyss.clother.domain.common.common.models.LoadResult
 import com.t3ddyss.clother.domain.offers.ImagesInteractor
 import com.t3ddyss.clother.util.DispatchersProvider
 import com.t3ddyss.core.domain.models.Resource

@@ -1,5 +1,7 @@
 package com.t3ddyss.feature_location.domain
 
+import com.t3ddyss.feature_location.domain.models.LocationData
+import com.t3ddyss.feature_location.domain.models.LocationType
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton

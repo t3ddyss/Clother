@@ -2,8 +2,8 @@ package com.t3ddyss.clother.di
 
 import android.content.Context
 import androidx.room.Room
-import com.t3ddyss.clother.data.common.db.AppDatabase
-import com.t3ddyss.clother.di.common.DatabaseModule
+import com.t3ddyss.clother.data.common.common.db.AppDatabase
+import com.t3ddyss.clother.di.common.common.DatabaseModule
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.android.qualifiers.ApplicationContext

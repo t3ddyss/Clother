@@ -1,7 +1,7 @@
 package com.t3ddyss.clother.data.auth.remote
 
 import com.t3ddyss.clother.data.auth.remote.models.AuthDataDto
-import com.t3ddyss.clother.data.common.remote.models.ResponseDto
+import com.t3ddyss.clother.data.common.common.remote.models.ResponseDto
 import retrofit2.Response
 import retrofit2.http.*
 

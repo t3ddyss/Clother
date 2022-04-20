@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.google.common.truth.Truth.assertThat
-import com.t3ddyss.clother.data.common.db.AppDatabase
+import com.t3ddyss.clother.data.common.common.db.AppDatabase
 import com.t3ddyss.clother.data.offers.db.CategoryDao
 import com.t3ddyss.clother.data.offers.db.models.CategoryEntity
 import dagger.hilt.android.testing.HiltAndroidRule
