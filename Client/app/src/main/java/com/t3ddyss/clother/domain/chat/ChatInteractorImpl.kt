@@ -4,6 +4,7 @@ import android.net.Uri
 import com.t3ddyss.clother.domain.auth.AuthInteractor
 import com.t3ddyss.clother.domain.auth.models.AuthState
 import com.t3ddyss.clother.domain.chat.models.Chat
+import com.t3ddyss.clother.domain.chat.models.CloudEvent
 import com.t3ddyss.clother.domain.chat.models.Event
 import com.t3ddyss.clother.domain.chat.models.Message
 import com.t3ddyss.clother.domain.common.common.models.LoadResult
@@ -58,6 +59,21 @@ class ChatInteractorImpl @Inject constructor(
             imagesInteractor.compressImage(it)
         }
         chatRepository.sendMessage(body, compressedImage, to)
+    }
+
+    override fun onNewToken(token: String) {
+        scope.launch {
+            chatRepository.sendDeviceToken(token)
+        }
+    }
+
+    override fun onNewCloudEvent(cloudEvent: CloudEvent) {
+        scope.launch(dispatchers.io) {
+            when (cloudEvent) {
+                is CloudEvent.NewMessage -> onNewMessage(cloudEvent.message)
+                is CloudEvent.NewChat -> onNewChat(cloudEvent.chat)
+            }
+        }
     }
 
     private suspend fun onAuthSuccess() {

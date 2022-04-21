@@ -10,6 +10,9 @@
     <orderEntry type="jdk" jdkName="Remote Python 3.9.5 Docker Compose (api at [D:\Projects\Clother\Backend\docker-compose.yml])" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
+  <component name="PackageRequirementsSettings">
+    <option name="versionSpecifier" value="Strong equality (==x.y.z)" />
+  </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Jinja2" />
     <option name="TEMPLATE_FOLDERS">

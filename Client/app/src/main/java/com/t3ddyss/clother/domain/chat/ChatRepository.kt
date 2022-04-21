@@ -16,4 +16,5 @@ interface ChatRepository {
     suspend fun addNewMessage(message: Message)
     suspend fun addNewChat(chat: Chat)
     suspend fun sendDeviceTokenIfNeeded()
+    suspend fun sendDeviceToken(token: String)
 }

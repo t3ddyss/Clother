@@ -150,12 +150,21 @@ class ChatRepositoryImpl @Inject constructor(
         if (!storage.isDeviceTokenRetrieved) {
             try {
                 val token = requestCloudMessagingToken()
-                authService.sendDeviceToken(storage.accessToken, token)
-                storage.isDeviceTokenRetrieved = true
+                sendDeviceToken(token)
             } catch (ex: Exception) {
                 ex.rethrowIfCancellationException()
                 log("ChatRepositoryImpl.sendDeviceTokenIfNeeded() $ex")
             }
+        }
+    }
+
+    override suspend fun sendDeviceToken(token: String) {
+        try {
+            authService.sendDeviceToken(storage.accessToken, token)
+            storage.isDeviceTokenRetrieved = true
+        } catch (ex: Exception) {
+            ex.rethrowIfCancellationException()
+            log("ChatRepositoryImpl.sendDeviceToken() $ex")
         }
     }
 
