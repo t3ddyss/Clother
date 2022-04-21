@@ -18,7 +18,6 @@ def auth_required(f):
 
         try:
             user_id = decode_token(token, allow_expired=allow_expired)['user_id']
-            print('Authenticated ' + str(user_id) + f' for {f.__name__}')
             return f(*args, user_id=user_id, **kwargs)
         except (JWTExtendedException, ExpiredSignatureError) as ex:
             emit('disconnect', {'message': 'Your token has expired'})
