@@ -1,6 +1,6 @@
 from flask import Blueprint
-from ..utils import base_prefix
+from ..constants import BASE_PREFIX
 
-blueprint = Blueprint('chat', __name__, url_prefix=(base_prefix + '/chat'))
+blueprint = Blueprint('chat', __name__, url_prefix=(BASE_PREFIX + '/chat'))
 
 from . import views, events

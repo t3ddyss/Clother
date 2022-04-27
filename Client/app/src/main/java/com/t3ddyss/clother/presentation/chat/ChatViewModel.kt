@@ -7,7 +7,6 @@ import com.t3ddyss.clother.domain.chat.models.Message
 import com.t3ddyss.clother.domain.common.common.models.LoadResult
 import com.t3ddyss.clother.domain.common.navigation.NavigationInteractor
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicBoolean
@@ -54,9 +53,9 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun sendMessage(message: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            chatInteractor.sendMessage(message, null, interlocutor)
+    fun sendMessage(body: String? = null, image: String? = null) {
+        viewModelScope.launch {
+            chatInteractor.sendMessage(body, image, interlocutor)
         }
     }
 }

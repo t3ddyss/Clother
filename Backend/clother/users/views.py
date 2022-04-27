@@ -1,5 +1,5 @@
 from flask import Blueprint
 
-from ..utils import base_prefix
+from ..constants import BASE_PREFIX
 
-blueprint = Blueprint('users', __name__, url_prefix=(base_prefix + '/users'))
+blueprint = Blueprint('users', __name__, url_prefix=(BASE_PREFIX + '/users'))

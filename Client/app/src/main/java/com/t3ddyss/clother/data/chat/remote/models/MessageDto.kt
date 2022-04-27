@@ -19,5 +19,5 @@ data class MessageDto(
     val createdAt: Date,
 
     val body: String?,
-    val image: String?
+    val images: List<String>
 )

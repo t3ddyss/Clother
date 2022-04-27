@@ -9,6 +9,7 @@ import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.ActivityMainBinding
 import com.t3ddyss.clother.presentation.MainActivity
 
+// TODO use individual toolbar in every fragment
 class DestinationChangeListener(
     private val binding: ActivityMainBinding,
     private val activity: MainActivity,
@@ -17,7 +18,8 @@ class DestinationChangeListener(
         R.id.emailActionFragment,
         R.id.offerEditorFragment, R.id.resetPasswordFragment, R.id.signInFragment,
         R.id.signUpFragment, R.id.galleryFragment, R.id.locationFragment,
-        R.id.offerFragment, R.id.locationViewerFragment, R.id.searchFragment, R.id.chatFragment
+        R.id.offerFragment, R.id.locationViewerFragment, R.id.searchFragment, R.id.chatFragment,
+        R.id.imagesDialogFragment, R.id.imageFragment
     )
 
     private val fragmentsWithoutToolbar = setOf(R.id.searchFragment)
@@ -27,7 +29,7 @@ class DestinationChangeListener(
         R.id.offerCategoryFragment,
         R.id.offerEditorFragment, R.id.galleryFragment, R.id.locationFragment,
         R.id.locationViewerFragment, R.id.searchByCategoryFragment, R.id.chatFragment,
-        R.id.homeFragment, R.id.chatsFragment, R.id.profileFragment
+        R.id.homeFragment, R.id.chatsFragment, R.id.profileFragment, R.id.imagesDialogFragment
     )
 
     private val fragmentsWithoutNavIcon = setOf(

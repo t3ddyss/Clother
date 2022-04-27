@@ -80,7 +80,7 @@ object Mappers {
             userId = this.userId,
             createdAt = this.createdAt,
             body = this.body,
-            image = this.image
+            image = this.images.firstOrNull()
         )
     }
 
@@ -94,7 +94,7 @@ object Mappers {
             createdAt = this.createdAt,
             status = MessageStatus.DELIVERED,
             body = this.body,
-            image = this.image,
+            image = this.images.firstOrNull(),
             isIncoming = isIncoming
         )
     }
@@ -120,7 +120,7 @@ object Mappers {
             userId = this.userId,
             createdAt = this.createdAt,
             body = this.body,
-            image = this.image,
+            images = emptyList(),
             chatId = 0,
             userName = ""
         )

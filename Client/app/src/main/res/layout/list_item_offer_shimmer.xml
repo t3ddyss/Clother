@@ -14,14 +14,14 @@
         <View
             android:layout_width="0dp"
             android:layout_height="190dp"
-            android:layout_marginEnd="2.5dp"
+            android:layout_marginEnd="4dp"
             android:layout_weight="1"
             android:background="@color/grey_500" />
 
         <View
             android:layout_width="0dp"
             android:layout_height="190dp"
-            android:layout_marginStart="2.5dp"
+            android:layout_marginStart="4dp"
             android:layout_weight="1"
             android:background="@color/grey_500" />
     </LinearLayout>

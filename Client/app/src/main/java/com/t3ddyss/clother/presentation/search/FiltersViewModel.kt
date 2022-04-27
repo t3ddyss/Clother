@@ -5,14 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
-import com.t3ddyss.feature_location.data.LocationRepositoryImpl
+import com.t3ddyss.feature_location.domain.LocationInteractor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class FiltersViewModel @Inject constructor(
-    private val repository: LocationRepositoryImpl
+    private val locationInteractor: LocationInteractor
 ) : ViewModel() {
     val location = MutableLiveData<LatLng>()
     val maxDistance = MutableLiveData(View.NO_ID)
@@ -20,8 +20,8 @@ class FiltersViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            repository.getLastLocation()?.let { loc ->
-                location.postValue(loc.latLng)
+            locationInteractor.getLastSavedLocationOrNull()?.let {
+                location.postValue(it.latLng)
             }
         }
     }

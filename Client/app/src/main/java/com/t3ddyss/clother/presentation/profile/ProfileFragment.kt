@@ -2,23 +2,23 @@ package com.t3ddyss.clother.presentation.profile
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
-import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentProfileBinding
 import com.t3ddyss.clother.presentation.offers.OfferViewModel
 import com.t3ddyss.clother.presentation.offers.OffersAdapter
 import com.t3ddyss.core.presentation.BaseFragment
+import com.t3ddyss.core.presentation.GridItemDecoration
+import com.t3ddyss.core.util.dp
 import com.t3ddyss.core.util.showSnackbarWithText
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class ProfileFragment
@@ -66,12 +66,7 @@ class ProfileFragment
         val layoutManager = GridLayoutManager(context, 2)
         binding.list.layoutManager = layoutManager
         binding.list.adapter = adapter
-
-        val horizontalDecorator = DividerItemDecoration(activity, DividerItemDecoration.HORIZONTAL)
-        ContextCompat.getDrawable(requireContext(), R.drawable.divider)?.apply {
-            horizontalDecorator.setDrawable(this)
-            binding.list.addItemDecoration(horizontalDecorator)
-        }
+        binding.list.addItemDecoration(GridItemDecoration(2, 8.dp().roundToInt(), false))
 
         subscribeUi()
     }

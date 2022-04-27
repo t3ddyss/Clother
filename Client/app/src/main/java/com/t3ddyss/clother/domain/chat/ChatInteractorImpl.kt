@@ -1,12 +1,8 @@
 package com.t3ddyss.clother.domain.chat
 
-import android.net.Uri
 import com.t3ddyss.clother.domain.auth.AuthInteractor
 import com.t3ddyss.clother.domain.auth.models.AuthState
-import com.t3ddyss.clother.domain.chat.models.Chat
-import com.t3ddyss.clother.domain.chat.models.CloudEvent
-import com.t3ddyss.clother.domain.chat.models.Event
-import com.t3ddyss.clother.domain.chat.models.Message
+import com.t3ddyss.clother.domain.chat.models.*
 import com.t3ddyss.clother.domain.common.common.models.LoadResult
 import com.t3ddyss.clother.domain.offers.ImagesInteractor
 import com.t3ddyss.clother.util.DispatchersProvider
@@ -54,11 +50,13 @@ class ChatInteractorImpl @Inject constructor(
         return chatRepository.fetchNextPortionOfMessagesForChat(interlocutor)
     }
 
-    override suspend fun sendMessage(body: String, image: Uri?, to: User) {
-        val compressedImage = image?.let {
-            imagesInteractor.compressImage(it)
+    override suspend fun sendMessage(body: String?, image: String?, to: User) {
+        if (body.isNullOrBlank() && image == null) return
+
+        val localImage = image?.let {
+            LocalImage(it, imagesInteractor.compressImage(it))
         }
-        chatRepository.sendMessage(body, compressedImage, to)
+        chatRepository.sendMessage(body, localImage, to)
     }
 
     override fun onNewToken(token: String) {

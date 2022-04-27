@@ -8,12 +8,13 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy.exc import IntegrityError
 from werkzeug.utils import secure_filename
 
-from .models import Offer, Category, Location, Image
+from .models import Offer, Category, Location, OfferImage
 from .. import db
+from ..images.utils import is_allowed_image, store_images
 from ..users.models import User
-from ..utils import response_delay, base_prefix, is_allowed_image, default_page_size
+from ..constants import RESPONSE_DELAY, BASE_PREFIX, DEFAULT_OFFERS_PAGE_SIZE
 
-blueprint = Blueprint('offers', __name__, url_prefix=(base_prefix + '/offers'))
+blueprint = Blueprint('offers', __name__, url_prefix=(BASE_PREFIX + '/offers'))
 
 
 @blueprint.get('')
@@ -21,7 +22,7 @@ blueprint = Blueprint('offers', __name__, url_prefix=(base_prefix + '/offers'))
 def get_offers():
     after = request.args.get('after', default=None, type=int)
     before = request.args.get('before', default=None, type=int)
-    limit = request.args.get('limit', default=default_page_size, type=int)
+    limit = request.args.get('limit', default=DEFAULT_OFFERS_PAGE_SIZE, type=int)
     category = request.args.get('category', default=None, type=int)
     query = request.args.get('query', default=None, type=str)
     size = request.args.get('size', default=None, type=str)
@@ -74,8 +75,8 @@ def post_offer():
     files = request.files.getlist('file')
     if not files:
         return {"message": "Missing images in request"}, 400
-    if len(files) > 10:
-        return {"message": "You cannot upload more than 10 images"}, 400
+    if len(files) > 5:
+        return {"message": "You cannot upload more than 5 images"}, 400
     for file in files:
         if not (file and is_allowed_image(file.filename)):
             return {"message": "This file type is not allowed"}, 400
@@ -93,12 +94,9 @@ def post_offer():
         if size:
             offer.size = size
 
-        for file in files:
-            filename = secrets.token_urlsafe(10) + secure_filename(file.filename)
-            image = Image(uri=filename)
-            offer.images.append(image)
-
-            file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], image.uri))
+        uris = store_images(files)
+        for uri in uris:
+            offer.images.append(OfferImage(uri=uri))
 
         db.session.add(offer)
         db.session.commit()
@@ -134,4 +132,4 @@ def get_categories():
 # Simulate response delay while testing app on localhost
 @blueprint.before_request
 def simulate_delay():
-    time.sleep(response_delay)
+    time.sleep(RESPONSE_DELAY)

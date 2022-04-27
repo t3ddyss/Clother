@@ -14,6 +14,8 @@ data class Message(
     val image: String?,
     val isIncoming: Boolean
 ) {
+    val isImage get() = image != null
+
     // "It is not required that if two objects are unequal according to the equals(java.lang.Object)
     // method, then calling the hashCode method on each of the two objects must produce
     // distinct integer results"

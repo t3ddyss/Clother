@@ -2,9 +2,9 @@ import os
 
 from flask import Blueprint, abort, send_file, current_app
 
-from clother.utils import base_prefix
+from clother.constants import BASE_PREFIX
 
-blueprint = Blueprint('images', __name__, url_prefix=(base_prefix + '/images'))
+blueprint = Blueprint('images', __name__, url_prefix=(BASE_PREFIX + '/images'))
 
 
 @blueprint.get('/<filename>')

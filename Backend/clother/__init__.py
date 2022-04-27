@@ -1,7 +1,7 @@
 from flask import Flask
 
 from clother.extensions import db, migrate, jwt, mail, socketio
-from clother import admin, authentication, users, offers, images, chat
+from clother import admin, auth, users, offers, images, chat
 
 
 def create_app(config_file='config.py'):
@@ -25,7 +25,7 @@ def register_extensions(app):
 
 def register_blueprints(app):
     app.register_blueprint(admin.commands.blueprint)
-    app.register_blueprint(authentication.views.blueprint)
+    app.register_blueprint(auth.views.blueprint)
     app.register_blueprint(users.views.blueprint)
     app.register_blueprint(offers.views.blueprint)
     app.register_blueprint(images.views.blueprint)

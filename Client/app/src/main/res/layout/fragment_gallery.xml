@@ -13,5 +13,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/list_item_image_gallery" />
+        tools:listitem="@layout/list_item_image_gallery_selectable" />
 </androidx.constraintlayout.widget.ConstraintLayout>

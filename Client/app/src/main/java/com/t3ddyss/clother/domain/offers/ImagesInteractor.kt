@@ -6,5 +6,5 @@ import java.io.File
 
 interface ImagesInteractor {
     suspend fun observeLocalImages(): Flow<List<Uri>>
-    suspend fun compressImage(uri: Uri): File
+    suspend fun compressImage(uri: String): File
 }

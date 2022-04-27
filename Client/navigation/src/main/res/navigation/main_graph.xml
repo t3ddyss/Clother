@@ -238,6 +238,27 @@
         <argument
             android:name="user"
             app:argType="com.t3ddyss.core.domain.models.User" />
+        <action
+            android:id="@+id/action_chatFragment_to_imagesDialogFragment"
+            app:destination="@id/imagesDialogFragment"/>
+        <action
+            android:id="@+id/action_chatFragment_to_imageFragment"
+            app:destination="@id/imageFragment" />
+    </fragment>
+
+    <dialog
+        android:id="@+id/imagesDialogFragment"
+        android:name="com.t3ddyss.clother.presentation.chat.ImageSelectorDialog"
+        android:label="ImagesDialogFragment" />
+
+    <fragment
+        android:id="@+id/imageFragment"
+        android:name="com.t3ddyss.clother.presentation.chat.ImageFragment"
+        android:label="ImageFragment">
+        <argument
+            android:name="url"
+            android:defaultValue=""
+            app:argType="string" />
     </fragment>
 
     <action

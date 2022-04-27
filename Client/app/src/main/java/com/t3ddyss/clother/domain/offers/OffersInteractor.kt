@@ -1,6 +1,5 @@
 package com.t3ddyss.clother.domain.offers
 
-import android.net.Uri
 import androidx.paging.PagingData
 import com.google.gson.JsonObject
 import com.t3ddyss.clother.domain.offers.models.Offer
@@ -18,7 +17,7 @@ interface OffersInteractor {
         query: Map<String, String> = emptyMap()
     ): Flow<PagingData<Offer>>
 
-    suspend fun postOffer(offer: JsonObject, images: List<Uri>): Resource<Int>
+    suspend fun postOffer(offer: JsonObject, images: List<String>): Resource<Int>
 
     suspend fun deleteOffer(offerId: Int): Resource<*>
 

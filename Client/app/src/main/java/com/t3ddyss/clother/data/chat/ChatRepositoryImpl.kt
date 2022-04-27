@@ -16,6 +16,7 @@ import com.t3ddyss.clother.data.common.common.Storage
 import com.t3ddyss.clother.data.common.common.db.AppDatabase
 import com.t3ddyss.clother.domain.chat.ChatRepository
 import com.t3ddyss.clother.domain.chat.models.Chat
+import com.t3ddyss.clother.domain.chat.models.LocalImage
 import com.t3ddyss.clother.domain.chat.models.Message
 import com.t3ddyss.clother.domain.chat.models.MessageStatus
 import com.t3ddyss.clother.domain.common.common.models.LoadResult
@@ -26,7 +27,10 @@ import com.t3ddyss.core.util.log
 import com.t3ddyss.core.util.rethrowIfCancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import java.io.File
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.util.*
 import javax.inject.Inject
 import kotlin.coroutines.resume
@@ -88,7 +92,7 @@ class ChatRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun sendMessage(body: String, image: File?, interlocutor: User) {
+    override suspend fun sendMessage(body: String?, image: LocalImage?, interlocutor: User) {
         val localChatId = chatDao.getChatByInterlocutorId(interlocutor.id)?.localId
             ?: return sendMessageToNewChat(body, image, interlocutor)
 
@@ -99,19 +103,30 @@ class ChatRepositoryImpl @Inject constructor(
             status = MessageStatus.DELIVERING,
             createdAt = Calendar.getInstance().time,
             body = body,
-            image = null // TODO work with images
+            image = image?.uri
         ).apply {
             this.localId = messageDao.insert(this).toInt()
         }
 
         try {
-            val messageJson = gson.toJson(message.toDto())
-            val messageDto = chatService
-                .sendMessageAndGetIt(
-                    accessToken = storage.accessToken,
-                    interlocutorId = interlocutor.id ,
-                    messageJson = messageJson
+            val messageBody = gson
+                .toJson(message.toDto())
+                .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+            val imageFiles = image?.file?.let {
+                listOf(
+                    MultipartBody.Part.createFormData(
+                        name = "file",
+                        it.name,
+                        it.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    )
                 )
+            }
+            val messageDto = chatService.sendMessageAndGetIt(
+                accessToken = storage.accessToken,
+                interlocutorId = interlocutor.id,
+                body = messageBody,
+                images = imageFiles
+            )
 
             message.status = MessageStatus.DELIVERED
             message.serverId = messageDto.id
@@ -168,7 +183,7 @@ class ChatRepositoryImpl @Inject constructor(
         }
     }
 
-    private suspend fun sendMessageToNewChat(body: String, image: File?, interlocutor: User) {
+    private suspend fun sendMessageToNewChat(body: String?, image: LocalImage?, interlocutor: User) {
         val chat = ChatEntity(
             interlocutor = interlocutor.toEntity()
         )
@@ -184,19 +199,31 @@ class ChatRepositoryImpl @Inject constructor(
                 status = MessageStatus.DELIVERING,
                 createdAt = Calendar.getInstance().time,
                 body = body,
-                image = null // TODO work with images
+                image = image?.uri
             ).apply {
                 this.localId = messageDao.insert(this).toInt()
             }
         }
 
         try {
-            val messageJson = gson.toJson(message.toDto())
+            val messageBody = gson
+                .toJson(message.toDto())
+                .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+            val imageFiles = image?.file?.let {
+                listOf(
+                    MultipartBody.Part.createFormData(
+                        name = "file",
+                        it.name,
+                        it.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    )
+                )
+            }
             val chatDto = chatService
                 .sendMessageAndGetChat(
                     accessToken = storage.accessToken,
                     interlocutorId = interlocutor.id,
-                    messageJson = messageJson
+                    body = messageBody,
+                    images = imageFiles
                 )
             val messageDto = chatDto.lastMessage
 

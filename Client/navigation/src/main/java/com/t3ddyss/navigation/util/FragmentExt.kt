@@ -2,6 +2,7 @@ package com.t3ddyss.navigation.util
 
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.t3ddyss.core.util.observeOnce
 
 fun <T : Any> Fragment.setNavigationResult(key: String, data : T) {
     findNavController()
@@ -18,4 +19,16 @@ inline fun <T : Any> Fragment.observeNavigationResult(key: String, crossinline a
         ?.observe(viewLifecycleOwner) {
             action(it)
     }
+}
+
+inline fun <T : Any> Fragment.observeNavigationResultOnce(key: String, crossinline action: (T) -> (Unit)) {
+    val savedStateHandle = findNavController()
+        .currentBackStackEntry
+        ?.savedStateHandle
+    savedStateHandle
+        ?.getLiveData<T>(key)
+        ?.observeOnce(viewLifecycleOwner) {
+            action(it)
+            savedStateHandle.remove<T>(key)
+        }
 }

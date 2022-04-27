@@ -6,6 +6,7 @@ from sqlalchemy import func, event
 from sqlalchemy.ext.hybrid import hybrid_method
 
 from clother import db
+from clother.images.models import BaseImage
 
 
 class Offer(db.Model):
@@ -19,7 +20,7 @@ class Offer(db.Model):
 
     user = db.relationship('User', uselist=False, backref=db.backref('offers', lazy=True))
     category = db.relationship('Category', uselist=False, backref=db.backref('offers', lazy=True))
-    images = db.relationship('Image', passive_deletes=True)
+    images = db.relationship('OfferImage', passive_deletes=True)
     location = db.relationship('Location', uselist=False, passive_deletes=True)
 
     def to_dict(self, url_root):
@@ -55,19 +56,9 @@ class Category(db.Model):
                 'last_level': self.last_level}
 
 
-class Image(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+class OfferImage(BaseImage):
+    __tablename__ = 'offer_image'
     offer_id = db.Column(db.Integer, db.ForeignKey('offer.id', ondelete='CASCADE'), nullable=False)
-    uri = db.Column(db.String, unique=True, nullable=False)
-
-    def get_uri(self, url_root):
-        if self.is_local():
-            return f'{url_root}api/images/{self.uri}'
-        else:
-            return self.uri
-
-    def is_local(self):
-        return not self.uri.startswith('https://')
 
 
 class Location(db.Model):

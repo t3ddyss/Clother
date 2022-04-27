@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.t3ddyss.clother.databinding.ListItemImageGalleryBinding
+import com.t3ddyss.clother.databinding.ListItemImageGallerySelectableBinding
 import com.t3ddyss.clother.domain.offers.models.MediaImage
 
 class GalleryImagesAdapter(private val selectedLimitExceeded: () -> Unit) :
@@ -15,7 +15,7 @@ class GalleryImagesAdapter(private val selectedLimitExceeded: () -> Unit) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         return ImageViewHolder(
-            ListItemImageGalleryBinding.inflate(
+            ListItemImageGallerySelectableBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -30,7 +30,7 @@ class GalleryImagesAdapter(private val selectedLimitExceeded: () -> Unit) :
     override fun getItemCount(): Int = currentList.size
 
     inner class ImageViewHolder(
-        val binding: ListItemImageGalleryBinding
+        val binding: ListItemImageGallerySelectableBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         init {

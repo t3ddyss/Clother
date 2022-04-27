@@ -41,8 +41,8 @@ class ImagesRepositoryImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
     @Suppress("BlockingMethodInNonBlockingContext")
-    override suspend fun getCompressedImage(uri: Uri): File {
-        val imageFile = Glide.with(application).asFile().load(uri).submit().get()
+    override suspend fun getCompressedImage(uri: String): File {
+        val imageFile = Glide.with(application).asFile().load(Uri.parse(uri)).submit().get()
         return Compressor.compress(
             application.applicationContext,
             imageFile

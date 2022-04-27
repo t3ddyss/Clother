@@ -1,3 +1,4 @@
+import asyncio
 import re
 import time
 from datetime import datetime
@@ -13,11 +14,12 @@ from sqlalchemy.exc import IntegrityError
 
 from clother import db, jwt
 from clother.users.models import User
-from clother.utils import send_email, validate_password, response_delay, base_prefix
+from clother.constants import RESPONSE_DELAY, BASE_PREFIX
 from .forms import ResetPasswordForm
 from .models import TokenBlocklist
+from .utils import validate_password, send_email
 
-blueprint = Blueprint('auth', __name__, url_prefix=(base_prefix + '/auth'))
+blueprint = Blueprint('auth', __name__, url_prefix=(BASE_PREFIX + '/auth'))
 
 
 @jwt.token_in_blocklist_loader
@@ -55,7 +57,7 @@ def set_device_token(token):
 
 
 @blueprint.post('/register')
-def register():
+async def register():
     if not request.is_json:
         return {'message': 'Expected JSON in the request body'}, 400
     data = request.get_json()
@@ -101,7 +103,7 @@ def register():
         button_text='Verify email',
         action_url=confirmation_url)
 
-    send_email(subject='Confirm your email address', recipients=[user.email], html=html)
+    asyncio.create_task(send_email(subject='Confirm your email address', recipients=[user.email], html=html))
 
     return {'message': 'Check your inbox'}
 
@@ -156,7 +158,7 @@ def login():
 
 
 @blueprint.post('/forgot_password')
-def forgot_password():
+async def forgot_password():
     if not request.is_json:
         return {"message": "Missing JSON in request"}, 400
     data = request.get_json()
@@ -186,7 +188,7 @@ def forgot_password():
         button_text='Reset password',
         action_url=confirmation_url)
 
-    send_email(subject='Forgot your password?', recipients=[user.email], html=html)
+    asyncio.create_task(send_email(subject='Forgot your password?', recipients=[user.email], html=html))
 
     return {'message': 'Check your inbox'}
 
@@ -224,4 +226,4 @@ def reset_password(token):
 # Simulate response delay while testing app on localhost
 @blueprint.before_request
 def simulate_delay():
-    time.sleep(response_delay)
+    time.sleep(RESPONSE_DELAY)

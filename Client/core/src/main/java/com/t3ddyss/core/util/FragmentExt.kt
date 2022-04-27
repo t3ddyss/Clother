@@ -1,11 +1,21 @@
 package com.t3ddyss.core.util
 
+import android.util.TypedValue
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.t3ddyss.core.R
 import com.t3ddyss.core.domain.models.Error
 import com.t3ddyss.core.presentation.NavMenuController
+
+val Fragment.dp: Int.() -> Float
+    get() = {
+        TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            this.toFloat(),
+            this@dp.requireContext().resources.displayMetrics
+        )
+    }
 
 val Fragment.errorText: Error<*>.() -> String
     get() = {

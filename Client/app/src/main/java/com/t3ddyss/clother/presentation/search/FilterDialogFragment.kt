@@ -11,7 +11,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import com.t3ddyss.clother.R
-import com.t3ddyss.clother.databinding.FragmentFiltersDialogBinding
+import com.t3ddyss.clother.databinding.DialogSearchFiltersBinding
 import com.t3ddyss.clother.util.toCoordinatesString
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -23,7 +23,7 @@ class FilterDialogFragment : BottomSheetDialogFragment() {
     private val viewModel by hiltNavGraphViewModels<FiltersViewModel>(
         R.id.search_results_graph
     )
-    private var _binding: FragmentFiltersDialogBinding? = null
+    private var _binding: DialogSearchFiltersBinding? = null
     private val binding get() = _binding!!
 
     private var location: LatLng? = null
@@ -32,7 +32,7 @@ class FilterDialogFragment : BottomSheetDialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentFiltersDialogBinding.inflate(inflater, container, false)
+        _binding = DialogSearchFiltersBinding.inflate(inflater, container, false)
         return binding.root
     }
 

@@ -106,6 +106,7 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:$ok_http_version"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.github.chrisbanes:PhotoView:$photo_version"
     implementation "id.zelory:compressor:$compressor_version"
     implementation("io.socket:socket.io-client:$socket_io_version") {
         exclude group: 'org.json', module: 'json'

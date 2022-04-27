@@ -5,7 +5,6 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
@@ -14,7 +13,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.R
@@ -22,9 +20,12 @@ import com.t3ddyss.clother.databinding.FragmentSearchResultsBinding
 import com.t3ddyss.clother.presentation.offers.OfferViewModel
 import com.t3ddyss.clother.presentation.offers.OffersAdapter
 import com.t3ddyss.core.presentation.BaseFragment
+import com.t3ddyss.core.presentation.GridItemDecoration
+import com.t3ddyss.core.util.dp
 import com.t3ddyss.core.util.showSnackbarWithText
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class SearchResultsFragment
@@ -91,17 +92,7 @@ class SearchResultsFragment
         val layoutManager = GridLayoutManager(context, 2)
         binding.list.layoutManager = layoutManager
         binding.list.adapter = adapter
-
-        val horizontalDecorator = DividerItemDecoration(activity, DividerItemDecoration.HORIZONTAL)
-        val verticalDecorator = DividerItemDecoration(activity, DividerItemDecoration.VERTICAL)
-
-        ContextCompat.getDrawable(requireContext(), R.drawable.divider)?.apply {
-            verticalDecorator.setDrawable(this)
-            horizontalDecorator.setDrawable(this)
-
-            binding.list.addItemDecoration(horizontalDecorator)
-            binding.list.addItemDecoration(verticalDecorator)
-        }
+        binding.list.addItemDecoration(GridItemDecoration(2, 8.dp().roundToInt(), false))
 
         // Show progressbar if reached end of current list
         onScrollListener = object : RecyclerView.OnScrollListener() {

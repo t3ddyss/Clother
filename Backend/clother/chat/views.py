@@ -6,12 +6,13 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy import func, distinct
 
 from .fcm import send_data_message
-from .models import Chat, Message
+from .models import Chat, Message, MessageImage
 from .. import db, socketio
+from ..images.utils import is_allowed_image, store_images
 from ..users.models import User
-from ..utils import base_prefix, default_chat_page_size, response_delay
+from ..constants import BASE_PREFIX, DEFAULT_MESSAGES_PAGE_SIZE, RESPONSE_DELAY
 
-blueprint = Blueprint('chats', __name__, url_prefix=(base_prefix + '/chats'))
+blueprint = Blueprint('chats', __name__, url_prefix=(BASE_PREFIX + '/chats'))
 
 
 @blueprint.get('')
@@ -21,7 +22,7 @@ def get_chats():
     chats = user.chats
     chats.sort(key=lambda x: x.messages[-1].created_at, reverse=True)
 
-    return jsonify([chat.to_dict(user_id_to=user.id) for chat in chats])
+    return jsonify([chat.to_dict(url_root=request.url_root, addressee_id=user.id) for chat in chats])
 
 
 @blueprint.get('/<int:interlocutor_id>')
@@ -29,7 +30,7 @@ def get_chats():
 def get_messages(interlocutor_id):
     after = request.args.get('after', default=None, type=int)
     before = request.args.get('before', default=None, type=int)
-    limit = request.args.get('limit', default=default_chat_page_size, type=int)
+    limit = request.args.get('limit', default=DEFAULT_MESSAGES_PAGE_SIZE, type=int)
 
     user_id = get_jwt_identity()
     chat = Chat.query.join(Chat.users). \
@@ -52,16 +53,16 @@ def get_messages(interlocutor_id):
         messages = chat.messages.order_by(Message.id.asc()).filter(Message.id > before).limit(limit).all()
         messages.reverse()
 
-    return jsonify([message.to_dict() for message in messages])
+    return jsonify([message.to_dict(url_root=request.url_root) for message in messages])
 
 
 @blueprint.post('/message')
 @jwt_required()
 async def send_message():
-    await asyncio.sleep(response_delay)
+    await asyncio.sleep(RESPONSE_DELAY)
 
-    message = json.loads(request.json)
-    sender = User.query.get(message['user_id'])
+    data = json.loads(request.form['request'])
+    sender = User.query.get(data['user_id'])
     interlocutor = User.query.get(request.args.get('to', default=None, type=int))
 
     chat = Chat.query.join(Chat.users). \
@@ -76,12 +77,23 @@ async def send_message():
         db.session.add(chat)
         db.session.commit()
 
-    new_message = Message(user_id=sender.id, chat_id=chat.id, body=message['body'])
-    chat.messages.append(new_message)
+    message = Message(user_id=sender.id, chat_id=chat.id, body=data.get('body'))
+
+    files = request.files.getlist('file')
+    if len(files) > 5:
+        return {"message": "You cannot upload more than 5 images"}, 400
+    for file in files:
+        if not (file and is_allowed_image(file.filename)):
+            return {"message": "This file type is not allowed"}, 400
+    uris = store_images(files)
+    for uri in uris:
+        message.images.append(MessageImage(uri=uri))
+
+    chat.messages.append(message)
     db.session.commit()
 
-    chat_dict = chat.to_dict(user_id_to=interlocutor.id)
-    message_dict = new_message.to_dict()
+    chat_dict = chat.to_dict(url_root=request.url_root, addressee_id=interlocutor.id)
+    message_dict = message.to_dict(url_root=request.url_root)
 
     if not is_existing_chat:
         socketio.emit('chat', json.dumps(chat_dict), to=interlocutor.id)

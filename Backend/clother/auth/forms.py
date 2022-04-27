@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import PasswordField, BooleanField, SubmitField
 from wtforms.validators import Regexp
-from clother.utils import get_password_regex
+from clother.auth.utils import get_password_regex
 
 
 class ResetPasswordForm(FlaskForm):

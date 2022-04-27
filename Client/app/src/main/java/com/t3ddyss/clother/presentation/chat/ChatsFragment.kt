@@ -6,7 +6,9 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.t3ddyss.clother.databinding.FragmentChatsBinding
+import com.t3ddyss.core.domain.models.Error
 import com.t3ddyss.core.domain.models.Loading
+import com.t3ddyss.core.domain.models.Success
 import com.t3ddyss.core.presentation.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -14,12 +16,10 @@ import dagger.hilt.android.AndroidEntryPoint
 class ChatsFragment : BaseFragment<FragmentChatsBinding>(FragmentChatsBinding::inflate) {
     private val viewModel by viewModels<ChatsViewModel>()
 
-    private val adapter by lazy {
-        ChatsAdapter {
-            val action = ChatsFragmentDirections
-                .actionChatsFragmentToChatFragment(it.interlocutor)
-            findNavController().navigate(action)
-        }
+    private val adapter = ChatsAdapter {
+        val action = ChatsFragmentDirections
+            .actionChatsFragmentToChatFragment(it.interlocutor)
+        findNavController().navigate(action)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -29,10 +29,19 @@ class ChatsFragment : BaseFragment<FragmentChatsBinding>(FragmentChatsBinding::i
 
     private fun subscribeUi() {
         viewModel.chats.observe(viewLifecycleOwner) {
-            adapter.submitList(it.content)
-
-            binding.emptyState.isVisible = it.content?.isEmpty() == true
-            binding.layoutLoading.isVisible = it is Loading && it.content.isNullOrEmpty()
+            when (it) {
+                is Loading -> {
+                    binding.layoutLoading.isVisible = it.content.isNullOrEmpty()
+                    adapter.submitList(it.content)
+                }
+                is Success -> {
+                    binding.emptyState.isVisible = it.content?.isEmpty() == true
+                    adapter.submitList(it.content)
+                }
+                is Error -> {
+                    binding.layoutLoading.isVisible = false
+                }
+            }
         }
     }
 }

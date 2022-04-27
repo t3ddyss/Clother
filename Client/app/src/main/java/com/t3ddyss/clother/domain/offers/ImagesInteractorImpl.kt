@@ -4,6 +4,7 @@ import android.net.Uri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import java.io.File
 import javax.inject.Inject
 
 class ImagesInteractorImpl @Inject constructor(
@@ -13,7 +14,7 @@ class ImagesInteractorImpl @Inject constructor(
         return imagesRepository.observeImages()
     }
 
-    override suspend fun compressImage(uri: Uri) = withContext(Dispatchers.IO) {
+    override suspend fun compressImage(uri: String): File = withContext(Dispatchers.IO) {
         imagesRepository.getCompressedImage(uri)
     }
 }

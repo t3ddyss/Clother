@@ -27,7 +27,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textView_body"
+            android:id="@+id/body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_padding_8dp"
@@ -42,7 +42,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
-        android:id="@+id/textView_time"
+        android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/margin_padding_8dp"
@@ -57,7 +57,7 @@
         tools:text="9:47 pm" />
 
     <ImageView
-        android:id="@+id/imageView_status"
+        android:id="@+id/status"
         android:layout_width="14dp"
         android:layout_height="14dp"
         android:layout_marginEnd="@dimen/margin_padding_8dp"

@@ -9,7 +9,7 @@ from sqlalchemy.exc import IntegrityError
 from clother import db
 from clother.admin.utils import get_random_user, get_random_size, generate_random_time, generate_random_location
 from clother.chat.models import Chat, Message
-from clother.offers.models import Offer, Category, Image, Location
+from clother.offers.models import Offer, Category, OfferImage, Location
 from clother.users.models import User
 
 blueprint = Blueprint('admin', __name__)
@@ -105,7 +105,7 @@ def mock_offers():
                       created_at=generate_random_time(),
                       size=get_random_size())
         for uri in reversed(item['images']):
-            offer.images.append(Image(uri="https:" + uri))
+            offer.images.append(OfferImage(uri="https:" + uri))
 
         lat, lng = generate_random_location()
         offer.location = Location(latitude=lat, longitude=lng)

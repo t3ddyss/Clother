@@ -1,6 +1,5 @@
 package com.t3ddyss.clother.domain.offers
 
-import android.net.Uri
 import androidx.paging.PagingData
 import com.google.gson.JsonObject
 import com.t3ddyss.clother.domain.offers.models.Offer
@@ -30,7 +29,7 @@ class OffersInteractorImpl @Inject constructor(
 
     override suspend fun postOffer(
         offer: JsonObject,
-        images: List<Uri>
+        images: List<String>
     ): Resource<Int> {
         val compressedImages = coroutineScope {
             images

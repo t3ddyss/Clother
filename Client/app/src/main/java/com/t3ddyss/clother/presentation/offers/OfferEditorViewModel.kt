@@ -34,7 +34,8 @@ class OfferEditorViewModel
     fun postOffer(offer: JsonObject, images: List<Uri>) {
         _newOfferResponse.value = Loading(null)
         viewModelScope.launch {
-            _newOfferResponse.postValue(offersInteractor.postOffer(offer, images))
+            val uris = images.map { it.toString() }
+            _newOfferResponse.postValue(offersInteractor.postOffer(offer, uris))
         }
     }
 }

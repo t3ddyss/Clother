@@ -15,8 +15,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentGalleryBinding
 import com.t3ddyss.core.presentation.BaseFragment
+import com.t3ddyss.core.presentation.GridItemDecoration
+import com.t3ddyss.core.util.dp
 import com.t3ddyss.core.util.showSnackbarWithText
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class GalleryFragment : BaseFragment<FragmentGalleryBinding>(FragmentGalleryBinding::inflate) {
@@ -38,6 +41,7 @@ class GalleryFragment : BaseFragment<FragmentGalleryBinding>(FragmentGalleryBind
         binding.list.layoutManager = layoutManager
         binding.list.adapter = adapter
         binding.list.setItemViewCacheSize(100)
+        binding.list.addItemDecoration(GridItemDecoration(3, 8.dp().roundToInt(), false))
 
         adapterDataObserver = object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
@@ -47,17 +51,6 @@ class GalleryFragment : BaseFragment<FragmentGalleryBinding>(FragmentGalleryBind
             }
         }
         adapter.registerAdapterDataObserver(adapterDataObserver)
-
-        val horizontalDecorator = DividerItemDecoration(activity, DividerItemDecoration.HORIZONTAL)
-        val verticalDecorator = DividerItemDecoration(activity, DividerItemDecoration.VERTICAL)
-
-        ContextCompat.getDrawable(requireContext(), R.drawable.divider)?.apply {
-            verticalDecorator.setDrawable(this)
-            horizontalDecorator.setDrawable(this)
-
-            binding.list.addItemDecoration(horizontalDecorator)
-            binding.list.addItemDecoration(verticalDecorator)
-        }
 
         subscribeUi()
     }

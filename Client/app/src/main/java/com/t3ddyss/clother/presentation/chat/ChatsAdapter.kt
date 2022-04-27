@@ -33,6 +33,7 @@ class ChatsAdapter(
         private val binding: ListItemChatBinding,
         private val clickListener: (Chat) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
+
         init {
             binding.root.setOnClickListener {
                 clickListener.invoke(getItem(absoluteAdapterPosition))
@@ -41,16 +42,21 @@ class ChatsAdapter(
 
         @SuppressLint("SetTextI18n")
         fun bind(chat: Chat) {
-            with(binding) {
-                textViewName.text = chat.interlocutor.name
-                textViewTime.text = chat.lastMessage.createdAt.formatDate()
+            val context = binding.root.context
+            binding.textViewName.text = chat.interlocutor.name
+            binding.textViewTime.text = chat.lastMessage.createdAt.formatDate()
 
-                if (chat.lastMessage.isIncoming) {
-                    textViewMessage.text = chat.lastMessage.body
-                } else {
-                    textViewMessage.text = "${binding.root.context.getString(R.string.you)}: " +
-                            "${chat.lastMessage.body}"
-                }
+            val description = if (chat.lastMessage.isImage) {
+                context.getString(R.string.image_icon)
+            } else {
+                chat.lastMessage.body
+            } ?: ""
+
+            if (chat.lastMessage.isIncoming) {
+                binding.textViewMessage.text = description
+            } else {
+                binding.textViewMessage.text = "${binding.root.context.getString(R.string.you)}: " +
+                        description
             }
         }
     }

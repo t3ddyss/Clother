@@ -62,7 +62,7 @@ class NotificationControllerImpl @Inject constructor(
         )
             .setSmallIcon(R.drawable.ic_chat)
             .setContentTitle(message.userName)
-            .setContentText(message.body ?: context.getString(R.string.image))
+            .setContentText(message.body ?: context.getString(R.string.image_icon))
             .setGroup(userId.toString())
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(pendingIntent)
