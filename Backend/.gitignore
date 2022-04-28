@@ -180,7 +180,6 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
 .venv
 env/
 venv/
@@ -226,6 +225,7 @@ pip-selfcheck.json
 
 # Coverage reports
 *,cover
-/clother/static/images/
 
-/migrations
+# Other
+media/
+migrations/

@@ -1,15 +1,18 @@
 version: '3'
 
 services:
-  api:
-    build: ./
+  web:
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile
     depends_on:
       - db
-    image: clother_api:latest
-    container_name: clother_api
+    container_name: clother_web
     command: gunicorn --bind 0.0.0.0:5000 run:app --workers=1 --worker-class=eventlet --access-logfile '-'
     ports:
       - "5000:5000"
+    volumes:
+      - media_data:/usr/src/app/media
     env_file: ./web.dev.env
   db:
     image: postgres:latest
@@ -17,8 +20,9 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - clother_postgres_data:/var/lib/postgresql/data/
+      - postgres_data:/var/lib/postgresql/data/
     env_file: ./db.dev.env
 
 volumes:
-  clother_postgres_data:
+  media_data:
+  postgres_data:
