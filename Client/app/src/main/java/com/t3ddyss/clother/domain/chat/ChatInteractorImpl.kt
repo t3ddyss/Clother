@@ -6,6 +6,7 @@ import com.t3ddyss.clother.domain.chat.models.*
 import com.t3ddyss.clother.domain.common.common.models.LoadResult
 import com.t3ddyss.clother.domain.offers.ImagesInteractor
 import com.t3ddyss.clother.util.DispatchersProvider
+import com.t3ddyss.clother.util.handleHttpException
 import com.t3ddyss.core.domain.models.Resource
 import com.t3ddyss.core.domain.models.User
 import com.t3ddyss.core.util.log
@@ -53,10 +54,24 @@ class ChatInteractorImpl @Inject constructor(
     override suspend fun sendMessage(body: String?, image: String?, to: User) {
         if (body.isNullOrBlank() && image == null) return
 
+        log("ChatInteractorImpl.sendMessage(body=$body,image=$image,to=${to.id})")
         val localImage = image?.let {
             LocalImage(it, imagesInteractor.compressImage(it))
         }
         chatRepository.sendMessage(body, localImage, to)
+    }
+
+    override suspend fun retryToSendMessage(message: Message) {
+        val localImage = message.image?.let {
+            LocalImage(it, imagesInteractor.compressImage(it))
+        }
+        chatRepository.retryToSendMessage(message, localImage)
+    }
+
+    override suspend fun deleteMessage(message: Message): Resource<*> {
+        return handleHttpException {
+            chatRepository.deleteMessage(message)
+        }
     }
 
     override fun onNewToken(token: String) {

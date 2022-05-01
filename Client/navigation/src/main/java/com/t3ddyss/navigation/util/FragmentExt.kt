@@ -11,7 +11,10 @@ fun <T : Any> Fragment.setNavigationResult(key: String, data : T) {
         ?.set(key, data)
 }
 
-inline fun <T : Any> Fragment.observeNavigationResult(key: String, crossinline action: (T) -> (Unit)) {
+inline fun <T : Any> Fragment.observeNavigationResult(
+    key: String,
+    crossinline action: (T) -> (Unit)
+) {
     findNavController()
         .currentBackStackEntry
         ?.savedStateHandle
@@ -21,14 +24,17 @@ inline fun <T : Any> Fragment.observeNavigationResult(key: String, crossinline a
     }
 }
 
-inline fun <T : Any> Fragment.observeNavigationResultOnce(key: String, crossinline action: (T) -> (Unit)) {
-    val savedStateHandle = findNavController()
+inline fun <T : Any> Fragment.observeNavigationResultOnce(
+    key: String,
+    crossinline action: (T) -> (Unit)
+) {
+    findNavController()
         .currentBackStackEntry
         ?.savedStateHandle
-    savedStateHandle
-        ?.getLiveData<T>(key)
-        ?.observeOnce(viewLifecycleOwner) {
-            action(it)
-            savedStateHandle.remove<T>(key)
+        ?.apply {
+            remove<T>(key)
+            getLiveData<T>(key).observeOnce(viewLifecycleOwner) {
+                action.invoke(it)
+            }
         }
 }

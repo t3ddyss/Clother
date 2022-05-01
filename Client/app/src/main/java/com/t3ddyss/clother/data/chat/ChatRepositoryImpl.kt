@@ -107,39 +107,33 @@ class ChatRepositoryImpl @Inject constructor(
         ).apply {
             this.localId = messageDao.insert(this).toInt()
         }
+        sendMessageImpl(message, image, interlocutor)
+    }
 
-        try {
-            val messageBody = gson
-                .toJson(message.toDto())
-                .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
-            val imageFiles = image?.file?.let {
-                listOf(
-                    MultipartBody.Part.createFormData(
-                        name = "file",
-                        it.name,
-                        it.asRequestBody("multipart/form-data".toMediaTypeOrNull())
-                    )
-                )
+    override suspend fun retryToSendMessage(message: Message, image: LocalImage?) {
+        val messageEntity = messageDao.getMessageByLocalId(message.localId)
+        val chat = chatDao.getChatByLocalId(messageEntity.localChatId)
+        val interlocutor = chat?.interlocutor?.toDomain()
+
+        if (interlocutor != null) {
+            if (chat.serverId != null) {
+                sendMessageImpl(messageEntity, image, interlocutor)
+            } else {
+                sendMessageToNewChatImpl(chat, messageEntity, image, interlocutor)
             }
-            val messageDto = chatService.sendMessageAndGetIt(
-                accessToken = storage.accessToken,
-                interlocutorId = interlocutor.id,
-                body = messageBody,
-                images = imageFiles
-            )
-
-            message.status = MessageStatus.DELIVERED
-            message.serverId = messageDto.id
-            message.serverChatId = messageDto.chatId
-            message.createdAt = messageDto.createdAt
-        } catch (ex: Exception) {
-            ex.rethrowIfCancellationException()
-            log("ChatRepositoryImpl.sendMessage() $ex")
-
-            message.status = MessageStatus.FAILED
-        } finally {
-            updateMessage(message)
         }
+    }
+
+    override suspend fun deleteMessage(message: Message) {
+        if (message.serverId != null) {
+            try {
+                chatService.deleteMessage(storage.accessToken, message.serverId)
+            } catch (ex: Throwable) {
+                ex.rethrowIfCancellationException()
+                log(ex.stackTraceToString())
+            }
+        }
+        messageDao.deleteByLocalId(message.localId)
     }
 
     override suspend fun addNewMessage(message: Message) {
@@ -183,6 +177,50 @@ class ChatRepositoryImpl @Inject constructor(
         }
     }
 
+    private suspend fun sendMessageImpl(
+        message: MessageEntity,
+        image: LocalImage?,
+        interlocutor: User
+    ) {
+        if (message.status != MessageStatus.DELIVERING) {
+            message.status = MessageStatus.DELIVERING
+            updateMessage(message)
+        }
+
+        try {
+            val messageBody = gson
+                .toJson(message.toDto())
+                .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+            val imageFiles = image?.file?.let {
+                listOf(
+                    MultipartBody.Part.createFormData(
+                        name = "file",
+                        it.name,
+                        it.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    )
+                )
+            }
+            val messageDto = chatService.sendMessageAndGetIt(
+                accessToken = storage.accessToken,
+                interlocutorId = interlocutor.id,
+                body = messageBody,
+                images = imageFiles
+            )
+
+            message.status = MessageStatus.DELIVERED
+            message.serverId = messageDto.id
+            message.serverChatId = messageDto.chatId
+            message.createdAt = messageDto.createdAt
+        } catch (ex: Exception) {
+            ex.rethrowIfCancellationException()
+            log("ChatRepositoryImpl.sendMessage() $ex")
+
+            message.status = MessageStatus.FAILED
+        } finally {
+            updateMessage(message)
+        }
+    }
+
     private suspend fun sendMessageToNewChat(body: String?, image: LocalImage?, interlocutor: User) {
         val chat = ChatEntity(
             interlocutor = interlocutor.toEntity()
@@ -203,6 +241,20 @@ class ChatRepositoryImpl @Inject constructor(
             ).apply {
                 this.localId = messageDao.insert(this).toInt()
             }
+        }
+
+        sendMessageToNewChatImpl(chat, message, image, interlocutor)
+    }
+
+    private suspend fun sendMessageToNewChatImpl(
+        chat: ChatEntity,
+        message: MessageEntity,
+        image: LocalImage?,
+        interlocutor: User
+    ) {
+        if (message.status != MessageStatus.DELIVERING) {
+            message.status = MessageStatus.DELIVERING
+            updateMessage(message)
         }
 
         try {

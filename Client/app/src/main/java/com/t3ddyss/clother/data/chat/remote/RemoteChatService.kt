@@ -2,6 +2,7 @@ package com.t3ddyss.clother.data.chat.remote
 
 import com.t3ddyss.clother.data.chat.remote.models.ChatDto
 import com.t3ddyss.clother.data.chat.remote.models.MessageDto
+import com.t3ddyss.clother.data.common.common.remote.models.ResponseDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.*
@@ -35,4 +36,10 @@ interface RemoteChatService {
         @Part("request") body: RequestBody,
         @Part images: List<MultipartBody.Part>?
     ): ChatDto
+
+    @DELETE("api/chats/message/{message_id}")
+    suspend fun deleteMessage(
+        @Header("Authorization") accessToken: String?,
+        @Path("message_id") messageId: Int
+    ): ResponseDto
 }

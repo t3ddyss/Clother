@@ -19,7 +19,8 @@ import com.t3ddyss.clother.domain.chat.models.MessageStatus
 import com.t3ddyss.clother.util.formatTime
 
 class MessagesAdapter(
-    private val clickListener: (Message) -> Unit
+    private val messageClickListener: (Message) -> Unit,
+    private val imageClickListener: (Message) -> Unit
 ): ListAdapter<Message, RecyclerView.ViewHolder>(MessageDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -102,6 +103,12 @@ class MessagesAdapter(
         private val binding: ListItemMessageOutBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
+        init {
+            binding.root.setOnClickListener {
+                messageClickListener.invoke(getItem(absoluteAdapterPosition))
+            }
+        }
+
         fun bind(message: Message) {
             binding.body.requestLayout()
             binding.time.requestLayout()
@@ -118,7 +125,7 @@ class MessagesAdapter(
 
         init {
             binding.root.setOnClickListener {
-                clickListener.invoke(getItem(absoluteAdapterPosition))
+                imageClickListener.invoke(getItem(absoluteAdapterPosition))
             }
         }
 
@@ -137,7 +144,10 @@ class MessagesAdapter(
 
         init {
             binding.root.setOnClickListener {
-                clickListener.invoke(getItem(absoluteAdapterPosition))
+                messageClickListener.invoke(getItem(absoluteAdapterPosition))
+            }
+            binding.image.setOnClickListener {
+                imageClickListener.invoke(getItem(absoluteAdapterPosition))
             }
         }
 

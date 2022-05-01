@@ -1,8 +1,9 @@
 import os
+import time
 
 from flask import Blueprint, abort, send_file, current_app
 
-from clother.constants import BASE_PREFIX
+from clother.constants import BASE_PREFIX, RESPONSE_DELAY
 
 blueprint = Blueprint('images', __name__, url_prefix=(BASE_PREFIX + '/images'))
 
@@ -15,3 +16,9 @@ def get_image(filename):
                          mimetype=f'image/{extension}')
     except FileNotFoundError:
         abort(404)
+
+
+# Simulate response delay while testing app on localhost
+@blueprint.before_request
+def simulate_delay():
+    time.sleep(RESPONSE_DELAY)

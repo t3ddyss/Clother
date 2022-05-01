@@ -7,6 +7,7 @@ import com.t3ddyss.clother.domain.chat.models.Message
 import com.t3ddyss.clother.domain.common.common.models.LoadResult
 import com.t3ddyss.clother.domain.common.navigation.NavigationInteractor
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicBoolean
@@ -28,8 +29,11 @@ class ChatViewModel @Inject constructor(
     private val _loadStatus = MutableLiveData<LoadResult>()
     val loadStatus: LiveData<LoadResult> = _loadStatus
 
-    private val isLoading = AtomicBoolean(false)
-    var isEndOfPaginationReached = false
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+
+    private val isLoadingMessages = AtomicBoolean(false)
+    private var isEndOfPaginationReached = false
 
     init {
         viewModelScope.launch {
@@ -41,15 +45,21 @@ class ChatViewModel @Inject constructor(
         }
 
         navigationInteractor.interlocutorId = interlocutor.id
-        requestMessages()
+        fetchNextPortionOfMessages()
     }
 
-    fun requestMessages() {
-        if (isEndOfPaginationReached || isLoading.getAndSet(true)) return
-
+    private fun fetchNextPortionOfMessages() {
         viewModelScope.launch {
-            _loadStatus.postValue(chatInteractor.fetchNextPortionOfMessagesForChat(interlocutor))
-            isLoading.set(false)
+            val result = chatInteractor.fetchNextPortionOfMessagesForChat(interlocutor)
+            isLoadingMessages.set(false)
+            isEndOfPaginationReached = (result as? LoadResult.Success)?.isEndOfPaginationReached ?: false
+            _loadStatus.postValue(result)
+        }
+    }
+
+    fun onListEndReached() {
+        if (!isEndOfPaginationReached && !isLoadingMessages.getAndSet(true)) {
+            fetchNextPortionOfMessages()
         }
     }
 
@@ -57,5 +67,27 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch {
             chatInteractor.sendMessage(body, image, interlocutor)
         }
+    }
+
+    fun retryToSendMessage(message: Message) {
+        viewModelScope.launch {
+            chatInteractor.retryToSendMessage(message)
+        }
+    }
+
+    fun deleteMessage(message: Message) {
+        val loadingStateJob = viewModelScope.launch {
+            delay(DELETION_LOADING_DELAY_IN_MILLIS)
+            _isLoading.postValue(true)
+        }
+        viewModelScope.launch {
+            chatInteractor.deleteMessage(message)
+            loadingStateJob.cancel()
+            _isLoading.postValue(false)
+        }
+    }
+
+    private companion object {
+        const val DELETION_LOADING_DELAY_IN_MILLIS = 250L
     }
 }

@@ -85,8 +85,8 @@ subprojects {
         if (project.hasProperty("android")) {
             android {
                 kotlinOptions.freeCompilerArgs += [
-                        "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-                        "-Xopt-in=androidx.paging.ExperimentalPagingApi",
+                        "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+                        "-opt-in=androidx.paging.ExperimentalPagingApi",
                         "-Xjvm-default=all",
                         "-Xcontext-receivers"
                 ]

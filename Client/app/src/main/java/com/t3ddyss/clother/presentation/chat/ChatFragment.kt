@@ -11,11 +11,13 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentChatBinding
+import com.t3ddyss.clother.domain.chat.models.Message
+import com.t3ddyss.clother.domain.chat.models.MessageStatus
 import com.t3ddyss.clother.domain.common.common.models.LoadResult
 import com.t3ddyss.clother.util.text
 import com.t3ddyss.core.presentation.BaseFragment
+import com.t3ddyss.core.util.Utils.asExpression
 import com.t3ddyss.core.util.showSnackbarWithText
 import com.t3ddyss.navigation.util.observeNavigationResultOnce
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,14 +26,9 @@ import dagger.hilt.android.AndroidEntryPoint
 class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::inflate) {
     private val viewModel by viewModels<ChatViewModel>()
 
-    private val adapter = MessagesAdapter {
-        findNavController()
-            .navigate(
-                ChatFragmentDirections.actionChatFragmentToImageFragment(it.image ?: "")
-            )
-    }
-    private lateinit var adapterDataObserver: RecyclerView.AdapterDataObserver
-    private lateinit var onScrollListener: RecyclerView.OnScrollListener
+    private val adapter = MessagesAdapter(this::onMessageClick, this::onImageClick)
+    private var adapterDataObserver: RecyclerView.AdapterDataObserver? = null
+    private var onScrollListener: RecyclerView.OnScrollListener? = null
 
     private var requestGalleryPermissionLauncher: ActivityResultLauncher<String>? = null
 
@@ -46,7 +43,9 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::infl
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         requestGalleryPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
-                findNavController().navigate(R.id.action_chatFragment_to_imagesDialogFragment)
+                findNavController().navigate(
+                    ChatFragmentDirections.actionChatFragmentToImageSelectorDialog()
+                )
             }
         }
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, true)
@@ -56,8 +55,7 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::infl
                     binding.listMessages.scrollToPosition(positionStart)
                 }
             }
-        }
-        adapter.registerAdapterDataObserver(adapterDataObserver)
+        }.also { adapter.registerAdapterDataObserver(it) }
 
         binding.listMessages.layoutManager = layoutManager
         binding.listMessages.adapter = adapter
@@ -73,18 +71,20 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::infl
                         >= totalItemCount
                     ) {
                         // TODO add loading indicator (header) like on home fragment
-                        viewModel.requestMessages()
+                        viewModel.onListEndReached()
                     }
                 }
             }
+        }.also {
+            binding.listMessages.addOnScrollListener(it)
         }
-        binding.listMessages.addOnScrollListener(onScrollListener)
 
         binding.buttonSend.setOnClickListener {
             viewModel.sendMessage(body = binding.editTextMessage.text())
             binding.editTextMessage.text?.clear()
         }
         binding.buttonAttach.setOnClickListener {
+            // FIXME if configuration change occurs while ImageSelectorDialog is on top, result won't be saved
             observeNavigationResultOnce<String>(ImageSelectorDialog.SELECTED_IMAGE) {
                 viewModel.sendMessage(image = it)
             }
@@ -95,8 +95,10 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::infl
     }
 
     override fun onDestroyView() {
-        adapter.unregisterAdapterDataObserver(adapterDataObserver)
-        binding.listMessages.removeOnScrollListener(onScrollListener)
+        adapterDataObserver?.let { adapter.unregisterAdapterDataObserver(it) }
+        onScrollListener?.let { binding.listMessages.removeOnScrollListener(it) }
+        adapterDataObserver = null
+        onScrollListener = null
         super.onDestroyView()
     }
 
@@ -108,15 +110,35 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::infl
 
         viewModel.loadStatus.observe(viewLifecycleOwner) {
             when (it) {
-                is LoadResult.Success -> {
-                    viewModel.isEndOfPaginationReached = it.isEndOfPaginationReached
-                }
-
-                is LoadResult.Error -> {
-                    showSnackbarWithText(it.exception)
-                }
+                is LoadResult.Success -> Unit
+                is LoadResult.Error -> showSnackbarWithText(it.exception)
             }
         }
+
+        viewModel.isLoading.observe(viewLifecycleOwner) {
+            binding.layoutLoading.isVisible = it
+        }
+    }
+
+    private fun onMessageClick(message: Message) {
+        observeNavigationResultOnce<String>(MessageMenuDialog.SELECTED_ACTION) {
+            val action = MessageMenuDialog.Action.valueOf(it)
+            when (action) {
+                MessageMenuDialog.Action.RETRY -> viewModel.retryToSendMessage(message)
+                MessageMenuDialog.Action.DELETE -> viewModel.deleteMessage(message)
+            }.asExpression
+        }
+        findNavController().navigate(
+            ChatFragmentDirections.actionChatFragmentToMessageMenuDialog(
+                isRetryVisible = message.status == MessageStatus.FAILED
+            )
+        )
+    }
+
+    private fun onImageClick(message: Message) {
+        findNavController().navigate(
+            ChatFragmentDirections.actionChatFragmentToImageFragment(message.image ?: "")
+        )
     }
 
     companion object {

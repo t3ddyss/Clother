@@ -1,7 +1,8 @@
 import asyncio
 import json
+import time
 
-from flask import Blueprint, jsonify, request, current_app
+from flask import Blueprint, jsonify, request, current_app, abort
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy import func, distinct
 
@@ -59,10 +60,8 @@ def get_messages(interlocutor_id):
 @blueprint.post('/message')
 @jwt_required()
 async def send_message():
-    await asyncio.sleep(RESPONSE_DELAY)
-
     data = json.loads(request.form['request'])
-    sender = User.query.get(data['user_id'])
+    sender = User.query.get(get_jwt_identity())
     interlocutor = User.query.get(request.args.get('to', default=None, type=int))
 
     chat = Chat.query.join(Chat.users). \
@@ -108,7 +107,26 @@ async def send_message():
         return jsonify(message_dict)
 
 
+@blueprint.delete('/message/<int:message_id>')
+@jwt_required()
+def delete_message(message_id):
+    user = User.query.get(get_jwt_identity())
+    message = Message.query.get(message_id)
+
+    if message.user_id == user.id:
+        db.session.delete(message)
+        db.session.commit()
+        return {"message": "Message was successfully deleted"}
+    else:
+        abort(403)
+
+
 async def send_fcm_event_if_needed(payload: dict, interlocutor):
     if interlocutor.device_token and not interlocutor.is_connected:
         send_data_message(current_app.config['FCM_API_KEY'], interlocutor.device_token, payload)
 
+
+# Simulate response delay while testing app on localhost
+@blueprint.before_request
+def simulate_delay():
+    time.sleep(RESPONSE_DELAY)

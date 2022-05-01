@@ -24,6 +24,9 @@ interface MessageDao {
     )
     fun observeMessagesByInterlocutorId(interlocutorId: Int): Flow<List<MessageEntity>>
 
+    @Query("SELECT * FROM message WHERE local_id == :localId LIMIT 1")
+    suspend fun getMessageByLocalId(localId: Int): MessageEntity
+
     @Query("DELETE FROM message WHERE server_chat_id == :serverChatId")
     suspend fun deleteAllMessagesFromChat(serverChatId: Int?)
 
@@ -32,4 +35,7 @@ interface MessageDao {
 
     @Delete
     suspend fun delete(message: MessageEntity)
+
+    @Query("DELETE FROM message WHERE local_id == :localId")
+    suspend fun deleteByLocalId(localId: Int)
 }

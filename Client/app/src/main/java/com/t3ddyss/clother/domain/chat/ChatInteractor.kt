@@ -14,6 +14,8 @@ interface ChatInteractor {
     fun observeMessagesForChat(interlocutor: User): Flow<List<Message>>
     suspend fun fetchNextPortionOfMessagesForChat(interlocutor: User): LoadResult
     suspend fun sendMessage(body: String?, image: String?, to: User)
+    suspend fun retryToSendMessage(message: Message)
+    suspend fun deleteMessage(message: Message): Resource<*>
     fun onNewToken(token: String)
     fun onNewCloudEvent(cloudEvent: CloudEvent)
 }

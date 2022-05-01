@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/image_size_editor"
     android:layout_height="@dimen/image_size_editor"
+    app:cardCornerRadius="@dimen/corner_radius"
     tools:ignore="ContentDescription">
 
     <ImageView

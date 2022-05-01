@@ -13,6 +13,8 @@ interface ChatRepository {
     fun observeMessagesForChatFromDatabase(interlocutor: User): Flow<List<Message>>
     suspend fun fetchNextPortionOfMessagesForChat(interlocutor: User): LoadResult
     suspend fun sendMessage(body: String?, image: LocalImage?, interlocutor: User)
+    suspend fun retryToSendMessage(message: Message, image: LocalImage?)
+    suspend fun deleteMessage(message: Message)
     suspend fun addNewMessage(message: Message)
     suspend fun addNewChat(chat: Chat)
     suspend fun sendDeviceTokenIfNeeded()

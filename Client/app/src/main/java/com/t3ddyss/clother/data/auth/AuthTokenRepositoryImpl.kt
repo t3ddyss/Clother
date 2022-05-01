@@ -37,30 +37,46 @@ class AuthTokenRepositoryImpl @Inject constructor(
                 return unauthorized()
             }
         }
-        log("AuthTokenRepositoryImpl.authenticate(). Requesting auth tokens...")
 
-        val refreshToken = storage.refreshToken ?: return unauthorized()
-        val refreshResponse = try {
-            runBlocking {
-                remoteAuthService.refreshTokens(refreshToken)
+        synchronized(this) {
+            val token = response.request.header(AUTHORIZATION)
+            if (storage.accessToken != token) {
+                log("AuthTokenRepositoryImpl.authenticate(). Using previously refreshed token")
+                return response
+                    .request
+                    .newBuilder()
+                    .header(AUTHORIZATION, storage.accessToken ?: "")
+                    .build()
             }
-        } catch (ex: Exception) {
-            null
-        }
-        val authData = refreshResponse?.body() ?: return unauthorized()
-        log("AuthTokenRepositoryImpl.authenticate(). Requesting auth tokens: success")
 
-        _tokenStateFlow.tryEmit(authData)
-        return response
-            .request
-            .newBuilder()
-            .header("Authorization", authData.accessToken.toBearer())
-            .build()
+            log("AuthTokenRepositoryImpl.authenticate(). Requesting auth tokens...")
+            val refreshToken = storage.refreshToken ?: return unauthorized()
+            val refreshResponse = try {
+                runBlocking {
+                    remoteAuthService.refreshTokens(refreshToken)
+                }
+            } catch (ex: Exception) {
+                null
+            }
+            val authData = refreshResponse?.body() ?: return unauthorized()
+            log("AuthTokenRepositoryImpl.authenticate(). Requesting auth tokens: success")
+
+            _tokenStateFlow.tryEmit(authData)
+            return response
+                .request
+                .newBuilder()
+                .header(AUTHORIZATION, authData.accessToken.toBearer())
+                .build()
+        }
     }
 
     private fun unauthorized(): Request? {
         log("AuthTokenRepositoryImpl.authenticate(). Requesting auth tokens: refresh token expired")
         _tokenStateFlow.tryEmit(null)
         return null
+    }
+
+    private companion object {
+        const val AUTHORIZATION = "Authorization"
     }
 }

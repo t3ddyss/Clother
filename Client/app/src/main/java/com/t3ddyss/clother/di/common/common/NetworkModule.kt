@@ -61,7 +61,7 @@ object NetworkModule {
     fun provideBaseUrl(): String = if (Utils.isEmulator) {
         "http://10.0.2.2:5000/"
     } else {
-        "http://192.168.0.102:5000/"
+        "http://192.168.0.103:5000/"
     }
 
     @Singleton

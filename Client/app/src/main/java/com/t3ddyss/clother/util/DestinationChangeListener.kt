@@ -19,7 +19,7 @@ class DestinationChangeListener(
         R.id.offerEditorFragment, R.id.resetPasswordFragment, R.id.signInFragment,
         R.id.signUpFragment, R.id.galleryFragment, R.id.locationFragment,
         R.id.offerFragment, R.id.locationViewerFragment, R.id.searchFragment, R.id.chatFragment,
-        R.id.imagesDialogFragment, R.id.imageFragment
+        R.id.imageSelectorDialog, R.id.imageFragment, R.id.messageMenuDialog
     )
 
     private val fragmentsWithoutToolbar = setOf(R.id.searchFragment)
@@ -29,7 +29,8 @@ class DestinationChangeListener(
         R.id.offerCategoryFragment,
         R.id.offerEditorFragment, R.id.galleryFragment, R.id.locationFragment,
         R.id.locationViewerFragment, R.id.searchByCategoryFragment, R.id.chatFragment,
-        R.id.homeFragment, R.id.chatsFragment, R.id.profileFragment, R.id.imagesDialogFragment
+        R.id.homeFragment, R.id.chatsFragment, R.id.profileFragment, R.id.imageSelectorDialog,
+        R.id.messageMenuDialog
     )
 
     private val fragmentsWithoutNavIcon = setOf(
