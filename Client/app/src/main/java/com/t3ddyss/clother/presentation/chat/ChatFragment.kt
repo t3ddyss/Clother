@@ -4,6 +4,7 @@ import android.Manifest
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
@@ -80,8 +81,7 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::infl
         }
 
         binding.buttonSend.setOnClickListener {
-            viewModel.sendMessage(body = binding.editTextMessage.text())
-            binding.editTextMessage.text?.clear()
+            onSendClick()
         }
         binding.buttonAttach.setOnClickListener {
             // FIXME if configuration change occurs while ImageSelectorDialog is on top, result won't be saved
@@ -89,6 +89,13 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::infl
                 viewModel.sendMessage(image = it)
             }
             requestGalleryPermissionLauncher?.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
+        binding.editTextMessage.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEND) {
+                onSendClick()
+                return@setOnEditorActionListener true
+            }
+            return@setOnEditorActionListener false
         }
 
         subscribeUi()
@@ -118,6 +125,11 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::infl
         viewModel.isLoading.observe(viewLifecycleOwner) {
             binding.layoutLoading.isVisible = it
         }
+    }
+
+    private fun onSendClick() {
+        viewModel.sendMessage(body = binding.editTextMessage.text())
+        binding.editTextMessage.text?.clear()
     }
 
     private fun onMessageClick(message: Message) {

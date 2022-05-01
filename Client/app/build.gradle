@@ -94,7 +94,7 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:$recyclerview_version"
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
-    implementation "androidx.room:room-paging:$room_version"
+//    implementation "androidx.room:room-paging:$room_version"
     implementation "com.facebook.shimmer:shimmer:$shimmer_version"
     implementation "com.github.bumptech.glide:glide:$glide_version"
     implementation "com.google.android.material:material:$material_version"

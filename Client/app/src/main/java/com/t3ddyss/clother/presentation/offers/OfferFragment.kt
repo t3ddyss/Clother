@@ -65,6 +65,8 @@ class OfferFragment : BaseFragment<FragmentOfferBinding>(FragmentOfferBinding::i
                 if (it.images.size > 1) {
                     TabLayoutMediator(dots, images) { _, _ ->
                     }.attach()
+                } else {
+                    binding.dots.isVisible = false
                 }
 
                 textViewTitle.text = it.title

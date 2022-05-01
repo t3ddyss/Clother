@@ -2,21 +2,17 @@ package com.t3ddyss.clother.presentation.home
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentHomeBinding
-import com.t3ddyss.clother.presentation.MainViewModel
 import com.t3ddyss.clother.presentation.offers.OfferViewModel
 import com.t3ddyss.clother.presentation.offers.OffersAdapter
 import com.t3ddyss.clother.util.getThemeColor
@@ -25,7 +21,6 @@ import com.t3ddyss.core.presentation.GridItemDecoration
 import com.t3ddyss.core.util.dp
 import com.t3ddyss.core.util.showSnackbarWithText
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
@@ -33,7 +28,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     // Using activityViewModels delegate here to save data across different instances of HomeFragment
     private val viewModel by activityViewModels<HomeViewModel>()
     private val offerViewModel by activityViewModels<OfferViewModel>()
-    private val networkStateViewModel by activityViewModels<MainViewModel>()
 
     private val args by navArgs<HomeFragmentArgs>()
 
@@ -94,6 +88,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
             }
         }
         adapter.addLoadStateListener(loadStateListener)
+        adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
 
         adapterDataObserver = object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
@@ -161,9 +156,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
     private fun subscribeUi() {
         viewModel.offers.observe(viewLifecycleOwner) {
-            lifecycleScope.launch {
-                adapter.submitData(it)
-            }
+            adapter.submitData(lifecycle, it)
         }
 
         viewModel.newOfferAdded.observe(viewLifecycleOwner) {
