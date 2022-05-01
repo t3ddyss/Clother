@@ -35,10 +35,12 @@ class ChatsFragment : BaseFragment<FragmentChatsBinding>(FragmentChatsBinding::i
                     adapter.submitList(it.content)
                 }
                 is Success -> {
+                    binding.layoutLoading.isVisible = false
                     binding.emptyState.isVisible = it.content?.isEmpty() == true
                     adapter.submitList(it.content)
                 }
                 is Error -> {
+                    binding.layoutLoading.isVisible = false
                     binding.layoutLoading.isVisible = false
                 }
             }
