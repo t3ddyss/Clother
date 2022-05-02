@@ -101,7 +101,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
         binding.list.layoutManager = layoutManager
         binding.list.adapter = adapter
-        binding.list.addItemDecoration(GridItemDecoration(2, 8.dp().roundToInt(), false))
+        binding.list.addItemDecoration(GridItemDecoration(2, 8.dp().roundToInt(), true))
 
         // Show progressbar if reached end of current list
         onScrollListener = object : RecyclerView.OnScrollListener() {

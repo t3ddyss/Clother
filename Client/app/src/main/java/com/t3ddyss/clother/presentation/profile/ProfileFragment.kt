@@ -66,7 +66,7 @@ class ProfileFragment
         val layoutManager = GridLayoutManager(context, 2)
         binding.list.layoutManager = layoutManager
         binding.list.adapter = adapter
-        binding.list.addItemDecoration(GridItemDecoration(2, 8.dp().roundToInt(), false))
+        binding.list.addItemDecoration(GridItemDecoration(2, 8.dp().roundToInt(), true))
 
         subscribeUi()
     }
