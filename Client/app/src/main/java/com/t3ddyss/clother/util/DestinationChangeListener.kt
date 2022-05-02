@@ -1,28 +1,31 @@
 package com.t3ddyss.clother.util
 
 import android.os.Bundle
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.ActivityMainBinding
-import com.t3ddyss.clother.presentation.MainActivity
 
 // TODO use individual toolbar in every fragment
 class DestinationChangeListener(
     private val binding: ActivityMainBinding,
-    private val activity: MainActivity,
+    private val actionBarProvider: () -> ActionBar?
 ) : NavController.OnDestinationChangedListener {
+
+    private val context get() = binding.root.context
+
     private val fragmentsWithoutBottomNav = setOf(
         R.id.emailActionFragment,
         R.id.offerEditorFragment, R.id.resetPasswordFragment, R.id.signInFragment,
         R.id.signUpFragment, R.id.galleryFragment, R.id.locationFragment,
         R.id.offerFragment, R.id.locationViewerFragment, R.id.searchFragment, R.id.chatFragment,
-        R.id.imageSelectorDialog, R.id.imageFragment, R.id.messageMenuDialog
+        R.id.imageSelectorDialog, R.id.imageFragment, R.id.messageMenuDialog, R.id.onboardingFragment
     )
 
-    private val fragmentsWithoutToolbar = setOf(R.id.searchFragment)
+    private val fragmentsWithoutToolbar = setOf(R.id.searchFragment, R.id.onboardingFragment)
 
     private val fragmentsWithToolbarLabel = setOf(
         R.id.offerFragment,
@@ -89,22 +92,24 @@ class DestinationChangeListener(
 
             // Toolbar title
             if (destination.id in fragmentsWithToolbarLabel) {
-                activity.supportActionBar?.setDisplayShowTitleEnabled(true)
+                actionBarProvider()?.setDisplayShowTitleEnabled(true)
             } else {
-                activity.supportActionBar?.setDisplayShowTitleEnabled(false)
+                actionBarProvider()?.setDisplayShowTitleEnabled(false)
             }
         }
     }
 
     private fun setIconClose(toolbar: Toolbar) {
         toolbar.setNavigationIcon(R.drawable.ic_close)
-        toolbar.navigationIcon?.colorFilter =
-            activity.getThemeColor(R.attr.colorOnPrimary).toColorFilter()
+        toolbar.navigationIcon?.colorFilter = context
+            .getThemeColor(R.attr.colorOnPrimary)
+            .toColorFilter()
     }
 
     private fun setIconUp(toolbar: Toolbar) {
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
-        toolbar.navigationIcon?.colorFilter =
-            activity.getThemeColor(R.attr.colorOnPrimary).toColorFilter()
+        toolbar.navigationIcon?.colorFilter = context
+            .getThemeColor(R.attr.colorOnPrimary)
+            .toColorFilter()
     }
 }

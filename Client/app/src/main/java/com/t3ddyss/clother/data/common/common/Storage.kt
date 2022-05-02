@@ -33,6 +33,11 @@ class Storage @Inject constructor(
         set(value) {
             prefs.edit().putBoolean(IS_DEVICE_TOKEN_RETRIEVED, value).apply()
         }
+    var isOnboardingCompleted: Boolean
+        get() = prefs.getBoolean(IS_ONBOARDING_COMPLETED, false)
+        set(value) {
+            prefs.edit().putBoolean(IS_ONBOARDING_COMPLETED, value).apply()
+        }
 
     fun clear() {
         prefs.edit().clear().apply()
@@ -44,5 +49,6 @@ class Storage @Inject constructor(
         const val REFRESH_TOKEN = "refresh_token"
         const val USER_ID = "user_id"
         const val IS_DEVICE_TOKEN_RETRIEVED = "is_device_token_retrieved"
+        const val IS_ONBOARDING_COMPLETED = "is_onboarding_completed"
     }
 }

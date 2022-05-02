@@ -4,4 +4,5 @@ interface NavigationInteractor {
     var interlocutorId: Int?
     var destinationId: Int?
     fun isScreen(screen: Screen): Boolean
+    fun isAuthRequiredForCurrentDestination(): Boolean
 }

@@ -28,7 +28,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/cardView_avatar"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Fedor Sokolov" />
+        tools:text="@tools:sample/full_names" />
 
     <TextView
         android:id="@+id/textView_time"
@@ -38,7 +38,7 @@
         android:textColor="@color/grey_500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Apr 12 9:47" />
+        tools:text="@tools:sample/date/ddmmyy" />
 
     <TextView
         android:id="@+id/textView_message"
@@ -52,5 +52,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/cardView_avatar"
-        tools:text="Привет! Хочу обменять футболку" />
+        tools:text="@tools:sample/lorem/random" />
 </androidx.constraintlayout.widget.ConstraintLayout>

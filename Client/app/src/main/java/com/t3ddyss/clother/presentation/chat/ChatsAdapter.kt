@@ -47,7 +47,7 @@ class ChatsAdapter(
             binding.textViewTime.text = chat.lastMessage.createdAt.formatDate()
 
             val description = if (chat.lastMessage.isImage) {
-                context.getString(R.string.image_icon)
+                context.getString(R.string.chat_image_icon)
             } else {
                 chat.lastMessage.body
             } ?: ""

@@ -7,7 +7,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -23,11 +23,14 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), NavMenuController {
     private val viewModel by viewModels<MainViewModel>()
-    private lateinit var binding: ActivityMainBinding
 
+    private var _binding: ActivityMainBinding? = null
+    private val binding get() = _binding!!
+
+    private val navController get() = findNavController(R.id.nav_host_fragment)
+    private var destinationChangeListener: DestinationChangeListener? = null
+    private var destinationChangeListener2: NavController.OnDestinationChangedListener? = null
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var navController: NavController
-    private lateinit var destinationChangeListener: DestinationChangeListener
 
     override var isMenuVisible
         get() = binding.navView.isVisible
@@ -39,22 +42,19 @@ class MainActivity : AppCompatActivity(), NavMenuController {
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        val navHostFragment = supportFragmentManager
-            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        navController = navHostFragment.navController
-
         val navGraph = navController.navInflater.inflate(R.navigation.main_graph)
-        if (viewModel.authStateFlow.value is AuthState.Authenticated) {
-            navGraph.setStartDestination(R.id.homeFragment)
-        } else {
-            navGraph.setStartDestination(R.id.signUpFragment)
+        val startDestination = when {
+            viewModel.authStateFlow.value is AuthState.Authenticated -> R.id.homeFragment
+            viewModel.isOnboardingCompleted -> R.id.signUpFragment
+            else -> R.id.onboardingFragment
         }
+        navGraph.setStartDestination(startDestination)
         navController.graph = navGraph
 
         // Do not represent actual top-level destinations, just for UP navigation purposes
@@ -68,28 +68,37 @@ class MainActivity : AppCompatActivity(), NavMenuController {
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
 
-        destinationChangeListener = DestinationChangeListener(binding, this)
-        navController.addOnDestinationChangedListener(destinationChangeListener)
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            viewModel.onDestinationChange(destination)
+        destinationChangeListener = DestinationChangeListener(binding) { supportActionBar }.also {
+            navController.addOnDestinationChangedListener(it)
         }
+        destinationChangeListener2 = NavController.OnDestinationChangedListener { _, destination, _ ->
+            viewModel.onDestinationChange(destination)
+        }.also {
+            navController.addOnDestinationChangedListener(it)
+        }
+
         viewModel.unauthorizedEvent.observe(this) {
-            if (navController.currentDestination?.id != R.id.signUpFragment) {
-                navController.navigate(R.id.action_global_signUpFragment)
-                Handler(Looper.getMainLooper()).post {
-                    Snackbar.make(
-                        binding.root,
-                        R.string.session_expired,
-                        Snackbar.LENGTH_SHORT
-                    ).show()
-                }
+            navController.navigate(R.id.action_global_signUpFragment)
+            Handler(Looper.getMainLooper()).post {
+                Snackbar.make(
+                    binding.root,
+                    R.string.session_expired,
+                    Snackbar.LENGTH_SHORT
+                ).show()
             }
         }
     }
 
     override fun onDestroy() {
+        destinationChangeListener?.let {
+            navController.removeOnDestinationChangedListener(it)
+        }
+        destinationChangeListener2?.let {
+            navController.removeOnDestinationChangedListener(it)
+        }
+        destinationChangeListener = null
+        destinationChangeListener2 = null
         super.onDestroy()
-        navController.removeOnDestinationChangedListener(destinationChangeListener)
     }
 
     override fun onSupportNavigateUp(): Boolean {

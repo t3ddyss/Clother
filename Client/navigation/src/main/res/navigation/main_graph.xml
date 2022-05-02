@@ -274,9 +274,20 @@
             app:argType="boolean" />
     </dialog>
 
+    <fragment
+        android:id="@+id/onboardingFragment"
+        android:name="com.t3ddyss.clother.presentation.onboarding.OnboardingFragment"
+        android:label="OnboardingFragment" >
+        <action
+            android:id="@+id/action_onboardingFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment"
+            app:popUpTo="@id/onboardingFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
     <action
         android:id="@+id/action_global_signUpFragment"
         app:destination="@id/signUpFragment"
-        app:popUpTo="@id/homeFragment"
+        app:popUpTo="@id/main_graph"
         app:popUpToInclusive="true" />
 </navigation>

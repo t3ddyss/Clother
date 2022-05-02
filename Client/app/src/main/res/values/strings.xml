@@ -67,4 +67,12 @@
         This cannot be undone</string>
     <string name="cancel">Cancel</string>
     <string name="offer_deleted">Offer was successfully deleted</string>
+    <string name="onboarding_skip">Skip</string>
+    <string name="onboarding_complete">Let\'s go</string>
+    <string name="onboarding_title_1">Welcome to Clother</string>
+    <string name="onboarding_description_1">An app which will give your unused clothes a second life. Swap clothes with other people or donate them to those who are in need.</string>
+    <string name="onboarding_title_2">Why swap clothes?</string>
+    <string name="onboarding_description_2">Climate change is one of the pressing problems of the modern world. Reusing clothes reduces CO<font size="10">2</font> emissions and reduces the amount of energy used to produce new clothes.</string>
+    <string name="onboarding_title_3">What\'s next?</string>
+    <string name="onboarding_description_3">Create an account and start using Clother. You can post offers, search for other users\' offers using various filters, chat with them using the built-in real-time chat. Let\'s make a\u00A0world\u00A0better\u00A0together!</string>
 </resources>

@@ -218,7 +218,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@id/barrier"
             app:layout_constraintTop_toBottomOf="@+id/divider7"
-            tools:text="Fedor Sokolov" />
+            tools:text="@tools:sample/full_names" />
 
         <TextView
             android:id="@+id/textView8"
@@ -241,7 +241,7 @@
             android:textColor="@color/grey_500"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider7"
-            tools:text="Apr 12 12:06" />
+            tools:text="@tools:sample/date/ddmmyy" />
 
         <Button
             android:id="@+id/button_message"

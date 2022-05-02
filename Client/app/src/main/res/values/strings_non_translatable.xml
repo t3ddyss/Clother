@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="image_icon" translatable="false">📷</string>
+    <string name="chat_image_icon" translatable="false">📷</string>
 </resources>

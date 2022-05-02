@@ -14,4 +14,10 @@ class NavigationInteractorImpl @Inject constructor(
             navigationRepository.isScreen(screen, it)
         } ?: false
     }
+
+    override fun isAuthRequiredForCurrentDestination(): Boolean {
+        return destinationId?.let {
+            navigationRepository.isAuthRequiredForDestination(it)
+        } ?: false
+    }
 }
