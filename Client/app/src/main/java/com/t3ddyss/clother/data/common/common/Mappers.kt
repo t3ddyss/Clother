@@ -42,7 +42,7 @@ object Mappers {
     fun ChatDto.toEntity(): ChatEntity {
         return ChatEntity(
             serverId = this.id,
-            interlocutor = this.interlocutor.toEntity()
+            interlocutorId = this.interlocutor.id
         )
     }
 
@@ -57,15 +57,15 @@ object Mappers {
     fun Chat.toEntity(): ChatEntity {
         return ChatEntity(
             serverId = this.id,
-            interlocutor = this.interlocutor.toEntity()
+            interlocutorId = this.interlocutor.id
         )
     }
 
     fun ChatWithLastMessageEntity.toDomain(): Chat {
-        val isIncoming = this.chat.interlocutor.id == this.message.userId
+        val isIncoming = this.interlocutor.id == this.message.userId
         return Chat(
             id = this.chat.serverId ?: this.chat.localId,
-            interlocutor = this.chat.interlocutor.toDomain(),
+            interlocutor = this.interlocutor.toDomain(),
             lastMessage = this.message.toDomain(isIncoming)
         )
     }
@@ -277,13 +277,6 @@ object Mappers {
 
     fun User.toArg(): UserArg {
         return UserArg(
-            id = this.id,
-            name = this.name
-        )
-    }
-
-    fun UserArg.toDomain(): User {
-        return User(
             id = this.id,
             name = this.name
         )

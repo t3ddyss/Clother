@@ -19,12 +19,15 @@ interface UserDao {
     @Query("DELETE FROM user")
     suspend fun deleteAll()
 
+    @Query("SELECT * FROM user WHERE id == :id")
+    suspend fun getUserById(id: Int): UserEntity
+
     @Transaction
     @Query("""SELECT * 
         FROM user 
         INNER JOIN user_details
         ON user.id == user_details.user_id
-        WHERE user.id = :id
+        WHERE user.id == :id
     """
     )
     suspend fun getUserWithDetailsById(id: Int): UserWithDetailsEntity

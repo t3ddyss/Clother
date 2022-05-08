@@ -29,6 +29,7 @@ interface RemoteChatService {
         @Part images: List<MultipartBody.Part>?
     ): MessageDto
 
+    @Multipart
     @POST("api/chats/message?return_chat=true")
     suspend fun sendMessageAndGetChat(
         @Header("Authorization") accessToken: String?,

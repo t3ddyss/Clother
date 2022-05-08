@@ -1,6 +1,5 @@
 package com.t3ddyss.clother.domain.chat
 
-import com.t3ddyss.clother.domain.auth.models.User
 import com.t3ddyss.clother.domain.chat.models.Chat
 import com.t3ddyss.clother.domain.chat.models.LocalImage
 import com.t3ddyss.clother.domain.chat.models.Message
@@ -10,9 +9,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface ChatRepository {
     fun observeChatsFromDatabase(): Flow<Resource<List<Chat>>>
-    fun observeMessagesForChatFromDatabase(interlocutor: User): Flow<List<Message>>
-    suspend fun fetchNextPortionOfMessagesForChat(interlocutor: User): LoadResult
-    suspend fun sendMessage(body: String?, image: LocalImage?, interlocutor: User)
+    fun observeMessagesForChatFromDatabase(interlocutorId: Int): Flow<List<Message>>
+    suspend fun fetchNextPortionOfMessagesForChat(interlocutorId: Int): LoadResult
+    suspend fun sendMessage(body: String?, image: LocalImage?, interlocutorId: Int)
     suspend fun retryToSendMessage(message: Message, image: LocalImage?)
     suspend fun deleteMessage(message: Message)
     suspend fun addNewMessage(message: Message)

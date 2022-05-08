@@ -1,7 +1,6 @@
 package com.t3ddyss.clother.presentation.chat
 
 import androidx.lifecycle.*
-import com.t3ddyss.clother.data.common.common.Mappers.toDomain
 import com.t3ddyss.clother.domain.chat.ChatInteractor
 import com.t3ddyss.clother.domain.chat.NotificationInteractor
 import com.t3ddyss.clother.domain.chat.models.Message
@@ -22,7 +21,7 @@ class ChatViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val args = ChatFragmentArgs.fromSavedStateHandle(savedStateHandle)
-    private val interlocutor = args.user.toDomain()
+    private val interlocutor = args.user
 
     private val _messages = MutableLiveData<List<Message>>()
     val messages: LiveData<List<Message>> = _messages
@@ -39,7 +38,7 @@ class ChatViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             notificationInteractor.cancelMessageNotifications(interlocutor.id)
-            chatInteractor.observeMessagesForChat(interlocutor)
+            chatInteractor.observeMessagesForChat(interlocutor.id)
                 .collectLatest {
                     _messages.postValue(it)
             }
@@ -51,7 +50,7 @@ class ChatViewModel @Inject constructor(
 
     private fun fetchNextPortionOfMessages() {
         viewModelScope.launch {
-            val result = chatInteractor.fetchNextPortionOfMessagesForChat(interlocutor)
+            val result = chatInteractor.fetchNextPortionOfMessagesForChat(interlocutor.id)
             isLoadingMessages.set(false)
             isEndOfPaginationReached = (result as? LoadResult.Success)?.isEndOfPaginationReached ?: false
             _loadStatus.postValue(result)
@@ -66,7 +65,7 @@ class ChatViewModel @Inject constructor(
 
     fun sendMessage(body: String? = null, image: String? = null) {
         viewModelScope.launch {
-            chatInteractor.sendMessage(body, image, interlocutor)
+            chatInteractor.sendMessage(body, image, interlocutor.id)
         }
     }
 

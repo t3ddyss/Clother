@@ -2,7 +2,6 @@ package com.t3ddyss.clother.domain.chat
 
 import com.t3ddyss.clother.domain.auth.AuthInteractor
 import com.t3ddyss.clother.domain.auth.models.AuthState
-import com.t3ddyss.clother.domain.auth.models.User
 import com.t3ddyss.clother.domain.chat.models.*
 import com.t3ddyss.clother.domain.common.common.models.LoadResult
 import com.t3ddyss.clother.domain.offers.ImagesInteractor
@@ -10,6 +9,7 @@ import com.t3ddyss.clother.util.DispatchersProvider
 import com.t3ddyss.clother.util.handleHttpException
 import com.t3ddyss.core.domain.models.Resource
 import com.t3ddyss.core.util.log
+import com.t3ddyss.core.util.rethrowIfCancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
@@ -43,22 +43,22 @@ class ChatInteractorImpl @Inject constructor(
         return chatRepository.observeChatsFromDatabase()
     }
 
-    override fun observeMessagesForChat(interlocutor: User): Flow<List<Message>> {
-        return chatRepository.observeMessagesForChatFromDatabase(interlocutor)
+    override fun observeMessagesForChat(interlocutorId: Int): Flow<List<Message>> {
+        return chatRepository.observeMessagesForChatFromDatabase(interlocutorId)
     }
 
-    override suspend fun fetchNextPortionOfMessagesForChat(interlocutor: User): LoadResult {
-        return chatRepository.fetchNextPortionOfMessagesForChat(interlocutor)
+    override suspend fun fetchNextPortionOfMessagesForChat(interlocutorId: Int): LoadResult {
+        return chatRepository.fetchNextPortionOfMessagesForChat(interlocutorId)
     }
 
-    override suspend fun sendMessage(body: String?, image: String?, to: User) {
+    override suspend fun sendMessage(body: String?, image: String?, interlocutorId: Int) {
         if (body.isNullOrBlank() && image == null) return
 
-        log("ChatInteractorImpl.sendMessage(body=$body,image=$image,to=${to.id})")
+        log("ChatInteractorImpl.sendMessage(body=$body,image=$image,to=${interlocutorId})")
         val localImage = image?.let {
             LocalImage(it, imagesInteractor.compressImage(it))
         }
-        chatRepository.sendMessage(body, localImage, to)
+        chatRepository.sendMessage(body, localImage, interlocutorId)
     }
 
     override suspend fun retryToSendMessage(message: Message) {
@@ -122,12 +122,24 @@ class ChatInteractorImpl @Inject constructor(
     }
 
     private suspend fun onNewMessage(message: Message) {
-        chatRepository.addNewMessage(message)
+        try {
+            chatRepository.addNewMessage(message)
+        } catch (ex: Exception) {
+            ex.rethrowIfCancellationException()
+            log("ChatInteractorImpl.onNewMessage: $ex")
+        }
+
         notificationInteractor.showMessageNotificationIfNeeded(message)
     }
 
     private suspend fun onNewChat(chat: Chat) {
-        chatRepository.addNewChat(chat)
+        try {
+            chatRepository.addNewChat(chat)
+        } catch (ex: Exception) {
+            ex.rethrowIfCancellationException()
+            log("ChatInteractorImpl.onNewChat: $ex")
+        }
+
         notificationInteractor.showMessageNotificationIfNeeded(chat.lastMessage)
     }
 }

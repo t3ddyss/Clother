@@ -22,8 +22,9 @@ interface ChatDao {
                     c.local_id AS chat_local_id,
                     c.server_id AS chat_server_id,
                     c.interlocutor_id AS chat_interlocutor_id,
-                    c.interlocutor_name AS chat_interlocutor_name,
-                    c.interlocutor_image AS chat_interlocutor_image,
+                    u.id AS interlocutor_id,
+                    u.name AS interlocutor_name,
+                    u.image AS interlocutor_image,
                     m.local_id AS message_local_id,
                     m.server_id AS message_server_id,
                     m.local_chat_id AS message_local_chat_id,
@@ -41,13 +42,18 @@ interface ChatDao {
                     ON m.local_id == m1.local_id AND m.created_at == m1.max_created_at
                     INNER JOIN chat c
                     ON m1.local_chat_id == c.local_id
+                    INNER JOIN user u
+                    ON c.interlocutor_id == u.id
                     ORDER BY m1.max_created_at DESC
                 """
     )
     fun observeChats(): Flow<List<ChatWithLastMessageEntity>>
 
-    @Query("SELECT * FROM chat WHERE local_id == :localId LIMIT 1")
+    @Query("SELECT * FROM chat WHERE local_id == :localId")
     suspend fun getChatByLocalId(localId: Int): ChatEntity?
+
+    @Query("SELECT * FROM chat WHERE server_id == :serverId LIMIT 1")
+    suspend fun getChatByServerId(serverId: Int): ChatEntity?
 
     @Query("SELECT * FROM chat WHERE interlocutor_id == :interlocutorId LIMIT 1")
     suspend fun getChatByInterlocutorId(interlocutorId: Int): ChatEntity?
@@ -58,6 +64,6 @@ interface ChatDao {
     @Delete
     suspend fun delete(chat: ChatEntity)
 
-    @Query("DELETE FROM chat WHERE server_id NOT IN (:serverIds)")
-    suspend fun deleteUncreatedChats(serverIds: Array<Long>)
+    @Query("DELETE FROM chat WHERE server_id IS NULL")
+    suspend fun deleteUncreatedChats()
 }

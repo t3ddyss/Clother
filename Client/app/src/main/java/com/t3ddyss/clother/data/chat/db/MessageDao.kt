@@ -30,7 +30,7 @@ interface MessageDao {
     @Query("DELETE FROM message WHERE server_chat_id == :serverChatId")
     suspend fun deleteAllMessagesFromChat(serverChatId: Int?)
 
-    @Query("DELETE FROM message WHERE status == 2") // MessageStatus.FAILED
+    @Query("DELETE FROM message WHERE server_id IS NULL")
     suspend fun deleteUnsentMessages()
 
     @Delete

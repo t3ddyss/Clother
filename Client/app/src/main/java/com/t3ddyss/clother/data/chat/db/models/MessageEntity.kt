@@ -1,15 +1,21 @@
 package com.t3ddyss.clother.data.chat.db.models
 
 import androidx.room.*
+import com.t3ddyss.clother.data.auth.db.models.UserEntity
 import com.t3ddyss.clother.domain.chat.models.MessageStatus
 import java.util.*
 
 @Entity(
     tableName = "message",
-    foreignKeys = [ForeignKey(
+    foreignKeys = [
+        ForeignKey(
         entity = ChatEntity::class,
         parentColumns = arrayOf("server_id"),
         childColumns = arrayOf("server_chat_id")
+    ), ForeignKey(
+        entity = UserEntity::class,
+        parentColumns = arrayOf("id"),
+        childColumns = arrayOf("user_id")
     )],
     indices = [Index(value = ["server_id"], unique = true)]
 )

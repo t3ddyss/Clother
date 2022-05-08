@@ -3,6 +3,7 @@ package com.t3ddyss.clother.data.chat
 import androidx.room.withTransaction
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
+import com.t3ddyss.clother.data.auth.db.UserDao
 import com.t3ddyss.clother.data.auth.remote.RemoteAuthService
 import com.t3ddyss.clother.data.chat.db.ChatDao
 import com.t3ddyss.clother.data.chat.db.MessageDao
@@ -14,7 +15,6 @@ import com.t3ddyss.clother.data.common.common.Mappers.toDto
 import com.t3ddyss.clother.data.common.common.Mappers.toEntity
 import com.t3ddyss.clother.data.common.common.Storage
 import com.t3ddyss.clother.data.common.common.db.AppDatabase
-import com.t3ddyss.clother.domain.auth.models.User
 import com.t3ddyss.clother.domain.chat.ChatRepository
 import com.t3ddyss.clother.domain.chat.models.Chat
 import com.t3ddyss.clother.domain.chat.models.LocalImage
@@ -26,7 +26,6 @@ import com.t3ddyss.clother.util.networkBoundResource
 import com.t3ddyss.core.util.log
 import com.t3ddyss.core.util.rethrowIfCancellationException
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -41,6 +40,7 @@ class ChatRepositoryImpl @Inject constructor(
     private val authService: RemoteAuthService,
     private val chatService: RemoteChatService,
     private val db: AppDatabase,
+    private val userDao: UserDao,
     private val chatDao: ChatDao,
     private val messageDao: MessageDao,
     private val messagesPagingLoader: MessagesPagingLoader,
@@ -53,48 +53,39 @@ class ChatRepositoryImpl @Inject constructor(
         fetch = { chatService.getChats(storage.accessToken) },
         saveFetchResult = { chats ->
             db.withTransaction {
-                chatDao.deleteUncreatedChats(
-                    chats.map { it.id.toLong() }.toTypedArray()
-                )
                 messageDao.deleteUnsentMessages()
+                chatDao.deleteUncreatedChats()
 
-                val ids = chatDao.insertAll(
-                    chats.map { it.toEntity() }
-                )
-
-                messageDao.insertAll(
-                    ids
-                        .zip(chats)
-                        .map { chatWithId ->
-                            chatWithId.second.lastMessage.toEntity().also {
-                                it.localChatId = chatWithId.first.toInt()
-                            }
+                userDao.insertAll(chats.map { it.interlocutor.toEntity() })
+                chatDao.insertAll(chats.map { it.toEntity() })
+                    .zip(chats)
+                    .map {
+                        it.second.lastMessage.toEntity().apply {
+                            localChatId = it.first.toInt()
                         }
-                )
+                    }.let {
+                        messageDao.insertAll(it)
+                    }
             }
         }
     )
 
-    override fun observeMessagesForChatFromDatabase(interlocutor: User): Flow<List<Message>> {
+    override fun observeMessagesForChatFromDatabase(interlocutorId: Int): Flow<List<Message>> {
         return messageDao
-            .observeMessagesByInterlocutorId(interlocutor.id)
-            .map { messages ->
-                messages.map {
-                    it.toDomain(it.userId == interlocutor.id)
-                }
-            }
+            .observeMessagesByInterlocutorId(interlocutorId)
+            .nestedMap { it.toDomain(it.userId == interlocutorId) }
     }
 
-    override suspend fun fetchNextPortionOfMessagesForChat(interlocutor: User): LoadResult {
+    override suspend fun fetchNextPortionOfMessagesForChat(interlocutorId: Int): LoadResult {
         return messagesPagingLoader.load(
-            listKey = LIST_KEY_MESSAGES + interlocutor.id,
-            interlocutorId = interlocutor.id
+            listKey = LIST_KEY_MESSAGES + interlocutorId,
+            interlocutorId = interlocutorId
         )
     }
 
-    override suspend fun sendMessage(body: String?, image: LocalImage?, interlocutor: User) {
-        val localChatId = chatDao.getChatByInterlocutorId(interlocutor.id)?.localId
-            ?: return sendMessageToNewChat(body, image, interlocutor)
+    override suspend fun sendMessage(body: String?, image: LocalImage?, interlocutorId: Int) {
+        val localChatId = chatDao.getChatByInterlocutorId(interlocutorId)?.localId
+            ?: return sendMessageToNewChat(body, image,  interlocutorId)
 
         val message = MessageEntity(
             localId = 0,
@@ -107,19 +98,21 @@ class ChatRepositoryImpl @Inject constructor(
         ).apply {
             this.localId = messageDao.insert(this).toInt()
         }
-        sendMessageImpl(message, image, interlocutor)
+        sendMessageImpl(message, image,  interlocutorId)
     }
 
     override suspend fun retryToSendMessage(message: Message, image: LocalImage?) {
         val messageEntity = messageDao.getMessageByLocalId(message.localId)
         val chat = chatDao.getChatByLocalId(messageEntity.localChatId)
-        val interlocutor = chat?.interlocutor?.toDomain()
+        val interlocutorId = chat?.interlocutorId?.let {
+            userDao.getUserById(it).id
+        }
 
-        if (interlocutor != null) {
+        if (interlocutorId != null) {
             if (chat.serverId != null) {
-                sendMessageImpl(messageEntity, image, interlocutor)
+                sendMessageImpl(messageEntity, image, interlocutorId)
             } else {
-                sendMessageToNewChatImpl(chat, messageEntity, image, interlocutor)
+                sendMessageToNewChatImpl(chat, messageEntity, image, interlocutorId)
             }
         }
     }
@@ -137,7 +130,9 @@ class ChatRepositoryImpl @Inject constructor(
     }
 
     override suspend fun addNewMessage(message: Message) {
-        val chat = chatDao.getChatByInterlocutorId(message.userId)
+        val chat = message.serverChatId?.let {
+            chatDao.getChatByServerId(it)
+        }
 
         // TODO handle scenario when chat is not yet in cache
         chat?.let {
@@ -149,6 +144,7 @@ class ChatRepositoryImpl @Inject constructor(
 
     override suspend fun addNewChat(chat: Chat) {
         db.withTransaction {
+            userDao.insert(chat.interlocutor.toEntity())
             val message = chat.lastMessage.toEntity()
             message.localChatId = chatDao.insert(chat.toEntity()).toInt()
             messageDao.insert(message)
@@ -180,7 +176,7 @@ class ChatRepositoryImpl @Inject constructor(
     private suspend fun sendMessageImpl(
         message: MessageEntity,
         image: LocalImage?,
-        interlocutor: User
+        interlocutorId: Int
     ) {
         if (message.status != MessageStatus.DELIVERING) {
             message.status = MessageStatus.DELIVERING
@@ -202,7 +198,7 @@ class ChatRepositoryImpl @Inject constructor(
             }
             val messageDto = chatService.sendMessageAndGetIt(
                 accessToken = storage.accessToken,
-                interlocutorId = interlocutor.id,
+                interlocutorId = interlocutorId,
                 body = messageBody,
                 images = imageFiles
             )
@@ -221,9 +217,9 @@ class ChatRepositoryImpl @Inject constructor(
         }
     }
 
-    private suspend fun sendMessageToNewChat(body: String?, image: LocalImage?, interlocutor: User) {
+    private suspend fun sendMessageToNewChat(body: String?, image: LocalImage?, interlocutorId: Int) {
         val chat = ChatEntity(
-            interlocutor = interlocutor.toEntity()
+            interlocutorId = interlocutorId
         )
 
         val message = db.withTransaction {
@@ -243,14 +239,14 @@ class ChatRepositoryImpl @Inject constructor(
             }
         }
 
-        sendMessageToNewChatImpl(chat, message, image, interlocutor)
+        sendMessageToNewChatImpl(chat, message, image, interlocutorId)
     }
 
     private suspend fun sendMessageToNewChatImpl(
         chat: ChatEntity,
         message: MessageEntity,
         image: LocalImage?,
-        interlocutor: User
+        interlocutorId: Int
     ) {
         if (message.status != MessageStatus.DELIVERING) {
             message.status = MessageStatus.DELIVERING
@@ -273,7 +269,7 @@ class ChatRepositoryImpl @Inject constructor(
             val chatDto = chatService
                 .sendMessageAndGetChat(
                     accessToken = storage.accessToken,
-                    interlocutorId = interlocutor.id,
+                    interlocutorId = interlocutorId,
                     body = messageBody,
                     images = imageFiles
                 )
