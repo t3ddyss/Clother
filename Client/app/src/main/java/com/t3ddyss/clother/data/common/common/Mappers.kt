@@ -1,7 +1,10 @@
 package com.t3ddyss.clother.data.common.common
 
+import com.t3ddyss.clother.data.auth.db.models.UserDetailsEntity
 import com.t3ddyss.clother.data.auth.db.models.UserEntity
-import com.t3ddyss.clother.data.auth.remote.models.AuthDataDto
+import com.t3ddyss.clother.data.auth.db.models.UserWithDetailsEntity
+import com.t3ddyss.clother.data.auth.remote.models.UserAuthDataDto
+import com.t3ddyss.clother.data.auth.remote.models.UserDetailsDto
 import com.t3ddyss.clother.data.auth.remote.models.UserDto
 import com.t3ddyss.clother.data.chat.db.models.ChatEntity
 import com.t3ddyss.clother.data.chat.db.models.ChatWithLastMessageEntity
@@ -13,13 +16,17 @@ import com.t3ddyss.clother.data.offers.db.models.CategoryEntity
 import com.t3ddyss.clother.data.offers.db.models.OfferEntity
 import com.t3ddyss.clother.data.offers.remote.models.OfferDto
 import com.t3ddyss.clother.domain.auth.models.AuthData
+import com.t3ddyss.clother.domain.auth.models.User
+import com.t3ddyss.clother.domain.auth.models.UserAuthData
+import com.t3ddyss.clother.domain.auth.models.UserDetails
 import com.t3ddyss.clother.domain.chat.models.Chat
 import com.t3ddyss.clother.domain.chat.models.Message
 import com.t3ddyss.clother.domain.chat.models.MessageStatus
 import com.t3ddyss.clother.domain.common.common.models.Response
+import com.t3ddyss.clother.domain.offers.models.Category
 import com.t3ddyss.clother.domain.offers.models.Offer
-import com.t3ddyss.core.domain.models.Category
-import com.t3ddyss.core.domain.models.User
+import com.t3ddyss.navigation.presentation.models.CategoryArg
+import com.t3ddyss.navigation.presentation.models.UserArg
 
 object Mappers {
 
@@ -182,8 +189,16 @@ object Mappers {
         return UserEntity(
             id = this.id,
             name = this.name,
-            email = this.email,
             image = this.image
+        )
+    }
+
+    fun UserDetails.toEntity(userId: Int): UserDetailsEntity {
+        return UserDetailsEntity(
+            userId = userId,
+            email = this.email,
+            createdAt = this.createdAt,
+            age = this.age
         )
     }
 
@@ -191,8 +206,16 @@ object Mappers {
         return User(
             id = this.id,
             name = this.name,
-            email = this.email.orEmpty(),
-            image = this.image.orEmpty()
+            image = this.image.orEmpty(),
+            details = this.details?.toDomain()
+        )
+    }
+
+    fun UserDetailsDto.toDomain(): UserDetails {
+        return UserDetails(
+            email = this.email,
+            createdAt = this.createdAt,
+            age = this.age
         )
     }
 
@@ -200,7 +223,6 @@ object Mappers {
         return UserEntity(
             id = this.id,
             name = this.name,
-            email = this.email,
             image = this.image
         )
     }
@@ -209,16 +231,62 @@ object Mappers {
         return User(
             id = this.id,
             name = this.name,
-            email = this.email.orEmpty(),
             image = this.image.orEmpty()
         )
     }
 
-    fun AuthDataDto.toDomain(): AuthData {
-        return AuthData(
+    fun UserDetailsEntity.toDomain(): UserDetails {
+        return UserDetails(
+            email = this.email,
+            createdAt = this.createdAt,
+            age = this.age
+        )
+    }
+
+    fun UserWithDetailsEntity.toDomain(): User {
+        return User(
+            id = this.user.id,
+            name = this.user.name,
+            image = this.user.image.orEmpty(),
+            details = this.details.toDomain()
+        )
+    }
+
+    fun UserAuthDataDto.toDomain(): UserAuthData {
+        return UserAuthData(
             user = this.user.toDomain(),
             accessToken = this.accessToken,
             refreshToken = this.refreshToken
+        )
+    }
+
+    fun UserAuthData.toAuthData(): AuthData {
+        return AuthData(
+            userId = this.user.id,
+            accessToken = this.accessToken,
+            refreshToken = this.refreshToken
+        )
+    }
+
+    fun Category.toArg(): CategoryArg {
+        return CategoryArg(
+            id = this.id,
+            title = this.title,
+            isLastLevel = this.isLastLevel
+        )
+    }
+
+    fun User.toArg(): UserArg {
+        return UserArg(
+            id = this.id,
+            name = this.name
+        )
+    }
+
+    fun UserArg.toDomain(): User {
+        return User(
+            id = this.id,
+            name = this.name
         )
     }
 }

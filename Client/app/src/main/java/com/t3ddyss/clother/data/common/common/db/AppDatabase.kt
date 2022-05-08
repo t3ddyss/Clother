@@ -4,6 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.t3ddyss.clother.data.auth.db.UserDao
+import com.t3ddyss.clother.data.auth.db.models.UserDetailsEntity
 import com.t3ddyss.clother.data.auth.db.models.UserEntity
 import com.t3ddyss.clother.data.chat.db.ChatDao
 import com.t3ddyss.clother.data.chat.db.MessageDao
@@ -19,9 +20,15 @@ import com.t3ddyss.feature_location.data.LocationDao
 import com.t3ddyss.feature_location.data.LocationEntity
 
 @Database(
-    entities = [OfferEntity::class, RemoteKeyEntity::class, CategoryEntity::class, ChatEntity::class,
-        MessageEntity::class, UserEntity::class, LocationEntity::class],
-    version = 5,
+    entities = [OfferEntity::class,
+        RemoteKeyEntity::class,
+        CategoryEntity::class,
+        ChatEntity::class,
+        MessageEntity::class,
+        UserEntity::class,
+        UserDetailsEntity::class,
+        LocationEntity::class],
+    version = 1,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

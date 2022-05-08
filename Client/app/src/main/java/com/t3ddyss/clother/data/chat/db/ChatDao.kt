@@ -23,7 +23,6 @@ interface ChatDao {
                     c.server_id AS chat_server_id,
                     c.interlocutor_id AS chat_interlocutor_id,
                     c.interlocutor_name AS chat_interlocutor_name,
-                    c.interlocutor_email AS chat_interlocutor_email,
                     c.interlocutor_image AS chat_interlocutor_image,
                     m.local_id AS message_local_id,
                     m.server_id AS message_server_id,

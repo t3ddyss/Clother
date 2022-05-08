@@ -14,6 +14,7 @@ import com.t3ddyss.clother.data.common.common.Mappers.toDto
 import com.t3ddyss.clother.data.common.common.Mappers.toEntity
 import com.t3ddyss.clother.data.common.common.Storage
 import com.t3ddyss.clother.data.common.common.db.AppDatabase
+import com.t3ddyss.clother.domain.auth.models.User
 import com.t3ddyss.clother.domain.chat.ChatRepository
 import com.t3ddyss.clother.domain.chat.models.Chat
 import com.t3ddyss.clother.domain.chat.models.LocalImage
@@ -22,7 +23,6 @@ import com.t3ddyss.clother.domain.chat.models.MessageStatus
 import com.t3ddyss.clother.domain.common.common.models.LoadResult
 import com.t3ddyss.clother.util.nestedMap
 import com.t3ddyss.clother.util.networkBoundResource
-import com.t3ddyss.core.domain.models.User
 import com.t3ddyss.core.util.log
 import com.t3ddyss.core.util.rethrowIfCancellationException
 import kotlinx.coroutines.flow.Flow

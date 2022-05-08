@@ -43,8 +43,7 @@ def refresh_tokens():
     additional_claims = {"user_id": user_id}
     return {'user': user.to_dict(),
             'access_token': create_access_token(user_id, additional_claims=additional_claims),
-            'refresh_token': create_refresh_token(user_id, additional_claims=additional_claims)
-            }
+            'refresh_token': create_refresh_token(user_id, additional_claims=additional_claims)}
 
 
 @blueprint.post('/device/<token>')
@@ -149,10 +148,9 @@ def login():
         return {"message": "You haven't verified your email address"}, 403
     if user and user.check_password(password):
         additional_claims = {"user_id": user.id}
-        return {'user': user.to_dict(with_email=True),
+        return {'user': user.to_details_dict(),
                 'access_token': create_access_token(user.id, additional_claims=additional_claims),
-                'refresh_token': create_refresh_token(user.id, additional_claims=additional_claims)
-                }
+                'refresh_token': create_refresh_token(user.id, additional_claims=additional_claims)}
     else:
         return {"message": "Wrong email or password"}, 403
 

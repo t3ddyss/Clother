@@ -41,7 +41,7 @@
         android:textSize="@dimen/text_size_medium"
         app:layout_constraintBottom_toBottomOf="@id/cardView_avatar"
         app:layout_constraintStart_toEndOf="@+id/cardView_avatar"
-        tools:text="tedorsokolov@gmail.com" />
+        tools:text="example@example.com" />
 
     <View
         android:id="@+id/divider"
@@ -50,5 +50,4 @@
         android:background="?android:attr/listDivider"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

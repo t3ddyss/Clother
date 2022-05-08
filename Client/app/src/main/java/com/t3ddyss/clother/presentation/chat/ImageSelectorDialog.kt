@@ -1,5 +1,6 @@
 package com.t3ddyss.clother.presentation.chat
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -35,10 +36,7 @@ class ImageSelectorDialog : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val layoutManager = GridLayoutManager(context, 3)
-        adapter = ImagesAdapter {
-            setNavigationResult(SELECTED_IMAGE, it.toString())
-            findNavController().popBackStack()
-        }
+        adapter = ImagesAdapter(this::onImageClick)
         binding.list.layoutManager = layoutManager
         binding.list.adapter = adapter
         binding.list.setItemViewCacheSize(100)
@@ -56,6 +54,11 @@ class ImageSelectorDialog : BottomSheetDialogFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun onImageClick(image: Uri) {
+        setNavigationResult(SELECTED_IMAGE, image.toString())
+        findNavController().popBackStack()
     }
 
     companion object {

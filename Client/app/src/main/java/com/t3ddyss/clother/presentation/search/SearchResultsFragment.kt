@@ -8,7 +8,6 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.CombinedLoadStates
@@ -17,6 +16,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentSearchResultsBinding
+import com.t3ddyss.clother.domain.offers.models.Offer
 import com.t3ddyss.clother.presentation.offers.OfferViewModel
 import com.t3ddyss.clother.presentation.offers.OffersAdapter
 import com.t3ddyss.core.presentation.BaseFragment
@@ -24,7 +24,6 @@ import com.t3ddyss.core.presentation.GridItemDecoration
 import com.t3ddyss.core.util.dp
 import com.t3ddyss.core.util.showSnackbarWithText
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
@@ -37,12 +36,7 @@ class SearchResultsFragment
     private val offerViewModel by activityViewModels<OfferViewModel>()
     private val args by navArgs<SearchResultsFragmentArgs>()
 
-    private val adapter = OffersAdapter { offer ->
-        offerViewModel.selectOffer(offer)
-        val action = SearchResultsFragmentDirections
-            .actionSearchResultsToOfferFragment(offer.userId)
-        findNavController().navigate(action)
-    }
+    private val adapter = OffersAdapter(this::onOfferClick)
     private lateinit var loadStateListener: (CombinedLoadStates) -> Unit
     private lateinit var onScrollListener: RecyclerView.OnScrollListener
 
@@ -143,15 +137,20 @@ class SearchResultsFragment
 
     private fun subscribeUi() {
         viewModel.offers.observe(viewLifecycleOwner) {
-            lifecycleScope.launch {
-                adapter.submitData(it)
-            }
+            adapter.submitData(lifecycle, it)
         }
 
         viewModel.filters.observe(viewLifecycleOwner) {
             val query = getQuery()
             viewModel.getOffers(query)
         }
+    }
+
+    private fun onOfferClick(offer: Offer) {
+        offerViewModel.selectOffer(offer)
+        val action = SearchResultsFragmentDirections
+            .actionSearchResultsToOfferFragment(offer.userId)
+        findNavController().navigate(action)
     }
 
     private fun getQuery(): Map<String, String> {

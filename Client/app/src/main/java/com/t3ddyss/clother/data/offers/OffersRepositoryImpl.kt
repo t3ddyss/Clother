@@ -11,8 +11,8 @@ import com.t3ddyss.clother.data.offers.db.CategoryDao
 import com.t3ddyss.clother.data.offers.db.OfferDao
 import com.t3ddyss.clother.data.offers.remote.RemoteOffersService
 import com.t3ddyss.clother.domain.offers.OffersRepository
+import com.t3ddyss.clother.domain.offers.models.Category
 import com.t3ddyss.clother.domain.offers.models.Offer
-import com.t3ddyss.core.domain.models.Category
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import okhttp3.MediaType.Companion.toMediaTypeOrNull

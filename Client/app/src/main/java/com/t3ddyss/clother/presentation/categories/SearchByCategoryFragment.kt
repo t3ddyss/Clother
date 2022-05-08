@@ -12,7 +12,9 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.t3ddyss.clother.R
+import com.t3ddyss.clother.data.common.common.Mappers.toArg
 import com.t3ddyss.clother.databinding.FragmentSearchByCategoryBinding
+import com.t3ddyss.clother.domain.offers.models.Category
 import com.t3ddyss.core.presentation.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -35,18 +37,7 @@ class SearchByCategoryFragment
             false
         )
 
-        adapter = CategoriesAdapter {
-            if (!it.isLastLevel) {
-                val action = SearchByCategoryFragmentDirections
-                    .openSubcategoriesAction(it.id)
-                findNavController().navigate(action)
-            } else {
-                val action = SearchByCategoryFragmentDirections
-                    .searchByCategoryToSearchResultsGraph(it)
-                findNavController().navigate(action)
-            }
-        }
-
+        adapter = CategoriesAdapter(this::onCategoryClick)
         binding.listCategories.layoutManager = layoutManager
         binding.listCategories.adapter = adapter
 
@@ -75,5 +66,16 @@ class SearchByCategoryFragment
         viewModel.categories.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
+    }
+
+    private fun onCategoryClick(category: Category) {
+        val action =  if (!category.isLastLevel) {
+            SearchByCategoryFragmentDirections
+                .openSubcategoriesAction(category.id)
+        } else {
+            SearchByCategoryFragmentDirections
+                .searchByCategoryToSearchResultsGraph(category.toArg())
+        }
+        findNavController().navigate(action)
     }
 }

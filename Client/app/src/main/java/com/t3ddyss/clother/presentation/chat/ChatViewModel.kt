@@ -1,6 +1,7 @@
 package com.t3ddyss.clother.presentation.chat
 
 import androidx.lifecycle.*
+import com.t3ddyss.clother.data.common.common.Mappers.toDomain
 import com.t3ddyss.clother.domain.chat.ChatInteractor
 import com.t3ddyss.clother.domain.chat.NotificationInteractor
 import com.t3ddyss.clother.domain.chat.models.Message
@@ -21,7 +22,7 @@ class ChatViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val args = ChatFragmentArgs.fromSavedStateHandle(savedStateHandle)
-    private val interlocutor = args.user
+    private val interlocutor = args.user.toDomain()
 
     private val _messages = MutableLiveData<List<Message>>()
     val messages: LiveData<List<Message>> = _messages

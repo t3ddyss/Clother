@@ -20,7 +20,6 @@ import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentOfferEditorBinding
 import com.t3ddyss.clother.util.text
 import com.t3ddyss.clother.util.toCoordinatesString
-import com.t3ddyss.core.domain.models.Category
 import com.t3ddyss.core.domain.models.Error
 import com.t3ddyss.core.domain.models.Loading
 import com.t3ddyss.core.domain.models.Success
@@ -80,7 +79,7 @@ class OfferEditorFragment
         }
 
         binding.buttonPublish.setOnClickListener {
-            postOffer(category)
+            postOffer(category.id)
         }
 
         layoutManager = LinearLayoutManager(
@@ -134,9 +133,9 @@ class OfferEditorFragment
     }
 
     // TODO move to ViewModel
-    private fun postOffer(categoryEntity: Category) {
+    private fun postOffer(categoryId: Int) {
         val offer = JsonObject()
-        offer.addProperty("category_id", categoryEntity.id)
+        offer.addProperty("category_id", categoryId)
 
         val title = binding.editTextTitle.text()
         if (title.isEmpty()) {

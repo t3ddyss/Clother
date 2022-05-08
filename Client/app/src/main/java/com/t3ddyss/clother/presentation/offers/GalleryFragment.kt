@@ -32,9 +32,7 @@ class GalleryFragment : BaseFragment<FragmentGalleryBinding>(FragmentGalleryBind
         setHasOptionsMenu(true)
 
         layoutManager = GridLayoutManager(context, 3)
-        adapter = GalleryImagesAdapter {
-            showSnackbarWithText(R.string.attach_limit_exceeded)
-        }
+        adapter = GalleryImagesAdapter(this::onImageLimitExceeded)
 
         binding.list.layoutManager = layoutManager
         binding.list.adapter = adapter
@@ -91,5 +89,9 @@ class GalleryFragment : BaseFragment<FragmentGalleryBinding>(FragmentGalleryBind
 
             adapter.submitList(images)
         }
+    }
+
+    private fun onImageLimitExceeded() {
+        showSnackbarWithText(R.string.attach_limit_exceeded)
     }
 }

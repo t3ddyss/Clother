@@ -1,19 +1,28 @@
 package com.t3ddyss.clother.data.auth.db
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
+import com.t3ddyss.clother.data.auth.db.models.UserDetailsEntity
 import com.t3ddyss.clother.data.auth.db.models.UserEntity
+import com.t3ddyss.clother.data.auth.db.models.UserWithDetailsEntity
 
 @Dao
 interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(user: UserEntity): Long
 
-    @Query("DELETE FROM USER")
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(userDetails: UserDetailsEntity)
+
+    @Query("DELETE FROM user")
     suspend fun deleteAll()
 
-    @Query("SELECT * FROM USER WHERE id = :id")
-    suspend fun getCurrentUser(id: Int): UserEntity
+    @Transaction
+    @Query("""SELECT * 
+        FROM user 
+        INNER JOIN user_details
+        ON user.id == user_details_id
+        WHERE user.id = :id
+    """
+    )
+    suspend fun getUserWithDetailsById(id: Int): UserWithDetailsEntity
 }

@@ -3,6 +3,7 @@ package com.t3ddyss.clother.data.chat.db.models
 import androidx.room.*
 import com.t3ddyss.clother.data.auth.db.models.UserEntity
 
+// TODO normalize table
 @Entity(tableName = "chat", indices = [Index(value = ["server_id"], unique = true)])
 @SuppressWarnings(RoomWarnings.PRIMARY_KEY_FROM_EMBEDDED_IS_DROPPED)
 data class ChatEntity(

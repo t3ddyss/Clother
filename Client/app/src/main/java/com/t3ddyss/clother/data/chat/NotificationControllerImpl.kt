@@ -12,7 +12,7 @@ import androidx.navigation.NavDeepLinkBuilder
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.domain.chat.NotificationController
 import com.t3ddyss.clother.domain.chat.models.Message
-import com.t3ddyss.core.domain.models.User
+import com.t3ddyss.navigation.presentation.models.UserArg
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
@@ -48,7 +48,7 @@ class NotificationControllerImpl @Inject constructor(
 
     override fun showMessageNotification(message: Message) {
         val userId = message.userId
-        val args = bundleOf("user" to User(id = userId, name = message.userName))
+        val args = bundleOf("user" to UserArg(id = userId, name = message.userName))
         val pendingIntent = NavDeepLinkBuilder(context)
             .setGraph(R.navigation.main_graph)
             .addDestination(R.id.chatsFragment, null)

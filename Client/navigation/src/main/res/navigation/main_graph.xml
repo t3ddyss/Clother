@@ -57,7 +57,7 @@
             app:destination="@id/search_results_graph">
             <argument
                 android:name="category"
-                app:argType="com.t3ddyss.core.domain.models.Category" />
+                app:argType="com.t3ddyss.navigation.presentation.models.CategoryArg" />
         </action>
     </fragment>
 
@@ -82,14 +82,14 @@
             app:destination="@id/offer_editor_graph">
             <argument
                 android:name="category"
-                app:argType="com.t3ddyss.core.domain.models.Category" />
+                app:argType="com.t3ddyss.navigation.presentation.models.CategoryArg" />
         </action>
     </fragment>
 
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.t3ddyss.clother.presentation.profile.ProfileFragment"
-        android:label="@string/your_offers"
+        android:label="@string/feature_profile"
         tools:layout="@layout/fragment_profile">
         <action
             android:id="@+id/action_profileFragment_to_offerFragment"
@@ -237,7 +237,7 @@
         tools:layout="@layout/fragment_chat">
         <argument
             android:name="user"
-            app:argType="com.t3ddyss.core.domain.models.User" />
+            app:argType="com.t3ddyss.navigation.presentation.models.UserArg" />
         <action
             android:id="@+id/action_chatFragment_to_imageSelectorDialog"
             app:destination="@id/imageSelectorDialog"/>

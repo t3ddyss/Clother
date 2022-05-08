@@ -30,7 +30,7 @@ class OfferViewModel @Inject constructor(
 
     private val deletedOffers = mutableSetOf<Int>()
 
-    val userId: Int? get() = authInteractor.authState.value.userId
+    val userId: Int? get() = authInteractor.authStateFlow.value.userId
 
     fun selectOffer(offer: Offer) {
         _offer.value = offer

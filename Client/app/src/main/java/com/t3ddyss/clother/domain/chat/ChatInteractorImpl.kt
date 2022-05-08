@@ -2,13 +2,13 @@ package com.t3ddyss.clother.domain.chat
 
 import com.t3ddyss.clother.domain.auth.AuthInteractor
 import com.t3ddyss.clother.domain.auth.models.AuthState
+import com.t3ddyss.clother.domain.auth.models.User
 import com.t3ddyss.clother.domain.chat.models.*
 import com.t3ddyss.clother.domain.common.common.models.LoadResult
 import com.t3ddyss.clother.domain.offers.ImagesInteractor
 import com.t3ddyss.clother.util.DispatchersProvider
 import com.t3ddyss.clother.util.handleHttpException
 import com.t3ddyss.core.domain.models.Resource
-import com.t3ddyss.core.domain.models.User
 import com.t3ddyss.core.util.log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -30,7 +30,7 @@ class ChatInteractorImpl @Inject constructor(
 
     override fun initialize() {
         scope.launch(dispatchers.io) {
-            authInteractor.authState.collect {
+            authInteractor.authStateFlow.collect {
                 when (it) {
                     is AuthState.None -> onAuthFailure()
                     is AuthState.Authenticated -> onAuthSuccess()

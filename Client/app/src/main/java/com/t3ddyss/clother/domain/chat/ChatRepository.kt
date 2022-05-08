@@ -1,11 +1,11 @@
 package com.t3ddyss.clother.domain.chat
 
+import com.t3ddyss.clother.domain.auth.models.User
 import com.t3ddyss.clother.domain.chat.models.Chat
 import com.t3ddyss.clother.domain.chat.models.LocalImage
 import com.t3ddyss.clother.domain.chat.models.Message
 import com.t3ddyss.clother.domain.common.common.models.LoadResult
 import com.t3ddyss.core.domain.models.Resource
-import com.t3ddyss.core.domain.models.User
 import kotlinx.coroutines.flow.Flow
 
 interface ChatRepository {

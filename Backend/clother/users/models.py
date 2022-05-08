@@ -10,9 +10,11 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     email_verified = db.Column(db.Boolean, nullable=False, default=False)
     name = db.Column(db.String(50), nullable=False)
+    age = db.Column(db.Integer, default=None)
     image = db.Column(db.String(50), default=None)
     admin = db.Column(db.Boolean, nullable=False, default=False)
 
+    # TODO add multiple sessions support
     is_connected = db.Column(db.Boolean, nullable=False, default=False)
     device_token = db.Column(db.String(255))
 
@@ -22,10 +24,15 @@ class User(db.Model):
     def check_password(self, password):
         return check_password_hash(self.password, password)
 
-    def to_dict(self, with_email=False):
-        user = {'id': self.id,
+    def to_dict(self):
+        return {'id': self.id,
                 'name': self.name,
                 'image': self.image}
-        if with_email:
-            user['email'] = self.email
-        return user
+
+    def to_details_dict(self):
+        data = self.to_dict()
+        details = {'email': self.email,
+                   'created_at': self.created_at.isoformat(' ', 'seconds'),
+                   'age': self.age}
+        data['details'] = details
+        return data

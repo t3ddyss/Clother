@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentHomeBinding
+import com.t3ddyss.clother.domain.offers.models.Offer
 import com.t3ddyss.clother.presentation.offers.OfferViewModel
 import com.t3ddyss.clother.presentation.offers.OffersAdapter
 import com.t3ddyss.clother.util.getThemeColor
@@ -31,12 +32,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
     private val args by navArgs<HomeFragmentArgs>()
 
-    private val adapter = OffersAdapter { offer ->
-        offerViewModel.selectOffer(offer)
-        val action = HomeFragmentDirections
-            .actionHomeFragmentToOfferFragment(offer.userId)
-        findNavController().navigate(action)
-    }
+    private val adapter = OffersAdapter(this::onOfferClick)
     private lateinit var loadStateListener: (CombinedLoadStates) -> Unit
     private lateinit var adapterDataObserver: RecyclerView.AdapterDataObserver
     private lateinit var onScrollListener: RecyclerView.OnScrollListener
@@ -163,5 +159,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
             it.getContentIfNotHandled() ?: return@observe
             showSnackbarWithText(R.string.offer_created)
         }
+    }
+
+    private fun onOfferClick(offer: Offer) {
+        offerViewModel.selectOffer(offer)
+        val action = HomeFragmentDirections
+            .actionHomeFragmentToOfferFragment(offer.userId)
+        findNavController().navigate(action)
     }
 }

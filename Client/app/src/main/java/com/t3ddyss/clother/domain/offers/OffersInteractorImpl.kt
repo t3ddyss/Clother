@@ -2,9 +2,9 @@ package com.t3ddyss.clother.domain.offers
 
 import androidx.paging.PagingData
 import com.google.gson.JsonObject
+import com.t3ddyss.clother.domain.offers.models.Category
 import com.t3ddyss.clother.domain.offers.models.Offer
 import com.t3ddyss.clother.util.handleHttpException
-import com.t3ddyss.core.domain.models.Category
 import com.t3ddyss.core.domain.models.Resource
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll

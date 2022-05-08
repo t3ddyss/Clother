@@ -1,7 +1,7 @@
 package com.t3ddyss.clother.data.auth
 
 import com.t3ddyss.clother.data.auth.remote.RemoteAuthService
-import com.t3ddyss.clother.data.auth.remote.models.AuthDataDto
+import com.t3ddyss.clother.data.auth.remote.models.UserAuthDataDto
 import com.t3ddyss.clother.data.common.common.Mappers.toDomain
 import com.t3ddyss.clother.data.common.common.Storage
 import com.t3ddyss.clother.domain.auth.AuthTokenRepository
@@ -26,7 +26,7 @@ class AuthTokenRepositoryImpl @Inject constructor(
 ) : AuthTokenRepository, Authenticator {
     private val remoteAuthService get() = remoteAuthServiceLazy.get()
 
-    private val _tokenStateFlow: MutableSharedFlow<AuthDataDto?> =
+    private val _tokenStateFlow: MutableSharedFlow<UserAuthDataDto?> =
         MutableSharedFlow(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
     override val tokenStateFlow = _tokenStateFlow
         .map { it?.toDomain() }

@@ -8,7 +8,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.t3ddyss.clother.R
+import com.t3ddyss.clother.data.common.common.Mappers.toArg
 import com.t3ddyss.clother.databinding.FragmentOfferCategoryBinding
+import com.t3ddyss.clother.domain.offers.models.Category
 import com.t3ddyss.core.presentation.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -21,18 +23,7 @@ class OfferCategoryFragment : BaseFragment<FragmentOfferCategoryBinding>
     private lateinit var adapter: CategoriesAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        adapter = CategoriesAdapter {
-            if (!it.isLastLevel) {
-                val action = OfferCategoryFragmentDirections
-                    .openSubcategoriesAction(it.id)
-                findNavController().navigate(action)
-            } else {
-                val action = OfferCategoryFragmentDirections
-                    .offerCategoryToOfferEditorGraph(it)
-                findNavController().navigate(action)
-            }
-        }
-
+        adapter = CategoriesAdapter(this::onCategoryClick)
         val layoutManager = LinearLayoutManager(context)
 
         binding.listCategories.layoutManager = layoutManager
@@ -53,5 +44,16 @@ class OfferCategoryFragment : BaseFragment<FragmentOfferCategoryBinding>
         viewModel.categories.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
+    }
+
+    private fun onCategoryClick(category: Category) {
+        val action =  if (category.isLastLevel) {
+            OfferCategoryFragmentDirections
+                .offerCategoryToOfferEditorGraph(category.toArg())
+        } else {
+            OfferCategoryFragmentDirections
+                .openSubcategoriesAction(category.id)
+        }
+        findNavController().navigate(action)
     }
 }

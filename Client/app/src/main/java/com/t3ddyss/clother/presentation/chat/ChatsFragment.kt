@@ -5,7 +5,9 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.t3ddyss.clother.data.common.common.Mappers.toArg
 import com.t3ddyss.clother.databinding.FragmentChatsBinding
+import com.t3ddyss.clother.domain.chat.models.Chat
 import com.t3ddyss.core.domain.models.Error
 import com.t3ddyss.core.domain.models.Loading
 import com.t3ddyss.core.domain.models.Success
@@ -16,11 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class ChatsFragment : BaseFragment<FragmentChatsBinding>(FragmentChatsBinding::inflate) {
     private val viewModel by viewModels<ChatsViewModel>()
 
-    private val adapter = ChatsAdapter {
-        val action = ChatsFragmentDirections
-            .actionChatsFragmentToChatFragment(it.interlocutor)
-        findNavController().navigate(action)
-    }
+    private val adapter = ChatsAdapter(this::onChatClick)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.listChats.adapter = adapter
@@ -45,5 +43,11 @@ class ChatsFragment : BaseFragment<FragmentChatsBinding>(FragmentChatsBinding::i
                 }
             }
         }
+    }
+
+    private fun onChatClick(chat: Chat) {
+        val action = ChatsFragmentDirections
+            .actionChatsFragmentToChatFragment(chat.interlocutor.toArg())
+        findNavController().navigate(action)
     }
 }

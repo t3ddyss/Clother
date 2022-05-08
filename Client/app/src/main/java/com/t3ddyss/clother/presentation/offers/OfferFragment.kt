@@ -16,10 +16,10 @@ import com.t3ddyss.clother.databinding.FragmentOfferBinding
 import com.t3ddyss.clother.util.formatDate
 import com.t3ddyss.core.domain.models.Error
 import com.t3ddyss.core.domain.models.Success
-import com.t3ddyss.core.domain.models.User
 import com.t3ddyss.core.presentation.BaseFragment
 import com.t3ddyss.core.util.errorText
 import com.t3ddyss.core.util.showSnackbarWithText
+import com.t3ddyss.navigation.presentation.models.UserArg
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -110,7 +110,7 @@ class OfferFragment : BaseFragment<FragmentOfferBinding>(FragmentOfferBinding::i
                 // TODO add User to Offer
                 buttonMessage.setOnClickListener { _ ->
                     val action = OfferFragmentDirections
-                        .actionOfferFragmentToChatFragment(User(it.userId, it.userName))
+                        .actionOfferFragmentToChatFragment(UserArg(it.userId, it.userName))
                     findNavController().navigate(action)
                 }
             }

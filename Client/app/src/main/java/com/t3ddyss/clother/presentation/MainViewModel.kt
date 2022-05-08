@@ -19,7 +19,7 @@ class MainViewModel @Inject constructor(
     authInteractor: AuthInteractor,
     storage: Storage
 ) : ViewModel() {
-    val authStateFlow: StateFlow<AuthState> = authInteractor.authState
+    val authStateFlow: StateFlow<AuthState> = authInteractor.authStateFlow
     val unauthorizedEvent =
         authStateFlow
             .filterIsInstance<AuthState.None>()

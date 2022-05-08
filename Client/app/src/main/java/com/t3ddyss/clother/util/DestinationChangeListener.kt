@@ -25,7 +25,7 @@ class DestinationChangeListener(
         R.id.imageSelectorDialog, R.id.imageFragment, R.id.messageMenuDialog, R.id.onboardingFragment
     )
 
-    private val fragmentsWithoutToolbar = setOf(R.id.searchFragment, R.id.onboardingFragment)
+    private val fragmentsWithoutToolbar = setOf(R.id.searchFragment, R.id.onboardingFragment, R.id.profileFragment)
 
     private val fragmentsWithToolbarLabel = setOf(
         R.id.offerFragment,

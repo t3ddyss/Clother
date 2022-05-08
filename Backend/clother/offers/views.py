@@ -1,18 +1,15 @@
 import json
-import os
-import secrets
 import time
 
-from flask import Blueprint, request, jsonify, current_app, abort
+from flask import Blueprint, request, jsonify, abort
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy.exc import IntegrityError
-from werkzeug.utils import secure_filename
 
 from .models import Offer, Category, Location, OfferImage
 from .. import db
+from ..constants import RESPONSE_DELAY, BASE_PREFIX, DEFAULT_OFFERS_PAGE_SIZE
 from ..images.utils import is_allowed_image, store_images
 from ..users.models import User
-from ..constants import RESPONSE_DELAY, BASE_PREFIX, DEFAULT_OFFERS_PAGE_SIZE
 
 blueprint = Blueprint('offers', __name__, url_prefix=(BASE_PREFIX + '/offers'))
 
