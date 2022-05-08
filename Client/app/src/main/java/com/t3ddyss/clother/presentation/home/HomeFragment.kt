@@ -164,7 +164,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     private fun onOfferClick(offer: Offer) {
         offerViewModel.selectOffer(offer)
         val action = HomeFragmentDirections
-            .actionHomeFragmentToOfferFragment(offer.userId)
+            .actionHomeFragmentToOfferFragment(offer.user.id)
         findNavController().navigate(action)
     }
 }

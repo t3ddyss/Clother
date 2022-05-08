@@ -1,19 +1,16 @@
 package com.t3ddyss.clother.data.offers.remote.models
 
 import com.google.gson.annotations.SerializedName
+import com.t3ddyss.clother.data.auth.remote.models.UserDto
 import java.util.*
 
 data class OfferDto(
     val id: Int,
 
+    val user: UserDto,
+
     @SerializedName("category_id")
-    var categoryId: Int,
-
-    @SerializedName("user_id")
-    var userId: Int,
-
-    @SerializedName("user_name")
-    val userName: String,
+    val categoryId: Int,
 
     @SerializedName("created_at")
     val createdAt: Date,

@@ -12,10 +12,11 @@ class ProfileInteractorImpl @Inject constructor(
     private val offersInteractor: OffersInteractor,
 ) : ProfileInteractor {
     override fun observeOffersByUser(userId: Int): Flow<PagingData<Offer>> {
+        val query = mapOf("user" to userId.toString())
         return if (userId == authInteractor.authStateFlow.value.userId) {
-            offersInteractor.observeOffersFromDatabase(userId = userId)
+            offersInteractor.observeOffersFromDatabase(query = query, userId = userId)
         } else {
-            offersInteractor.observeOffersFromNetwork(mapOf("user" to userId.toString()))
+            offersInteractor.observeOffersFromNetwork(query = query)
         }
     }
 

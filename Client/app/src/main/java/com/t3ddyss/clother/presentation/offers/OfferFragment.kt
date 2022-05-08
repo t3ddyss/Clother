@@ -12,6 +12,7 @@ import androidx.navigation.fragment.navArgs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayoutMediator
 import com.t3ddyss.clother.R
+import com.t3ddyss.clother.data.common.common.Mappers.toArg
 import com.t3ddyss.clother.databinding.FragmentOfferBinding
 import com.t3ddyss.clother.util.formatDate
 import com.t3ddyss.core.domain.models.Error
@@ -19,7 +20,6 @@ import com.t3ddyss.core.domain.models.Success
 import com.t3ddyss.core.presentation.BaseFragment
 import com.t3ddyss.core.util.errorText
 import com.t3ddyss.core.util.showSnackbarWithText
-import com.t3ddyss.navigation.presentation.models.UserArg
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -99,18 +99,17 @@ class OfferFragment : BaseFragment<FragmentOfferBinding>(FragmentOfferBinding::i
                     groupSize.isVisible = false
                 }
 
-                textViewUser.text = it.userName
+                textViewUser.text = it.user.name
                 textViewTime.text = it.createdAt.formatDate()
 
-                if (it.userId == currentUserId) {
+                if (it.user.id == currentUserId) {
                     buttonMessage.isVisible = false
                     return@observe
                 }
 
-                // TODO add User to Offer
                 buttonMessage.setOnClickListener { _ ->
                     val action = OfferFragmentDirections
-                        .actionOfferFragmentToChatFragment(UserArg(it.userId, it.userName))
+                        .actionOfferFragmentToChatFragment(it.user.toArg())
                     findNavController().navigate(action)
                 }
             }

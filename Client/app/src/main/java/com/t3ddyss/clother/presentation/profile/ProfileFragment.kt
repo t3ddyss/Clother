@@ -94,7 +94,7 @@ class ProfileFragment
     private fun onOfferClick(offer: Offer) {
         offerViewModel.selectOffer(offer)
         val action = ProfileFragmentDirections
-            .actionProfileFragmentToOfferFragment(offer.userId)
+            .actionProfileFragmentToOfferFragment(offer.user.id)
         findNavController().navigate(action)
     }
 }

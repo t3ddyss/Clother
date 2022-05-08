@@ -13,6 +13,9 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(userDetails: UserDetailsEntity)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(users: List<UserEntity>)
+
     @Query("DELETE FROM user")
     suspend fun deleteAll()
 
@@ -20,7 +23,7 @@ interface UserDao {
     @Query("""SELECT * 
         FROM user 
         INNER JOIN user_details
-        ON user.id == user_details_id
+        ON user.id == user_details.user_id
         WHERE user.id = :id
     """
     )

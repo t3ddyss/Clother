@@ -8,7 +8,6 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
 import com.t3ddyss.clother.data.auth.db.UserDao
-import com.t3ddyss.clother.data.common.common.Mappers.toDomain
 import com.t3ddyss.clother.domain.auth.AuthInteractor
 import com.t3ddyss.clother.domain.auth.ProfileInteractor
 import com.t3ddyss.clother.domain.auth.models.User
@@ -43,7 +42,7 @@ class ProfileViewModel @Inject constructor(
             }
             // TODO change to details request
             launch {
-                _user.postValue(userDao.getUserWithDetailsById(userId).toDomain())
+//                _user.postValue(userDao.getUserWithDetailsById(userId).toDomain())
             }
         }
     }

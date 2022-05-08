@@ -14,6 +14,7 @@ import com.t3ddyss.clother.data.chat.remote.models.MessageDto
 import com.t3ddyss.clother.data.common.common.remote.models.ResponseDto
 import com.t3ddyss.clother.data.offers.db.models.CategoryEntity
 import com.t3ddyss.clother.data.offers.db.models.OfferEntity
+import com.t3ddyss.clother.data.offers.db.models.OfferWithUserEntity
 import com.t3ddyss.clother.data.offers.remote.models.OfferDto
 import com.t3ddyss.clother.domain.auth.models.AuthData
 import com.t3ddyss.clother.domain.auth.models.User
@@ -136,8 +137,7 @@ object Mappers {
     fun OfferDto.toDomain(): Offer {
         return Offer(
             id = this.id,
-            userId = this.userId,
-            userName = this.userName,
+            user = this.user.toDomain(),
             createdAt = this.createdAt,
             title = this.title,
             description = this.description.orEmpty(),
@@ -148,12 +148,12 @@ object Mappers {
         )
     }
 
-    fun OfferDto.toEntity(): OfferEntity {
+    fun OfferDto.toEntity(listKey: String): OfferEntity {
         return OfferEntity(
             id = this.id,
+            listKey = listKey,
             categoryId = this.categoryId,
-            userId = this.userId,
-            userName = this.userName,
+            userId = this.user.id,
             createdAt = this.createdAt,
             title = this.title,
             description = this.description.orEmpty(),
@@ -164,18 +164,17 @@ object Mappers {
         )
     }
 
-    fun OfferEntity.toDomain(): Offer {
+    fun OfferWithUserEntity.toDomain(): Offer {
         return Offer(
-            id = this.id,
-            userId = this.userId,
-            userName = this.userName,
-            createdAt = this.createdAt,
-            title = this.title,
-            description = this.description.orEmpty(),
-            category = this.category,
-            images = this.images,
-            size = this.size.orEmpty(),
-            location = this.location.orEmpty()
+            id = this.offer.id,
+            user = user.toDomain(),
+            createdAt = this.offer.createdAt,
+            title = this.offer.title,
+            description = this.offer.description.orEmpty(),
+            category = this.offer.category,
+            images = this.offer.images,
+            size = this.offer.size.orEmpty(),
+            location = this.offer.location.orEmpty()
         )
     }
 

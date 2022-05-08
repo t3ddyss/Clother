@@ -149,7 +149,7 @@ class SearchResultsFragment
     private fun onOfferClick(offer: Offer) {
         offerViewModel.selectOffer(offer)
         val action = SearchResultsFragmentDirections
-            .actionSearchResultsToOfferFragment(offer.userId)
+            .actionSearchResultsToOfferFragment(offer.user.id)
         findNavController().navigate(action)
     }
 

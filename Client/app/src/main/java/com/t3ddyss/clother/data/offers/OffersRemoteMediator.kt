@@ -4,12 +4,13 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
+import com.t3ddyss.clother.data.auth.db.UserDao
 import com.t3ddyss.clother.data.common.common.Mappers.toEntity
 import com.t3ddyss.clother.data.common.common.Storage
 import com.t3ddyss.clother.data.common.common.db.AppDatabase
 import com.t3ddyss.clother.data.offers.db.OfferDao
 import com.t3ddyss.clother.data.offers.db.RemoteKeyDao
-import com.t3ddyss.clother.data.offers.db.models.OfferEntity
+import com.t3ddyss.clother.data.offers.db.models.OfferWithUserEntity
 import com.t3ddyss.clother.data.offers.db.models.RemoteKeyEntity
 import com.t3ddyss.clother.data.offers.remote.RemoteOffersService
 import com.t3ddyss.core.util.log
@@ -22,15 +23,16 @@ class OffersRemoteMediator @AssistedInject constructor(
     private val service: RemoteOffersService,
     private val storage: Storage,
     private val db: AppDatabase,
+    private val userDao: UserDao,
     private val offerDao: OfferDao,
     private val remoteKeyDao: RemoteKeyDao,
     @Assisted private val listKey: String,
     @Assisted private val query: Map<String, String>
-) : RemoteMediator<Int, OfferEntity>() {
+) : RemoteMediator<Int, OfferWithUserEntity>() {
 
     override suspend fun load(
         loadType: LoadType,
-        state: PagingState<Int, OfferEntity>
+        state: PagingState<Int, OfferWithUserEntity>
     ): MediatorResult {
         val key: Int? = when (loadType) {
             LoadType.REFRESH -> {
@@ -61,16 +63,16 @@ class OffersRemoteMediator @AssistedInject constructor(
                 },
                 filters = query
             )
-                .map { it.toEntity() }
-            items.forEach { it.listKey = listKey }
 
             db.withTransaction {
                 if (loadType == LoadType.REFRESH) {
+                    // TODO remove unreferenced users
                     offerDao.deleteAllOffersFromList(listKey)
                     remoteKeyDao.removeByList(listKey)
                 }
 
-                offerDao.insertAll(items)
+                userDao.insertAll(items.map { it.user.toEntity() })
+                offerDao.insertAll(items.map { it.toEntity(listKey) })
                 remoteKeyDao.insert(RemoteKeyEntity(listKey, items.lastOrNull()?.id))
             }
 

@@ -25,13 +25,12 @@ class Offer(db.Model):
 
     def to_dict(self, url_root):
         offer = {'id': self.id,
-                 'user_id': self.user_id,
+                 'user': self.user.to_dict(),
                  'category_id': self.category_id,
                  'created_at': self.created_at.isoformat(sep=' ', timespec='seconds'),
                  'title': self.title,
                  'description': self.description,
                  'size': self.size,
-                 'user_name': self.user.name,
                  'category': self.category.title,
                  'images': [image.get_uri(url_root) for image in self.images]}
         if self.location:
