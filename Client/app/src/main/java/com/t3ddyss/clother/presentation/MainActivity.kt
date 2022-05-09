@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity(), NavMenuController {
             Handler(Looper.getMainLooper()).post {
                 Snackbar.make(
                     binding.root,
-                    R.string.session_expired,
+                    R.string.error_session_expired,
                     Snackbar.LENGTH_SHORT
                 ).show()
             }

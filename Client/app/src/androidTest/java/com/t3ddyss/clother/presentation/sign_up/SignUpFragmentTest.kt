@@ -64,7 +64,7 @@ class SignUpFragmentTest {
 
         var expectedErrorText = ""
         activityScenario.onActivity { activity ->
-            expectedErrorText = activity.getString(R.string.email_invalid)
+            expectedErrorText = activity.getString(R.string.auth_email_invalid)
         }
 
         onView(withId(R.id.textInput_email))

@@ -7,7 +7,6 @@
     <fragment
         android:id="@+id/searchResultsFragment"
         android:name="com.t3ddyss.clother.presentation.search.SearchResultsFragment"
-        android:label="fragment_search_results"
         tools:layout="@layout/fragment_search_results">
         <argument
             android:name="category"
@@ -40,8 +39,7 @@
     </fragment>
     <dialog
         android:id="@+id/filterDialogFragment"
-        android:name="com.t3ddyss.clother.presentation.search.FilterDialogFragment"
-        android:label="FilterDialogFragment">
+        android:name="com.t3ddyss.clother.presentation.search.FilterDialogFragment">
         <action
             android:id="@+id/action_filterDialogFragment_to_locationFragment"
             app:destination="@id/locationFragment" />
@@ -49,7 +47,6 @@
     <fragment
         android:id="@+id/locationFragment"
         android:name="com.t3ddyss.feature_location.presentation.LocationSelectorFragment"
-        android:label="@string/select_location"
         tools:layout="@layout/fragment_location_selector">
         <argument
             android:name="called_from_id"

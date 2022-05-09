@@ -26,7 +26,7 @@ class ChatsFragment : BaseFragment<FragmentChatsBinding>(FragmentChatsBinding::i
         ToolbarUtils.setupToolbar(
             activity,
             binding.toolbar,
-            getString(R.string.messages)
+            getString(R.string.menu_messages)
         )
         binding.listChats.adapter = adapter
         subscribeUi()

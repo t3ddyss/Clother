@@ -25,7 +25,7 @@ val Fragment.errorText: Error<*>.() -> String
 fun Fragment.showSnackbarWithText(text: String?) {
     val snackbar = Snackbar.make(
         requireView(),
-        text ?: getString(R.string.unknown_error),
+        text ?: getString(R.string.error_unknown),
         Snackbar.LENGTH_SHORT
     )
     showSnackbar(snackbar)

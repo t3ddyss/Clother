@@ -195,7 +195,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/nothing_here"
+            android:text="@string/message_nothing_here_yet"
             android:textSize="@dimen/text_size_medium"
             android:visibility="gone" />
     </FrameLayout>

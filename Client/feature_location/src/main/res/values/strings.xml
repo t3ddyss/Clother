@@ -1,6 +1,8 @@
 <resources>
-    <string name="no_location_access">Cannot find your location automatically, please select it manually</string>
-    <string name="grant_permission">Grant permission</string>
-    <string name="error_showing_location">Error showing location</string>
     <string name="location">Location</string>
+    <string name="location_select">Select location</string>
+    <string name="location_updating">Updating your location…</string>
+    <string name="location_no_access">Cannot find your location automatically, please select it manually</string>
+    <string name="location_enable_gps">Choose your location manually or enable location services in settings</string>
+    <string name="location_error">Error showing location</string>
 </resources>

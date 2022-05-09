@@ -42,7 +42,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         ToolbarUtils.setupToolbar(
             activity,
             binding.toolbar,
-            getString(R.string.home)
+            getString(R.string.menu_home)
         )
 
         binding.progressBarFooter.isVisible = false
@@ -164,7 +164,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
         viewModel.newOfferAdded.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled() ?: return@observe
-            showSnackbarWithText(R.string.offer_created)
+            showSnackbarWithText(R.string.offer_created_message)
         }
     }
 

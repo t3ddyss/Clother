@@ -5,7 +5,7 @@
         android:id="@+id/search"
         android:icon="@drawable/ic_search"
         android:orderInCategory="100"
-        android:title="@string/search"
+        android:title="@string/menu_search"
         app:iconTint="?attr/colorOnPrimary"
         app:showAsAction="always" />
 
@@ -13,7 +13,7 @@
         android:id="@+id/filters"
         android:icon="@drawable/ic_filters"
         android:orderInCategory="200"
-        android:title="@string/filters"
+        android:title="@string/search_filters"
         app:iconTint="?attr/colorOnPrimary"
         app:showAsAction="ifRoom" />
 </menu>

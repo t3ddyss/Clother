@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:checkable="true"
         android:minWidth="@dimen/chip_min_width"
-        android:text="@string/size_xs"
+        android:text="@string/offer_size_xs"
         android:textAlignment="center" />
 
     <com.google.android.material.chip.Chip
@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:checkable="true"
         android:minWidth="@dimen/chip_min_width"
-        android:text="@string/size_s"
+        android:text="@string/offer_size_s"
         android:textAlignment="center" />
 
     <com.google.android.material.chip.Chip
@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:checkable="true"
         android:minWidth="@dimen/chip_min_width"
-        android:text="@string/size_m"
+        android:text="@string/offer_size_m"
         android:textAlignment="center" />
 
     <com.google.android.material.chip.Chip
@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:checkable="true"
         android:minWidth="@dimen/chip_min_width"
-        android:text="@string/size_l"
+        android:text="@string/offer_size_l"
         android:textAlignment="center" />
 
     <com.google.android.material.chip.Chip
@@ -52,7 +52,7 @@
         android:layout_height="wrap_content"
         android:checkable="true"
         android:minWidth="@dimen/chip_min_width"
-        android:text="@string/size_xl"
+        android:text="@string/offer_size_xl"
         android:textAlignment="center" />
 
     <com.google.android.material.chip.Chip

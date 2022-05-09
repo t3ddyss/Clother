@@ -52,13 +52,13 @@ class OfferFragment : BaseFragment<FragmentOfferBinding>(FragmentOfferBinding::i
                 requireContext(),
                 R.style.MyThemeOverlay_MaterialComponents_MaterialAlertDialog
             )
-                .setTitle(getString(R.string.delete_offer))
-                .setMessage(getString(R.string.deletion_confirmation))
-                .setPositiveButton(getString(R.string.delete)) { _, _ ->
+                .setTitle(getString(R.string.offer_delete))
+                .setMessage(getString(R.string.offer_deletion_confirmation))
+                .setPositiveButton(getString(R.string.action_delete)) { _, _ ->
                     binding.layoutLoading.isVisible = true
                     viewModel.deleteOffer()
                 }
-                .setNegativeButton(getString(R.string.cancel), null)
+                .setNegativeButton(getString(R.string.action_cancel), null)
                 .show()
         }
         return super.onOptionsItemSelected(item)
@@ -128,7 +128,7 @@ class OfferFragment : BaseFragment<FragmentOfferBinding>(FragmentOfferBinding::i
             when (result) {
                 is Success<*> -> {
                     findNavController().popBackStack()
-                    showSnackbarWithText(R.string.offer_deleted)
+                    showSnackbarWithText(R.string.offer_deleted_message)
                 }
                 is Error<*> -> {
                     binding.layoutLoading.isVisible = false

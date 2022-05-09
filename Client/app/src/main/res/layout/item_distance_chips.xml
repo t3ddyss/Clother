@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:checkable="true"
         android:minWidth="@dimen/chip_min_width"
-        android:text="@string/km_5"
+        android:text="@string/offer_radius_5_km"
         android:textAlignment="center" />
 
     <com.google.android.material.chip.Chip
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:checkable="true"
         android:minWidth="@dimen/chip_min_width"
-        android:text="@string/km_10"
+        android:text="@string/offer_radius_10_km"
         android:textAlignment="center" />
 
     <com.google.android.material.chip.Chip
@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:checkable="true"
         android:minWidth="@dimen/chip_min_width"
-        android:text="@string/km_25"
+        android:text="@string/offer_radius_25_km"
         android:textAlignment="center" />
 
     <com.google.android.material.chip.Chip
@@ -42,6 +42,6 @@
         android:layout_height="wrap_content"
         android:checkable="true"
         android:minWidth="@dimen/chip_min_width"
-        android:text="@string/km_50"
+        android:text="@string/offer_radius_50_km"
         android:textAlignment="center" />
 </com.google.android.material.chip.ChipGroup>

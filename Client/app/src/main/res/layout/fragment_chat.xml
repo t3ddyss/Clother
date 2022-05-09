@@ -88,7 +88,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/edit_text_rounded"
-                android:hint="@string/message"
+                android:hint="@string/chat_input_hint"
                 android:imeOptions="actionSend"
                 android:inputType="text"
                 android:padding="@dimen/margin_padding_16dp"
@@ -129,7 +129,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/nothing_here"
+            android:text="@string/message_nothing_here_yet"
             android:textSize="@dimen/text_size_medium" />
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

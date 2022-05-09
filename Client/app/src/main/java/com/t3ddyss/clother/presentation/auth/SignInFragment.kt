@@ -35,7 +35,7 @@ class SignInFragment
             val password = binding.editTextPassword.text()
 
             if (!StringUtils.isValidEmail(email)) {
-                binding.textInputEmail.error = getString(R.string.email_invalid)
+                binding.textInputEmail.error = getString(R.string.auth_email_invalid)
                 return@setOnClickListener
             }
             binding.textInputEmail.isErrorEnabled = false

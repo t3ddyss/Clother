@@ -46,7 +46,7 @@ class LocationSelectorFragment
             requestLocation()
         } else {
             setOnMapLongClickListener()
-            showSnackbarWithText(getString(R.string.no_location_access))
+            showSnackbarWithText(getString(R.string.location_no_access))
         }
     }
 
@@ -57,7 +57,7 @@ class LocationSelectorFragment
         ToolbarUtils.setupToolbar(
             activity,
             binding.toolbar,
-            getString(R.string.select_location),
+            getString(R.string.location_select),
             ToolbarUtils.NavIcon.CLOSE
         )
 
@@ -73,8 +73,8 @@ class LocationSelectorFragment
                 checkIfLocationEnabled()
             } else {
                 showSnackbarWithAction(
-                        text = R.string.no_location_access,
-                        actionText = R.string.grant_permission,
+                        text = R.string.location_no_access,
+                        actionText = R.string.action_grant_permission,
                         action = { IntentUtils.openApplicationSettings(requireContext())}
                 )
                 setOnMapLongClickListener()

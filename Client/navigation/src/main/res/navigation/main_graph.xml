@@ -11,7 +11,6 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.t3ddyss.clother.presentation.home.HomeFragment"
-        android:label="@string/home"
         tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment_to_offerFragment"
@@ -29,7 +28,6 @@
     <fragment
         android:id="@+id/searchByCategoryFragment"
         android:name="com.t3ddyss.clother.presentation.categories.SearchByCategoryFragment"
-        android:label="@string/search"
         tools:layout="@layout/fragment_search_by_category">
         <argument
             android:name="parent_id"
@@ -64,7 +62,6 @@
     <fragment
         android:id="@+id/offerCategoryFragment"
         android:name="com.t3ddyss.clother.presentation.categories.OfferCategoryFragment"
-        android:label="@string/select_category"
         tools:layout="@layout/fragment_offer_category">
         <argument
             android:name="parent_id"
@@ -89,7 +86,6 @@
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.t3ddyss.clother.presentation.profile.ProfileFragment"
-        android:label="@string/feature_profile"
         tools:layout="@layout/fragment_profile">
         <argument
             android:name="is_current_user"
@@ -103,7 +99,6 @@
     <fragment
         android:id="@+id/signUpFragment"
         android:name="com.t3ddyss.clother.presentation.auth.SignUpFragment"
-        android:label="@string/sign_up"
         tools:layout="@layout/fragment_sign_up">
         <action
             android:id="@+id/action_signUpFragment_to_emailActionFragment"
@@ -127,7 +122,7 @@
     <fragment
         android:id="@+id/emailActionFragment"
         android:name="com.t3ddyss.clother.presentation.auth.EmailConfirmationFragment"
-        android:label="@string/check_inbox"
+        android:label="@string/auth_check_inbox"
         tools:layout="@layout/fragment_email_confirmation">
         <argument
             android:name="email_action_message"
@@ -150,7 +145,6 @@
     <fragment
         android:id="@+id/signInFragment"
         android:name="com.t3ddyss.clother.presentation.auth.SignInFragment"
-        android:label="@string/sign_in"
         tools:layout="@layout/fragment_sign_in">
         <action
             android:id="@+id/action_signInFragment_to_homeFragment"
@@ -169,7 +163,6 @@
     <fragment
         android:id="@+id/resetPasswordFragment"
         android:name="com.t3ddyss.clother.presentation.auth.PasswordRecoveryFragment"
-        android:label="@string/reset_password"
         tools:layout="@layout/fragment_password_recovery">
         <action
             android:id="@+id/action_resetPasswordFragment_to_emailActionFragment"
@@ -181,7 +174,6 @@
     <fragment
         android:id="@+id/offerFragment"
         android:name="com.t3ddyss.clother.presentation.offers.OfferFragment"
-        android:label="@string/offer"
         tools:layout="@layout/fragment_offer">
         <argument
             android:name="poster_id"
@@ -198,7 +190,6 @@
     <fragment
         android:id="@+id/locationViewerFragment"
         android:name="com.t3ddyss.feature_location.presentation.LocationViewerFragment"
-        android:label="@string/location"
         tools:layout="@layout/fragment_location_viewer">
         <argument
             android:name="coordinates"
@@ -209,7 +200,6 @@
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.t3ddyss.clother.presentation.search.SearchFragment"
-        android:label="@string/search"
         tools:layout="@layout/fragment_search">
         <action
             android:id="@+id/searchFragment_to_searchResultsGraph"
@@ -227,7 +217,6 @@
     <fragment
         android:id="@+id/chatsFragment"
         android:name="com.t3ddyss.clother.presentation.chat.ChatsFragment"
-        android:label="@string/messages"
         tools:layout="@layout/fragment_chats">
         <action
             android:id="@+id/action_chatsFragment_to_chatFragment"
@@ -237,7 +226,6 @@
     <fragment
         android:id="@+id/chatFragment"
         android:name="com.t3ddyss.clother.presentation.chat.ChatFragment"
-        android:label="{user}"
         tools:layout="@layout/fragment_chat">
         <argument
             android:name="user"
@@ -255,13 +243,11 @@
 
     <dialog
         android:id="@+id/imageSelectorDialog"
-        android:name="com.t3ddyss.clother.presentation.chat.ImageSelectorDialog"
-        android:label="ImageSelectorDialog" />
+        android:name="com.t3ddyss.clother.presentation.chat.ImageSelectorDialog" />
 
     <fragment
         android:id="@+id/imageFragment"
-        android:name="com.t3ddyss.clother.presentation.chat.ImageFragment"
-        android:label="ImageFragment">
+        android:name="com.t3ddyss.clother.presentation.chat.ImageFragment" >
         <argument
             android:name="url"
             android:defaultValue=""
@@ -270,8 +256,7 @@
 
     <dialog
         android:id="@+id/messageMenuDialog"
-        android:name="com.t3ddyss.clother.presentation.chat.MessageMenuDialog"
-        android:label="MessageMenuDialog" >
+        android:name="com.t3ddyss.clother.presentation.chat.MessageMenuDialog" >
         <argument
             android:name="isRetryVisible"
             android:defaultValue="false"
@@ -280,8 +265,7 @@
 
     <fragment
         android:id="@+id/onboardingFragment"
-        android:name="com.t3ddyss.clother.presentation.onboarding.OnboardingFragment"
-        android:label="OnboardingFragment" >
+        android:name="com.t3ddyss.clother.presentation.onboarding.OnboardingFragment" >
         <action
             android:id="@+id/action_onboardingFragment_to_signUpFragment"
             app:destination="@id/signUpFragment"

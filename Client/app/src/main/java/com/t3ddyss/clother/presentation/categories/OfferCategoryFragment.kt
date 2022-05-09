@@ -29,7 +29,7 @@ class OfferCategoryFragment : BaseFragment<FragmentOfferCategoryBinding>
         ToolbarUtils.setupToolbar(
             activity,
             binding.toolbar,
-            getString(R.string.select_category),
+            getString(R.string.offer_select_category),
             if (isRootCategory) ToolbarUtils.NavIcon.NONE else ToolbarUtils.NavIcon.UP
         )
         adapter = CategoriesAdapter(this::onCategoryClick)

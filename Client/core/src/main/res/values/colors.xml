@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Day theme -->
+    <!-- Light theme -->
     <color name="white_day_light">#F9F9F9</color>
     <color name="white_day_mid">#E0E0E0</color>
 
-    <!-- Night theme -->
+    <!-- Dark theme -->
     <color name="grey_night_dark">#19191A</color>
     <color name="grey_night_mid">#2C2D2E</color>
     <color name="grey_night_light">#454647</color>

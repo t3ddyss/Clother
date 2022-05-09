@@ -32,13 +32,11 @@
     <fragment
         android:id="@+id/galleryFragment"
         android:name="com.t3ddyss.clother.presentation.offers.GalleryFragment"
-        android:label="@string/select_images"
         tools:layout="@layout/fragment_gallery" />
     <fragment
         android:id="@+id/locationFragment"
         android:name="com.t3ddyss.feature_location.presentation.LocationSelectorFragment"
-        android:label="@string/select_location"
-        tools:layout="@layout/fragment_location_selector">
+        tools:layout="@layout/fragment_location_selector" >
         <argument
             android:name="called_from_id"
             android:defaultValue="0"

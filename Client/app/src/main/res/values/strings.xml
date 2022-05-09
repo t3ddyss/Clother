@@ -1,72 +1,78 @@
 <resources>
     <string name="app_name">Clother</string>
-    <string name="profile">Profile</string>
-    <string name="name">Name</string>
-    <string name="email">Email</string>
-    <string name="password">Password</string>
-    <string name="already_registered">Already have an account? Sign in</string>
-    <string name="forgot_password">Forgot your password?</string>
-    <string name="email_activation">To activate your account,
+
+    <string name="notification_channel_messages_name">Messages</string>
+    <string name="notification_channel_messages_description">Messages from other users</string>
+
+    <string name="action_enable">Enable</string>
+    <string name="action_retry">Retry</string>
+    <string name="action_okay">Okay</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_search">Search</string>
+    <string name="menu_new_offer">New offer</string>
+    <string name="menu_messages">Messages</string>
+    <string name="menu_profile">Profile</string>
+
+    <string name="auth_name">Name</string>
+    <string name="auth_email">Email</string>
+    <string name="auth_password">Password</string>
+    <string name="auth_sign_up">Sign up</string>
+    <string name="auth_sign_in">Sign in</string>
+    <string name="auth_reset_password">Reset password</string>
+    <string name="auth_already_signed_up">Already have an account? Sign in</string>
+    <string name="auth_forgot_password">Forgot your password?</string>
+    <string name="auth_email_activation_message">To activate your account,
         please follow instructions we sent to\u0020</string>
-    <string name="password_reset_message">To reset your password,
+    <string name="auth_password_reset_message">To reset your password,
         please follow instructions we sent to\u0020</string>
-    <string name="okay">Okay</string>
-    <string name="name_requirements">Name should contain at least 2 and less than 50 characters</string>
-    <string name="email_invalid">Email address is invalid</string>
-    <string name="password_requirements">Password should be at least 8 and less than 25 characters,
+    <string name="auth_your_email">your email address</string>
+    <string name="auth_check_inbox">Check your inbox</string>
+    <string name="auth_name_requirements">Name should contain at least 2 and less than 50 characters</string>
+    <string name="auth_email_invalid">Email address is invalid</string>
+    <string name="auth_password_requirements">Password should be at least 8 and less than 25 characters,
         contain at least 1 digit, 1 uppercase letter, 1 lowercase letter
         and 1 special character</string>
-    <string name="your_email">your email address</string>
-    <string name="retry">Retry</string>
-    <string name="session_expired">Your session has expired</string>
-    <string name="default_notification_channel_id">Messages</string>
-    <string name="create_new_offer">Create new offer</string>
-    <string name="description">Description</string>
-    <string name="title">Title</string>
-    <string name="pictures">Pictures</string>
-    <string name="no_gallery_access">Cannot add pictures without access to gallery</string>
-    <string name="attach_limit_exceeded">Cannot attach more than 5 pictures</string>
-    <string name="confirmation">Confirmation</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
-    <string name="discard_changes_warning">The changes you made will be lost. Are you sure?</string>
-    <string name="grant_access">Grant access</string>
-    <string name="publish">Publish</string>
-    <string name="size_xs">XS</string>
-    <string name="size_xl">XL</string>
-    <string name="size_l">L</string>
-    <string name="size_m">M</string>
-    <string name="size_s">S</string>
-    <string name="enable_location">Choose your location manually or enable location services in settings</string>
-    <string name="enable">Enable</string>
-    <string name="updating_location">Updating your location…</string>
-    <string name="provide_title">Offer must have a title</string>
-    <string name="provide_image">Please select at least 1 image</string>
-    <string name="category">Category</string>
-    <string name="size">Size</string>
-    <string name="search_hint">Search on Clother</string>
-    <string name="nothing_found">Nothing found</string>
-    <string name="filters">Filters</string>
-    <string name="apply_filters">Apply filters</string>
-    <string name="my_location">Set my location</string>
-    <string name="max_distance">Maximum distance</string>
-    <string name="km_5">5 km</string>
-    <string name="km_10">10 km</string>
-    <string name="km_25">25 km</string>
-    <string name="km_50">50 km</string>
-    <string name="tap_to_view">Tap to view</string>
-    <string name="nothing_here">Nothing here yet</string>
-    <string name="posted_by">Posted by</string>
-    <string name="message">Message</string>
-    <string name="image">Image</string>
-    <string name="you">You</string>
-    <string name="offer_created">Offer was successfully created</string>
-    <string name="delete">Delete</string>
-    <string name="delete_offer">Delete offer?</string>
-    <string name="deletion_confirmation">Are you sure you want to delete offer?
-        This cannot be undone</string>
-    <string name="cancel">Cancel</string>
-    <string name="offer_deleted">Offer was successfully deleted</string>
+
+    <string name="offer">Offer</string>
+    <string name="offer_select_category">Select category</string>
+    <string name="offer_create">Create new offer</string>
+    <string name="offer_description">Description</string>
+    <string name="offer_title">Title</string>
+    <string name="offer_pictures">Pictures</string>
+    <string name="offer_category">Category</string>
+    <string name="offer_size">Size</string>
+    <string name="offer_user">Posted by</string>
+    <string name="offer_select_images">Select images</string>
+    <string name="offer_attach_limit_exceeded">Cannot attach more than 5 pictures</string>
+    <string name="offer_discard_changes_warning">The changes you made will be lost. Are you sure?</string>
+    <string name="offer_publish">Publish</string>
+    <string name="offer_size_xs">XS</string>
+    <string name="offer_size_xl">XL</string>
+    <string name="offer_size_l">L</string>
+    <string name="offer_size_m">M</string>
+    <string name="offer_size_s">S</string>
+    <string name="offer_radius_5_km">5 km</string>
+    <string name="offer_radius_10_km">10 km</string>
+    <string name="offer_radius_25_km">25 km</string>
+    <string name="offer_radius_50_km">50 km</string>
+    <string name="offer_title_requirement">Offer must have a title</string>
+    <string name="offer_image_requirement">Please select at least 1 image</string>
+    <string name="offer_details_view">Tap to view</string>
+    <string name="offer_created_message">Offer was successfully created</string>
+    <string name="offer_delete">Delete offer?</string>
+    <string name="offer_deletion_confirmation">Are you sure you want to delete offer? This cannot be undone</string>
+    <string name="offer_deleted_message">Offer was successfully deleted</string>
+
+    <string name="search_input_hint">Search on Clother</string>
+    <string name="search_nothing_found">Nothing found</string>
+    <string name="search_filters">Filters</string>
+    <string name="search_apply_filters">Apply filters</string>
+    <string name="search_set_location">Set my location</string>
+    <string name="search_max_distance">Maximum distance</string>
+
+    <string name="chat_input_hint">Message</string>
+    <string name="chat_sender_you">You</string>
 
     <string name="onboarding_skip">Skip</string>
     <string name="onboarding_complete">Let\'s go</string>

@@ -55,8 +55,8 @@ class OfferEditorFragment
                     findNavController().navigate(R.id.action_offerEditorFragment_to_galleryFragment)
                 } else {
                     showSnackbarWithAction(
-                        text = R.string.no_gallery_access,
-                        actionText = R.string.grant_access,
+                        text = R.string.error_no_files_access,
+                        actionText = R.string.action_grant_access,
                         action = { IntentUtils.openApplicationSettings(requireContext()) }
                     )
                 }
@@ -69,13 +69,13 @@ class OfferEditorFragment
         ToolbarUtils.setupToolbar(
             activity,
             binding.toolbar,
-            getString(R.string.new_offer),
+            getString(R.string.menu_new_offer),
             ToolbarUtils.NavIcon.CLOSE
         )
         val category = args.category
         binding.category.icon.isVisible = false
         binding.category.textViewTitle.text = category.title
-        binding.textViewLocation.text = getString(R.string.select_location)
+        binding.textViewLocation.text = getString(R.string.location_select)
 
         binding.location.setOnClickListener {
             val action = OfferEditorFragmentDirections
@@ -146,7 +146,7 @@ class OfferEditorFragment
 
         val title = binding.editTextTitle.text()
         if (title.isEmpty()) {
-            binding.textInputTitle.error = getString(R.string.provide_title)
+            binding.textInputTitle.error = getString(R.string.offer_title_requirement)
             return
         }
         offer.addProperty("title", title)
@@ -154,7 +154,7 @@ class OfferEditorFragment
 
         val images = viewModel.images.value!!.toList()
         if (images.isEmpty()) {
-            showSnackbarWithText(R.string.provide_image)
+            showSnackbarWithText(R.string.offer_image_requirement)
             return
         }
 

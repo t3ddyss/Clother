@@ -33,7 +33,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="16dp"
             android:textSize="16sp"
-            android:text="@string/retry" />
+            android:text="@string/action_retry" />
     </LinearLayout>
 
     <LinearLayout
@@ -60,6 +60,6 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="16dp"
             android:textSize="16sp"
-            android:text="@string/delete" />
+            android:text="@string/action_delete" />
     </LinearLayout>
 </LinearLayout>

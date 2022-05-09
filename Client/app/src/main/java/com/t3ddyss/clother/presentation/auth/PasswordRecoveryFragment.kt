@@ -35,7 +35,7 @@ class PasswordRecoveryFragment
             val email = binding.editTextEmail.text()
 
             if (!StringUtils.isValidEmail(email)) {
-                binding.textInputEmail.error = getString(R.string.email_invalid)
+                binding.textInputEmail.error = getString(R.string.auth_email_invalid)
                 return@setOnClickListener
             }
             binding.textInputEmail.isErrorEnabled = false
@@ -67,7 +67,7 @@ class PasswordRecoveryFragment
                         .navigate(
                             PasswordRecoveryFragmentDirections
                                 .actionResetPasswordFragmentToEmailActionFragment(
-                                    getString(R.string.password_reset_message),
+                                    getString(R.string.auth_password_reset_message),
                                     binding.editTextEmail.text()
                                 )
                         )

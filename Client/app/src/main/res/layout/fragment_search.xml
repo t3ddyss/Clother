@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/edit_text_rounded"
-            android:hint="@string/search_hint"
+            android:hint="@string/search_input_hint"
             android:imeOptions="actionSearch"
             android:inputType="text"
             android:padding="12dp"

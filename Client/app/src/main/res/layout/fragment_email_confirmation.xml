@@ -34,18 +34,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_clother" />
 
-        <Button
-            android:id="@+id/button_okay"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/fragment_horizontal_margin"
-            android:background="@drawable/button_rounded"
-            android:text="@string/okay"
-            app:backgroundTint="@null"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
         <TextView
             android:id="@+id/textView_message"
             android:layout_width="0dp"
@@ -53,11 +41,22 @@
             android:layout_margin="@dimen/fragment_horizontal_margin"
             android:breakStrategy="simple"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="We sent you an email with further instructions" />
+            app:layout_constraintTop_toBottomOf="@id/guideline"
+            tools:text="To activate your account, please follow instructions we sent to your email address" />
+
+        <Button
+            android:id="@+id/button_okay"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fragment_horizontal_margin"
+            android:background="@drawable/button_rounded"
+            android:text="@string/action_okay"
+            app:backgroundTint="@null"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>
 

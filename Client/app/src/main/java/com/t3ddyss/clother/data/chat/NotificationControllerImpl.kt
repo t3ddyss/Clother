@@ -33,15 +33,13 @@ class NotificationControllerImpl @Inject constructor(
 
     override fun createNotificationChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = context.getString(R.string.messages)
             val channel = NotificationChannel(
-                context.getString(R.string.default_notification_channel_id),
-                name,
+                MESSAGES_CHANNEL_ID,
+                context.getString(R.string.notification_channel_messages_name),
                 NotificationManager.IMPORTANCE_DEFAULT
             ).apply {
-                description = name
+                description = context.getString(R.string.notification_channel_messages_description)
             }
-
             notificationManager.createNotificationChannel(channel)
         }
     }
@@ -58,7 +56,7 @@ class NotificationControllerImpl @Inject constructor(
         val tag = NotificationTag.MESSAGE.toTag(userId)
         val singleNotification = NotificationCompat.Builder(
             context,
-            context.getString(R.string.default_notification_channel_id)
+            context.getString(R.string.notification_channel_messages_name)
         )
             .setSmallIcon(R.drawable.ic_chat)
             .setContentTitle(message.userName)
@@ -78,7 +76,7 @@ class NotificationControllerImpl @Inject constructor(
             if (notificationsByUserCount == 1) {
                 val summaryNotification = NotificationCompat.Builder(
                     context,
-                    context.getString(R.string.default_notification_channel_id)
+                    context.getString(R.string.notification_channel_messages_name)
                 )
                     .setContentTitle(message.userName)
                     .setSmallIcon(R.drawable.ic_chat)
@@ -106,5 +104,9 @@ class NotificationControllerImpl @Inject constructor(
     private enum class NotificationTag(val key: String) {
         MESSAGE("message");
         fun toTag(userId: Int) = "${this.key}_$userId"
+    }
+
+    private companion object {
+        const val MESSAGES_CHANNEL_ID = "Messages"
     }
 }

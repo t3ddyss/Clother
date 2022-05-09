@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="no_connection">You are offline</string>
-    <string name="unknown_error">Something went wrong…</string>
-    <string name="apply">Apply</string>
-    <string name="home">Home</string>
-    <string name="search">Search</string>
-    <string name="select_category">Select category</string>
-    <string name="feature_profile">Profile</string>
-    <string name="sign_up">Sign up</string>
-    <string name="check_inbox">Check your inbox</string>
-    <string name="sign_in">Sign in</string>
-    <string name="reset_password">Reset password</string>
-    <string name="offer">Offer</string>
-    <string name="location">Location</string>
-    <string name="messages">Messages</string>
-    <string name="new_offer">New offer</string>
-    <string name="select_images">Select images</string>
-    <string name="select_location">Select location</string>
+    <string name="action_yes">Yes</string>
+    <string name="action_no">No</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_apply">Apply</string>
+    <string name="action_grant_access">Grant access</string>
+    <string name="action_grant_permission">Grant permission</string>
+
+    <string name="error_no_connection">You are offline</string>
+    <string name="error_session_expired">Your session has expired</string>
+    <string name="error_no_files_access">Cannot add pictures without access to gallery</string>
+    <string name="error_unknown">Something went wrong…</string>
+
+    <string name="message_nothing_here_yet">Nothing here yet</string>
 </resources>

@@ -27,11 +27,11 @@ object StringUtils {
         @StringRes
         val errorResId: Int = if (throwable != null) {
             when (throwable) {
-                is ConnectException -> R.string.no_connection
-                else -> R.string.unknown_error
+                is ConnectException -> R.string.error_no_connection
+                else -> R.string.error_unknown
             }
         } else {
-            R.string.unknown_error
+            R.string.error_unknown
         }
         return context.getString(errorResId)
     }

@@ -33,7 +33,7 @@ class SearchByCategoryFragment
         ToolbarUtils.setupToolbar(
             activity,
             binding.toolbar,
-            getString(R.string.search),
+            getString(R.string.menu_search),
             if (isRootCategory) ToolbarUtils.NavIcon.NONE else ToolbarUtils.NavIcon.UP
         )
         setHasOptionsMenu(isRootCategory)

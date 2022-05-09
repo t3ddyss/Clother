@@ -4,28 +4,28 @@
         android:id="@+id/homeFragment"
         android:icon="@drawable/ic_checkroom"
         android:menuCategory="secondary"
-        android:title="@string/home" />
+        android:title="@string/menu_home" />
     <item
         android:id="@+id/searchByCategoryFragment"
         android:icon="@drawable/ic_search"
         android:menuCategory="secondary"
-        android:title="@string/search" />
+        android:title="@string/menu_search" />
 
     <item
         android:id="@+id/offerCategoryFragment"
         android:icon="@drawable/ic_add_offer"
         android:menuCategory="secondary"
-        android:title="@string/new_offer" />
+        android:title="@string/menu_new_offer" />
 
     <item
         android:id="@+id/chatsFragment"
         android:icon="@drawable/ic_chat"
         android:menuCategory="secondary"
-        android:title="@string/messages" />
+        android:title="@string/menu_messages" />
 
     <item
         android:id="@+id/profileFragment"
         android:icon="@drawable/ic_person"
         android:menuCategory="secondary"
-        android:title="@string/profile" />
+        android:title="@string/menu_profile" />
 </menu>

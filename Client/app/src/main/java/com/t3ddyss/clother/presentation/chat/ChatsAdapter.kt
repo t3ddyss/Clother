@@ -55,7 +55,7 @@ class ChatsAdapter(
             if (chat.lastMessage.isIncoming) {
                 binding.textViewMessage.text = description
             } else {
-                binding.textViewMessage.text = "${binding.root.context.getString(R.string.you)}: " +
+                binding.textViewMessage.text = "${binding.root.context.getString(R.string.chat_sender_you)}: " +
                         description
             }
         }

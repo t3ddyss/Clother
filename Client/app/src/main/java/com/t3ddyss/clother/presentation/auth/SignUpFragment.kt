@@ -72,17 +72,17 @@ class SignUpFragment
         }
 
         viewModel.nameError.observe(viewLifecycleOwner) {
-            binding.textInputName.error = getString(R.string.name_requirements)
+            binding.textInputName.error = getString(R.string.auth_name_requirements)
             binding.textInputName.isErrorEnabled = it
         }
 
         viewModel.emailError.observe(viewLifecycleOwner) {
-            binding.textInputEmail.error = getString(R.string.email_invalid)
+            binding.textInputEmail.error = getString(R.string.auth_email_invalid)
             binding.textInputEmail.isErrorEnabled = it
         }
 
         viewModel.passwordError.observe(viewLifecycleOwner) {
-            binding.textInputPassword.error = getString(R.string.password_requirements)
+            binding.textInputPassword.error = getString(R.string.auth_password_requirements)
             binding.textInputPassword.isErrorEnabled = it
         }
 
@@ -97,7 +97,7 @@ class SignUpFragment
                 is Success<*> -> {
                     findNavController().navigate(
                         SignUpFragmentDirections.actionSignUpFragmentToEmailActionFragment(
-                            getString(R.string.email_activation),
+                            getString(R.string.auth_email_activation_message),
                             binding.editTextEmail.text()
                         )
                     )

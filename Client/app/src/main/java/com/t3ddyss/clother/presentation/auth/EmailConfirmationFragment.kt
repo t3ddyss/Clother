@@ -21,12 +21,12 @@ class EmailConfirmationFragment
         ToolbarUtils.setupToolbar(
             activity,
             binding.toolbar,
-            getString(R.string.email_activation),
+            getString(R.string.auth_email_activation_message),
             ToolbarUtils.NavIcon.UP
         )
         val message = SpannableStringBuilder().append(args.emailActionMessage)
         if (args.emailAddress.isEmpty()) {
-            message.append(getString(R.string.your_email))
+            message.append(getString(R.string.auth_your_email))
         } else {
             message.bold { append(args.emailAddress) }
         }

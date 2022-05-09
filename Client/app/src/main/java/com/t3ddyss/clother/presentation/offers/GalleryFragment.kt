@@ -33,7 +33,7 @@ class GalleryFragment : BaseFragment<FragmentGalleryBinding>(FragmentGalleryBind
         ToolbarUtils.setupToolbar(
             activity,
             binding.toolbar,
-            getString(R.string.select_images),
+            getString(R.string.offer_select_images),
             ToolbarUtils.NavIcon.CLOSE
         )
         setHasOptionsMenu(true)
@@ -99,6 +99,6 @@ class GalleryFragment : BaseFragment<FragmentGalleryBinding>(FragmentGalleryBind
     }
 
     private fun onImageLimitExceeded() {
-        showSnackbarWithText(R.string.attach_limit_exceeded)
+        showSnackbarWithText(R.string.offer_attach_limit_exceeded)
     }
 }

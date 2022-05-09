@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fragment_horizontal_margin"
         android:background="@drawable/button_rounded"
-        android:text="@string/apply_filters"
+        android:text="@string/search_apply_filters"
         app:backgroundTint="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
             android:layout_margin="@dimen/fragment_horizontal_margin"
-            android:text="@string/my_location"
+            android:text="@string/search_set_location"
             android:textSize="@dimen/text_size_medium" />
 
         <ImageView
@@ -59,7 +59,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fragment_horizontal_margin"
-        android:text="@string/max_distance"
+        android:text="@string/search_max_distance"
         android:textSize="@dimen/text_size_medium"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView_location" />
@@ -80,7 +80,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fragment_horizontal_margin"
-        android:text="@string/size"
+        android:text="@string/offer_size"
         android:textSize="@dimen/text_size_medium"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/chip_group_distance" />

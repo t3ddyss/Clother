@@ -32,7 +32,7 @@ class LocationViewerFragment
             .map { it.toDoubleOrNull() }
 
         if (lat == null || lng == null) {
-            showSnackbarWithText(getString(R.string.error_showing_location))
+            showSnackbarWithText(getString(R.string.location_error))
             findNavController().popBackStack()
         }
         val point = LatLng(lat!!, lng!!)
