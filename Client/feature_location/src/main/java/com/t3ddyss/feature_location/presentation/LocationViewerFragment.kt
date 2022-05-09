@@ -8,6 +8,7 @@ import androidx.navigation.fragment.navArgs
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
+import com.t3ddyss.core.util.ToolbarUtils
 import com.t3ddyss.core.util.showSnackbarWithText
 import com.t3ddyss.feature_location.R
 import com.t3ddyss.feature_location.databinding.FragmentLocationViewerBinding
@@ -20,6 +21,12 @@ class LocationViewerFragment
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        ToolbarUtils.setupToolbar(
+            activity,
+            binding.toolbar,
+            getString(R.string.location),
+            ToolbarUtils.NavIcon.UP
+        )
         val (lat, lng) = args.coordinates
             .split(",")
             .map { it.toDoubleOrNull() }

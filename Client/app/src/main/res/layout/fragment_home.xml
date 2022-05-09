@@ -2,14 +2,22 @@
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/swipeRefresh"
+    android:id="@+id/swipe_refresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".presentation.home.HomeFragment">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:minHeight="?attr/actionBarSize" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/container_home"
@@ -73,5 +81,5 @@
                 android:text="@string/nothing_here"
                 android:textSize="@dimen/text_size_medium" />
         </FrameLayout>
-    </FrameLayout>
+    </LinearLayout>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

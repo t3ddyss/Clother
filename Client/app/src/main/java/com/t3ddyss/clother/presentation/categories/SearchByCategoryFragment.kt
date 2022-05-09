@@ -16,6 +16,7 @@ import com.t3ddyss.clother.data.common.common.Mappers.toArg
 import com.t3ddyss.clother.databinding.FragmentSearchByCategoryBinding
 import com.t3ddyss.clother.domain.offers.models.Category
 import com.t3ddyss.core.presentation.BaseFragment
+import com.t3ddyss.core.util.ToolbarUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -28,8 +29,14 @@ class SearchByCategoryFragment
     private lateinit var adapter: CategoriesAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val parentId = args.parentId.let { if (it == 0) null else it }
-        setHasOptionsMenu(parentId == null)
+        val isRootCategory = args.parentId == 0
+        ToolbarUtils.setupToolbar(
+            activity,
+            binding.toolbar,
+            getString(R.string.search),
+            if (isRootCategory) ToolbarUtils.NavIcon.NONE else ToolbarUtils.NavIcon.UP
+        )
+        setHasOptionsMenu(isRootCategory)
 
         val layoutManager = LinearLayoutManager(
             context,
@@ -42,15 +49,12 @@ class SearchByCategoryFragment
         binding.listCategories.adapter = adapter
 
         val verticalDecorator = DividerItemDecoration(activity, DividerItemDecoration.VERTICAL)
-
         ContextCompat.getDrawable(requireContext(), R.drawable.divider_small)?.apply {
             verticalDecorator.setDrawable(this)
-
             binding.listCategories.addItemDecoration(verticalDecorator)
         }
 
         subscribeUi()
-        viewModel.getCategories(parentId)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

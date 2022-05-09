@@ -8,9 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.snackbar.Snackbar
 import com.t3ddyss.clother.R
@@ -30,7 +27,6 @@ class MainActivity : AppCompatActivity(), NavMenuController {
     private val navController get() = findNavController(R.id.nav_host_fragment)
     private var destinationChangeListener: DestinationChangeListener? = null
     private var destinationChangeListener2: NavController.OnDestinationChangedListener? = null
-    private lateinit var appBarConfiguration: AppBarConfiguration
 
     override var isMenuVisible
         get() = binding.navView.isVisible
@@ -45,9 +41,6 @@ class MainActivity : AppCompatActivity(), NavMenuController {
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-
         val navGraph = navController.navInflater.inflate(R.navigation.main_graph)
         val startDestination = when {
             viewModel.authStateFlow.value is AuthState.Authenticated -> R.id.homeFragment
@@ -56,19 +49,9 @@ class MainActivity : AppCompatActivity(), NavMenuController {
         }
         navGraph.setStartDestination(startDestination)
         navController.graph = navGraph
-
-        // Do not represent actual top-level destinations, just for UP navigation purposes
-        appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.homeFragment, R.id.searchFragment,
-                R.id.chatsFragment, R.id.profileFragment,
-                R.id.signUpFragment
-            )
-        )
-        setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
 
-        destinationChangeListener = DestinationChangeListener(binding) { supportActionBar }.also {
+        destinationChangeListener = DestinationChangeListener(binding.navView).also {
             navController.addOnDestinationChangedListener(it)
         }
         destinationChangeListener2 = NavController.OnDestinationChangedListener { _, destination, _ ->
@@ -102,6 +85,6 @@ class MainActivity : AppCompatActivity(), NavMenuController {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+        return navController.navigateUp()
     }
 }

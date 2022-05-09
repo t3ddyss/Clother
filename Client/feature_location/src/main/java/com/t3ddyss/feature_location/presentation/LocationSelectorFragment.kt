@@ -4,7 +4,10 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
@@ -19,6 +22,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.t3ddyss.core.util.IntentUtils
+import com.t3ddyss.core.util.ToolbarUtils
 import com.t3ddyss.core.util.showSnackbarWithAction
 import com.t3ddyss.core.util.showSnackbarWithText
 import com.t3ddyss.feature_location.R
@@ -46,18 +50,17 @@ class LocationSelectorFragment
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        super.onCreateView(inflater, container, savedInstanceState)
-        setHasOptionsMenu(true)
-        return binding.root
-    }
-
     @SuppressLint("MissingPermission")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
+        ToolbarUtils.setupToolbar(
+            activity,
+            binding.toolbar,
+            getString(R.string.select_location),
+            ToolbarUtils.NavIcon.CLOSE
+        )
+
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { isGranted ->
             if (isGranted[Manifest.permission.ACCESS_FINE_LOCATION] == true &&
                 isGranted[Manifest.permission.ACCESS_COARSE_LOCATION] == true

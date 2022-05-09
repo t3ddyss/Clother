@@ -15,6 +15,7 @@ import com.t3ddyss.core.domain.models.Loading
 import com.t3ddyss.core.domain.models.Success
 import com.t3ddyss.core.presentation.BaseFragment
 import com.t3ddyss.core.util.StringUtils
+import com.t3ddyss.core.util.ToolbarUtils
 import com.t3ddyss.core.util.showSnackbarWithText
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,6 +25,12 @@ class PasswordRecoveryFragment
     private val viewModel by viewModels<PasswordRecoveryViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        ToolbarUtils.setupToolbar(
+            activity,
+            binding.toolbar,
+            "",
+            ToolbarUtils.NavIcon.UP
+        )
         binding.buttonResetPassword.setOnClickListener {
             val email = binding.editTextEmail.text()
 

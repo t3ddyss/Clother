@@ -10,6 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.databinding.FragmentChatBinding
@@ -18,6 +19,7 @@ import com.t3ddyss.clother.domain.chat.models.MessageStatus
 import com.t3ddyss.clother.domain.common.common.models.LoadResult
 import com.t3ddyss.clother.util.text
 import com.t3ddyss.core.presentation.BaseFragment
+import com.t3ddyss.core.util.ToolbarUtils
 import com.t3ddyss.core.util.Utils.asExpression
 import com.t3ddyss.core.util.showSnackbarWithText
 import com.t3ddyss.navigation.util.observeNavigationResultOnce
@@ -27,10 +29,11 @@ import dagger.hilt.android.AndroidEntryPoint
 class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::inflate) {
     private val viewModel by viewModels<ChatViewModel>()
 
+    private val args by navArgs<ChatFragmentArgs>()
+
     private val adapter = MessagesAdapter(this::onMessageClick, this::onImageClick)
     private var adapterDataObserver: RecyclerView.AdapterDataObserver? = null
     private var onScrollListener: RecyclerView.OnScrollListener? = null
-
     private var requestGalleryPermissionLauncher: ActivityResultLauncher<String>? = null
 
     @Suppress("Deprecated")
@@ -42,6 +45,12 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::infl
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        ToolbarUtils.setupToolbar(
+            activity,
+            binding.toolbar,
+            args.user.name,
+            ToolbarUtils.NavIcon.UP
+        )
         requestGalleryPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
                 findNavController().navigate(

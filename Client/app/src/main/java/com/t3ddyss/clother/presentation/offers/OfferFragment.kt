@@ -18,6 +18,7 @@ import com.t3ddyss.clother.util.formatDate
 import com.t3ddyss.core.domain.models.Error
 import com.t3ddyss.core.domain.models.Success
 import com.t3ddyss.core.presentation.BaseFragment
+import com.t3ddyss.core.util.ToolbarUtils
 import com.t3ddyss.core.util.errorText
 import com.t3ddyss.core.util.showSnackbarWithText
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,6 +30,12 @@ class OfferFragment : BaseFragment<FragmentOfferBinding>(FragmentOfferBinding::i
     private val args by navArgs<OfferFragmentArgs>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        ToolbarUtils.setupToolbar(
+            activity,
+            binding.toolbar,
+            getString(R.string.offer),
+            ToolbarUtils.NavIcon.UP
+        )
         val userId = viewModel.userId
         setHasOptionsMenu(args.posterId == userId)
 
@@ -36,7 +43,7 @@ class OfferFragment : BaseFragment<FragmentOfferBinding>(FragmentOfferBinding::i
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.toolbar_delete_menu, menu)
+        inflater.inflate(R.menu.toolbar_offer_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

@@ -19,6 +19,7 @@ import com.t3ddyss.clother.presentation.offers.OffersAdapter
 import com.t3ddyss.clother.util.getThemeColor
 import com.t3ddyss.core.presentation.BaseFragment
 import com.t3ddyss.core.presentation.GridItemDecoration
+import com.t3ddyss.core.util.ToolbarUtils
 import com.t3ddyss.core.util.dp
 import com.t3ddyss.core.util.showSnackbarWithText
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,6 +39,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     private lateinit var onScrollListener: RecyclerView.OnScrollListener
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        ToolbarUtils.setupToolbar(
+            activity,
+            binding.toolbar,
+            getString(R.string.home)
+        )
+
         binding.progressBarFooter.isVisible = false
         val layoutManager = GridLayoutManager(context, 2)
 

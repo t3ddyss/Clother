@@ -5,6 +5,7 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.t3ddyss.clother.R
 import com.t3ddyss.clother.data.common.common.Mappers.toArg
 import com.t3ddyss.clother.databinding.FragmentChatsBinding
 import com.t3ddyss.clother.domain.chat.models.Chat
@@ -12,6 +13,7 @@ import com.t3ddyss.core.domain.models.Error
 import com.t3ddyss.core.domain.models.Loading
 import com.t3ddyss.core.domain.models.Success
 import com.t3ddyss.core.presentation.BaseFragment
+import com.t3ddyss.core.util.ToolbarUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -21,6 +23,11 @@ class ChatsFragment : BaseFragment<FragmentChatsBinding>(FragmentChatsBinding::i
     private val adapter = ChatsAdapter(this::onChatClick)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        ToolbarUtils.setupToolbar(
+            activity,
+            binding.toolbar,
+            getString(R.string.messages)
+        )
         binding.listChats.adapter = adapter
         subscribeUi()
     }
@@ -38,7 +45,6 @@ class ChatsFragment : BaseFragment<FragmentChatsBinding>(FragmentChatsBinding::i
                     adapter.submitList(it.content)
                 }
                 is Error -> {
-                    binding.layoutLoading.isVisible = false
                     binding.layoutLoading.isVisible = false
                 }
             }

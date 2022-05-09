@@ -12,6 +12,7 @@
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_add_offer.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_add_photo.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_attach.xml" value="0.209" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_close.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_clother.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_default_avatar.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2703125" />
@@ -33,13 +34,22 @@
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/dialog_message_menu.xml" value="0.25" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/dialog_search_filters.xml" value="0.25" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/fragment_chat.xml" value="0.25" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/fragment_chats.xml" value="0.21052631578947367" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/fragment_email_confirmation.xml" value="0.21052631578947367" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/fragment_filters_dialog.xml" value="0.264" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/fragment_gallery.xml" value="0.21052631578947367" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/fragment_home.xml" value="0.21052631578947367" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/fragment_image.xml" value="0.2501302761855133" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/fragment_offer.xml" value="0.25" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/fragment_offer_category.xml" value="0.21052631578947367" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/fragment_offer_editor.xml" value="0.21052631578947367" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/fragment_onboarding.xml" value="0.25" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/fragment_password_recovery.xml" value="0.21052631578947367" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/fragment_profile.xml" value="0.264" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/fragment_search_by_category.xml" value="0.21052631578947367" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/fragment_search_results.xml" value="0.21052631578947367" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/fragment_sign_in.xml" value="0.25" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/fragment_sign_up.xml" value="0.21052631578947367" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/item_circular_image_view.xml" value="0.264" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/list_item_chat.xml" value="0.25" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/list_item_image_editor.xml" value="0.25" />
@@ -54,8 +64,11 @@
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/list_item_offer_shimmer.xml" value="0.25" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/list_item_onboarding_card.xml" value="0.1" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/list_item_profile.xml" value="0.21052631578947367" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/menu/toolbar_offer_menu.xml" value="0.21052631578947367" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2703125" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1" />
+        <entry key="..\:/Projects/Clother/Client/core/src/main/res/drawable/ic_arrow_back.xml" value="0.209" />
+        <entry key="..\:/Projects/Clother/Client/core/src/main/res/drawable/ic_close.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/feature_location/src/main/res/layout/fragment_blank.xml" value="0.2359375" />
         <entry key="..\:/Projects/Clother/Client/feature_location/src/main/res/layout/fragment_location_selector.xml" value="0.25" />
         <entry key="..\:/Projects/Clother/Client/feature_location/src/main/res/layout/fragment_location_viewer.xml" value="0.25" />

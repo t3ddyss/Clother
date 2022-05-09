@@ -21,6 +21,7 @@ import com.t3ddyss.clother.presentation.offers.OfferViewModel
 import com.t3ddyss.clother.presentation.offers.OffersAdapter
 import com.t3ddyss.core.presentation.BaseFragment
 import com.t3ddyss.core.presentation.GridItemDecoration
+import com.t3ddyss.core.util.ToolbarUtils
 import com.t3ddyss.core.util.dp
 import com.t3ddyss.core.util.showSnackbarWithText
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,6 +42,12 @@ class SearchResultsFragment
     private lateinit var onScrollListener: RecyclerView.OnScrollListener
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        ToolbarUtils.setupToolbar(
+            activity,
+            binding.toolbar,
+            "",
+            ToolbarUtils.NavIcon.UP
+        )
         setHasOptionsMenu(true)
 
         loadStateListener = {

@@ -9,6 +9,7 @@ import androidx.navigation.fragment.navArgs
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentEmailConfirmationBinding
 import com.t3ddyss.core.presentation.BaseFragment
+import com.t3ddyss.core.util.ToolbarUtils
 
 class EmailConfirmationFragment
     : BaseFragment<FragmentEmailConfirmationBinding>(FragmentEmailConfirmationBinding::inflate) {
@@ -17,6 +18,12 @@ class EmailConfirmationFragment
 
     // TODO move this logic out of fragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        ToolbarUtils.setupToolbar(
+            activity,
+            binding.toolbar,
+            getString(R.string.email_activation),
+            ToolbarUtils.NavIcon.UP
+        )
         val message = SpannableStringBuilder().append(args.emailActionMessage)
         if (args.emailAddress.isEmpty()) {
             message.append(getString(R.string.your_email))

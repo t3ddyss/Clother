@@ -14,6 +14,7 @@ import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentGalleryBinding
 import com.t3ddyss.core.presentation.BaseFragment
 import com.t3ddyss.core.presentation.GridItemDecoration
+import com.t3ddyss.core.util.ToolbarUtils
 import com.t3ddyss.core.util.dp
 import com.t3ddyss.core.util.showSnackbarWithText
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,6 +30,12 @@ class GalleryFragment : BaseFragment<FragmentGalleryBinding>(FragmentGalleryBind
     private lateinit var layoutManager: GridLayoutManager
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        ToolbarUtils.setupToolbar(
+            activity,
+            binding.toolbar,
+            getString(R.string.select_images),
+            ToolbarUtils.NavIcon.CLOSE
+        )
         setHasOptionsMenu(true)
 
         layoutManager = GridLayoutManager(context, 3)

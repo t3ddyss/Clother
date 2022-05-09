@@ -25,6 +25,7 @@ import com.t3ddyss.core.domain.models.Loading
 import com.t3ddyss.core.domain.models.Success
 import com.t3ddyss.core.presentation.BaseFragment
 import com.t3ddyss.core.util.IntentUtils
+import com.t3ddyss.core.util.ToolbarUtils
 import com.t3ddyss.core.util.showSnackbarWithAction
 import com.t3ddyss.core.util.showSnackbarWithText
 import com.t3ddyss.feature_location.presentation.LocationSelectorFragment
@@ -65,6 +66,12 @@ class OfferEditorFragment
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        ToolbarUtils.setupToolbar(
+            activity,
+            binding.toolbar,
+            getString(R.string.new_offer),
+            ToolbarUtils.NavIcon.CLOSE
+        )
         val category = args.category
         binding.category.icon.isVisible = false
         binding.category.textViewTitle.text = category.title

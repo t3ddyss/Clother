@@ -7,6 +7,4 @@ import kotlinx.parcelize.Parcelize
 data class UserArg(
     val id: Int,
     val name: String
-) : Parcelable {
-    override fun toString() = name
-}
+) : Parcelable

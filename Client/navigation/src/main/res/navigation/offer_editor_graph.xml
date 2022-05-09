@@ -7,7 +7,6 @@
     <fragment
         android:id="@+id/offerEditorFragment"
         android:name="com.t3ddyss.clother.presentation.offers.OfferEditorFragment"
-        android:label="@string/new_offer"
         tools:layout="@layout/fragment_offer_editor">
         <argument
             android:name="category"
