@@ -226,6 +226,15 @@ object Mappers {
         )
     }
 
+    fun UserDetailsDto.toEntity(userId: Int): UserDetailsEntity {
+        return UserDetailsEntity(
+            userId = userId,
+            email = this.email,
+            createdAt = this.createdAt,
+            age = this.age
+        )
+    }
+
     fun UserEntity.toDomain(): User {
         return User(
             id = this.id,

@@ -2,6 +2,7 @@ package com.t3ddyss.clother.di.auth
 
 import com.t3ddyss.clother.data.auth.AuthRepositoryImpl
 import com.t3ddyss.clother.data.auth.AuthTokenRepositoryImpl
+import com.t3ddyss.clother.data.auth.ProfileRepositoryImpl
 import com.t3ddyss.clother.domain.auth.*
 import dagger.Binds
 import dagger.Module
@@ -32,4 +33,8 @@ interface AuthModule {
     @Singleton
     @Binds
     fun ProfileInteractorImpl.bindProfileInteractor(): ProfileInteractor
+
+    @Singleton
+    @Binds
+    fun ProfileRepositoryImpl.bindProfileRepository(): ProfileRepository
 }

@@ -1,6 +1,7 @@
 package com.t3ddyss.clother.data.auth.remote
 
 import com.t3ddyss.clother.data.auth.remote.models.UserAuthDataDto
+import com.t3ddyss.clother.data.auth.remote.models.UserDto
 import com.t3ddyss.clother.data.common.common.remote.models.ResponseDto
 import retrofit2.Response
 import retrofit2.http.*
@@ -25,4 +26,10 @@ interface RemoteAuthService {
         @Header("Authorization") accessToken: String?,
         @Path("token") token: String
     )
+
+    @GET("api/users/{user_id}")
+    suspend fun getUserDetails(
+        @Header("Authorization") accessToken: String?,
+        @Path("user_id") userId: Int
+    ): UserDto
 }

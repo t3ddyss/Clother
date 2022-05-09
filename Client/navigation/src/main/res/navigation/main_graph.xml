@@ -91,6 +91,10 @@
         android:name="com.t3ddyss.clother.presentation.profile.ProfileFragment"
         android:label="@string/feature_profile"
         tools:layout="@layout/fragment_profile">
+        <argument
+            android:name="is_current_user"
+            app:argType="boolean"
+            android:defaultValue="true"/>
         <action
             android:id="@+id/action_profileFragment_to_offerFragment"
             app:destination="@id/offerFragment" />

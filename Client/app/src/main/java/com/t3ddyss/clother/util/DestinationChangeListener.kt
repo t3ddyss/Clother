@@ -79,6 +79,9 @@ class DestinationChangeListener(
                         setIconUp(toolbar)
                     }
                 }
+                R.id.profileFragment -> {
+                    val isCurrentUser = arguments?.getBoolean("is_current_user", true) ?: true
+                }
                 in fragmentsWithCloseIcon -> {
                     setIconClose(toolbar)
                 }

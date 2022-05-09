@@ -8,8 +8,7 @@ import java.util.*
     foreignKeys = [ForeignKey(
         entity = UserEntity::class,
         parentColumns = arrayOf("id"),
-        childColumns = arrayOf("user_id"),
-        onDelete = ForeignKey.CASCADE
+        childColumns = arrayOf("user_id")
     )],
     indices = [Index(value = ["user_id"], unique = true)]
 )

@@ -5,66 +5,149 @@
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    tools:ignore="UseCompoundDrawables,ContentDescription">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true">
+        android:layout_height="wrap_content">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
-            android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
             app:scrimAnimationDuration="0"
             app:maxLines="1"
             app:expandedTitleGravity="top|start"
             app:expandedTitleMargin="16dp"
-            app:expandedTitleMarginStart="82dp"
+            app:expandedTitleMarginTop="20dp"
+            app:expandedTitleMarginStart="104dp"
             app:expandedTitleTextAppearance="@style/CollapsingToolbarExpandedTitle"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:orientation="vertical"
                 app:layout_collapseMode="parallax">
 
-                <include
-                    android:id="@+id/cardView_avatar"
-                    layout="@layout/item_circular_image_view"
-                    android:layout_width="@dimen/avatar_size"
-                    android:layout_height="@dimen/avatar_size"
-                    android:layout_margin="@dimen/fragment_horizontal_margin"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/avatar"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    app:shapeAppearance="@style/roundImageView"
+                    app:srcCompat="@drawable/ic_default_avatar" />
 
-                <include
-                    android:id="@+id/cardView_avatar2"
-                    layout="@layout/item_circular_image_view"
-                    android:layout_width="@dimen/avatar_size"
-                    android:layout_height="@dimen/avatar_size"
-                    android:layout_margin="@dimen/fragment_horizontal_margin"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/cardView_avatar" />
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/shimmer_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:visibility="gone">
 
-                <TextView
-                    android:id="@+id/textView_email"
-                    android:layout_width="0dp"
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="24dp"
+                            android:layout_marginTop="8dp"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="24dp"
+                            android:layout_marginTop="8dp"/>
+                    </LinearLayout>
+                </com.facebook.shimmer.ShimmerFrameLayout>
+
+                <LinearLayout
+                    android:id="@+id/sign_up_date_container"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textColor="@color/grey_500"
-                    android:textSize="@dimen/text_size_medium"
-                    app:layout_constraintBottom_toBottomOf="@id/cardView_avatar"
-                    app:layout_constraintStart_toEndOf="@+id/cardView_avatar"
-                    tools:text="example@example.com" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_timeline"
+                        app:tint="?attr/colorSecondary"/>
+                    <TextView
+                        android:id="@+id/textView_sign_up_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_gravity="center"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textColor="@color/grey_500"
+                        android:textSize="@dimen/text_size_medium"
+                        tools:text="Signed up today" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/email_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_mail"
+                        app:tint="?attr/colorSecondary"/>
+
+                    <TextView
+                        android:id="@+id/textView_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textColor="@color/grey_500"
+                        android:textSize="@dimen/text_size_medium"
+                        tools:text="Email: example@example.com" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/age_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_calendar"
+                        app:tint="?attr/colorSecondary"/>
+
+                    <TextView
+                        android:id="@+id/textView_age"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textColor="@color/grey_500"
+                        android:textSize="@dimen/text_size_medium"
+                        tools:text="Age: 20" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/button_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:minHeight="0dp"
+                    android:background="@drawable/button_rounded"
+                    android:text="@string/profile_edit"
+                    app:backgroundTint="@null" />
+            </LinearLayout>
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -91,7 +174,7 @@
         </androidx.recyclerview.widget.RecyclerView>
 
         <com.facebook.shimmer.ShimmerFrameLayout
-            android:id="@+id/shimmer"
+            android:id="@+id/shimmer_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:visibility="gone">
@@ -101,9 +184,9 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <include layout="@layout/list_item_offer_shimmer" />
-                <include layout="@layout/list_item_offer_shimmer" />
-                <include layout="@layout/list_item_offer_shimmer" />
+                <include layout="@layout/item_offer_shimmer" />
+                <include layout="@layout/item_offer_shimmer" />
+                <include layout="@layout/item_offer_shimmer" />
             </LinearLayout>
         </com.facebook.shimmer.ShimmerFrameLayout>
 

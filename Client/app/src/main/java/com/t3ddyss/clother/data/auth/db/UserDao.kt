@@ -30,5 +30,5 @@ interface UserDao {
         WHERE user.id == :id
     """
     )
-    suspend fun getUserWithDetailsById(id: Int): UserWithDetailsEntity
+    suspend fun getUserWithDetailsById(id: Int): UserWithDetailsEntity?
 }

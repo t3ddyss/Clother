@@ -67,6 +67,7 @@
         This cannot be undone</string>
     <string name="cancel">Cancel</string>
     <string name="offer_deleted">Offer was successfully deleted</string>
+
     <string name="onboarding_skip">Skip</string>
     <string name="onboarding_complete">Let\'s go</string>
     <string name="onboarding_title_1">Welcome to Clother</string>
@@ -75,4 +76,14 @@
     <string name="onboarding_description_2">Climate change is one of the pressing problems of the modern world. Reusing clothes reduces CO<font size="10">2</font> emissions and reduces the amount of energy used to produce new clothes.</string>
     <string name="onboarding_title_3">What\'s next?</string>
     <string name="onboarding_description_3">Create an account and start using Clother. You can post offers, search for other users\' offers using various filters, chat with them using the built-in real-time chat. Let\'s make a\u00A0world\u00A0better\u00A0together!</string>
+
+    <string name="profile_edit">Edit</string>
+    <string name="profile_join_date">Signed up %s</string>
+    <string name="profile_join_date_today">today</string>
+    <string name="profile_join_date_week">last week</string>
+    <string name="profile_join_date_month">last month</string>
+    <string name="profile_join_date_year">last year</string>
+    <string name="profile_join_date_several_years">more than a year ago</string>
+    <string name="profile_email">Email: %s</string>
+    <string name="profile_age">Age: %s</string>
 </resources>

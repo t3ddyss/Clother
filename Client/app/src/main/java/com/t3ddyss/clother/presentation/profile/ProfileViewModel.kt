@@ -7,12 +7,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
-import com.t3ddyss.clother.data.auth.db.UserDao
 import com.t3ddyss.clother.domain.auth.AuthInteractor
 import com.t3ddyss.clother.domain.auth.ProfileInteractor
 import com.t3ddyss.clother.domain.auth.models.User
 import com.t3ddyss.clother.domain.offers.models.Offer
+import com.t3ddyss.core.util.log
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,8 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val profileInteractor: ProfileInteractor,
-    authInteractor: AuthInteractor,
-    userDao: UserDao
+    authInteractor: AuthInteractor
 ) : ViewModel() {
     private val _offers = MutableLiveData<PagingData<Offer>>()
     val offers: LiveData<PagingData<Offer>> = _offers
@@ -40,9 +40,13 @@ class ProfileViewModel @Inject constructor(
                         _offers.postValue(it)
                     }
             }
-            // TODO change to details request
             launch {
-//                _user.postValue(userDao.getUserWithDetailsById(userId).toDomain())
+                profileInteractor
+                    .observeUserInfo(userId)
+                    .catch { log("ProfileViewModel.init(): $it") } // TODO display error
+                    .collectLatest {
+                        _user.postValue(it)
+                    }
             }
         }
     }

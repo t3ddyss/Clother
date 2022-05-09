@@ -4,17 +4,29 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/dialog_rounded.xml" value="0.1215" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/divider_large.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/dot_active.xml" value="0.26614583333333336" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/dot_inactive.xml" value="0.536" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/dots_selector.xml" value="0.209" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/edit_text_rounded.xml" value="0.209" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_add_offer.xml" value="0.209" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_add_photo.xml" value="0.209" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_attach.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_clother.xml" value="0.209" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_default_avatar.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2703125" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.2703125" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_mail.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_onboarding_1.xml" value="0.264" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_onboarding_2.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_onboarding_3.xml" value="0.264" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_person.xml" value="0.26614583333333336" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_person_green.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_schedule.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/placeholder_offer_image.xml" value="0.209" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/rounded_corners.xml" value="0.209" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/shape_message_in.xml" value="0.209" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/shape_message_out.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/textinput_cursor.xml" value="0.26614583333333336" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/activity_main.xml" value="0.25416666666666665" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/dialog_image_selector.xml" value="0.25" />
@@ -24,10 +36,11 @@
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/fragment_filters_dialog.xml" value="0.264" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/fragment_image.xml" value="0.2501302761855133" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/fragment_offer.xml" value="0.25" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/fragment_offer_editor.xml" value="0.21052631578947367" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/fragment_onboarding.xml" value="0.25" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/fragment_profile.xml" value="0.264" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/fragment_sign_in.xml" value="0.25" />
-        <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/item_circular_image_view.xml" value="0.536" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/item_circular_image_view.xml" value="0.264" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/list_item_chat.xml" value="0.25" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/list_item_image_editor.xml" value="0.25" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/list_item_image_gallery.xml" value="0.25" />
