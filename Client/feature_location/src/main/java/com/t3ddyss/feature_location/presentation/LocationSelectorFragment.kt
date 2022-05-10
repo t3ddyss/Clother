@@ -101,18 +101,15 @@ class LocationSelectorFragment
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.apply) {
-            viewModel.saveLocation()
-            viewModel.location.value?.let {
-                if (it.locationType != LocationType.INITIAL) {
-                    val latLng = it.latLng
-                    setNavigationResult(COORDINATES_KEY, "${latLng.latitude},${latLng.longitude}")
-                    findNavController().popBackStack()
-                    return true
-                }
+        return when (item.itemId) {
+            R.id.apply -> {
+                onApplyClick()
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
             }
         }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun subscribeUi() {
@@ -156,6 +153,17 @@ class LocationSelectorFragment
         map?.setOnMapLongClickListener(viewModel::setLocationManually)
     }
 
+    private fun onApplyClick() {
+        viewModel.saveLocation()
+        viewModel.location.value?.let {
+            if (it.locationType != LocationType.INITIAL) {
+                val latLng = it.latLng
+                setNavigationResult(COORDINATES_KEY, "${latLng.latitude},${latLng.longitude}")
+                findNavController().popBackStack()
+            }
+        }
+    }
+
     private fun checkIfLocationEnabled() {
         if (viewModel.isLocationEnablingRequested.getAndSet(true)) return
 
@@ -188,11 +196,6 @@ class LocationSelectorFragment
                 }
             }
         }
-    }
-
-    override fun onLowMemory() {
-        super.onLowMemory()
-        mapView?.onLowMemory()
     }
 
     companion object {

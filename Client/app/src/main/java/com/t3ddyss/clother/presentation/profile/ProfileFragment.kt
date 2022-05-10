@@ -13,6 +13,7 @@ import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import com.t3ddyss.clother.R
+import com.t3ddyss.clother.data.common.common.Mappers.toArg
 import com.t3ddyss.clother.databinding.FragmentProfileBinding
 import com.t3ddyss.clother.domain.offers.models.Offer
 import com.t3ddyss.clother.presentation.offers.OfferViewModel
@@ -135,6 +136,7 @@ class ProfileFragment
 
     private fun setupToolbarIfNeeded() {
         if (!isCurrentUser) {
+            binding.collapsingToolbarLayout.title = args.user?.name ?: ""
             ToolbarUtils.setupToolbar(
                 activity,
                 binding.toolbar,
@@ -158,7 +160,7 @@ class ProfileFragment
     private fun onOfferClick(offer: Offer) {
         offerViewModel.selectOffer(offer)
         val action = ProfileFragmentDirections
-            .actionProfileFragmentToOfferFragment(offer.user.id)
+            .actionProfileFragmentToOfferFragment(offer.user.toArg())
         findNavController().navigate(action)
     }
 

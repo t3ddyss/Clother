@@ -62,20 +62,15 @@ class GalleryFragment : BaseFragment<FragmentGalleryBinding>(FragmentGalleryBind
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.apply) {
-            val selectedImages = adapter.currentList.filter {
-                it.isSelected
-            }.map {
-                it.uri
-            }.toMutableList()
-
-            if (selectedImages.isNotEmpty()) {
-                editorViewModel.images.value = selectedImages
-                findNavController().popBackStack()
+        return when (item.itemId) {
+            R.id.apply -> {
+                onApplyClick()
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
             }
         }
-
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onDestroyView() {
@@ -94,6 +89,20 @@ class GalleryFragment : BaseFragment<FragmentGalleryBinding>(FragmentGalleryBind
             }
 
             adapter.submitList(images)
+        }
+    }
+
+    private fun onApplyClick() {
+        val selectedImages = adapter.currentList
+            .filter {
+                it.isSelected
+            }.map {
+                it.uri
+            }.toMutableList()
+
+        if (selectedImages.isNotEmpty()) {
+            editorViewModel.images.value = selectedImages
+            findNavController().popBackStack()
         }
     }
 

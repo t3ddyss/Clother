@@ -115,7 +115,7 @@ class SearchResultsFragment
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+        return when (item.itemId) {
             R.id.filters -> {
                 val navController = findNavController()
                 if (navController.currentBackStackEntry?.destination?.id
@@ -123,16 +123,19 @@ class SearchResultsFragment
                 ) {
                     navController.navigate(R.id.action_searchResultsFragment_to_filterDialogFragment)
                 }
+                true
             }
-
             R.id.search -> {
                 val action = SearchResultsFragmentDirections.actionSearchResultsToSearchFragment(
                     args.query ?: ""
                 )
                 findNavController().navigate(action)
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
             }
         }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onDestroyView() {

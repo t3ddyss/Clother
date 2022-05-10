@@ -12,6 +12,7 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.R
+import com.t3ddyss.clother.data.common.common.Mappers.toArg
 import com.t3ddyss.clother.databinding.FragmentHomeBinding
 import com.t3ddyss.clother.domain.offers.models.Offer
 import com.t3ddyss.clother.presentation.offers.OfferViewModel
@@ -170,7 +171,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     private fun onOfferClick(offer: Offer) {
         offerViewModel.selectOffer(offer)
         val action = HomeFragmentDirections
-            .actionHomeFragmentToOfferFragment(offer.user.id)
+            .actionHomeFragmentToOfferFragment(offer.user.toArg())
         findNavController().navigate(action)
     }
 }

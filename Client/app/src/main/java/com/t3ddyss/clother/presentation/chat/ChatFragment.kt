@@ -117,11 +117,15 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::infl
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.profile) {
-            findNavController().navigate(ChatFragmentDirections.actionChatFragmentToProfileFragment(args.user))
-            return true
+        return when (item.itemId) {
+            R.id.profile -> {
+                findNavController().navigate(ChatFragmentDirections.actionChatFragmentToProfileFragment(args.user))
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
         }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onDestroyView() {

@@ -29,6 +29,8 @@ class OfferFragment : BaseFragment<FragmentOfferBinding>(FragmentOfferBinding::i
     private val viewModel by activityViewModels<OfferViewModel>()
     private val args by navArgs<OfferFragmentArgs>()
 
+    private val isCurrentUser get() = args.user.id == viewModel.userId
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         ToolbarUtils.setupToolbar(
             activity,
@@ -36,42 +38,46 @@ class OfferFragment : BaseFragment<FragmentOfferBinding>(FragmentOfferBinding::i
             getString(R.string.offer),
             ToolbarUtils.NavIcon.UP
         )
-        val userId = viewModel.userId
-        setHasOptionsMenu(args.posterId == userId)
+        setHasOptionsMenu(true)
 
-        subscribeUi(userId)
+        binding.buttonMessage.isVisible = !isCurrentUser
+
+        subscribeUi()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.toolbar_offer_menu, menu)
+        if (isCurrentUser) {
+            menu.findItem(R.id.profile)?.isVisible = false
+        } else {
+            menu.findItem(R.id.delete)?.isVisible = false
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.delete) {
-            MaterialAlertDialogBuilder(
-                requireContext(),
-                R.style.MyThemeOverlay_MaterialComponents_MaterialAlertDialog
-            )
-                .setTitle(getString(R.string.offer_delete))
-                .setMessage(getString(R.string.offer_deletion_confirmation))
-                .setPositiveButton(getString(R.string.action_delete)) { _, _ ->
-                    binding.layoutLoading.isVisible = true
-                    viewModel.deleteOffer()
-                }
-                .setNegativeButton(getString(R.string.action_cancel), null)
-                .show()
+        return when (item.itemId) {
+            R.id.delete -> {
+                showDeletionConfirmationDialog()
+                true
+            }
+            R.id.profile -> {
+                findNavController().navigate(
+                    OfferFragmentDirections.actionOfferFragmentToProfileFragment(args.user)
+                )
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
         }
-        return super.onOptionsItemSelected(item)
     }
 
-    private fun subscribeUi(currentUserId: Int?) {
+    private fun subscribeUi() {
         viewModel.offer.observe(viewLifecycleOwner) {
             with(binding) {
-                images.adapter = OfferImagesAdapter(it.images) {
-                }
+                images.adapter = OfferImagesAdapter(it.images) { }
                 if (it.images.size > 1) {
-                    TabLayoutMediator(dots, images) { _, _ ->
-                    }.attach()
+                    TabLayoutMediator(dots, images) { _, _ -> }.attach()
                 } else {
                     binding.dots.isVisible = false
                 }
@@ -109,11 +115,6 @@ class OfferFragment : BaseFragment<FragmentOfferBinding>(FragmentOfferBinding::i
                 textViewUser.text = it.user.name
                 textViewTime.text = it.createdAt.formatDate()
 
-                if (it.user.id == currentUserId) {
-                    buttonMessage.isVisible = false
-                    return@observe
-                }
-
                 buttonMessage.setOnClickListener { _ ->
                     val action = OfferFragmentDirections
                         .actionOfferFragmentToChatFragment(it.user.toArg())
@@ -139,5 +140,20 @@ class OfferFragment : BaseFragment<FragmentOfferBinding>(FragmentOfferBinding::i
                 }
             }
         }
+    }
+
+    private fun showDeletionConfirmationDialog() {
+        MaterialAlertDialogBuilder(
+            requireContext(),
+            R.style.MyThemeOverlay_MaterialComponents_MaterialAlertDialog
+        )
+            .setTitle(getString(R.string.offer_delete))
+            .setMessage(getString(R.string.offer_deletion_confirmation))
+            .setPositiveButton(getString(R.string.action_delete)) { _, _ ->
+                binding.layoutLoading.isVisible = true
+                viewModel.deleteOffer()
+            }
+            .setNegativeButton(getString(R.string.action_cancel), null)
+            .show()
     }
 }

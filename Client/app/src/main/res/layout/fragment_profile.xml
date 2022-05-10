@@ -56,12 +56,14 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="24dp"
-                            android:layout_marginTop="16dp"/>
+                            android:layout_marginTop="16dp"
+                            android:background="@color/grey_500"/>
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="24dp"
-                            android:layout_marginTop="8dp"/>
+                            android:layout_marginTop="8dp"
+                            android:background="@color/grey_500"/>
                     </LinearLayout>
                 </com.facebook.shimmer.ShimmerFrameLayout>
 

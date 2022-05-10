@@ -62,8 +62,15 @@ class SearchByCategoryFragment
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        findNavController().navigate(R.id.action_searchByCategoryFragment_to_searchFragment)
-        return super.onOptionsItemSelected(item)
+        return when (item.itemId) {
+            R.id.search -> {
+                findNavController().navigate(R.id.action_searchByCategoryFragment_to_searchFragment)
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
+        }
     }
 
     private fun subscribeUi() {
