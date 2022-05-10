@@ -1,29 +1,29 @@
 <resources>
-    <!-- Base application theme. -->
+    <!-- Base application theme -->
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Primary brand color. -->
+        <!-- Primary brand color -->
         <item name="colorPrimary">@color/grey_night_dark</item>
         <item name="colorPrimaryVariant">@color/grey_night_mid</item>
         <item name="colorOnPrimary">@android:color/white</item>
 
-        <!-- Secondary brand color. -->
+        <!-- Secondary brand color -->
         <item name="colorSecondary">@color/green_500</item>
         <item name="colorSecondaryVariant">@color/green_mid</item>
         <item name="colorOnSecondary">@android:color/black</item>
 
+        <!-- Status bar color -->
         <item name="android:windowBackground">?attr/colorPrimary</item>
-
-        <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimary</item>
         <item name="android:windowLightStatusBar">false</item>
 
-        <!-- Navigation bar color. -->
-        <!--        <item name="android:navigationBarColor">@android:color/black</item>-->
+        <!-- TODO override theme for API 27+ -->
+        <!-- Navigation bar color -->
+        <!-- <item name="android:navigationBarColor">?attr/colorPrimaryVariant</item> -->
+        <!-- <item name="android:windowLightNavigationBar">false</item> -->
 
-        <!-- TextColor. -->
         <item name="android:textColor">?attr/colorOnPrimary</item>
-
-        <!-- TextInput style. -->
         <item name="textInputStyle">@style/AppTheme.TextInputLayoutStyle</item>
+        <item name="android:colorControlNormal">@color/green_500</item>
+        <item name="actionOverflowButtonStyle">@style/OverflowButtonStyle</item>
     </style>
 </resources>
