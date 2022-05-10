@@ -6,6 +6,7 @@ import androidx.core.view.isVisible
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import com.t3ddyss.clother.R
+import com.t3ddyss.navigation.presentation.models.UserArg
 
 class DestinationChangeListener(
     private val navView: View
@@ -25,8 +26,8 @@ class DestinationChangeListener(
     ) {
         when (destination.id) {
             R.id.profileFragment -> {
-                val isCurrentUser = arguments?.getBoolean(ARG_IS_CURRENT_USER) ?: true
-                changeVisibilityIfNeeded(navView, isCurrentUser)
+                val user = arguments?.getParcelable<UserArg>(ARG_USER)
+                changeVisibilityIfNeeded(navView, user == null)
             }
             else -> {
                 changeVisibilityIfNeeded(navView, destination.id in fragmentsWithBottomMenu)
@@ -41,6 +42,6 @@ class DestinationChangeListener(
     }
 
     private companion object {
-        const val ARG_IS_CURRENT_USER = "is_current_user"
+        const val ARG_USER = "user"
     }
 }

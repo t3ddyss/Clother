@@ -16,12 +16,12 @@
         <item name="android:textCursorDrawable">@drawable/textinput_cursor</item>
     </style>
 
-    <!-- Toolbar menu dots -->
+    <!-- Toolbar kebab menu -->
     <style name="OverflowButtonStyle" parent="Widget.AppCompat.ActionButton.Overflow">
         <item name="android:tint">?attr/colorOnPrimary</item>
     </style>
 
-    <!-- Alert Dialog -->
+    <!-- Alert dialog -->
     <style name="MyThemeOverlay.MaterialComponents.MaterialAlertDialog" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
         <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
         <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
@@ -57,9 +57,9 @@
         <item name="cornerSize">50%</item>
     </style>
 
-    <style name="CollapsingToolbarExpandedTitle" parent="Widget.Material3.CollapsingToolbar" >
+    <style name="ProfileCollapsingToolbarTitle" parent="Widget.Material3.CollapsingToolbar" >
         <item name="android:ellipsize">end</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 </resources>

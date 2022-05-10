@@ -1,9 +1,6 @@
 package com.t3ddyss.clother.presentation.profile
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
@@ -21,8 +18,11 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val profileInteractor: ProfileInteractor,
-    authInteractor: AuthInteractor
+    authInteractor: AuthInteractor,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+    private val args = ProfileFragmentArgs.fromSavedStateHandle(savedStateHandle)
+
     private val _offers = MutableLiveData<PagingData<Offer>>()
     val offers: LiveData<PagingData<Offer>> = _offers
 
@@ -30,7 +30,7 @@ class ProfileViewModel @Inject constructor(
     val user: LiveData<User> = _user
 
     init {
-        val userId = authInteractor.authStateFlow.value.userId ?: 0
+        val userId = args.user?.id ?: authInteractor.authStateFlow.value.userId ?: 0
         viewModelScope.launch {
             launch {
                 profileInteractor

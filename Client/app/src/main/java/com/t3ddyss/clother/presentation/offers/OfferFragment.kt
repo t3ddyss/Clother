@@ -18,9 +18,9 @@ import com.t3ddyss.clother.util.formatDate
 import com.t3ddyss.core.domain.models.Error
 import com.t3ddyss.core.domain.models.Success
 import com.t3ddyss.core.presentation.BaseFragment
-import com.t3ddyss.core.util.ToolbarUtils
-import com.t3ddyss.core.util.errorText
-import com.t3ddyss.core.util.showSnackbarWithText
+import com.t3ddyss.core.util.extensions.errorText
+import com.t3ddyss.core.util.extensions.showSnackbarWithText
+import com.t3ddyss.core.util.utils.ToolbarUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

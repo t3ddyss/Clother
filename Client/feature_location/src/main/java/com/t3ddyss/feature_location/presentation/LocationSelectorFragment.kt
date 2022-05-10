@@ -21,10 +21,10 @@ import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.t3ddyss.core.util.IntentUtils
-import com.t3ddyss.core.util.ToolbarUtils
-import com.t3ddyss.core.util.showSnackbarWithAction
-import com.t3ddyss.core.util.showSnackbarWithText
+import com.t3ddyss.core.util.extensions.showSnackbarWithAction
+import com.t3ddyss.core.util.extensions.showSnackbarWithText
+import com.t3ddyss.core.util.utils.IntentUtils
+import com.t3ddyss.core.util.utils.ToolbarUtils
 import com.t3ddyss.feature_location.R
 import com.t3ddyss.feature_location.databinding.FragmentLocationSelectorBinding
 import com.t3ddyss.feature_location.domain.models.LocationType

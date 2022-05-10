@@ -1,4 +1,4 @@
-package com.t3ddyss.core.util
+package com.t3ddyss.core.util.extensions
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData

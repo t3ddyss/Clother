@@ -21,11 +21,10 @@ import com.t3ddyss.clother.presentation.offers.OfferViewModel
 import com.t3ddyss.clother.presentation.offers.OffersAdapter
 import com.t3ddyss.core.presentation.BaseFragment
 import com.t3ddyss.core.presentation.GridItemDecoration
-import com.t3ddyss.core.util.ToolbarUtils
-import com.t3ddyss.core.util.dp
-import com.t3ddyss.core.util.showSnackbarWithText
+import com.t3ddyss.core.util.extensions.dp
+import com.t3ddyss.core.util.extensions.showSnackbarWithText
+import com.t3ddyss.core.util.utils.ToolbarUtils
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class SearchResultsFragment
@@ -93,7 +92,7 @@ class SearchResultsFragment
         val layoutManager = GridLayoutManager(context, 2)
         binding.list.layoutManager = layoutManager
         binding.list.adapter = adapter
-        binding.list.addItemDecoration(GridItemDecoration(2, 8.dp().roundToInt(), true))
+        binding.list.addItemDecoration(GridItemDecoration(2, 8.dp(), true))
 
         // Show progressbar if reached end of current list
         onScrollListener = object : RecyclerView.OnScrollListener() {

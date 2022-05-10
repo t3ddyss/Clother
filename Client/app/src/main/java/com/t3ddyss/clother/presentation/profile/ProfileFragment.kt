@@ -2,8 +2,11 @@ package com.t3ddyss.clother.presentation.profile
 
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.CombinedLoadStates
@@ -16,18 +19,19 @@ import com.t3ddyss.clother.presentation.offers.OfferViewModel
 import com.t3ddyss.clother.presentation.offers.OffersAdapter
 import com.t3ddyss.core.presentation.BaseFragment
 import com.t3ddyss.core.presentation.GridItemDecoration
-import com.t3ddyss.core.util.dp
-import com.t3ddyss.core.util.showSnackbarWithText
+import com.t3ddyss.core.util.extensions.dp
+import com.t3ddyss.core.util.extensions.getThemeDimension
+import com.t3ddyss.core.util.extensions.showSnackbarWithText
+import com.t3ddyss.core.util.utils.ToolbarUtils
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class ProfileFragment
     : BaseFragment<FragmentProfileBinding>(FragmentProfileBinding::inflate) {
     // Using activityViewModels delegate here to save data across different instances of ProfileFragment
-    private val profileViewModel by activityViewModels<ProfileViewModel>()
+    private val profileViewModel by viewModels<ProfileViewModel>()
     private val offerViewModel by activityViewModels<OfferViewModel>()
 
     private val args by navArgs<ProfileFragmentArgs>()
@@ -35,7 +39,10 @@ class ProfileFragment
     private val offersAdapter = OffersAdapter(this::onOfferClick)
     private var loadStateListener: ((CombinedLoadStates) -> Unit)? = null
 
+    private val isCurrentUser get() = args.user == null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        setupToolbarIfNeeded()
         loadStateListener = { state: CombinedLoadStates ->
             when (state.refresh) {
                 is LoadState.Loading -> {
@@ -66,8 +73,8 @@ class ProfileFragment
         val layoutManager = GridLayoutManager(context, 2)
         binding.list.layoutManager = layoutManager
         binding.list.adapter = offersAdapter
-        binding.list.addItemDecoration(GridItemDecoration(2, 8.dp().roundToInt(), true))
-//
+        binding.list.addItemDecoration(GridItemDecoration(2, 8.dp(), true))
+
 //        binding.appBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
 //            if (abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
 //                binding.collapsingToolbarLayout.title = "aaaaa"
@@ -81,7 +88,7 @@ class ProfileFragment
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
-        binding.buttonEdit.isVisible = args.isCurrentUser
+        binding.buttonEdit.isVisible = isCurrentUser
     }
 
     override fun onDestroyView() {
@@ -123,6 +130,28 @@ class ProfileFragment
 
         offerViewModel.removedOffers.observe(viewLifecycleOwner) {
             profileViewModel.removeOffers(it)
+        }
+    }
+
+    private fun setupToolbarIfNeeded() {
+        if (!isCurrentUser) {
+            ToolbarUtils.setupToolbar(
+                activity,
+                binding.toolbar,
+                "",
+                ToolbarUtils.NavIcon.UP
+            )
+
+            val actionBarSize = requireContext().getThemeDimension(R.attr.actionBarSize)
+            binding.headerContainer.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                setMargins(
+                    16.dp(),
+                    actionBarSize,
+                    16.dp(),
+                    16.dp()
+                )
+            }
+            binding.collapsingToolbarLayout.expandedTitleMarginTop = 4.dp() + actionBarSize
         }
     }
 

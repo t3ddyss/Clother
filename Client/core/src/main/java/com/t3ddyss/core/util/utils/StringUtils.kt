@@ -1,4 +1,4 @@
-package com.t3ddyss.core.util
+package com.t3ddyss.core.util.utils
 
 import android.content.Context
 import androidx.annotation.StringRes

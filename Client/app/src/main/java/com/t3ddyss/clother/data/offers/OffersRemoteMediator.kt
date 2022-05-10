@@ -13,8 +13,8 @@ import com.t3ddyss.clother.data.offers.db.RemoteKeyDao
 import com.t3ddyss.clother.data.offers.db.models.OfferWithUserEntity
 import com.t3ddyss.clother.data.offers.db.models.RemoteKeyEntity
 import com.t3ddyss.clother.data.offers.remote.RemoteOffersService
+import com.t3ddyss.core.util.extensions.rethrowIfCancellationException
 import com.t3ddyss.core.util.log
-import com.t3ddyss.core.util.rethrowIfCancellationException
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject

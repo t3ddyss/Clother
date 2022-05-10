@@ -24,10 +24,10 @@ import com.t3ddyss.core.domain.models.Error
 import com.t3ddyss.core.domain.models.Loading
 import com.t3ddyss.core.domain.models.Success
 import com.t3ddyss.core.presentation.BaseFragment
-import com.t3ddyss.core.util.IntentUtils
-import com.t3ddyss.core.util.ToolbarUtils
-import com.t3ddyss.core.util.showSnackbarWithAction
-import com.t3ddyss.core.util.showSnackbarWithText
+import com.t3ddyss.core.util.extensions.showSnackbarWithAction
+import com.t3ddyss.core.util.extensions.showSnackbarWithText
+import com.t3ddyss.core.util.utils.IntentUtils
+import com.t3ddyss.core.util.utils.ToolbarUtils
 import com.t3ddyss.feature_location.presentation.LocationSelectorFragment
 import com.t3ddyss.navigation.util.observeNavigationResult
 import dagger.hilt.android.AndroidEntryPoint

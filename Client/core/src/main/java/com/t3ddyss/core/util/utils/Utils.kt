@@ -1,4 +1,4 @@
-package com.t3ddyss.core.util
+package com.t3ddyss.core.util.utils
 
 import android.os.Build
 import com.t3ddyss.core.BuildConfig

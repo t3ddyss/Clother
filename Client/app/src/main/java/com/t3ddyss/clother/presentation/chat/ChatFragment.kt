@@ -2,8 +2,7 @@ package com.t3ddyss.clother.presentation.chat
 
 import android.Manifest
 import android.os.Bundle
-import android.view.View
-import android.view.WindowManager
+import android.view.*
 import android.view.inputmethod.EditorInfo
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -13,15 +12,16 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentChatBinding
 import com.t3ddyss.clother.domain.chat.models.Message
 import com.t3ddyss.clother.domain.chat.models.MessageStatus
 import com.t3ddyss.clother.domain.common.common.models.LoadResult
 import com.t3ddyss.clother.util.text
 import com.t3ddyss.core.presentation.BaseFragment
-import com.t3ddyss.core.util.ToolbarUtils
-import com.t3ddyss.core.util.Utils.asExpression
-import com.t3ddyss.core.util.showSnackbarWithText
+import com.t3ddyss.core.util.extensions.showSnackbarWithText
+import com.t3ddyss.core.util.utils.ToolbarUtils
+import com.t3ddyss.core.util.utils.Utils.asExpression
 import com.t3ddyss.navigation.util.observeNavigationResultOnce
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -51,6 +51,8 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::infl
             args.user.name,
             ToolbarUtils.NavIcon.UP
         )
+        setHasOptionsMenu(true)
+
         requestGalleryPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
                 findNavController().navigate(
@@ -108,6 +110,18 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::infl
         }
 
         subscribeUi()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.toolbar_chat_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.profile) {
+            findNavController().navigate(ChatFragmentDirections.actionChatFragmentToProfileFragment(args.user))
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onDestroyView() {

@@ -6,7 +6,7 @@ import com.t3ddyss.clother.data.auth.remote.RemoteAuthService
 import com.t3ddyss.clother.data.chat.remote.RemoteChatService
 import com.t3ddyss.clother.data.common.common.remote.GsonDateAdapter
 import com.t3ddyss.clother.data.offers.remote.RemoteOffersService
-import com.t3ddyss.core.util.Utils
+import com.t3ddyss.core.util.utils.Utils
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

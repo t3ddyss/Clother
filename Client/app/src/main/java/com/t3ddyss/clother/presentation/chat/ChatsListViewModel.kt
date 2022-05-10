@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ChatsViewModel @Inject constructor(
+class ChatsListViewModel @Inject constructor(
     private val chatInteractor: ChatInteractor
 ) : ViewModel() {
     private val _chats = MutableLiveData<Resource<List<Chat>>>()

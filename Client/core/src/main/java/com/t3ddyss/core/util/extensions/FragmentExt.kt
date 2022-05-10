@@ -1,4 +1,4 @@
-package com.t3ddyss.core.util
+package com.t3ddyss.core.util.extensions
 
 import android.util.TypedValue
 import androidx.annotation.StringRes
@@ -7,14 +7,16 @@ import com.google.android.material.snackbar.Snackbar
 import com.t3ddyss.core.R
 import com.t3ddyss.core.domain.models.Error
 import com.t3ddyss.core.presentation.NavMenuController
+import com.t3ddyss.core.util.utils.StringUtils
+import kotlin.math.roundToInt
 
-val Fragment.dp: Int.() -> Float
+val Fragment.dp: Int.() -> Int
     get() = {
         TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
             this.toFloat(),
             this@dp.requireContext().resources.displayMetrics
-        )
+        ).roundToInt()
     }
 
 val Fragment.errorText: Error<*>.() -> String

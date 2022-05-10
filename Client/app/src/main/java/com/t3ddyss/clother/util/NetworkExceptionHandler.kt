@@ -5,7 +5,7 @@ import com.t3ddyss.clother.data.common.common.remote.models.ResponseDto
 import com.t3ddyss.core.domain.models.Error
 import com.t3ddyss.core.domain.models.Resource
 import com.t3ddyss.core.domain.models.Success
-import com.t3ddyss.core.util.rethrowIfCancellationException
+import com.t3ddyss.core.util.extensions.rethrowIfCancellationException
 import retrofit2.HttpException
 
 suspend inline fun <ResultType> handleHttpException(

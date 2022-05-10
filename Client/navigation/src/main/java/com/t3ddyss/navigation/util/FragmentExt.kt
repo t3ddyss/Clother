@@ -2,7 +2,7 @@ package com.t3ddyss.navigation.util
 
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.t3ddyss.core.util.observeOnce
+import com.t3ddyss.core.util.extensions.observeOnce
 
 fun <T : Any> Fragment.setNavigationResult(key: String, data : T) {
     findNavController()

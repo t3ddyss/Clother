@@ -24,10 +24,11 @@
             app:expandedTitleMargin="16dp"
             app:expandedTitleMarginTop="20dp"
             app:expandedTitleMarginStart="104dp"
-            app:expandedTitleTextAppearance="@style/CollapsingToolbarExpandedTitle"
+            app:expandedTitleTextAppearance="@style/ProfileCollapsingToolbarTitle"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
             <LinearLayout
+                android:id="@+id/header_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"

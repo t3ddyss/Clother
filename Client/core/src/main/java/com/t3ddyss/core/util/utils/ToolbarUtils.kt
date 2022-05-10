@@ -1,4 +1,4 @@
-package com.t3ddyss.core.util
+package com.t3ddyss.core.util.utils
 
 import android.app.Activity
 import androidx.annotation.DrawableRes

@@ -13,7 +13,7 @@ import com.t3ddyss.clother.data.common.common.Mappers.toArg
 import com.t3ddyss.clother.databinding.FragmentOfferCategoryBinding
 import com.t3ddyss.clother.domain.offers.models.Category
 import com.t3ddyss.core.presentation.BaseFragment
-import com.t3ddyss.core.util.ToolbarUtils
+import com.t3ddyss.core.util.utils.ToolbarUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

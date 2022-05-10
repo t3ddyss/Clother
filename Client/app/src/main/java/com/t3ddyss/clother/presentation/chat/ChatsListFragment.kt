@@ -13,12 +13,12 @@ import com.t3ddyss.core.domain.models.Error
 import com.t3ddyss.core.domain.models.Loading
 import com.t3ddyss.core.domain.models.Success
 import com.t3ddyss.core.presentation.BaseFragment
-import com.t3ddyss.core.util.ToolbarUtils
+import com.t3ddyss.core.util.utils.ToolbarUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ChatsFragment : BaseFragment<FragmentChatsBinding>(FragmentChatsBinding::inflate) {
-    private val viewModel by viewModels<ChatsViewModel>()
+class ChatsListFragment : BaseFragment<FragmentChatsBinding>(FragmentChatsBinding::inflate) {
+    private val viewModel by viewModels<ChatsListViewModel>()
 
     private val adapter = ChatsAdapter(this::onChatClick)
 
@@ -52,7 +52,7 @@ class ChatsFragment : BaseFragment<FragmentChatsBinding>(FragmentChatsBinding::i
     }
 
     private fun onChatClick(chat: Chat) {
-        val action = ChatsFragmentDirections
+        val action = ChatsListFragmentDirections
             .actionChatsFragmentToChatFragment(chat.interlocutor.toArg())
         findNavController().navigate(action)
     }

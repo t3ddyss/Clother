@@ -9,7 +9,7 @@ import androidx.navigation.fragment.navArgs
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentEmailConfirmationBinding
 import com.t3ddyss.core.presentation.BaseFragment
-import com.t3ddyss.core.util.ToolbarUtils
+import com.t3ddyss.core.util.utils.ToolbarUtils
 
 class EmailConfirmationFragment
     : BaseFragment<FragmentEmailConfirmationBinding>(FragmentEmailConfirmationBinding::inflate) {

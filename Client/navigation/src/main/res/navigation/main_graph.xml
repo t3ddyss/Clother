@@ -88,9 +88,10 @@
         android:name="com.t3ddyss.clother.presentation.profile.ProfileFragment"
         tools:layout="@layout/fragment_profile">
         <argument
-            android:name="is_current_user"
-            app:argType="boolean"
-            android:defaultValue="true"/>
+            android:name="user"
+            app:argType="com.t3ddyss.navigation.presentation.models.UserArg"
+            app:nullable="true"
+            android:defaultValue="@null"/>
         <action
             android:id="@+id/action_profileFragment_to_offerFragment"
             app:destination="@id/offerFragment" />
@@ -216,7 +217,7 @@
 
     <fragment
         android:id="@+id/chatsFragment"
-        android:name="com.t3ddyss.clother.presentation.chat.ChatsFragment"
+        android:name="com.t3ddyss.clother.presentation.chat.ChatsListFragment"
         tools:layout="@layout/fragment_chats">
         <action
             android:id="@+id/action_chatsFragment_to_chatFragment"
@@ -239,6 +240,9 @@
         <action
             android:id="@+id/action_chatFragment_to_messageMenuDialog"
             app:destination="@id/messageMenuDialog" />
+        <action
+            android:id="@+id/action_chatFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
 
     <dialog

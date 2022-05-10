@@ -6,7 +6,7 @@ import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.t3ddyss.clother.databinding.FragmentImageBinding
 import com.t3ddyss.core.presentation.BaseFragment
-import com.t3ddyss.core.util.ToolbarUtils
+import com.t3ddyss.core.util.utils.ToolbarUtils
 
 class ImageFragment : BaseFragment<FragmentImageBinding>(FragmentImageBinding::inflate) {
     private val args by navArgs<ImageFragmentArgs>()

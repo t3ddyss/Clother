@@ -11,10 +11,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.t3ddyss.clother.databinding.DialogImageSelectorBinding
 import com.t3ddyss.core.presentation.GridItemDecoration
-import com.t3ddyss.core.util.dp
+import com.t3ddyss.core.util.extensions.dp
 import com.t3ddyss.navigation.util.setNavigationResult
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class ImageSelectorDialog : BottomSheetDialogFragment() {
@@ -40,7 +39,7 @@ class ImageSelectorDialog : BottomSheetDialogFragment() {
         binding.list.layoutManager = layoutManager
         binding.list.adapter = adapter
         binding.list.setItemViewCacheSize(100)
-        binding.list.addItemDecoration(GridItemDecoration(3, 8.dp().roundToInt(), true))
+        binding.list.addItemDecoration(GridItemDecoration(3, 8.dp(), true))
 
         subscribeUi()
     }

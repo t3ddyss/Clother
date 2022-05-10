@@ -36,4 +36,5 @@ dependencies {
     implementation "androidx.core:core-ktx:$ktx_version"
     implementation "androidx.legacy:legacy-support-v4:$legacy_version"
     implementation "com.google.android.material:material:$material_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
 }
