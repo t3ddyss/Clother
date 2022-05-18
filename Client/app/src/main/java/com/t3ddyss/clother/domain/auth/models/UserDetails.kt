@@ -5,5 +5,5 @@ import java.util.*
 data class UserDetails(
     val email: String,
     val createdAt: Date,
-    val age: Int?
+    val status: String
 )

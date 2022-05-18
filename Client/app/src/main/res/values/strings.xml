@@ -7,6 +7,8 @@
     <string name="action_enable">Enable</string>
     <string name="action_retry">Retry</string>
     <string name="action_okay">Okay</string>
+    <string name="action_upload">Upload image</string>
+    <string name="action_remove">Remove</string>
 
     <string name="menu_home">Home</string>
     <string name="menu_search">Search</string>
@@ -91,5 +93,6 @@
     <string name="profile_join_date_year">last year</string>
     <string name="profile_join_date_several_years">more than a year ago</string>
     <string name="profile_email">Email: %s</string>
-    <string name="profile_age">Age: %s</string>
+    <string name="profile_status">Status</string>
+    <string name="profile_save">Save</string>
 </resources>

@@ -75,7 +75,7 @@ class PasswordRecoveryFragment
                 }
                 is Error<Response> -> {
                     binding.layoutLoading.isVisible = false
-                    showSnackbarWithText(response.message)
+                    showSnackbarWithText(response)
                 }
             }
         }

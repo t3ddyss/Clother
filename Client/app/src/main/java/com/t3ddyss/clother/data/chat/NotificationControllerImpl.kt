@@ -68,9 +68,8 @@ class NotificationControllerImpl @Inject constructor(
             .build()
 
         notificationManagerCompat.apply {
-            val notificationsByUserCount = notificationManager.activeNotifications
-                .filter { it.tag == tag }
-                .count()
+            val notificationsByUserCount =
+                notificationManager.activeNotifications.count { it.tag == tag }
             notify(tag, notificationId.getAndIncrement(), singleNotification)
 
             if (notificationsByUserCount == 1) {

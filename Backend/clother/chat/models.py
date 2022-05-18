@@ -24,7 +24,7 @@ class Chat(db.Model):
         interlocutor = [x for x in self.users if x.id != addressee_id][0]
         last_message = self.messages[-1]
         return {'id': self.id,
-                'interlocutor': interlocutor.to_dict(),
+                'interlocutor': interlocutor.to_dict(url_root=url_root),
                 'last_message': last_message.to_dict(url_root=url_root)}
 
 

@@ -197,7 +197,7 @@ object Mappers {
             userId = userId,
             email = this.email,
             createdAt = this.createdAt,
-            age = this.age
+            status = this.status
         )
     }
 
@@ -214,7 +214,7 @@ object Mappers {
         return UserDetails(
             email = this.email,
             createdAt = this.createdAt,
-            age = this.age
+            status = this.status.orEmpty()
         )
     }
 
@@ -231,7 +231,7 @@ object Mappers {
             userId = userId,
             email = this.email,
             createdAt = this.createdAt,
-            age = this.age
+            status = this.status.orEmpty()
         )
     }
 
@@ -247,7 +247,7 @@ object Mappers {
         return UserDetails(
             email = this.email,
             createdAt = this.createdAt,
-            age = this.age
+            status = this.status
         )
     }
 

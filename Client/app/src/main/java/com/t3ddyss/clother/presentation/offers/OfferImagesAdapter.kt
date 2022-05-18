@@ -42,7 +42,7 @@ class OfferImagesAdapter(
                 Glide.with(image)
                     .load(url)
                     .centerCrop()
-                    .placeholder(R.drawable.placeholder_offer_image)
+                    .placeholder(R.drawable.image_placeholder)
                     .dontAnimate()
                     .into(image)
             }

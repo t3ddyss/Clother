@@ -4,7 +4,6 @@ import android.Manifest
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -19,7 +18,9 @@ import com.t3ddyss.clother.domain.chat.models.MessageStatus
 import com.t3ddyss.clother.domain.common.common.models.LoadResult
 import com.t3ddyss.clother.util.text
 import com.t3ddyss.core.presentation.BaseFragment
+import com.t3ddyss.core.util.extensions.showSnackbarWithAction
 import com.t3ddyss.core.util.extensions.showSnackbarWithText
+import com.t3ddyss.core.util.utils.IntentUtils
 import com.t3ddyss.core.util.utils.ToolbarUtils
 import com.t3ddyss.core.util.utils.Utils.asExpression
 import com.t3ddyss.navigation.util.observeNavigationResultOnce
@@ -34,7 +35,6 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::infl
     private val adapter = MessagesAdapter(this::onMessageClick, this::onImageClick)
     private var adapterDataObserver: RecyclerView.AdapterDataObserver? = null
     private var onScrollListener: RecyclerView.OnScrollListener? = null
-    private var requestGalleryPermissionLauncher: ActivityResultLauncher<String>? = null
 
     @Suppress("Deprecated")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,10 +53,16 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::infl
         )
         setHasOptionsMenu(true)
 
-        requestGalleryPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+        val permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
                 findNavController().navigate(
                     ChatFragmentDirections.actionChatFragmentToImageSelectorDialog()
+                )
+            } else {
+                showSnackbarWithAction(
+                    text = R.string.error_no_files_access,
+                    actionText = R.string.action_grant_access,
+                    action = { IntentUtils.openApplicationSettings(requireContext()) }
                 )
             }
         }
@@ -99,7 +105,7 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::infl
             observeNavigationResultOnce<String>(ImageSelectorDialog.SELECTED_IMAGE) {
                 viewModel.sendMessage(image = it)
             }
-            requestGalleryPermissionLauncher?.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+            permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
         }
         binding.editTextMessage.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEND) {

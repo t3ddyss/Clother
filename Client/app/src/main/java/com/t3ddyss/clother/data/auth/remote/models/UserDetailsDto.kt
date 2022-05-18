@@ -9,5 +9,5 @@ data class UserDetailsDto(
     @SerializedName("created_at")
     val createdAt: Date,
 
-    val age: Int?
+    val status: String?
 )

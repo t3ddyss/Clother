@@ -145,7 +145,7 @@ class OfferFragment : BaseFragment<FragmentOfferBinding>(FragmentOfferBinding::i
     private fun showDeletionConfirmationDialog() {
         MaterialAlertDialogBuilder(
             requireContext(),
-            R.style.MyThemeOverlay_MaterialComponents_MaterialAlertDialog
+            R.style.MaterialAlertDialogStyle
         )
             .setTitle(getString(R.string.offer_delete))
             .setMessage(getString(R.string.offer_deletion_confirmation))

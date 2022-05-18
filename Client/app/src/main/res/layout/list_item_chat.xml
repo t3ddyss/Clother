@@ -12,7 +12,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         app:shapeAppearance="@style/RoundImageView"
-        app:srcCompat="@drawable/ic_default_avatar"
+        app:srcCompat="@drawable/ic_avatar_default"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

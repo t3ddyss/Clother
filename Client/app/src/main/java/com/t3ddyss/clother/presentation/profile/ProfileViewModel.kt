@@ -8,6 +8,7 @@ import com.t3ddyss.clother.domain.auth.AuthInteractor
 import com.t3ddyss.clother.domain.auth.ProfileInteractor
 import com.t3ddyss.clother.domain.auth.models.User
 import com.t3ddyss.clother.domain.offers.models.Offer
+import com.t3ddyss.core.domain.models.Resource
 import com.t3ddyss.core.util.log
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
@@ -26,8 +27,8 @@ class ProfileViewModel @Inject constructor(
     private val _offers = MutableLiveData<PagingData<Offer>>()
     val offers: LiveData<PagingData<Offer>> = _offers
 
-    private val _user = MutableLiveData<User>()
-    val user: LiveData<User> = _user
+    private val _user = MutableLiveData<Resource<User>>()
+    val user: LiveData<Resource<User>> = _user
 
     init {
         val userId = args.user?.id ?: authInteractor.authStateFlow.value.userId ?: 0

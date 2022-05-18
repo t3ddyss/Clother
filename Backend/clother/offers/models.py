@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 
-from flask import current_app
+from flask import current_app, request
 from sqlalchemy import func, event
 from sqlalchemy.ext.hybrid import hybrid_method
 
@@ -25,7 +25,7 @@ class Offer(db.Model):
 
     def to_dict(self, url_root):
         offer = {'id': self.id,
-                 'user': self.user.to_dict(),
+                 'user': self.user.to_dict(request.url_root),
                  'category_id': self.category_id,
                  'created_at': self.created_at.isoformat(sep=' ', timespec='seconds'),
                  'title': self.title,

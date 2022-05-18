@@ -129,7 +129,7 @@ class OfferEditorFragment
                 }
                 is Error<*> -> {
                     binding.layoutLoading.isVisible = false
-                    showSnackbarWithText(it.message)
+                    showSnackbarWithText(it)
                 }
             }
         }

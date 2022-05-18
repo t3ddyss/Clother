@@ -155,7 +155,7 @@ class MessagesAdapter(
             setOutgoingMessageStatus(message, binding.status, binding.time)
             Glide.with(binding.image)
                 .load(message.image)
-                .placeholder(R.drawable.placeholder_offer_image)
+                .placeholder(R.drawable.image_placeholder)
                 .thumbnail(0.5f)
                 .into(binding.image)
         }

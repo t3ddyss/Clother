@@ -4,6 +4,7 @@ import androidx.room.*
 import com.t3ddyss.clother.data.auth.db.models.UserDetailsEntity
 import com.t3ddyss.clother.data.auth.db.models.UserEntity
 import com.t3ddyss.clother.data.auth.db.models.UserWithDetailsEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {
@@ -23,12 +24,20 @@ interface UserDao {
     suspend fun getUserById(id: Int): UserEntity
 
     @Transaction
-    @Query("""SELECT * 
-        FROM user 
-        INNER JOIN user_details
-        ON user.id == user_details.user_id
-        WHERE user.id == :id
-    """
-    )
+    @Query(USER_WITH_DETAILS_QUERY)
     suspend fun getUserWithDetailsById(id: Int): UserWithDetailsEntity?
+
+    @Transaction
+    @Query(USER_WITH_DETAILS_QUERY)
+    fun observeUserWithDetailsById(id: Int): Flow<UserWithDetailsEntity>
+
+    private companion object {
+        const val USER_WITH_DETAILS_QUERY = """
+            SELECT *
+            FROM user
+            INNER JOIN user_details
+            ON user.id == user_details.user_id
+            WHERE user.id == :id
+            """
+    }
 }

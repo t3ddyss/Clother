@@ -7,7 +7,7 @@ import com.t3ddyss.core.R
 import java.net.ConnectException
 
 object StringUtils {
-    private val namePattern = """\p{L}{2,50}""".toRegex()
+    private val namePattern = """[a-zA-Z\s]{2,50}""".toRegex()
     private val passwordPattern =
         """^(?=.*?[0-9])(?=.*?[a-z])(?=.*?[A-Z])(?=\S+$)(?=.*?[^A-Za-z\s0-9]).{8,25}""".toRegex()
 

@@ -6,7 +6,14 @@
     tools:ignore="InvalidNavigation">
 
     <include app:graph="@navigation/offer_editor_graph" />
+
     <include app:graph="@navigation/search_results_graph" />
+
+    <action
+        android:id="@+id/action_global_signUpFragment"
+        app:destination="@id/signUpFragment"
+        app:popUpTo="@id/main_graph"
+        app:popUpToInclusive="true" />
 
     <fragment
         android:id="@+id/homeFragment"
@@ -95,6 +102,9 @@
         <action
             android:id="@+id/action_profileFragment_to_offerFragment"
             app:destination="@id/offerFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_profileEditorFragment"
+            app:destination="@id/profileEditorFragment" />
     </fragment>
 
     <fragment
@@ -279,9 +289,25 @@
             app:popUpToInclusive="true" />
     </fragment>
 
-    <action
-        android:id="@+id/action_global_signUpFragment"
-        app:destination="@id/signUpFragment"
-        app:popUpTo="@id/main_graph"
-        app:popUpToInclusive="true" />
+    <fragment
+        android:id="@+id/profileEditorFragment"
+        android:name="com.t3ddyss.clother.presentation.profile.ProfileEditorFragment" >
+        <action
+            android:id="@+id/action_profileEditorFragment_to_avatarMenuDialog"
+            app:destination="@id/avatarMenuDialog" />
+    </fragment>
+
+    <dialog
+        android:id="@+id/avatarMenuDialog"
+        android:name="com.t3ddyss.clother.presentation.profile.AvatarMenuDialog" >
+        <argument
+            android:name="isRemoveVisible"
+            android:defaultValue="false"
+            app:argType="boolean" />
+        <action
+            android:id="@+id/action_avatarMenuDialog_to_imageSelectorDialog"
+            app:destination="@id/imageSelectorDialog"
+            app:popUpTo="@id/avatarMenuDialog"
+            app:popUpToInclusive="true" />
+    </dialog>
 </navigation>

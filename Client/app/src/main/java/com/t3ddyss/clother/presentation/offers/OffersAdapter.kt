@@ -47,7 +47,7 @@ class OffersAdapter(
                     .load(offer.images.firstOrNull())
                     .thumbnail(0.5f)
                     .centerCrop()
-                    .placeholder(R.drawable.placeholder_offer_image)
+                    .placeholder(R.drawable.image_placeholder)
                     .dontAnimate()
                     .into(image)
 

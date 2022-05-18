@@ -17,7 +17,7 @@ from clother.users.models import User
 from clother.constants import RESPONSE_DELAY, BASE_PREFIX
 from .forms import ResetPasswordForm
 from .models import TokenBlocklist
-from .utils import validate_password, send_email
+from .utils import validate_password, send_email, validate_name
 
 blueprint = Blueprint('auth', __name__, url_prefix=(BASE_PREFIX + '/auth'))
 
@@ -41,7 +41,7 @@ def refresh_tokens():
     db.session.commit()
 
     additional_claims = {"user_id": user_id}
-    return {'user': user.to_dict(),
+    return {'user': user.to_dict(request.url_root),
             'access_token': create_access_token(user_id, additional_claims=additional_claims),
             'refresh_token': create_refresh_token(user_id, additional_claims=additional_claims)}
 
@@ -74,8 +74,7 @@ async def register():
                            '1 special character'}, 422
 
     name = data['name']
-    name_pattern = re.compile(r'^(?=\S{2,50}$)')
-    if not name_pattern.match(name):
+    if not validate_name(name):
         return {'message': 'Name should contain at least 2 and less than 50 characters'}, 422
 
     user = User(email=valid_email, name=name)
@@ -148,7 +147,7 @@ def login():
         return {"message": "You haven't verified your email address"}, 403
     if user and user.check_password(password):
         additional_claims = {"user_id": user.id}
-        return {'user': user.to_details_dict(),
+        return {'user': user.to_details_dict(request.url_root),
                 'access_token': create_access_token(user.id, additional_claims=additional_claims),
                 'refresh_token': create_refresh_token(user.id, additional_claims=additional_claims)}
     else:

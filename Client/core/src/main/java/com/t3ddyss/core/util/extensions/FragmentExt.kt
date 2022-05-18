@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.t3ddyss.core.R
 import com.t3ddyss.core.domain.models.Error
+import com.t3ddyss.core.domain.models.InfoMessage
 import com.t3ddyss.core.presentation.NavMenuController
 import com.t3ddyss.core.util.utils.StringUtils
 import kotlin.math.roundToInt
@@ -21,7 +22,17 @@ val Fragment.dp: Int.() -> Int
 
 val Fragment.errorText: Error<*>.() -> String
     get() = {
-        message ?: StringUtils.getErrorText(throwable, requireContext())
+        when (message) {
+            is InfoMessage.StringMessage -> {
+                message.message ?: StringUtils.getErrorText(throwable, requireContext())
+            }
+            is InfoMessage.StringResMessage -> {
+                getString(message.messageRes)
+            }
+            else -> {
+                StringUtils.getErrorText(throwable, requireContext())
+            }
+        }
     }
 
 fun Fragment.showSnackbarWithText(text: String?) {

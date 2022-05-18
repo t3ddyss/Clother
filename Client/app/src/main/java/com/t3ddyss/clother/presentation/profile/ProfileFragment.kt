@@ -15,9 +15,13 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.data.common.common.Mappers.toArg
 import com.t3ddyss.clother.databinding.FragmentProfileBinding
+import com.t3ddyss.clother.domain.auth.models.UserDetails
 import com.t3ddyss.clother.domain.offers.models.Offer
 import com.t3ddyss.clother.presentation.offers.OfferViewModel
 import com.t3ddyss.clother.presentation.offers.OffersAdapter
+import com.t3ddyss.core.domain.models.Error
+import com.t3ddyss.core.domain.models.Loading
+import com.t3ddyss.core.domain.models.Success
 import com.t3ddyss.core.presentation.BaseFragment
 import com.t3ddyss.core.presentation.GridItemDecoration
 import com.t3ddyss.core.util.extensions.dp
@@ -90,6 +94,11 @@ class ProfileFragment
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
         binding.buttonEdit.isVisible = isCurrentUser
+        binding.buttonEdit.setOnClickListener {
+            findNavController().navigate(
+                ProfileFragmentDirections.actionProfileFragmentToProfileEditorFragment()
+            )
+        }
     }
 
     override fun onDestroyView() {
@@ -106,32 +115,34 @@ class ProfileFragment
         }
 
         profileViewModel.user.observe(viewLifecycleOwner) {
-            binding.collapsingToolbarLayout.title = it.name
+            it.content?.let { user ->
+                binding.collapsingToolbarLayout.title = user.name
+                AvatarLoader.loadAvatar(binding.avatar, user.image)
+            }
 
-            if (it.details != null) {
-                binding.textViewSignUpDate.text = it.details.createdAt.toDescription()
-                binding.textViewEmail.text = getString(R.string.profile_email, it.details.email)
-                binding.shimmerHeader.isVisible = false
-                binding.signUpDateContainer.isVisible = true
-                binding.emailContainer.isVisible = true
-
-                it.details.age?.let { age ->
-                    binding.textViewAge.text = getString(R.string.profile_age, age.toString())
-                    binding.ageContainer.isVisible = true
-                } ?: run {
-                    binding.ageContainer.isVisible = false
+            when (it) {
+                is Loading -> {
+                    render(it.content?.details, false)
                 }
-            } else {
-                binding.signUpDateContainer.isVisible = false
-                binding.emailContainer.isVisible = false
-                binding.ageContainer.isVisible = false
-                binding.shimmerHeader.isVisible = true
+                is Success -> {
+                    render(it.content?.details, true)
+                }
+                is Error -> {
+                    render(it.content?.details, true)
+                }
             }
         }
 
         offerViewModel.removedOffers.observe(viewLifecycleOwner) {
             profileViewModel.removeOffers(it)
         }
+    }
+
+    private fun onOfferClick(offer: Offer) {
+        offerViewModel.selectOffer(offer)
+        val action = ProfileFragmentDirections
+            .actionProfileFragmentToOfferFragment(offer.user.toArg())
+        findNavController().navigate(action)
     }
 
     private fun setupToolbarIfNeeded() {
@@ -157,11 +168,22 @@ class ProfileFragment
         }
     }
 
-    private fun onOfferClick(offer: Offer) {
-        offerViewModel.selectOffer(offer)
-        val action = ProfileFragmentDirections
-            .actionProfileFragmentToOfferFragment(offer.user.toArg())
-        findNavController().navigate(action)
+    private fun render(userDetails: UserDetails?, shouldHideShimmer: Boolean) {
+        if (userDetails != null) {
+            binding.textViewStatus.text = userDetails.status
+            binding.textViewSignUpDate.text = userDetails.createdAt.toDescription()
+            binding.textViewEmail.text = getString(R.string.profile_email, userDetails.email)
+            binding.textViewStatus.isVisible = userDetails.status.isNotBlank()
+            binding.shimmerHeader.isVisible = false
+            binding.signUpDateContainer.isVisible = true
+            binding.emailContainer.isVisible = true
+        } else {
+            binding.textViewStatus.isVisible = false
+            binding.signUpDateContainer.isVisible = false
+            binding.emailContainer.isVisible = false
+            binding.ageContainer.isVisible = false
+            binding.shimmerHeader.isVisible = true && !shouldHideShimmer
+        }
     }
 
     private fun Date.toDescription(): String {

@@ -25,5 +25,5 @@ data class UserDetailsEntity(
     @ColumnInfo(name = "created_at")
     val createdAt: Date,
 
-    val age: Int?
+    val status: String
 )

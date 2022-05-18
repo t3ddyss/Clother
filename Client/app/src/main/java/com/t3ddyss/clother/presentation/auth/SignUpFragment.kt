@@ -106,7 +106,7 @@ class SignUpFragment
                 }
                 is Error<*> -> {
                     binding.layoutLoading.isVisible = false
-                    showSnackbarWithText(response.message)
+                    showSnackbarWithText(response)
                 }
             }
         }

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.ListItemChatBinding
 import com.t3ddyss.clother.domain.chat.models.Chat
+import com.t3ddyss.clother.presentation.profile.AvatarLoader
 import com.t3ddyss.clother.util.formatDate
 
 class ChatsAdapter(
@@ -43,6 +44,7 @@ class ChatsAdapter(
         @SuppressLint("SetTextI18n")
         fun bind(chat: Chat) {
             val context = binding.root.context
+            AvatarLoader.loadAvatar(binding.avatar, chat.interlocutor.image)
             binding.textViewName.text = chat.interlocutor.name
             binding.textViewTime.text = chat.lastMessage.createdAt.formatDate()
 
