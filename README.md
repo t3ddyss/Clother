@@ -50,8 +50,8 @@ Follow the steps below to run the application.
 
 ## Roadmap
 
-* Implement deep linking for push notifications
-* Support images in chat
+* ~~Implement deep linking for push notifications~~
+* ~~Support images in chat~~
 * ~~Migrate to [PostgreSQL](https://www.postgresql.org/) and add advanced database triggers~~
 * ~~Support different timezones~~
 
@@ -72,7 +72,6 @@ Github repository: [https://github.com/t3ddyss/Clother](https://github.com/t3ddy
 * [Flask-SocketIO](https://github.com/miguelgrinberg/Flask-SocketIO)
 * [Flask-SQLAlchemy](https://github.com/pallets/flask-sqlalchemy)
 * [itsdangerous](https://github.com/pallets/itsdangerous)
-* [PyFCM](https://github.com/olucurious/PyFCM)
 * [Compressor](https://github.com/zetbaitsu/Compressor)
 * [Glide](https://github.com/bumptech/glide)
 * [Hilt](https://github.com/google/dagger/tree/master/java/dagger/hilt)
