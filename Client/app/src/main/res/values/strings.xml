@@ -70,7 +70,9 @@
     <string name="search_nothing_found">Nothing found</string>
     <string name="search_filters">Filters</string>
     <string name="search_apply_filters">Apply filters</string>
-    <string name="search_set_location">Set my location</string>
+    <string name="search_clear_filters">Clear filters</string>
+    <string name="search_my_location">My location</string>
+    <string name="search_set_location">Set location</string>
     <string name="search_max_distance">Maximum distance</string>
 
     <string name="chat_input_hint">Message</string>

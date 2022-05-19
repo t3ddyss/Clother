@@ -22,8 +22,8 @@
             android:id="@+id/action_searchResults_to_offerFragment"
             app:destination="@id/offerFragment">
             <argument
-                android:name="offer_id"
-                android:defaultValue="0" />
+                android:name="user"
+                app:argType="com.t3ddyss.navigation.presentation.models.UserArg" />
         </action>
         <action
             android:id="@+id/action_searchResultsFragment_to_filterDialogFragment"

@@ -6,13 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.DialogSearchFiltersBinding
 import com.t3ddyss.clother.util.toCoordinatesString
+import com.t3ddyss.feature_location.presentation.LocationSelectorFragment
+import com.t3ddyss.navigation.util.observeNavigationResult
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,8 +26,6 @@ class FilterDialogFragment : BottomSheetDialogFragment() {
     )
     private var _binding: DialogSearchFiltersBinding? = null
     private val binding get() = _binding!!
-
-    private var location: LatLng? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,19 +53,33 @@ class FilterDialogFragment : BottomSheetDialogFragment() {
         }
 
         binding.buttonApply.setOnClickListener {
-            val distance = getSelectedDistance()
+            val location = viewModel.location.value
+            val radius = getSelectedRadius()
             val size = getSelectedSize()
 
-            if (location != null && distance != null) {
-                searchViewModel.location.value = Pair(location!!, distance)
+            if (location != null && radius != null) {
+                searchViewModel.location.value = Pair(location, radius)
             } else {
-                viewModel.maxDistance.value = View.NO_ID
+                searchViewModel.location.value = null
+                viewModel.onRadiusSelected(null)
             }
 
             if (size != null) {
                 searchViewModel.size.value = size
+            } else {
+                searchViewModel.size.value = null
             }
 
+            searchViewModel.filters.value = Unit
+            findNavController().popBackStack()
+        }
+
+        binding.buttonClear.setOnClickListener {
+            viewModel.onRadiusSelected(null)
+            viewModel.onSizeSelected(null)
+            searchViewModel.location.value = null
+            searchViewModel.size.value = null
+            searchViewModel.filters.value = Unit
             findNavController().popBackStack()
         }
 
@@ -79,27 +92,35 @@ class FilterDialogFragment : BottomSheetDialogFragment() {
     }
 
     private fun subscribeUi() {
-        viewModel.location.observe(viewLifecycleOwner) {
-            location = it
-            binding.textViewLocation.text = it.toCoordinatesString()
+        viewModel.location.observe(viewLifecycleOwner) { latLng ->
+            binding.textViewLocation.text = latLng?.toCoordinatesString()
+                ?: getString(R.string.search_set_location)
         }
 
-        viewModel.maxDistance.observe(viewLifecycleOwner) {
-            if (it == View.NO_ID) return@observe
-
-            binding.chipGroupDistance.chipGroupDistance.check(it)
+        viewModel.radius.observe(viewLifecycleOwner) { chipId ->
+            if (chipId != null) {
+                binding.chipGroupDistance.chipGroupDistance.check(chipId)
+            } else {
+                binding.chipGroupDistance.chipGroupDistance.clearCheck()
+            }
         }
 
-        viewModel.size.observe(viewLifecycleOwner) {
-            if (it == View.NO_ID) return@observe
+        viewModel.size.observe(viewLifecycleOwner) { chipId ->
+            if (chipId != null) {
+                binding.chipGroupSize.chipGroupSize.check(chipId)
+            } else {
+                binding.chipGroupSize.chipGroupSize.clearCheck()
+            }
+        }
 
-            binding.chipGroupSize.chipGroupSize.check(it)
+        observeNavigationResult<String>(LocationSelectorFragment.COORDINATES_KEY) {
+            viewModel.onLocationSelected(it)
         }
     }
 
-    private fun getSelectedDistance(): Int? {
+    private fun getSelectedRadius(): Int? {
         val checkedChipId = binding.chipGroupDistance.chipGroupDistance.checkedChipId
-        viewModel.maxDistance.value = checkedChipId
+        viewModel.onRadiusSelected(checkedChipId)
 
         return when (checkedChipId) {
             R.id.dist_5km -> 5
@@ -112,12 +133,12 @@ class FilterDialogFragment : BottomSheetDialogFragment() {
 
     private fun getSelectedSize(): String? {
         val checkedChipId = binding.chipGroupSize.chipGroupSize.checkedChipId
-        viewModel.size.value = checkedChipId
+        viewModel.onSizeSelected(checkedChipId)
 
-        if (checkedChipId != View.NO_ID) {
-            return binding.chipGroupSize.chipGroupSize
-                .findViewById<Chip>(checkedChipId).text.toString()
+        return if (checkedChipId != View.NO_ID) {
+            binding.chipGroupSize.chipGroupSize.findViewById<Chip>(checkedChipId).text.toString()
+        } else {
+            null
         }
-        return null
     }
 }

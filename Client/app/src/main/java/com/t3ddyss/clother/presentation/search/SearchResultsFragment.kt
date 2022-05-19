@@ -15,6 +15,7 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.R
+import com.t3ddyss.clother.data.common.common.Mappers.toArg
 import com.t3ddyss.clother.databinding.FragmentSearchResultsBinding
 import com.t3ddyss.clother.domain.offers.models.Offer
 import com.t3ddyss.clother.presentation.offers.OfferViewModel
@@ -131,9 +132,8 @@ class SearchResultsFragment
                 true
             }
             R.id.search -> {
-                val action = SearchResultsFragmentDirections.actionSearchResultsToSearchFragment(
-                    args.query ?: ""
-                )
+                val action = SearchResultsFragmentDirections
+                    .actionSearchResultsToSearchFragment(args.query.orEmpty())
                 findNavController().navigate(action)
                 true
             }
@@ -153,40 +153,12 @@ class SearchResultsFragment
         viewModel.offers.observe(viewLifecycleOwner) {
             adapter.submitData(lifecycle, it)
         }
-
-        viewModel.filters.observe(viewLifecycleOwner) {
-            val query = getQuery()
-            viewModel.getOffers(query)
-        }
     }
 
     private fun onOfferClick(offer: Offer) {
         offerViewModel.selectOffer(offer)
         val action = SearchResultsFragmentDirections
-            .actionSearchResultsToOfferFragment(offer.user.id)
+            .actionSearchResultsToOfferFragment(offer.user.toArg())
         findNavController().navigate(action)
-    }
-
-    private fun getQuery(): Map<String, String> {
-        val query = mutableMapOf<String, String>()
-
-        args.category?.let {
-            query["category"] = it.id.toString()
-        }
-
-        args.query?.let {
-            query["query"] = it
-        }
-
-        viewModel.size.value?.let {
-            query["size"] = it
-        }
-
-        viewModel.location.value?.let {
-            query["location"] = "${it.first.latitude},${it.first.longitude}"
-            query["radius"] = it.second.toString()
-        }
-
-        return query
     }
 }

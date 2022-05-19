@@ -13,30 +13,34 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchResultsViewModel @Inject constructor(
-    private val offersInteractor: OffersInteractor
+    private val offersInteractor: OffersInteractor,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+    private val args = SearchResultsFragmentArgs
+        .fromSavedStateHandle(savedStateHandle)
     private val _offers = MutableLiveData<PagingData<Offer>>()
     val offers: LiveData<PagingData<Offer>> = _offers
 
-    // Location and maximum distance
-    val location = MutableLiveData<Pair<LatLng, Int>>()
-    val size = MutableLiveData<String>()
-    val filters = MediatorLiveData<String>().apply { value = "initial" }
-
-    init {
-        filters.addSource(location) { filters.value = "location" }
-        filters.addSource(size) { filters.value = "size" }
-    }
+    val location = MutableLiveData<Pair<LatLng, Int>?>()
+    val size = MutableLiveData<String?>()
+    val filters = MutableLiveData(Unit)
 
     private var currentQuery: Map<String, String>? = null
     var endOfPaginationReachedBottom = false
 
-    fun getOffers(query: Map<String, String>) {
+    init {
+        filters.observeForever {
+            onFiltersChange()
+        }
+    }
+
+    private fun onFiltersChange() {
+        val query = getSearchQuery()
         if (query == currentQuery) {
             return
         }
-        currentQuery = query
 
+        currentQuery = query
         viewModelScope.launch {
             offersInteractor
                 .observeOffersFromNetwork(query)
@@ -45,5 +49,32 @@ class SearchResultsViewModel @Inject constructor(
                     _offers.postValue(it)
                 }
         }
+    }
+
+    private fun getSearchQuery() = buildMap {
+        args.category?.let {
+            put(QUERY_PARAM_CATEGORY, it.id.toString())
+        }
+
+        args.query?.let {
+            put(QUERY_PARAM_QUERY, it)
+        }
+
+        this@SearchResultsViewModel.size.value?.let {
+            put(QUERY_PARAM_SIZE, it)
+        }
+
+        location.value?.let {
+            put(QUERY_PARAM_LOCATION, "${it.first.latitude},${it.first.longitude}")
+            put(QUERY_PARAM_RADIUS, it.second.toString())
+        }
+    }
+
+    private companion object {
+        const val QUERY_PARAM_CATEGORY = "category"
+        const val QUERY_PARAM_QUERY = "query"
+        const val QUERY_PARAM_LOCATION = "location"
+        const val QUERY_PARAM_RADIUS = "radius"
+        const val QUERY_PARAM_SIZE = "size"
     }
 }

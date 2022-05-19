@@ -1,6 +1,8 @@
 package com.t3ddyss.clother.presentation.search
 
 import android.view.View
+import androidx.annotation.IdRes
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,15 +16,41 @@ import javax.inject.Inject
 class FiltersViewModel @Inject constructor(
     private val locationInteractor: LocationInteractor
 ) : ViewModel() {
-    val location = MutableLiveData<LatLng>()
-    val maxDistance = MutableLiveData(View.NO_ID)
-    val size = MutableLiveData(View.NO_ID)
+    private val _location = MutableLiveData<LatLng?>(null)
+    val location: LiveData<LatLng?> = _location
+
+    private val _radius = MutableLiveData<Int?>(null)
+    val radius: LiveData<Int?> = _radius
+
+    private val _size = MutableLiveData<Int?>(null)
+    val size: LiveData<Int?> = _size
 
     init {
         viewModelScope.launch {
             locationInteractor.getLastSavedLocationOrNull()?.let {
-                location.postValue(it.latLng)
+                _location.postValue(it.latLng)
             }
+        }
+    }
+
+    fun onLocationSelected(coordinates: String) {
+        val (lat, lng) = coordinates.split(",").map { it.toDouble() }
+        _location.value = LatLng(lat, lng)
+    }
+
+    fun onRadiusSelected(@IdRes chipId: Int?) {
+        _radius.value = getChipIdOrNull(chipId)
+    }
+
+    fun onSizeSelected(@IdRes chipId: Int?) {
+        _size.value = getChipIdOrNull(chipId)
+    }
+
+    private fun getChipIdOrNull(@IdRes chipId: Int?): Int? {
+        return if (chipId == View.NO_ID) {
+            null
+        } else {
+            chipId
         }
     }
 }

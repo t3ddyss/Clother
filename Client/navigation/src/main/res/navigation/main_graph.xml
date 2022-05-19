@@ -21,11 +21,7 @@
         tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment_to_offerFragment"
-            app:destination="@id/offerFragment">
-            <argument
-                android:name="offer_id"
-                android:defaultValue="0" />
-        </action>
+            app:destination="@id/offerFragment"/>
         <argument
             android:name="created_offer_id"
             android:defaultValue="0"

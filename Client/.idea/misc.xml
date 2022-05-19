@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/button_rounded.xml" value="0.209" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/button_rounded_grey.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/dialog_rounded.xml" value="0.1215" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/divider_large.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/dot_active.xml" value="0.26614583333333336" />
@@ -55,7 +57,9 @@
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/fragment_sign_in.xml" value="0.25" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/fragment_sign_up.xml" value="0.21052631578947367" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/item_circular_image_view.xml" value="0.264" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/item_distance_chips.xml" value="0.21052631578947367" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/item_offer_shimmer.xml" value="0.21052631578947367" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/item_size_chips.xml" value="0.21052631578947367" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/list_item_chat.xml" value="0.25" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/list_item_image_editor.xml" value="0.25" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/layout/list_item_image_gallery.xml" value="0.25" />
