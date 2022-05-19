@@ -36,6 +36,10 @@ class GalleryFragment : BaseFragment<FragmentGalleryBinding>(FragmentGalleryBind
             ToolbarUtils.NavIcon.CLOSE
         )
         setHasOptionsMenu(true)
+    }
+
+    override fun onStart() {
+        super.onStart()
 
         layoutManager = GridLayoutManager(context, 3)
         adapter = GalleryImagesAdapter(this::onImageLimitExceeded)

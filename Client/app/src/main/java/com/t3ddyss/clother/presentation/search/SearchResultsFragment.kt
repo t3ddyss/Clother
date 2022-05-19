@@ -48,6 +48,11 @@ class SearchResultsFragment
             ToolbarUtils.NavIcon.UP
         )
         setHasOptionsMenu(true)
+    }
+
+    // Using onStart() because of navGraphViewModels
+    override fun onStart() {
+        super.onStart()
 
         loadStateListener = {
             when (it.refresh) {

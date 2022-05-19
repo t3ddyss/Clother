@@ -36,7 +36,12 @@ class FilterDialogFragment : BottomSheetDialogFragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    // Using onStart() because of navGraphViewModels
+    override fun onStart() {
+        super.onStart()
+        val behavior = BottomSheetBehavior.from(requireView().parent as View)
+        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+
         // BottomSheetDialog will close after navigating back from LocationSelectorFragment,
         // but https://issuetracker.google.com/issues/134089818#comment7 says that
         // it is actually an expected BottomSheetDialog behaviour
@@ -48,7 +53,6 @@ class FilterDialogFragment : BottomSheetDialogFragment() {
             findNavController().navigate(action)
         }
 
-        // TODO add ability to clear filters
         binding.buttonApply.setOnClickListener {
             val distance = getSelectedDistance()
             val size = getSelectedSize()
@@ -67,13 +71,6 @@ class FilterDialogFragment : BottomSheetDialogFragment() {
         }
 
         subscribeUi()
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        val behavior = BottomSheetBehavior.from(requireView().parent as View)
-        behavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
     override fun onDestroyView() {

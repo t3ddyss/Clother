@@ -72,10 +72,13 @@ class OfferEditorFragment
             getString(R.string.menu_new_offer),
             ToolbarUtils.NavIcon.CLOSE
         )
-        val category = args.category
         binding.category.icon.isVisible = false
-        binding.category.textViewTitle.text = category.title
+        binding.category.textViewTitle.text = args.category.title
         binding.textViewLocation.text = getString(R.string.location_select)
+    }
+
+    override fun onStart() {
+        super.onStart()
 
         binding.location.setOnClickListener {
             val action = OfferEditorFragmentDirections
@@ -86,7 +89,7 @@ class OfferEditorFragment
         }
 
         binding.buttonPublish.setOnClickListener {
-            postOffer(category.id)
+            postOffer(args.category.id)
         }
 
         layoutManager = LinearLayoutManager(
