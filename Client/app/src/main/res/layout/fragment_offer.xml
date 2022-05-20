@@ -216,6 +216,36 @@
             app:layout_constraintTop_toBottomOf="@id/textView_size"
             app:layout_goneMarginTop="0dp" />
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/user"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider7">
+
+            <ImageView
+                android:id="@+id/imageView_arrow_user"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/fragment_horizontal_margin"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_arrow_right"
+                app:tint="?attr/colorOnPrimary" />
+
+            <View
+                android:id="@+id/divider8"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintBottom_toBottomOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <TextView
             android:id="@+id/textView_user"
             android:layout_width="0dp"
@@ -224,7 +254,6 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textSize="@dimen/text_size_medium"
-            app:layout_constraintEnd_toStartOf="@+id/textView_time"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@id/barrier"
             app:layout_constraintTop_toBottomOf="@+id/divider7"
@@ -242,30 +271,29 @@
             app:layout_constraintTop_toBottomOf="@id/divider7" />
 
         <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fragment_horizontal_margin"
+            android:text="@string/offer_date"
+            android:textColor="@color/grey_500"
+            android:textSize="@dimen/text_size_medium"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/user" />
+
+        <TextView
             android:id="@+id/textView_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/fragment_horizontal_margin"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/grey_500"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider7"
-            tools:text="@tools:sample/date/ddmmyy" />
-
-        <Button
-            android:id="@+id/button_message"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/fragment_horizontal_margin"
-            android:background="@drawable/button_rounded"
-            android:text="@string/chat_input_hint"
-            app:backgroundTint="@null"
+            android:textSize="@dimen/text_size_medium"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textView_user"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintStart_toEndOf="@id/barrier"
+            app:layout_constraintTop_toBottomOf="@id/user"
+            tools:text="@tools:sample/date/ddmmyy" />
 
         <FrameLayout
             android:id="@+id/layout_loading"

@@ -5,6 +5,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -12,7 +13,6 @@ import androidx.navigation.fragment.navArgs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayoutMediator
 import com.t3ddyss.clother.R
-import com.t3ddyss.clother.data.common.common.Mappers.toArg
 import com.t3ddyss.clother.databinding.FragmentOfferBinding
 import com.t3ddyss.clother.util.formatDate
 import com.t3ddyss.core.domain.models.Error
@@ -40,30 +40,29 @@ class OfferFragment : BaseFragment<FragmentOfferBinding>(FragmentOfferBinding::i
         )
         setHasOptionsMenu(true)
 
-        binding.buttonMessage.isVisible = !isCurrentUser
+        if (isCurrentUser) {
+            binding.user.isClickable = false
+            binding.imageViewArrowUser.isInvisible = true
+        } else {
+            binding.user.setOnClickListener {
+                findNavController().navigate(
+                    OfferFragmentDirections.actionOfferFragmentToProfileFragment(args.user)
+                )
+            }
+        }
 
         subscribeUi()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.toolbar_offer_menu, menu)
-        if (isCurrentUser) {
-            menu.findItem(R.id.profile)?.isVisible = false
-        } else {
-            menu.findItem(R.id.delete)?.isVisible = false
-        }
+        menu.findItem(R.id.delete)?.isVisible = isCurrentUser
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.delete -> {
                 showDeletionConfirmationDialog()
-                true
-            }
-            R.id.profile -> {
-                findNavController().navigate(
-                    OfferFragmentDirections.actionOfferFragmentToProfileFragment(args.user)
-                )
                 true
             }
             else -> {
@@ -114,12 +113,6 @@ class OfferFragment : BaseFragment<FragmentOfferBinding>(FragmentOfferBinding::i
 
                 textViewUser.text = it.user.name
                 textViewTime.text = it.createdAt.formatDate()
-
-                buttonMessage.setOnClickListener { _ ->
-                    val action = OfferFragmentDirections
-                        .actionOfferFragmentToChatFragment(it.user.toArg())
-                    findNavController().navigate(action)
-                }
             }
         }
 

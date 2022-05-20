@@ -94,9 +94,18 @@ class ProfileFragment
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
         binding.buttonEdit.isVisible = isCurrentUser
+        binding.buttonMessage.isVisible = !isCurrentUser
         binding.buttonEdit.setOnClickListener {
             findNavController().navigate(
                 ProfileFragmentDirections.actionProfileFragmentToProfileEditorFragment()
+            )
+        }
+        binding.buttonMessage.setOnClickListener {
+            requireNotNull(args.user)
+            findNavController().navigate(
+                ProfileFragmentDirections.actionProfileFragmentToChatFragment(
+                    args.user!!
+                )
             )
         }
     }

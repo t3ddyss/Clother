@@ -62,12 +62,6 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="24dp"
-                            android:layout_marginTop="16dp"
-                            android:background="@color/grey_500"/>
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="24dp"
                             android:layout_marginTop="8dp"
                             android:background="@color/grey_500"/>
                     </LinearLayout>
@@ -168,6 +162,16 @@
                     android:minHeight="0dp"
                     android:background="@drawable/button_rounded"
                     android:text="@string/profile_edit"
+                    app:backgroundTint="@null" />
+
+                <Button
+                    android:id="@+id/button_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:minHeight="0dp"
+                    android:background="@drawable/button_rounded"
+                    android:text="@string/profile_message"
                     app:backgroundTint="@null" />
             </LinearLayout>
 
