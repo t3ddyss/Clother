@@ -36,15 +36,20 @@ class ChatsListFragment : BaseFragment<FragmentChatsBinding>(FragmentChatsBindin
         viewModel.chats.observe(viewLifecycleOwner) {
             when (it) {
                 is Loading -> {
-                    binding.layoutLoading.isVisible = it.content.isNullOrEmpty()
+                    val isContentPresent = !it.content.isNullOrEmpty()
+                    binding.listChats.isVisible = isContentPresent
+                    binding.layoutLoading.isVisible = !isContentPresent
                     adapter.submitList(it.content)
                 }
                 is Success -> {
+                    val isContentEmpty = it.content?.isEmpty() == true
+                    binding.listChats.isVisible = !isContentEmpty
                     binding.layoutLoading.isVisible = false
-                    binding.emptyState.isVisible = it.content?.isEmpty() == true
+                    binding.emptyState.isVisible = isContentEmpty
                     adapter.submitList(it.content)
                 }
                 is Error -> {
+                    binding.listChats.isVisible = true
                     binding.layoutLoading.isVisible = false
                 }
             }
