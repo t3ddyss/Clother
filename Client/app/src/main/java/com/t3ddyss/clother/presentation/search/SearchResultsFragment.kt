@@ -25,6 +25,8 @@ import com.t3ddyss.core.presentation.GridItemDecoration
 import com.t3ddyss.core.util.extensions.dp
 import com.t3ddyss.core.util.extensions.showSnackbarWithText
 import com.t3ddyss.core.util.utils.ToolbarUtils
+import com.t3ddyss.feature_location.presentation.LocationSelectorFragment
+import com.t3ddyss.navigation.util.observeNavigationResult
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -32,6 +34,9 @@ class SearchResultsFragment
     : BaseFragment<FragmentSearchResultsBinding>(FragmentSearchResultsBinding::inflate) {
 
     private val viewModel by hiltNavGraphViewModels<SearchResultsViewModel>(
+        R.id.search_results_graph
+    )
+    private val filtersViewModel by hiltNavGraphViewModels<FiltersViewModel>(
         R.id.search_results_graph
     )
     private val offerViewModel by activityViewModels<OfferViewModel>()
@@ -152,6 +157,10 @@ class SearchResultsFragment
     private fun subscribeUi() {
         viewModel.offers.observe(viewLifecycleOwner) {
             adapter.submitData(lifecycle, it)
+        }
+
+        observeNavigationResult<String>(LocationSelectorFragment.COORDINATES_KEY) {
+            filtersViewModel.onLocationSelected(it)
         }
     }
 

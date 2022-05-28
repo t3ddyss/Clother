@@ -12,8 +12,6 @@ import com.google.android.material.chip.Chip
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.DialogSearchFiltersBinding
 import com.t3ddyss.clother.util.toCoordinatesString
-import com.t3ddyss.feature_location.presentation.LocationSelectorFragment
-import com.t3ddyss.navigation.util.observeNavigationResult
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -46,9 +44,7 @@ class FilterDialogFragment : BottomSheetDialogFragment() {
         // it is actually an expected BottomSheetDialog behaviour
         binding.cardViewLocation.setOnClickListener {
             val action = FilterDialogFragmentDirections
-                .actionFilterDialogFragmentToLocationFragment(
-                    calledFromId = R.id.search_results_graph
-                )
+                .actionFilterDialogFragmentToLocationFragment()
             findNavController().navigate(action)
         }
 
@@ -111,10 +107,6 @@ class FilterDialogFragment : BottomSheetDialogFragment() {
             } else {
                 binding.chipGroupSize.chipGroupSize.clearCheck()
             }
-        }
-
-        observeNavigationResult<String>(LocationSelectorFragment.COORDINATES_KEY) {
-            viewModel.onLocationSelected(it)
         }
     }
 

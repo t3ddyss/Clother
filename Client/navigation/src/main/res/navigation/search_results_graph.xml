@@ -47,10 +47,5 @@
     <fragment
         android:id="@+id/locationFragment"
         android:name="com.t3ddyss.feature_location.presentation.LocationSelectorFragment"
-        tools:layout="@layout/fragment_location_selector">
-        <argument
-            android:name="called_from_id"
-            android:defaultValue="0"
-            app:argType="integer" />
-    </fragment>
+        tools:layout="@layout/fragment_location_selector" />
 </navigation>

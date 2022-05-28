@@ -82,9 +82,7 @@ class OfferEditorFragment
 
         binding.location.setOnClickListener {
             val action = OfferEditorFragmentDirections
-                .actionOfferEditorFragmentToLocationFragment(
-                    calledFromId = R.id.offer_editor_graph
-                )
+                .actionOfferEditorFragmentToLocationFragment()
             findNavController().navigate(action)
         }
 

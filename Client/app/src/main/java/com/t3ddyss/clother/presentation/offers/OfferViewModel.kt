@@ -14,6 +14,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+// TODO move this logic to interactor and remove shared ViewModel
 @HiltViewModel
 class OfferViewModel @Inject constructor(
     private val offersInteractor: OffersInteractor,
