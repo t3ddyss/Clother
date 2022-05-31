@@ -13,7 +13,6 @@ import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
 import com.google.gson.JsonObject
 import com.t3ddyss.clother.R
@@ -40,7 +39,6 @@ class OfferEditorFragment
 
     private lateinit var requestGalleryPermissionLauncher: ActivityResultLauncher<String>
     private lateinit var adapter: OfferEditorImagesAdapter
-    private lateinit var layoutManager: LinearLayoutManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -75,6 +73,12 @@ class OfferEditorFragment
         binding.category.icon.isVisible = false
         binding.category.textViewTitle.text = args.category.title
         binding.textViewLocation.text = getString(R.string.location_select)
+
+        val horizontalDecorator = DividerItemDecoration(activity, DividerItemDecoration.HORIZONTAL)
+        ContextCompat.getDrawable(requireContext(), R.drawable.divider_large)?.apply {
+            horizontalDecorator.setDrawable(this)
+        }
+        binding.listImages.addItemDecoration(horizontalDecorator)
     }
 
     override fun onStart() {
@@ -89,19 +93,6 @@ class OfferEditorFragment
         binding.buttonPublish.setOnClickListener {
             postOffer(args.category.id)
         }
-
-        layoutManager = LinearLayoutManager(
-            context,
-            LinearLayoutManager.HORIZONTAL,
-            false
-        )
-        binding.listImages.layoutManager = layoutManager
-
-        val horizontalDecorator = DividerItemDecoration(activity, DividerItemDecoration.HORIZONTAL)
-        ContextCompat.getDrawable(requireContext(), R.drawable.divider_large)?.apply {
-            horizontalDecorator.setDrawable(this)
-        }
-        binding.listImages.addItemDecoration(horizontalDecorator)
 
         subscribeUi()
     }

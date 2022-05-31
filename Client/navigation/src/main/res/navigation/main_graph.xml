@@ -132,7 +132,6 @@
     <fragment
         android:id="@+id/emailActionFragment"
         android:name="com.t3ddyss.clother.presentation.auth.EmailConfirmationFragment"
-        android:label="@string/auth_check_inbox"
         tools:layout="@layout/fragment_email_confirmation">
         <argument
             android:name="email_action_message"

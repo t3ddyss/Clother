@@ -21,7 +21,7 @@ class EmailConfirmationFragment
         ToolbarUtils.setupToolbar(
             activity,
             binding.toolbar,
-            getString(R.string.auth_email_activation_message),
+            getString(R.string.auth_check_inbox),
             ToolbarUtils.NavIcon.UP
         )
         val message = SpannableStringBuilder().append(args.emailActionMessage)

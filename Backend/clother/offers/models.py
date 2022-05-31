@@ -72,8 +72,7 @@ class Location(db.Model):
                          func.sin(func.radians(lat2)) +
                          func.cos(func.radians(self.latitude)) *
                          func.cos(func.radians(lat2)) *
-                         func.cos(func.radians(lon2) -
-                         func.radians(self.longitude))) * 6371
+                         func.cos(func.radians(lon2) - func.radians(self.longitude))) * 6371
 
     def to_string(self):
         return f'{self.latitude},{self.longitude}'

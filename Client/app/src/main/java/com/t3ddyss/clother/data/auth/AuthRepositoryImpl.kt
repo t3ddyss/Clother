@@ -59,8 +59,11 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
+    // TODO create separate prefs for auth data
     override suspend fun deleteAllUserData() {
+        val isOnboardingCompleted = storage.isOnboardingCompleted
         storage.clear()
+        storage.isOnboardingCompleted = isOnboardingCompleted
         userDao.deleteAll()
     }
 }
