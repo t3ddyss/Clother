@@ -5,13 +5,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.google.common.truth.Truth.assertThat
-import com.t3ddyss.clother.data.auth.AuthRepositoryImpl
+import com.t3ddyss.clother.domain.auth.AuthInteractor
 import com.t3ddyss.clother.presentation.auth.SignUpViewModel
 import com.t3ddyss.clother.utils.getOrAwaitValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import kotlinx.coroutines.test.runBlockingTest
-import org.junit.After
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -29,32 +28,27 @@ class SignUpViewModelTest {
 
     lateinit var viewModel: SignUpViewModel
     @Inject
-    lateinit var repositoryImpl: AuthRepositoryImpl
+    lateinit var authInteractor: AuthInteractor
 
     @get:Rule
-    val rule = RuleChain
+    val rule: RuleChain = RuleChain
         .outerRule(hiltAndroidRule)
         .around(instantTaskExecutorRule)
 
     @Before
     fun setUp() {
         hiltAndroidRule.inject()
-        viewModel = SignUpViewModel(repositoryImpl, SavedStateHandle())
-    }
-
-    @After
-    fun tearDown() {
-
+        viewModel = SignUpViewModel(authInteractor, SavedStateHandle())
     }
 
     @Test
-    fun createUserWithIncorrectName_shouldEnableNameError() = runBlockingTest {
+    fun createUserWithIncorrectName_shouldEnableNameError() = runTest {
         viewModel.createUserWithCredentials("?", "abcde@gmail.com", "12345Abc?")
         assertThat(viewModel.nameError.getOrAwaitValue()).isTrue()
     }
 
     @Test
-    fun createUserWithCorrectName_shouldDisableNameError() = runBlockingTest {
+    fun createUserWithCorrectName_shouldDisableNameError() = runTest {
         viewModel.createUserWithCredentials("John", "abcde@gmail.com", "12345Abc?")
         assertThat(viewModel.nameError.getOrAwaitValue()).isFalse()
     }

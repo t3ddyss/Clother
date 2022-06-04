@@ -6,7 +6,7 @@ import com.t3ddyss.core.util.utils.StringUtils
 import org.junit.Test
 
 @SmallTest
-class ExtensionsKtTest {
+class StringUtilsTest {
 
     @Test
     fun `empty name returns false`() {

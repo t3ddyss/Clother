@@ -11,9 +11,6 @@ interface CategoryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(categories: List<CategoryEntity>)
 
-    @Query("SELECT COUNT(*) FROM category")
-    suspend fun getCategoriesCount(): Int
-
     @Query("SELECT * FROM category WHERE (:parentId IS NULL AND parent_id IS NULL) OR (:parentId IS NOT NULL AND parent_id == :parentId)")
     suspend fun getSubcategories(parentId: Int?): List<CategoryEntity>
 }

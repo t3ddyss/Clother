@@ -1,15 +1,14 @@
-package com.t3ddyss.clother.data.chat.db
+package com.t3ddyss.clother.data.offers.db
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.google.common.truth.Truth.assertThat
 import com.t3ddyss.clother.data.common.common.db.AppDatabase
-import com.t3ddyss.clother.data.offers.db.CategoryDao
 import com.t3ddyss.clother.data.offers.db.models.CategoryEntity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -32,12 +31,12 @@ class CategoryDaoTest {
     lateinit var dao: CategoryDao
 
     @get:Rule
-    val rule = RuleChain
+    val rule: RuleChain = RuleChain
         .outerRule(hiltAndroidRule)
         .around(instantTaskExecutorRule)
 
     @Before
-    fun setUp() = runBlockingTest {
+    fun setUp() = runTest {
         hiltAndroidRule.inject()
         mockCategories()
     }
@@ -48,12 +47,7 @@ class CategoryDaoTest {
     }
 
     @Test
-    fun categoriesCount_shouldBe5() = runBlockingTest {
-        assertThat(dao.getCategoriesCount()).isEqualTo(5)
-    }
-
-    @Test
-    fun rootCategories_shouldBeMenAndWomen() = runBlockingTest {
+    fun rootCategories_shouldBeMenAndWomen() = runTest {
         val categories = dao.getSubcategories(null)
             .map {
                 it.title
@@ -62,7 +56,7 @@ class CategoryDaoTest {
     }
 
     @Test
-    fun menSubcategories_shouldBeShirts() = runBlockingTest {
+    fun menSubcategories_shouldBeShirts() = runTest {
         val categories = dao.getSubcategories(2)
             .map {
                 it.title
@@ -71,7 +65,7 @@ class CategoryDaoTest {
     }
 
     @Test
-    fun casualSubcategories_shouldBeNone() = runBlockingTest {
+    fun casualSubcategories_shouldBeNone() = runTest {
         val categories = dao.getSubcategories(5)
             .map {
                 it.title
@@ -80,52 +74,52 @@ class CategoryDaoTest {
     }
 
     private suspend fun mockCategories() {
-        val categories = mutableListOf<CategoryEntity>()
-
-        categories.add(
-            CategoryEntity(
-                id = 1,
-                parentId = null,
-                title = "Women",
-                isLastLevel = false
+        val categories = buildList {
+            add(
+                CategoryEntity(
+                    id = 1,
+                    parentId = null,
+                    title = "Women",
+                    isLastLevel = false
+                )
             )
-        )
 
-        categories.add(
-            CategoryEntity(
-                id = 2,
-                parentId = null,
-                title = "Men",
-                isLastLevel = false
+            add(
+                CategoryEntity(
+                    id = 2,
+                    parentId = null,
+                    title = "Men",
+                    isLastLevel = false
+                )
             )
-        )
 
-        categories.add(
-            CategoryEntity(
-                id = 3,
-                parentId = 2,
-                title = "Shirts",
-                isLastLevel = false
+            add(
+                CategoryEntity(
+                    id = 3,
+                    parentId = 2,
+                    title = "Shirts",
+                    isLastLevel = false
+                )
             )
-        )
 
-        categories.add(
-            CategoryEntity(
-                id = 4,
-                parentId = 3,
-                title = "Casual",
-                isLastLevel = true
+            add(
+                CategoryEntity(
+                    id = 4,
+                    parentId = 3,
+                    title = "Casual",
+                    isLastLevel = true
+                )
             )
-        )
 
-        categories.add(
-            CategoryEntity(
-                id = 5,
-                parentId = 3,
-                title = "Dressed",
-                isLastLevel = true
+            add(
+                CategoryEntity(
+                    id = 5,
+                    parentId = 3,
+                    title = "Dressed",
+                    isLastLevel = true
+                )
             )
-        )
+        }
 
         dao.insertAll(categories)
     }

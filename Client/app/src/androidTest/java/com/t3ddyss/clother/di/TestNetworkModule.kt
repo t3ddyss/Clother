@@ -20,12 +20,7 @@ object TestNetworkModule {
 
     @Singleton
     @Provides
-    fun provideHttpClient(): OkHttpClient {
-        val clientBuilder = OkHttpClient().newBuilder()
-
-        return clientBuilder
-            .build()
-    }
+    fun provideHttpClient(): OkHttpClient = OkHttpClient().newBuilder().build()
 
     @Singleton
     @Provides
