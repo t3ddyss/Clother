@@ -59,9 +59,10 @@ class AuthTokenRepositoryImpl @Inject constructor(
                 null
             }
             val authData = refreshResponse?.body() ?: return unauthorized()
+            saveTokens(authData)
+            _tokenStateFlow.tryEmit(authData)
             log("AuthTokenRepositoryImpl.authenticate(). Requesting auth tokens: success")
 
-            _tokenStateFlow.tryEmit(authData)
             return response
                 .request
                 .newBuilder()
@@ -74,6 +75,11 @@ class AuthTokenRepositoryImpl @Inject constructor(
         log("AuthTokenRepositoryImpl.authenticate(). Requesting auth tokens: refresh token expired")
         _tokenStateFlow.tryEmit(null)
         return null
+    }
+
+    private fun saveTokens(authData: UserAuthDataDto) {
+        storage.accessToken = authData.accessToken.toBearer()
+        storage.refreshToken = authData.refreshToken.toBearer()
     }
 
     private companion object {
