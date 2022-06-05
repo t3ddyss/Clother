@@ -33,9 +33,9 @@ interface MessageDao {
     @Query("DELETE FROM message WHERE server_id IS NULL")
     suspend fun deleteUnsentMessages()
 
-    @Delete
-    suspend fun delete(message: MessageEntity)
-
     @Query("DELETE FROM message WHERE local_id == :localId")
     suspend fun deleteByLocalId(localId: Int)
+
+    @Query("DELETE FROM message WHERE server_id == :serverId")
+    suspend fun deleteByServerId(serverId: Int)
 }

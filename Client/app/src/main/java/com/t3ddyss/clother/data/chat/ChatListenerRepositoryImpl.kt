@@ -48,10 +48,16 @@ class ChatListenerRepositoryImpl @Inject constructor(
             trySend(Event.NewChat(chat.toDomain(isLastMessageIncoming = true)))
         }
 
+        val onDeleteMessageListener = Emitter.Listener {
+            val message = gson.fromJson(it[0] as? String, MessageDto::class.java)
+            trySend(Event.DeleteMessage(message.id))
+        }
+
         socket?.on(EventKey.CONNECT.key, onConnectListener)
         socket?.on(EventKey.DISCONNECT.key, onDisconnectListener)
-        socket?.on(EventKey.MESSAGE.key, onNewMessageListener)
-        socket?.on(EventKey.CHAT.key, onNewChatListener)
+        socket?.on(EventKey.NEW_MESSAGE.key, onNewMessageListener)
+        socket?.on(EventKey.NEW_CHAT.key, onNewChatListener)
+        socket?.on(EventKey.DELETE_MESSAGE.key, onDeleteMessageListener)
         socket?.connect()
 
         awaitClose {
@@ -76,7 +82,8 @@ class ChatListenerRepositoryImpl @Inject constructor(
     private enum class EventKey(val key: String) {
         CONNECT(Socket.EVENT_CONNECT),
         DISCONNECT(Socket.EVENT_DISCONNECT),
-        MESSAGE("message"),
-        CHAT("chat")
+        NEW_MESSAGE("new_message"),
+        NEW_CHAT("new_chat"),
+        DELETE_MESSAGE("delete_message")
     }
 }

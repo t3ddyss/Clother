@@ -10,6 +10,7 @@ import com.t3ddyss.clother.util.handleHttpException
 import com.t3ddyss.core.domain.models.Resource
 import com.t3ddyss.core.util.extensions.rethrowIfCancellationException
 import com.t3ddyss.core.util.log
+import com.t3ddyss.core.util.utils.Utils.asExpression
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
@@ -103,7 +104,8 @@ class ChatInteractorImpl @Inject constructor(
                         is Event.Disconnect -> onDisconnect()
                         is Event.NewMessage -> onNewMessage(it.message)
                         is Event.NewChat -> onNewChat(it.chat)
-                    }
+                        is Event.DeleteMessage -> onDeleteMessage(it.messageId)
+                    }.asExpression
                 }
         }
         chatRepository.sendDeviceTokenIfNeeded()
@@ -141,5 +143,14 @@ class ChatInteractorImpl @Inject constructor(
         }
 
         notificationInteractor.showMessageNotificationIfNeeded(chat.lastMessage)
+    }
+
+    private suspend fun onDeleteMessage(messageId: Int) {
+        try {
+            chatRepository.removeMessage(messageId)
+        } catch (ex: Exception) {
+            ex.rethrowIfCancellationException()
+            log("ChatInteractorImpl.onDeleteMessage: $ex")
+        }
     }
 }

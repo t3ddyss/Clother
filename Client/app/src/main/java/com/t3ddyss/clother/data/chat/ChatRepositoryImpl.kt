@@ -151,6 +151,10 @@ class ChatRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun removeMessage(messageId: Int) {
+        messageDao.deleteByServerId(messageId)
+    }
+
     override suspend fun sendDeviceTokenIfNeeded() {
         if (!storage.isDeviceTokenRetrieved) {
             try {

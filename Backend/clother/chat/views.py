@@ -15,6 +15,10 @@ from ..constants import BASE_PREFIX, DEFAULT_MESSAGES_PAGE_SIZE, RESPONSE_DELAY
 
 blueprint = Blueprint('chats', __name__, url_prefix=(BASE_PREFIX + '/chats'))
 
+EVENT_NEW_MESSAGE = 'new_message'
+EVENT_NEW_CHAT = 'new_chat'
+EVENT_DELETE_MESSAGE = 'delete_message'
+
 
 @blueprint.get('')
 @jwt_required()
@@ -95,10 +99,10 @@ async def send_message():
     message_dict = message.to_dict(url_root=request.url_root)
 
     if not is_existing_chat:
-        socketio.emit('chat', json.dumps(chat_dict), to=interlocutor.id)
+        socketio.emit(EVENT_NEW_CHAT, json.dumps(chat_dict), to=interlocutor.id)
         asyncio.create_task(send_fcm_event_if_needed({'chat': chat_dict}, interlocutor))
     else:
-        socketio.send(json.dumps(message_dict), to=interlocutor.id)
+        socketio.emit(EVENT_NEW_MESSAGE, json.dumps(message_dict), to=interlocutor.id)
         asyncio.create_task(send_fcm_event_if_needed({'message': message_dict}, interlocutor))
 
     if request.args.get('return_chat', default=False, type=json.loads):
@@ -112,10 +116,13 @@ async def send_message():
 def delete_message(message_id):
     user = User.query.get(get_jwt_identity())
     message = Message.query.get(message_id)
+    chat = Chat.query.get(message.chat_id)
+    interlocutor_id = next(x for x in chat.users if x.id != user.id).id
 
     if message.user_id == user.id:
         db.session.delete(message)
         db.session.commit()
+        socketio.emit(EVENT_DELETE_MESSAGE, json.dumps(message.to_dict(url_root=request.url_root)), to=interlocutor_id)
         return {"message": "Message was successfully deleted"}
     else:
         abort(403)

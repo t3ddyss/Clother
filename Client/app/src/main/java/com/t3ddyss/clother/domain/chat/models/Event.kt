@@ -5,4 +5,5 @@ sealed class Event {
     object Disconnect : Event()
     class NewMessage(val message: Message) : Event()
     class NewChat(val chat: Chat) : Event()
+    class DeleteMessage(val messageId: Int) : Event()
 }
