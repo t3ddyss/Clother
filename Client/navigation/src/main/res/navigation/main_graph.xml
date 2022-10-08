@@ -269,6 +269,9 @@
         android:id="@+id/messageMenuDialog"
         android:name="com.t3ddyss.clother.presentation.chat.MessageMenuDialog" >
         <argument
+            android:name="message_id"
+            app:argType="integer" />
+        <argument
             android:name="isRetryVisible"
             android:defaultValue="false"
             app:argType="boolean" />

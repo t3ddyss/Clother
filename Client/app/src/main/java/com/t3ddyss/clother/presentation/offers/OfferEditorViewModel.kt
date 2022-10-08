@@ -26,16 +26,14 @@ class OfferEditorViewModel
     val location: LiveData<LatLng> = _location
     val images = MutableLiveData<MutableList<Uri>>(mutableListOf())
 
-    fun selectLocation(location: String) {
-        val (lat, lng) = location.split(",").map { it.toDouble() }
-        _location.value = LatLng(lat, lng)
+    fun selectLocation(location: LatLng) {
+        _location.value = location
     }
 
     fun postOffer(offer: JsonObject, images: List<Uri>) {
         _newOfferResponse.value = Loading(null)
         viewModelScope.launch {
-            val uris = images.map { it.toString() }
-            _newOfferResponse.postValue(offersInteractor.postOffer(offer, uris))
+            _newOfferResponse.postValue(offersInteractor.postOffer(offer, images))
         }
     }
 }

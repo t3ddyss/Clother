@@ -6,16 +6,20 @@
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/button_rounded.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/button_rounded_grey.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/dialog_rounded.xml" value="0.1215" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/divider.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/divider_large.xml" value="0.209" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/divider_small.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/dot_active.xml" value="0.26614583333333336" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/dot_inactive.xml" value="0.536" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/dots_selector.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/edit_text_rounded.xml" value="0.209" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_add.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_add_green.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_add_offer.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_add_photo.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_attach.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_avatar_add.xml" value="0.209" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_avatar_default.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_close.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_clother.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_default_avatar.xml" value="0.209" />
@@ -27,7 +31,15 @@
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_onboarding_3.xml" value="0.264" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_person.xml" value="0.26614583333333336" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_person_green.xml" value="0.209" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_remove.xml" value="0.209" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_remove_circle.xml" value="0.209" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_retry.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_schedule.xml" value="0.209" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_send.xml" value="0.209" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_timeline.xml" value="0.209" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/ic_upload.xml" value="0.209" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/image_placeholder.xml" value="0.209" />
+        <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/layout_splash_screen.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/placeholder_offer_image.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/rounded_corners.xml" value="0.209" />
         <entry key="..\:/Projects/Clother/Client/app/src/main/res/drawable/shape_message_in.xml" value="0.209" />
@@ -89,6 +101,9 @@
         <entry key="..\:/Projects/Clother/Client/feature_location/src/main/res/layout/fragment_location_viewer.xml" value="0.25" />
       </map>
     </option>
+  </component>
+  <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />

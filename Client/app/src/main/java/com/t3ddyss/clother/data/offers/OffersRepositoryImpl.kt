@@ -1,5 +1,6 @@
 package com.t3ddyss.clother.data.offers
 
+import android.net.Uri
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -10,19 +11,23 @@ import com.t3ddyss.clother.data.common.common.Storage
 import com.t3ddyss.clother.data.offers.db.CategoryDao
 import com.t3ddyss.clother.data.offers.db.OfferDao
 import com.t3ddyss.clother.data.offers.remote.RemoteOffersService
+import com.t3ddyss.clother.domain.offers.ImagesRepository
 import com.t3ddyss.clother.domain.offers.OffersRepository
 import com.t3ddyss.clother.domain.offers.models.Category
 import com.t3ddyss.clother.domain.offers.models.Offer
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import java.io.File
 import javax.inject.Inject
 
 class OffersRepositoryImpl @Inject constructor(
+    private val imagesRepository: ImagesRepository,
     private val service: RemoteOffersService,
     private val storage: Storage,
     private val offerDao: OfferDao,
@@ -65,22 +70,31 @@ class OffersRepositoryImpl @Inject constructor(
             }
     }
 
-    override suspend fun postOffer(offer: JsonObject, images: List<File>): Int {
+    override suspend fun postOffer(offer: JsonObject, images: List<Uri>): Int {
         val body = offer
             .toString()
             .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
-        val multipartBodyFiles = images.map {
-            MultipartBody.Part.createFormData(
-                name = "file",
-                it.name,
-                it.asRequestBody("multipart/form-data".toMediaTypeOrNull())
-            )
+        val parts = coroutineScope {
+            images
+                .map {
+                    async {
+                        imagesRepository.getCompressedImage(it)
+                    }
+                }
+                .awaitAll()
+                .map {
+                    MultipartBody.Part.createFormData(
+                        name = "file",
+                        it.name,
+                        it.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    )
+                }
         }
 
         return service.postOffer(
             storage.accessToken,
             body,
-            multipartBodyFiles
+            parts
         ).id
     }
 

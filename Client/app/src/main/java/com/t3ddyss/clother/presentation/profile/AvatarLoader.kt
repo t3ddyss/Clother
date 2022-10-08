@@ -1,10 +1,14 @@
 package com.t3ddyss.clother.presentation.profile
 
+import android.graphics.drawable.LayerDrawable
+import android.net.Uri
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
+import androidx.core.graphics.drawable.DrawableCompat
 import com.bumptech.glide.Glide
 import com.facebook.shimmer.Shimmer
 import com.t3ddyss.clother.R
+import com.t3ddyss.core.util.extensions.getThemeColor
 
 object AvatarLoader {
 
@@ -21,17 +25,21 @@ object AvatarLoader {
 
     fun loadAvatar(
         imageView: ImageView,
-        image: String?,
-        @DrawableRes defaultImage: Int = R.drawable.ic_avatar_default
+        image: Uri?,
+        @DrawableRes defaultImage: Int
     ) {
-        if (!image.isNullOrBlank()) {
+        if (image != null) {
             Glide.with(imageView)
                 .load(image)
                 .placeholder(R.drawable.image_placeholder)
                 .centerCrop()
                 .into(imageView)
         } else {
-            imageView.setImageResource(defaultImage)
+            val context = imageView.context
+            val layerDrawable = context.getDrawable(defaultImage) as LayerDrawable
+            val drawable = DrawableCompat.wrap(layerDrawable.findDrawableByLayerId(R.id.icon))
+            DrawableCompat.setTint(drawable, context.getThemeColor(R.attr.colorSecondary))
+            imageView.setImageDrawable(layerDrawable)
         }
     }
 }

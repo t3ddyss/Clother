@@ -6,5 +6,5 @@ import java.io.File
 
 interface ImagesRepository {
     suspend fun observeImages(): Flow<List<Uri>>
-    suspend fun getCompressedImage(uri: String): File
+    suspend fun getCompressedImage(image: Uri): File
 }

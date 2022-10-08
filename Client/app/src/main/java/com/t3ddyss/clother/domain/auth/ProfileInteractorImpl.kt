@@ -1,5 +1,6 @@
 package com.t3ddyss.clother.domain.auth
 
+import android.net.Uri
 import androidx.paging.PagingData
 import com.t3ddyss.clother.domain.auth.models.User
 import com.t3ddyss.clother.domain.offers.ImagesInteractor
@@ -34,7 +35,7 @@ class ProfileInteractorImpl @Inject constructor(
     override fun observeCurrentUserInfo(): Flow<Resource<User>> {
         return profileRepository.observeCurrentUserInfo()
             .onEach {
-                log("ProfileInteractorImpl.observeCurrentUserInfo().onEach: $it")
+                log("ProfileInteractorImpl.observeCurrentUserInfo() onEach: $it")
             }
     }
 
@@ -44,25 +45,20 @@ class ProfileInteractorImpl @Inject constructor(
         } else {
             profileRepository.observeUserInfo(userId)
         }.onEach {
-            log("ProfileInteractorImpl.observeUserInfo(userId = $userId).onEach: $it")
+            log("ProfileInteractorImpl.observeUserInfo(userId = $userId) onEach: $it")
         }
     }
 
     override suspend fun updateCurrentUserInfo(
         name: String,
         status: String,
-        avatar: String?
+        avatar: Uri?
     ): Resource<*> {
         return if (!StringUtils.isValidName(name)) {
             Error(content = ValidationError.NAME)
         } else {
-            val imageFile = if (avatar != null) {
-                imagesInteractor.compressImage(avatar)
-            } else {
-                null
-            }
             handleHttpException {
-                profileRepository.updateCurrentUserInfo(name, status, imageFile)
+                profileRepository.updateCurrentUserInfo(name, status, avatar)
             }
         }
     }

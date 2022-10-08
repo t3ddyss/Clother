@@ -1,11 +1,13 @@
 package com.t3ddyss.clother.presentation.chat
 
 import android.Manifest
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -22,8 +24,6 @@ import com.t3ddyss.core.util.extensions.showSnackbarWithAction
 import com.t3ddyss.core.util.extensions.showSnackbarWithText
 import com.t3ddyss.core.util.utils.IntentUtils
 import com.t3ddyss.core.util.utils.ToolbarUtils
-import com.t3ddyss.core.util.utils.Utils.asExpression
-import com.t3ddyss.navigation.util.observeNavigationResultOnce
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -101,10 +101,6 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::infl
             onSendClick()
         }
         binding.buttonAttach.setOnClickListener {
-            // FIXME if configuration change occurs while ImageSelectorDialog is on top, result won't be saved
-            observeNavigationResultOnce<String>(ImageSelectorDialog.SELECTED_IMAGE) {
-                viewModel.sendMessage(image = it)
-            }
             permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
         }
         binding.editTextMessage.setOnEditorActionListener { _, actionId, _ ->
@@ -158,6 +154,24 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::infl
         viewModel.isLoading.observe(viewLifecycleOwner) {
             binding.layoutLoading.isVisible = it
         }
+
+        setFragmentResultListener(ImageSelectorDialog.SELECTED_IMAGE_KEY) { _, bundle ->
+            bundle.getParcelable<Uri>(ImageSelectorDialog.SELECTED_IMAGE_URI)?.let { uri ->
+                viewModel.sendMessage(image = uri)
+            }
+        }
+
+        setFragmentResultListener(MessageMenuDialog.SELECTED_ACTION_KEY) { _, bundle ->
+            val action = bundle.getSerializable(MessageMenuDialog.SELECTED_ACTION) as? MessageMenuDialog.Action
+            val messageId = bundle.getInt(MessageMenuDialog.MESSAGE_ID)
+
+            if (action != null && messageId != 0) {
+                when (action) {
+                    MessageMenuDialog.Action.RETRY -> viewModel.retryToSendMessage(messageId)
+                    MessageMenuDialog.Action.DELETE -> viewModel.deleteMessage(messageId)
+                }
+            }
+        }
     }
 
     private fun onSendClick() {
@@ -166,15 +180,9 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::infl
     }
 
     private fun onMessageClick(message: Message) {
-        observeNavigationResultOnce<String>(MessageMenuDialog.SELECTED_ACTION) {
-            val action = MessageMenuDialog.Action.valueOf(it)
-            when (action) {
-                MessageMenuDialog.Action.RETRY -> viewModel.retryToSendMessage(message)
-                MessageMenuDialog.Action.DELETE -> viewModel.deleteMessage(message)
-            }.asExpression
-        }
         findNavController().navigate(
             ChatFragmentDirections.actionChatFragmentToMessageMenuDialog(
+                messageId = message.localId,
                 isRetryVisible = message.status == MessageStatus.FAILED
             )
         )

@@ -1,5 +1,6 @@
 package com.t3ddyss.clother.data.chat
 
+import android.net.Uri
 import androidx.room.withTransaction
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
@@ -17,10 +18,10 @@ import com.t3ddyss.clother.data.common.common.Storage
 import com.t3ddyss.clother.data.common.common.db.AppDatabase
 import com.t3ddyss.clother.domain.chat.ChatRepository
 import com.t3ddyss.clother.domain.chat.models.Chat
-import com.t3ddyss.clother.domain.chat.models.LocalImage
 import com.t3ddyss.clother.domain.chat.models.Message
 import com.t3ddyss.clother.domain.chat.models.MessageStatus
 import com.t3ddyss.clother.domain.common.common.models.LoadResult
+import com.t3ddyss.clother.domain.offers.ImagesRepository
 import com.t3ddyss.clother.util.networkBoundResource
 import com.t3ddyss.core.util.extensions.nestedMap
 import com.t3ddyss.core.util.extensions.rethrowIfCancellationException
@@ -37,6 +38,7 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class ChatRepositoryImpl @Inject constructor(
+    private val imagesRepository: ImagesRepository,
     private val authService: RemoteAuthService,
     private val chatService: RemoteChatService,
     private val db: AppDatabase,
@@ -83,7 +85,7 @@ class ChatRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun sendMessage(body: String?, image: LocalImage?, interlocutorId: Int) {
+    override suspend fun sendMessage(body: String?, image: Uri?, interlocutorId: Int) {
         val localChatId = chatDao.getChatByInterlocutorId(interlocutorId)?.localId
             ?: return sendMessageToNewChat(body, image,  interlocutorId)
 
@@ -94,39 +96,42 @@ class ChatRepositoryImpl @Inject constructor(
             status = MessageStatus.DELIVERING,
             createdAt = Calendar.getInstance().time,
             body = body,
-            image = image?.uri
+            image = image?.toString()
         ).apply {
             this.localId = messageDao.insert(this).toInt()
         }
-        sendMessageImpl(message, image,  interlocutorId)
+        sendMessageImpl(message, image, interlocutorId)
     }
 
-    override suspend fun retryToSendMessage(message: Message, image: LocalImage?) {
-        val messageEntity = messageDao.getMessageByLocalId(message.localId)
-        val chat = chatDao.getChatByLocalId(messageEntity.localChatId)
+    override suspend fun retryToSendMessage(messageLocalId: Int) {
+        val message = messageDao.getMessageByLocalId(messageLocalId)
+        val chat = chatDao.getChatByLocalId(message.localChatId)
         val interlocutorId = chat?.interlocutorId?.let {
             userDao.getUserById(it).id
         }
 
         if (interlocutorId != null) {
+            val image = message.image?.let {
+                Uri.parse(it)
+            }
             if (chat.serverId != null) {
-                sendMessageImpl(messageEntity, image, interlocutorId)
+                sendMessageImpl(message, image, interlocutorId)
             } else {
-                sendMessageToNewChatImpl(chat, messageEntity, image, interlocutorId)
+                sendMessageToNewChatImpl(chat, message, image, interlocutorId)
             }
         }
     }
 
-    override suspend fun deleteMessage(message: Message) {
-        if (message.serverId != null) {
+    override suspend fun deleteMessage(messageLocalId: Int) {
+        messageDao.getMessageByLocalId(messageLocalId).serverId?.let {
             try {
-                chatService.deleteMessage(storage.accessToken, message.serverId)
+                chatService.deleteMessage(storage.accessToken, it)
             } catch (ex: Throwable) {
                 ex.rethrowIfCancellationException()
                 log(ex.stackTraceToString())
             }
         }
-        messageDao.deleteByLocalId(message.localId)
+        messageDao.deleteByLocalId(messageLocalId)
     }
 
     override suspend fun addNewMessage(message: Message) {
@@ -179,7 +184,7 @@ class ChatRepositoryImpl @Inject constructor(
 
     private suspend fun sendMessageImpl(
         message: MessageEntity,
-        image: LocalImage?,
+        image: Uri?,
         interlocutorId: Int
     ) {
         if (message.status != MessageStatus.DELIVERING) {
@@ -191,12 +196,13 @@ class ChatRepositoryImpl @Inject constructor(
             val messageBody = gson
                 .toJson(message.toDto())
                 .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
-            val imageFiles = image?.file?.let {
+            val imageFiles = image?.let {
+                val file = imagesRepository.getCompressedImage(it)
                 listOf(
                     MultipartBody.Part.createFormData(
                         name = "file",
-                        it.name,
-                        it.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+                        file.name,
+                        file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
                     )
                 )
             }
@@ -221,7 +227,7 @@ class ChatRepositoryImpl @Inject constructor(
         }
     }
 
-    private suspend fun sendMessageToNewChat(body: String?, image: LocalImage?, interlocutorId: Int) {
+    private suspend fun sendMessageToNewChat(body: String?, image: Uri?, interlocutorId: Int) {
         val chat = ChatEntity(
             interlocutorId = interlocutorId
         )
@@ -237,7 +243,7 @@ class ChatRepositoryImpl @Inject constructor(
                 status = MessageStatus.DELIVERING,
                 createdAt = Calendar.getInstance().time,
                 body = body,
-                image = image?.uri
+                image = image?.toString()
             ).apply {
                 this.localId = messageDao.insert(this).toInt()
             }
@@ -249,7 +255,7 @@ class ChatRepositoryImpl @Inject constructor(
     private suspend fun sendMessageToNewChatImpl(
         chat: ChatEntity,
         message: MessageEntity,
-        image: LocalImage?,
+        image: Uri?,
         interlocutorId: Int
     ) {
         if (message.status != MessageStatus.DELIVERING) {
@@ -261,12 +267,13 @@ class ChatRepositoryImpl @Inject constructor(
             val messageBody = gson
                 .toJson(message.toDto())
                 .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
-            val imageFiles = image?.file?.let {
+            val imageFiles = image?.let {
+                val file = imagesRepository.getCompressedImage(it)
                 listOf(
                     MultipartBody.Part.createFormData(
                         name = "file",
-                        it.name,
-                        it.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+                        file.name,
+                        file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
                     )
                 )
             }

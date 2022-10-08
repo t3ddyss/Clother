@@ -1,5 +1,6 @@
 package com.t3ddyss.clother.domain.auth
 
+import android.net.Uri
 import androidx.paging.PagingData
 import com.t3ddyss.clother.domain.auth.models.User
 import com.t3ddyss.clother.domain.offers.models.Offer
@@ -10,5 +11,5 @@ interface ProfileInteractor {
     fun observeOffersByUser(userId: Int): Flow<PagingData<Offer>>
     fun observeCurrentUserInfo(): Flow<Resource<User>>
     fun observeUserInfo(userId: Int): Flow<Resource<User>>
-    suspend fun updateCurrentUserInfo(name: String, status: String, avatar: String?): Resource<*>
+    suspend fun updateCurrentUserInfo(name: String, status: String, avatar: Uri?): Resource<*>
 }

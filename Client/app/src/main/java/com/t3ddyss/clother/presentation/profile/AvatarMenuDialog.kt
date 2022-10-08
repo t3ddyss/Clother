@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -14,7 +16,6 @@ import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.DialogAvatarMenuBinding
 import com.t3ddyss.core.util.extensions.showSnackbarWithAction
 import com.t3ddyss.core.util.utils.IntentUtils
-import com.t3ddyss.navigation.util.setNavigationResult
 
 class AvatarMenuDialog : BottomSheetDialogFragment() {
     private var _binding: DialogAvatarMenuBinding? = null
@@ -48,7 +49,10 @@ class AvatarMenuDialog : BottomSheetDialogFragment() {
             }
         }
         binding.remove.setOnClickListener {
-            setNavigationResult(SELECTED_ACTION, Action.REMOVE.name)
+            setFragmentResult(
+                SELECTED_ACTION_KEY,
+                bundleOf(SELECTED_ACTION to Action.REMOVE)
+            )
             findNavController().popBackStack()
         }
         binding.upload.setOnClickListener {
@@ -61,6 +65,7 @@ class AvatarMenuDialog : BottomSheetDialogFragment() {
     }
 
     companion object {
+        const val SELECTED_ACTION_KEY = "selected_action_key"
         const val SELECTED_ACTION = "selected_action"
     }
 }

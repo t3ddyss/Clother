@@ -1,50 +1,54 @@
 package com.t3ddyss.clother.data.offers
 
-import android.app.Application
+import android.content.Context
 import android.database.ContentObserver
 import android.net.Uri
 import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import com.bumptech.glide.Glide
 import com.t3ddyss.clother.domain.offers.ImagesRepository
+import com.t3ddyss.clother.util.DispatchersProvider
+import dagger.hilt.android.qualifiers.ApplicationContext
 import id.zelory.compressor.Compressor
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 
 class ImagesRepositoryImpl @Inject constructor(
-    private val application: Application
+    @ApplicationContext private val context: Context,
+    private val dispatchers: DispatchersProvider
 ) : ImagesRepository {
     private val uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 
     override suspend fun observeImages() = callbackFlow {
         trySend(queryLocalImages())
 
-        val imagesUpdatesObserver =
-            object : ContentObserver(Handler(application.applicationContext.mainLooper)) {
-                override fun onChange(selfChange: Boolean) {
-                    if (selfChange) return
-                    trySend(queryLocalImages())
-                }
+        val imagesUpdatesObserver = object : ContentObserver(Handler(Looper.getMainLooper())) {
+            override fun onChange(selfChange: Boolean) {
+                if (selfChange) return
+                trySend(queryLocalImages())
             }
-        application.contentResolver.registerContentObserver(
+        }
+        context.contentResolver.registerContentObserver(
             uri,
             true,
             imagesUpdatesObserver
         )
+
         awaitClose {
-            application.contentResolver.unregisterContentObserver(imagesUpdatesObserver)
+            context.contentResolver.unregisterContentObserver(imagesUpdatesObserver)
         }
-    }.flowOn(Dispatchers.IO)
+    }.flowOn(dispatchers.io)
 
     @Suppress("BlockingMethodInNonBlockingContext")
-    override suspend fun getCompressedImage(uri: String): File {
-        val imageFile = Glide.with(application).asFile().load(Uri.parse(uri)).submit().get()
-        return Compressor.compress(
-            application.applicationContext,
+    override suspend fun getCompressedImage(image: Uri): File = withContext(dispatchers.io) {
+        val imageFile = Glide.with(context).asFile().load(image).submit().get()
+        Compressor.compress(
+            context,
             imageFile
         )
     }
@@ -61,7 +65,7 @@ class ImagesRepositoryImpl @Inject constructor(
                 + MediaStore.Images.Media.MIME_TYPE + "='image/jpg'")
         val sortOrder = "${MediaStore.Images.Media.DATE_ADDED} DESC"
 
-        val cursor = application.contentResolver.query(
+        val cursor = context.contentResolver.query(
             uri,
             projection,
             query,

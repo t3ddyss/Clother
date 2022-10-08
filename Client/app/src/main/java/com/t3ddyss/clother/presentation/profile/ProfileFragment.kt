@@ -126,7 +126,7 @@ class ProfileFragment
         profileViewModel.user.observe(viewLifecycleOwner) {
             it.content?.let { user ->
                 binding.collapsingToolbarLayout.title = user.name
-                AvatarLoader.loadAvatar(binding.avatar, user.image)
+                AvatarLoader.loadAvatar(binding.avatar, user.image, R.drawable.ic_avatar_default)
             }
 
             when (it) {

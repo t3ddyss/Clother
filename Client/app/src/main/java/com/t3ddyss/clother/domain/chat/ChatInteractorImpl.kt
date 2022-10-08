@@ -1,10 +1,13 @@
 package com.t3ddyss.clother.domain.chat
 
+import android.net.Uri
 import com.t3ddyss.clother.domain.auth.AuthInteractor
 import com.t3ddyss.clother.domain.auth.models.AuthState
-import com.t3ddyss.clother.domain.chat.models.*
+import com.t3ddyss.clother.domain.chat.models.Chat
+import com.t3ddyss.clother.domain.chat.models.CloudEvent
+import com.t3ddyss.clother.domain.chat.models.Event
+import com.t3ddyss.clother.domain.chat.models.Message
 import com.t3ddyss.clother.domain.common.common.models.LoadResult
-import com.t3ddyss.clother.domain.offers.ImagesInteractor
 import com.t3ddyss.clother.util.DispatchersProvider
 import com.t3ddyss.clother.util.handleHttpException
 import com.t3ddyss.core.domain.models.Resource
@@ -20,7 +23,6 @@ import javax.inject.Inject
 class ChatInteractorImpl @Inject constructor(
     private val authInteractor: AuthInteractor,
     private val notificationInteractor: NotificationInteractor,
-    private val imagesInteractor: ImagesInteractor,
     private val chatRepository: ChatRepository,
     private val chatListenerRepository: ChatListenerRepository,
     private val scope: CoroutineScope,
@@ -52,26 +54,19 @@ class ChatInteractorImpl @Inject constructor(
         return chatRepository.fetchNextPortionOfMessagesForChat(interlocutorId)
     }
 
-    override suspend fun sendMessage(body: String?, image: String?, interlocutorId: Int) {
-        if (body.isNullOrBlank() && image == null) return
-
-        log("ChatInteractorImpl.sendMessage(body=$body,image=$image,to=${interlocutorId})")
-        val localImage = image?.let {
-            LocalImage(it, imagesInteractor.compressImage(it))
+    override suspend fun sendMessage(body: String?, image: Uri?, interlocutorId: Int) {
+        if (!body.isNullOrBlank() || image != null) {
+            chatRepository.sendMessage(body, image, interlocutorId)
         }
-        chatRepository.sendMessage(body, localImage, interlocutorId)
     }
 
-    override suspend fun retryToSendMessage(message: Message) {
-        val localImage = message.image?.let {
-            LocalImage(it, imagesInteractor.compressImage(it))
-        }
-        chatRepository.retryToSendMessage(message, localImage)
+    override suspend fun retryToSendMessage(messageLocalId: Int) {
+        chatRepository.retryToSendMessage(messageLocalId)
     }
 
-    override suspend fun deleteMessage(message: Message): Resource<*> {
+    override suspend fun deleteMessage(messageLocalId: Int): Resource<*> {
         return handleHttpException {
-            chatRepository.deleteMessage(message)
+            chatRepository.deleteMessage(messageLocalId)
         }
     }
 
@@ -95,8 +90,8 @@ class ChatInteractorImpl @Inject constructor(
             chatListenerRepository
                 .observeEvents()
                 .cancellable()
-                .catch { log("ChatInteractorImpl.startObservingEvents() $it") }
-                .onEach { log("ChatInteractorImpl.startObservingEvents().onEach() $it") }
+                .catch { log("ChatInteractorImpl.startObservingEvents() error: $it") }
+                .onEach { log("ChatInteractorImpl.startObservingEvents() onEach: $it") }
                 .flowOn(dispatchers.io)
                 .collect {
                     when (it) {
@@ -116,11 +111,11 @@ class ChatInteractorImpl @Inject constructor(
     }
 
     private fun onConnect() {
-
+        log("ChatInteractorImpl.onConnect()")
     }
 
     private fun onDisconnect() {
-
+        log("ChatInteractorImpl.onDisconnect()")
     }
 
     private suspend fun onNewMessage(message: Message) {
@@ -128,7 +123,7 @@ class ChatInteractorImpl @Inject constructor(
             chatRepository.addNewMessage(message)
         } catch (ex: Exception) {
             ex.rethrowIfCancellationException()
-            log("ChatInteractorImpl.onNewMessage: $ex")
+            log("ChatInteractorImpl.onNewMessage(message = ${message.body}): $ex")
         }
 
         notificationInteractor.showMessageNotificationIfNeeded(message)
@@ -139,7 +134,7 @@ class ChatInteractorImpl @Inject constructor(
             chatRepository.addNewChat(chat)
         } catch (ex: Exception) {
             ex.rethrowIfCancellationException()
-            log("ChatInteractorImpl.onNewChat: $ex")
+            log("ChatInteractorImpl.onNewChat(chatId = ${chat.id}): $ex")
         }
 
         notificationInteractor.showMessageNotificationIfNeeded(chat.lastMessage)
@@ -150,7 +145,7 @@ class ChatInteractorImpl @Inject constructor(
             chatRepository.removeMessage(messageId)
         } catch (ex: Exception) {
             ex.rethrowIfCancellationException()
-            log("ChatInteractorImpl.onDeleteMessage: $ex")
+            log("ChatInteractorImpl.onDeleteMessage(messageId = $messageId): $ex")
         }
     }
 }

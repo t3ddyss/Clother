@@ -1,11 +1,11 @@
 package com.t3ddyss.clother.domain.offers
 
+import android.net.Uri
 import androidx.paging.PagingData
 import com.google.gson.JsonObject
 import com.t3ddyss.clother.domain.offers.models.Category
 import com.t3ddyss.clother.domain.offers.models.Offer
 import kotlinx.coroutines.flow.Flow
-import java.io.File
 
 interface OffersRepository {
     fun observeOffersFromDatabase(
@@ -17,7 +17,7 @@ interface OffersRepository {
         query: Map<String, String> = emptyMap()
     ): Flow<PagingData<Offer>>
 
-    suspend fun postOffer(offer: JsonObject, images: List<File>): Int
+    suspend fun postOffer(offer: JsonObject, images: List<Uri>): Int
 
     suspend fun deleteOffer(offerId: Int)
 

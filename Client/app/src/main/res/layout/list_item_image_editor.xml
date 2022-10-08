@@ -20,6 +20,6 @@
         android:layout_height="24dp"
         android:layout_gravity="top|end"
         android:layout_margin="4dp"
-        app:srcCompat="@drawable/ic_remove_circle"
+        app:srcCompat="@drawable/ic_remove"
         app:tint="@android:color/white" />
 </androidx.cardview.widget.CardView>

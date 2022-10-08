@@ -44,7 +44,7 @@ class ChatsAdapter(
         @SuppressLint("SetTextI18n")
         fun bind(chat: Chat) {
             val context = binding.root.context
-            AvatarLoader.loadAvatar(binding.avatar, chat.interlocutor.image)
+            AvatarLoader.loadAvatar(binding.avatar, chat.interlocutor.image, R.drawable.ic_avatar_default)
             binding.textViewName.text = chat.interlocutor.name
             binding.textViewTime.text = chat.lastMessage.createdAt.formatDate()
 

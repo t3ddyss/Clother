@@ -1,5 +1,6 @@
 package com.t3ddyss.clother.presentation.profile
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,8 +21,8 @@ class ProfileEditorViewModel @Inject constructor(
 ) : ViewModel() {
     private var user: User? = null
 
-    private val _avatar = MutableLiveData<String?>()
-    val avatar: LiveData<String?> = _avatar
+    private val _avatar = MutableLiveData<Uri?>()
+    val avatar: LiveData<Uri?> = _avatar
 
     private val _name = MutableLiveData<String>()
     val name: LiveData<String> = _name
@@ -39,7 +40,7 @@ class ProfileEditorViewModel @Inject constructor(
         viewModelScope.launch {
             profileInteractor.observeCurrentUserInfo().first().content?.let {
                 user = it
-                _avatar.postValue(it.image.ifEmpty { null })
+                _avatar.postValue(it.image)
                 _name.postValue(it.name)
                 _status.postValue(it.details?.status)
                 _isLoading.postValue(false)
@@ -55,12 +56,16 @@ class ProfileEditorViewModel @Inject constructor(
         _status.value = updatedStatus
     }
 
-    fun updateAvatar(updatedAvatar: String?) {
+    fun updateAvatar(updatedAvatar: Uri) {
         _avatar.value = updatedAvatar
     }
 
+    fun removeAvatar() {
+        _avatar.value = null
+    }
+
     fun onApplyClick(nameInput: String, statusInput: String) {
-        val isAvatarChanged = avatar.value != user?.image?.ifEmpty { null }
+        val isAvatarChanged = avatar.value != user?.image
         val isNameChanged = nameInput != user?.name
         val isStatusChanged = statusInput != user?.details?.status
         log("ProfileEditorViewModel.onApplyClick(): isAvatarChanged=$isAvatarChanged, isNameChanged=$isNameChanged, isStatusChanged=$isStatusChanged")

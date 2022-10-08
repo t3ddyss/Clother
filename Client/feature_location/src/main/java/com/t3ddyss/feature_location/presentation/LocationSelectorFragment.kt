@@ -10,6 +10,8 @@ import android.view.MenuItem
 import android.view.View
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.os.bundleOf
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.common.api.ApiException
@@ -28,7 +30,6 @@ import com.t3ddyss.core.util.utils.ToolbarUtils
 import com.t3ddyss.feature_location.R
 import com.t3ddyss.feature_location.databinding.FragmentLocationSelectorBinding
 import com.t3ddyss.feature_location.domain.models.LocationType
-import com.t3ddyss.navigation.util.setNavigationResult
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -157,8 +158,10 @@ class LocationSelectorFragment
         viewModel.saveLocation()
         viewModel.location.value?.let {
             if (it.locationType != LocationType.INITIAL) {
-                val latLng = it.latLng
-                setNavigationResult(COORDINATES_KEY, "${latLng.latitude},${latLng.longitude}")
+                setFragmentResult(
+                    COORDINATES_KEY,
+                    bundleOf(COORDINATES to it.latLng)
+                )
                 findNavController().popBackStack()
             }
         }
@@ -200,6 +203,7 @@ class LocationSelectorFragment
 
     companion object {
         const val COORDINATES_KEY = "coordinates_key"
+        const val COORDINATES = "coordinates"
         private const val DEFAULT_CAMERA_ZOOM = 15f
         private const val INITIAL_CAMERA_ZOOM = 3.5f
     }

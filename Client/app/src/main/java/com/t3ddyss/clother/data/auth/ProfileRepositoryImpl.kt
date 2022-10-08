@@ -1,5 +1,6 @@
 package com.t3ddyss.clother.data.auth
 
+import android.net.Uri
 import com.google.gson.Gson
 import com.t3ddyss.clother.data.auth.db.UserDao
 import com.t3ddyss.clother.data.auth.remote.RemoteAuthService
@@ -8,6 +9,7 @@ import com.t3ddyss.clother.data.common.common.Mappers.toEntity
 import com.t3ddyss.clother.data.common.common.Storage
 import com.t3ddyss.clother.domain.auth.ProfileRepository
 import com.t3ddyss.clother.domain.auth.models.User
+import com.t3ddyss.clother.domain.offers.ImagesRepository
 import com.t3ddyss.clother.util.networkBoundResource
 import com.t3ddyss.core.domain.models.Loading
 import com.t3ddyss.core.domain.models.Success
@@ -19,10 +21,10 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import java.io.File
 import javax.inject.Inject
 
 class ProfileRepositoryImpl @Inject constructor(
+    private val imagesRepository: ImagesRepository,
     private val remoteAuthService: RemoteAuthService,
     private val gson: Gson,
     private val userDao: UserDao,
@@ -63,22 +65,23 @@ class ProfileRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateCurrentUserInfo(name: String, status: String, avatar: File?): User {
+    override suspend fun updateCurrentUserInfo(name: String, status: String, avatar: Uri?): User {
         val detailsBody = gson.toJson(
             mapOf("name" to name, "status" to status)
         ).toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
-        val imageFile = avatar?.let {
+        val part = avatar?.let {
+            val file = imagesRepository.getCompressedImage(it)
             MultipartBody.Part.createFormData(
                 name = "file",
-                it.name,
-                it.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+                file.name,
+                file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
             )
         }
 
         val user = remoteAuthService.updateUserDetails(
             storage.accessToken,
             detailsBody,
-            imageFile
+            part
         ).toDomain()
         saveUser(user)
 

@@ -1,5 +1,6 @@
 package com.t3ddyss.clother.domain.chat
 
+import android.net.Uri
 import com.t3ddyss.clother.domain.chat.models.Chat
 import com.t3ddyss.clother.domain.chat.models.CloudEvent
 import com.t3ddyss.clother.domain.chat.models.Message
@@ -12,9 +13,9 @@ interface ChatInteractor {
     fun observeChats(): Flow<Resource<List<Chat>>>
     fun observeMessagesForChat(interlocutorId: Int): Flow<List<Message>>
     suspend fun fetchNextPortionOfMessagesForChat(interlocutorId: Int): LoadResult
-    suspend fun sendMessage(body: String?, image: String?, interlocutorId: Int)
-    suspend fun retryToSendMessage(message: Message)
-    suspend fun deleteMessage(message: Message): Resource<*>
+    suspend fun sendMessage(body: String?, image: Uri?, interlocutorId: Int)
+    suspend fun retryToSendMessage(messageLocalId: Int)
+    suspend fun deleteMessage(messageLocalId: Int): Resource<*>
     fun onNewToken(token: String)
     fun onNewCloudEvent(cloudEvent: CloudEvent)
 }

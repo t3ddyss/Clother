@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.setFragmentResultListener
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -14,6 +15,7 @@ import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.maps.model.LatLng
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.data.common.common.Mappers.toArg
 import com.t3ddyss.clother.databinding.FragmentSearchResultsBinding
@@ -26,7 +28,6 @@ import com.t3ddyss.core.util.extensions.dp
 import com.t3ddyss.core.util.extensions.showSnackbarWithText
 import com.t3ddyss.core.util.utils.ToolbarUtils
 import com.t3ddyss.feature_location.presentation.LocationSelectorFragment
-import com.t3ddyss.navigation.util.observeNavigationResult
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -159,8 +160,10 @@ class SearchResultsFragment
             adapter.submitData(lifecycle, it)
         }
 
-        observeNavigationResult<String>(LocationSelectorFragment.COORDINATES_KEY) {
-            filtersViewModel.onLocationSelected(it)
+        setFragmentResultListener(LocationSelectorFragment.COORDINATES_KEY) { _, bundle ->
+            bundle.getParcelable<LatLng>(LocationSelectorFragment.COORDINATES)?.let { latLng ->
+                filtersViewModel.onLocationSelected(latLng)
+            }
         }
     }
 

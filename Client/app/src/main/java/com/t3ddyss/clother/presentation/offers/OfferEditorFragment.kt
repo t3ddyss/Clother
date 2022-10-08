@@ -9,10 +9,12 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.fragment.app.setFragmentResultListener
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.chip.Chip
 import com.google.gson.JsonObject
 import com.t3ddyss.clother.R
@@ -28,7 +30,6 @@ import com.t3ddyss.core.util.extensions.showSnackbarWithText
 import com.t3ddyss.core.util.utils.IntentUtils
 import com.t3ddyss.core.util.utils.ToolbarUtils
 import com.t3ddyss.feature_location.presentation.LocationSelectorFragment
-import com.t3ddyss.navigation.util.observeNavigationResult
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -126,8 +127,10 @@ class OfferEditorFragment
             }
         }
 
-        observeNavigationResult<String>(LocationSelectorFragment.COORDINATES_KEY) {
-            viewModel.selectLocation(it)
+        setFragmentResultListener(LocationSelectorFragment.COORDINATES_KEY) { _, bundle ->
+            bundle.getParcelable<LatLng>(LocationSelectorFragment.COORDINATES)?.let { latLng ->
+                viewModel.selectLocation(latLng)
+            }
         }
     }
 

@@ -33,9 +33,8 @@ class FiltersViewModel @Inject constructor(
         }
     }
 
-    fun onLocationSelected(coordinates: String) {
-        val (lat, lng) = coordinates.split(",").map { it.toDouble() }
-        _location.value = LatLng(lat, lng)
+    fun onLocationSelected(location: LatLng) {
+        _location.value = location
     }
 
     fun onRadiusSelected(@IdRes chipId: Int?) {

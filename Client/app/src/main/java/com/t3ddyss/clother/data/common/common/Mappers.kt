@@ -1,5 +1,6 @@
 package com.t3ddyss.clother.data.common.common
 
+import android.net.Uri
 import com.t3ddyss.clother.data.auth.db.models.UserDetailsEntity
 import com.t3ddyss.clother.data.auth.db.models.UserEntity
 import com.t3ddyss.clother.data.auth.db.models.UserWithDetailsEntity
@@ -188,7 +189,7 @@ object Mappers {
         return UserEntity(
             id = this.id,
             name = this.name,
-            image = this.image
+            image = this.image?.toString()
         )
     }
 
@@ -205,7 +206,7 @@ object Mappers {
         return User(
             id = this.id,
             name = this.name,
-            image = this.image.orEmpty(),
+            image = this.image?.let { Uri.parse(it) },
             details = this.details?.toDomain()
         )
     }
@@ -239,7 +240,7 @@ object Mappers {
         return User(
             id = this.id,
             name = this.name,
-            image = this.image.orEmpty()
+            image = this.image?.let { Uri.parse(it) }
         )
     }
 
@@ -255,7 +256,7 @@ object Mappers {
         return User(
             id = this.user.id,
             name = this.user.name,
-            image = this.user.image.orEmpty(),
+            image = this.user.image?.let { Uri.parse(it) },
             details = this.details.toDomain()
         )
     }

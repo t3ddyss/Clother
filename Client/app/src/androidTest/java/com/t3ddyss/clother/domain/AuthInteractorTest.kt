@@ -68,7 +68,7 @@ class AuthInteractorTest {
         assertThat(authData.refreshToken).isEqualTo("some_refresh_token")
         assertThat(authData.user.details).isNull()
         assertThat(authData.user.id).isEqualTo(1)
-        assertThat(authData.user.image).isEmpty()
+        assertThat(authData.user.image).isNull()
         assertThat(authData.user.name).isEqualTo("John")
     }
 

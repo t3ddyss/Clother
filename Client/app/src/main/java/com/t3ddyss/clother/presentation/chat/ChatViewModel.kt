@@ -1,5 +1,6 @@
 package com.t3ddyss.clother.presentation.chat
 
+import android.net.Uri
 import androidx.lifecycle.*
 import com.t3ddyss.clother.domain.chat.ChatInteractor
 import com.t3ddyss.clother.domain.chat.NotificationInteractor
@@ -63,25 +64,25 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun sendMessage(body: String? = null, image: String? = null) {
+    fun sendMessage(body: String? = null, image: Uri? = null) {
         viewModelScope.launch {
             chatInteractor.sendMessage(body, image, interlocutor.id)
         }
     }
 
-    fun retryToSendMessage(message: Message) {
+    fun retryToSendMessage(messageId: Int) {
         viewModelScope.launch {
-            chatInteractor.retryToSendMessage(message)
+            chatInteractor.retryToSendMessage(messageId)
         }
     }
 
-    fun deleteMessage(message: Message) {
+    fun deleteMessage(messageId: Int) {
         val loadingStateJob = viewModelScope.launch {
             delay(DELETION_LOADING_DELAY_IN_MILLIS)
             _isLoading.postValue(true)
         }
         viewModelScope.launch {
-            chatInteractor.deleteMessage(message)
+            chatInteractor.deleteMessage(messageId)
             loadingStateJob.cancel()
             _isLoading.postValue(false)
         }

@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -12,7 +14,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.t3ddyss.clother.databinding.DialogImageSelectorBinding
 import com.t3ddyss.core.presentation.GridItemDecoration
 import com.t3ddyss.core.util.extensions.dp
-import com.t3ddyss.navigation.util.setNavigationResult
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -56,11 +57,17 @@ class ImageSelectorDialog : BottomSheetDialogFragment() {
     }
 
     private fun onImageClick(image: Uri) {
-        setNavigationResult(SELECTED_IMAGE, image.toString())
+        setFragmentResult(
+            SELECTED_IMAGE_KEY,
+            bundleOf(
+                SELECTED_IMAGE_URI to image
+            )
+        )
         findNavController().popBackStack()
     }
 
     companion object {
-        const val SELECTED_IMAGE = "selected_image"
+        const val SELECTED_IMAGE_KEY = "selected_image_key"
+        const val SELECTED_IMAGE_URI = "selected_image_uri"
     }
 }

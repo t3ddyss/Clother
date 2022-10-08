@@ -1,6 +1,7 @@
 package com.t3ddyss.clother.presentation.profile
 
 import android.app.DatePickerDialog
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -8,6 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.DatePicker
 import androidx.core.view.isVisible
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.t3ddyss.clother.R
@@ -21,7 +23,6 @@ import com.t3ddyss.core.presentation.BaseFragment
 import com.t3ddyss.core.util.extensions.getThemeColor
 import com.t3ddyss.core.util.extensions.showSnackbarWithText
 import com.t3ddyss.core.util.utils.ToolbarUtils
-import com.t3ddyss.navigation.util.observeNavigationResultOnce
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
@@ -40,14 +41,6 @@ class ProfileEditorFragment :
         setHasOptionsMenu(true)
 
         binding.avatar.setOnClickListener {
-            observeNavigationResultOnce<String>(ImageSelectorDialog.SELECTED_IMAGE) {
-                viewModel.updateAvatar(it)
-            }
-            observeNavigationResultOnce<String>(AvatarMenuDialog.SELECTED_ACTION) {
-                when (AvatarMenuDialog.Action.valueOf(it)) {
-                    AvatarMenuDialog.Action.REMOVE -> viewModel.updateAvatar(null)
-                }
-            }
             findNavController().navigate(
                 ProfileEditorFragmentDirections.actionProfileEditorFragmentToAvatarMenuDialog(
                     isRemoveVisible = viewModel.avatar.value != null
@@ -119,6 +112,20 @@ class ProfileEditorFragment :
                     }
                 }
                 else -> Unit
+            }
+        }
+
+        setFragmentResultListener(ImageSelectorDialog.SELECTED_IMAGE_KEY) { _, bundle ->
+            bundle.getParcelable<Uri>(ImageSelectorDialog.SELECTED_IMAGE_URI)?.let { uri ->
+                viewModel.updateAvatar(uri)
+            }
+        }
+
+        setFragmentResultListener(AvatarMenuDialog.SELECTED_ACTION_KEY) { _, bundle ->
+            (bundle.getSerializable(AvatarMenuDialog.SELECTED_ACTION) as? AvatarMenuDialog.Action)?.let { action ->
+                if (action == AvatarMenuDialog.Action.REMOVE) {
+                    viewModel.removeAvatar()
+                }
             }
         }
     }
