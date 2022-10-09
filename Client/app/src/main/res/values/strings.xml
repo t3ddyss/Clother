@@ -7,7 +7,7 @@
     <string name="action_enable">Enable</string>
     <string name="action_retry">Retry</string>
     <string name="action_okay">Okay</string>
-    <string name="action_upload">Upload image</string>
+    <string name="action_upload">Upload new image</string>
     <string name="action_remove">Remove</string>
 
     <string name="menu_home">Home</string>

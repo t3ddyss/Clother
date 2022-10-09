@@ -293,15 +293,14 @@
         <action
             android:id="@+id/action_profileEditorFragment_to_avatarMenuDialog"
             app:destination="@id/avatarMenuDialog" />
+        <action
+            android:id="@+id/action_profileEditorFragment_to_imageSelectorDialog"
+            app:destination="@id/imageSelectorDialog" />
     </fragment>
 
     <dialog
         android:id="@+id/avatarMenuDialog"
         android:name="com.t3ddyss.clother.presentation.profile.AvatarMenuDialog" >
-        <argument
-            android:name="isRemoveVisible"
-            android:defaultValue="false"
-            app:argType="boolean" />
         <action
             android:id="@+id/action_avatarMenuDialog_to_imageSelectorDialog"
             app:destination="@id/imageSelectorDialog"

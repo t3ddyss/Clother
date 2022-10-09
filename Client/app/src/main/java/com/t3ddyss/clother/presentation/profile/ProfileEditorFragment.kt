@@ -41,11 +41,12 @@ class ProfileEditorFragment :
         setHasOptionsMenu(true)
 
         binding.avatar.setOnClickListener {
-            findNavController().navigate(
-                ProfileEditorFragmentDirections.actionProfileEditorFragmentToAvatarMenuDialog(
-                    isRemoveVisible = viewModel.avatar.value != null
-                )
-            )
+            val action = if (viewModel.avatar.value == null) {
+                ProfileEditorFragmentDirections.actionProfileEditorFragmentToImageSelectorDialog()
+            } else {
+                ProfileEditorFragmentDirections.actionProfileEditorFragmentToAvatarMenuDialog()
+            }
+            findNavController().navigate(action)
         }
 
         subscribeUi()

@@ -7,10 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.os.bundleOf
-import androidx.core.view.isVisible
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.DialogAvatarMenuBinding
@@ -20,8 +18,6 @@ import com.t3ddyss.core.util.utils.IntentUtils
 class AvatarMenuDialog : BottomSheetDialogFragment() {
     private var _binding: DialogAvatarMenuBinding? = null
     private val binding get() = _binding!!
-
-    private val args by navArgs<AvatarMenuDialogArgs>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,8 +29,6 @@ class AvatarMenuDialog : BottomSheetDialogFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.remove.isVisible = args.isRemoveVisible
-
         val permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
                 findNavController().navigate(
