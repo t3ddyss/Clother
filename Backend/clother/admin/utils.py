@@ -6,9 +6,9 @@ import time
 from ..users.models import User
 
 
-def generate_random_time():
-    min_time = datetime.datetime(year=2021, month=1, day=1)
-    max_time = datetime.datetime(year=2021, month=3, day=31)
+def generate_random_date():
+    min_time = datetime.datetime(year=2022, month=1, day=1)
+    max_time = datetime.datetime(year=2022, month=3, day=31)
 
     min_time_ts = int(time.mktime(min_time.timetuple()))
     max_time_ts = int(time.mktime(max_time.timetuple()))

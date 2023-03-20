@@ -1,13 +1,12 @@
 import json
-import time
 
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from .models import User, UserImage
 from .. import db
-from ..auth.utils import validate_name
-from ..constants import BASE_PREFIX, RESPONSE_DELAY
+from ..auth.validators import validate_name
+from clother.common.constants import BASE_PREFIX
 from ..images.utils import is_allowed_image, store_images
 
 blueprint = Blueprint('users', __name__, url_prefix=(BASE_PREFIX + '/users'))
@@ -50,9 +49,3 @@ def update_user():
     db.session.commit()
 
     return jsonify(user.to_details_dict(request.url_root))
-
-
-# Simulate response delay while testing app on localhost
-@blueprint.before_request
-def simulate_delay():
-    time.sleep(RESPONSE_DELAY)

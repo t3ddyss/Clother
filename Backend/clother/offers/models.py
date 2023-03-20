@@ -24,25 +24,22 @@ class Offer(db.Model):
     location = db.relationship('Location', uselist=False, passive_deletes=True)
 
     def to_dict(self, url_root):
-        offer = {'id': self.id,
-                 'user': self.user.to_dict(request.url_root),
-                 'category_id': self.category_id,
-                 'created_at': self.created_at.isoformat(sep=' ', timespec='seconds'),
-                 'title': self.title,
-                 'description': self.description,
-                 'size': self.size,
-                 'category': self.category.title,
-                 'images': [image.get_uri(url_root) for image in self.images]}
-        if self.location:
-            offer['location'] = self.location.to_string()
-        return offer
+        return {'id': self.id,
+                'user': self.user.to_dict(request.url_root),
+                'category_id': self.category_id,
+                'created_at': self.created_at.isoformat(sep=' ', timespec='seconds'),
+                'title': self.title,
+                'description': self.description,
+                'size': self.size,
+                'category': self.category.title,
+                'images': [image.get_uri(url_root) for image in self.images],
+                'location': self.location.to_string() if self.location else None}
 
 
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     parent_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=True)
     title = db.Column(db.String, nullable=False)
-    last_level = db.Column(db.Boolean, default=True)
 
     subcategories = db.relationship('Category',
                                     backref=db.backref('parent', remote_side=[id]),
@@ -51,8 +48,7 @@ class Category(db.Model):
     def to_dict(self):
         return {'id': self.id,
                 'parent_id': self.parent_id,
-                'title': self.title,
-                'last_level': self.last_level}
+                'title': self.title}
 
 
 class OfferImage(BaseImage):

@@ -1,3 +1,4 @@
+from enum import StrEnum, auto
 from functools import wraps
 
 from flask import request
@@ -8,6 +9,14 @@ from jwt import ExpiredSignatureError
 
 from .. import socketio, db
 from ..users.models import User
+
+
+class SocketEvent(StrEnum):
+    CONNECT = auto()
+    DISCONNECT = auto()
+    NEW_CHAT = auto()
+    NEW_MESSAGE = auto()
+    DELETE_MESSAGE = auto()
 
 
 def auth_required(f):
@@ -26,25 +35,25 @@ def auth_required(f):
     return decorated_function
 
 
-@socketio.on('connect')
+@socketio.on(SocketEvent.CONNECT)
 @auth_required
 def on_connect(*args, **kwargs):
     user = User.query.get(kwargs['user_id'])
     join_room(user.id)
 
-    user.is_connected = True
+    user.is_online = True
     db.session.commit()
 
     print(f'{user.name} connected, id = {user.id}, sid = {request.sid}')
 
 
-@socketio.on('disconnect')
+@socketio.on(SocketEvent.DISCONNECT)
 @auth_required
 def on_disconnect(*args, **kwargs):
     user = User.query.get(kwargs['user_id'])
     leave_room(user.id)
 
-    user.is_connected = False
+    user.is_online = False
     db.session.commit()
 
     print(f'{user.name} disconnected, id = {user.id}, sid = {request.sid}')

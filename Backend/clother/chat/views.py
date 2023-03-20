@@ -1,29 +1,31 @@
 import asyncio
 import json
-import time
+from http import HTTPStatus
 
 from flask import Blueprint, jsonify, request, current_app, abort
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy import func, distinct
 
+from .error import ChatError
+from .events import SocketEvent
 from .fcm import send_data_message
 from .models import Chat, Message, MessageImage
 from .. import db, socketio
+from ..common.error import CommonError
 from ..images.utils import is_allowed_image, store_images
 from ..users.models import User
-from ..constants import BASE_PREFIX, DEFAULT_MESSAGES_PAGE_SIZE, RESPONSE_DELAY
+from clother.common.constants import BASE_PREFIX
 
 blueprint = Blueprint('chats', __name__, url_prefix=(BASE_PREFIX + '/chats'))
-
-EVENT_NEW_MESSAGE = 'new_message'
-EVENT_NEW_CHAT = 'new_chat'
-EVENT_DELETE_MESSAGE = 'delete_message'
+DEFAULT_CHAT_PAGE_SIZE = 25
 
 
 @blueprint.get('')
 @jwt_required()
 def get_chats():
     user = User.query.get(get_jwt_identity())
+
+    # TODO use query
     chats = user.chats
     chats.sort(key=lambda x: x.messages[-1].created_at, reverse=True)
 
@@ -35,7 +37,7 @@ def get_chats():
 def get_messages(interlocutor_id):
     after = request.args.get('after', default=None, type=int)
     before = request.args.get('before', default=None, type=int)
-    limit = request.args.get('limit', default=DEFAULT_MESSAGES_PAGE_SIZE, type=int)
+    limit = request.args.get('limit', default=DEFAULT_CHAT_PAGE_SIZE, type=int)
 
     user_id = get_jwt_identity()
     chat = Chat.query.join(Chat.users). \
@@ -84,10 +86,9 @@ async def send_message():
 
     files = request.files.getlist('file')
     if len(files) > 5:
-        return {"message": "You cannot upload more than 5 images"}, 400
-    for file in files:
-        if not (file and is_allowed_image(file.filename)):
-            return {"message": "This file type is not allowed"}, 400
+        return jsonify(ChatError.IMAGE_LIMIT_EXCEEDED.to_dict()), HTTPStatus.BAD_REQUEST
+    if any(not (file and is_allowed_image(file.filename)) for file in files):
+        return jsonify(CommonError.UNSUPPORTED_FILE_TYPE.to_dict()), HTTPStatus.BAD_REQUEST
     uris = store_images(files)
     for uri in uris:
         message.images.append(MessageImage(uri=uri))
@@ -99,10 +100,10 @@ async def send_message():
     message_dict = message.to_dict(url_root=request.url_root)
 
     if not is_existing_chat:
-        socketio.emit(EVENT_NEW_CHAT, json.dumps(chat_dict), to=interlocutor.id)
+        socketio.emit(SocketEvent.NEW_CHAT, json.dumps(chat_dict), to=interlocutor.id)
         asyncio.create_task(send_fcm_event_if_needed({'chat': chat_dict}, interlocutor))
     else:
-        socketio.emit(EVENT_NEW_MESSAGE, json.dumps(message_dict), to=interlocutor.id)
+        socketio.emit(SocketEvent.NEW_MESSAGE, json.dumps(message_dict), to=interlocutor.id)
         asyncio.create_task(send_fcm_event_if_needed({'message': message_dict}, interlocutor))
 
     if request.args.get('return_chat', default=False, type=json.loads):
@@ -122,18 +123,12 @@ def delete_message(message_id):
     if message.user_id == user.id:
         db.session.delete(message)
         db.session.commit()
-        socketio.emit(EVENT_DELETE_MESSAGE, json.dumps(message.to_dict(url_root=request.url_root)), to=interlocutor_id)
-        return {"message": "Message was successfully deleted"}
+        socketio.emit(SocketEvent.DELETE_MESSAGE, json.dumps(message.to_dict(url_root=request.url_root)), to=interlocutor_id)
+        return {}
     else:
-        abort(403)
+        abort(HTTPStatus.FORBIDDEN)
 
 
 async def send_fcm_event_if_needed(payload: dict, interlocutor):
-    if interlocutor.device_token and not interlocutor.is_connected:
+    if interlocutor.device_token and not interlocutor.is_online:
         send_data_message(current_app.config['FCM_API_KEY'], interlocutor.device_token, payload)
-
-
-# Simulate response delay while testing app on localhost
-@blueprint.before_request
-def simulate_delay():
-    time.sleep(RESPONSE_DELAY)

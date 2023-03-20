@@ -1,30 +1,35 @@
 import asyncio
-import re
-import time
-from datetime import datetime
-from datetime import timezone
+import datetime
+from http import HTTPStatus
 
 from email_validator import validate_email, EmailNotValidError
-from flask import Blueprint, current_app, request, url_for, render_template, after_this_request
+from flask import Blueprint, current_app, request, url_for, render_template, after_this_request, jsonify
 from flask_jwt_extended import (create_access_token, create_refresh_token, get_jwt_identity,
                                 jwt_required, get_jwt)
 from itsdangerous import URLSafeTimedSerializer
-from itsdangerous.exc import BadSignature, SignatureExpired, BadData
+from itsdangerous.exc import BadSignature, SignatureExpired
 from sqlalchemy.exc import IntegrityError
 
 from clother import db, jwt
+from clother.common.constants import BASE_PREFIX
 from clother.users.models import User
-from clother.constants import RESPONSE_DELAY, BASE_PREFIX
+from .error import AuthError
 from .forms import ResetPasswordForm
+from .mail import send_email
 from .models import TokenBlocklist
-from .utils import validate_password, send_email, validate_name
+from .validators import validate_password, validate_name
+from ..common.error import CommonError
 
 blueprint = Blueprint('auth', __name__, url_prefix=(BASE_PREFIX + '/auth'))
+CONFIRM_EMAIL_SALT = 'confirm_email'
+CONFIRM_EMAIL_TOKEN_MAX_AGE = datetime.timedelta(days=30)
+RESET_PASSWORD_SALT = 'reset_password'
+RESET_PASSWORD_TOKEN_MAX_AGE = datetime.timedelta(minutes=15)
 
 
 @jwt.token_in_blocklist_loader
 def check_if_token_revoked(jwt_header, jwt_payload):
-    jti = jwt_payload["jti"]
+    jti = jwt_payload['jti']
     token = db.session.query(TokenBlocklist.id).filter_by(jti=jti).scalar()
     return token is not None
 
@@ -35,12 +40,14 @@ def refresh_tokens():
     user_id = get_jwt_identity()
     user = User.query.get(user_id)
 
-    jti = get_jwt()["jti"]
-    now = datetime.now(timezone.utc)
-    db.session.add(TokenBlocklist(jti=jti, created_at=now))
-    db.session.commit()
+    jti = get_jwt()['jti']
+    try:
+        db.session.add(TokenBlocklist(jti=jti))
+        db.session.commit()
+    except IntegrityError:
+        return jsonify(AuthError.INVALID_TOKEN.to_dict()), HTTPStatus.FORBIDDEN
 
-    additional_claims = {"user_id": user_id}
+    additional_claims = {'user_id': user_id}
     return {'user': user.to_dict(request.url_root),
             'access_token': create_access_token(user_id, additional_claims=additional_claims),
             'refresh_token': create_refresh_token(user_id, additional_claims=additional_claims)}
@@ -48,34 +55,34 @@ def refresh_tokens():
 
 @blueprint.post('/device/<token>')
 @jwt_required()
-def set_device_token(token):
+def register_device(token):
     user = User.query.get(get_jwt_identity())
     user.device_token = token
     db.session.commit()
-    return {'message': 'Success'}
+    return {}
 
 
 @blueprint.post('/register')
 async def register():
-    if not request.is_json:
-        return {'message': 'Expected JSON in the request body'}, 400
     data = request.get_json()
 
-    email = data['email']
+    try:
+        email = data['email']
+        password = data['password']
+        name = data['name']
+    except KeyError:
+        return jsonify(CommonError.MISSING_MANDATORY_PARAMETER.to_dict()), HTTPStatus.BAD_REQUEST
+
     try:
         valid_email = validate_email(email).email
     except EmailNotValidError:
-        return {'message': 'Email address is invalid'}, 422
+        return jsonify(AuthError.INVALID_EMAIL.to_dict()), HTTPStatus.UNPROCESSABLE_ENTITY
 
-    password = data['password']
     if not validate_password(password):
-        return {'message': 'Password should be at least 8 and less than 25 characters, '
-                           'contain at least 1 digit, 1 uppercase letter, 1 lowercase letter and '
-                           '1 special character'}, 422
+        return jsonify(AuthError.INVALID_PASSWORD.to_dict()), HTTPStatus.UNPROCESSABLE_ENTITY
 
-    name = data['name']
     if not validate_name(name):
-        return {'message': 'Name should contain at least 2 and less than 50 characters'}, 422
+        return jsonify(AuthError.INVALID_NAME.to_dict()), HTTPStatus.UNPROCESSABLE_ENTITY
 
     user = User(email=valid_email, name=name)
     user.set_password(password)
@@ -85,93 +92,83 @@ async def register():
         db.session.commit()
     except IntegrityError:
         db.session.rollback()
-        return {'message': 'User with this email address is already exists'}, 403
+        return jsonify(AuthError.EMAIL_OCCUPIED.to_dict()), HTTPStatus.CONFLICT
 
     ts = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
-    token = ts.dumps(user.email, salt='confirm_email')
+    token = ts.dumps(user.id, salt=CONFIRM_EMAIL_SALT)
     confirmation_url = url_for(
         'auth.confirm_email',
         token=token,
         _external=True)
-
     html = render_template(
         'confirmation.html',
-        subject_text='You are almost done!',
-        body_text='To complete email verification, please press the button below.',
-        button_text='Verify email',
+        subject_text="You are almost done!",
+        body_text="To complete email verification, please press the button below",
+        button_text="Verify email",
         action_url=confirmation_url)
+    asyncio.create_task(send_email(subject="Confirm your email address", recipients=[user.email], html=html))
 
-    asyncio.create_task(send_email(subject='Confirm your email address', recipients=[user.email], html=html))
-
-    return {'message': 'Check your inbox'}
+    return {}
 
 
 @blueprint.get('/confirm_email/<token>')
 def confirm_email(token):
     ts = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
     try:
-        email = ts.loads(token, salt="confirm_email", max_age=2_592_000)  # 30 days
-    except SignatureExpired as ex:
-        try:
-            email = ts.load_payload(ex.payload)
-            User.query.filter_by(email=email).first().delete()
-            db.session.commit()
-        except BadData:
-            return {'message': "Invalid token"}, 403
-        return {'message': "Token has expired"}, 403
+        user_id = ts.loads(token, salt=CONFIRM_EMAIL_SALT, max_age=CONFIRM_EMAIL_TOKEN_MAX_AGE.seconds)
+    except SignatureExpired:
+        return jsonify(AuthError.TOKEN_EXPIRED.to_dict()), HTTPStatus.FORBIDDEN
     except BadSignature:
-        return {'message': "Invalid token"}, 403
+        return jsonify(AuthError.INVALID_TOKEN.to_dict()), HTTPStatus.FORBIDDEN
 
-    user = User.query.filter_by(email=email).first()
+    user = User.query.get(user_id)
     user.email_verified = True
     db.session.commit()
 
-    return 'Your account was successfully activated!'
+    return {}
 
 
 @blueprint.post('/login')
 def login():
-    if not request.is_json:
-        return {"message": "Missing JSON in request"}, 400
-
-    email = request.json.get('email', None)
-    password = request.json.get('password', None)
-
-    if not email:
-        return {"message": "Missing email parameter"}, 400
-    if not password:
-        return {"message": "Missing password parameter"}, 400
+    data = request.get_json()
+    try:
+        email = data['email']
+        password = data['password']
+    except KeyError:
+        return jsonify(CommonError.MISSING_MANDATORY_PARAMETER.to_dict()), HTTPStatus.BAD_REQUEST
 
     user = User.query.filter_by(email=email).first()
-    if not user.email_verified:
-        return {"message": "You haven't verified your email address"}, 403
+    if user and not user.email_verified:
+        return jsonify(AuthError.EMAIL_NOT_VERIFIED.to_dict()), HTTPStatus.FORBIDDEN
+
     if user and user.check_password(password):
-        additional_claims = {"user_id": user.id}
+        additional_claims = {'user_id': user.id}
         return {'user': user.to_details_dict(request.url_root),
                 'access_token': create_access_token(user.id, additional_claims=additional_claims),
                 'refresh_token': create_refresh_token(user.id, additional_claims=additional_claims)}
     else:
-        return {"message": "Wrong email or password"}, 403
+        return jsonify(AuthError.INVALID_CREDENTIALS.to_dict()), HTTPStatus.FORBIDDEN
 
 
 @blueprint.post('/forgot_password')
 async def forgot_password():
-    if not request.is_json:
-        return {"message": "Missing JSON in request"}, 400
     data = request.get_json()
+    try:
+        email = data['email']
+    except KeyError:
+        return jsonify(CommonError.MISSING_MANDATORY_PARAMETER.to_dict()), HTTPStatus.BAD_REQUEST
 
-    email = data['email']
     try:
         valid_email = validate_email(email).email
     except EmailNotValidError:
-        return {'message': 'Email address is invalid'}, 422
+        return jsonify(AuthError.INVALID_EMAIL.to_dict()), HTTPStatus.UNPROCESSABLE_ENTITY
 
     user = User.query.filter_by(email=valid_email).first()
     if not user:
-        return {'message': "User with this email address doesn't exist"}, 422
+        return jsonify(AuthError.USER_NOT_FOUND.to_dict()), HTTPStatus.UNPROCESSABLE_ENTITY
 
     ts = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
-    token = ts.dumps({'email': user.email, 'password': user.password}, salt='reset_password')
+    token = ts.dumps(user.id, salt=RESET_PASSWORD_SALT)
     confirmation_url = url_for(
         'auth.reset_password',
         token=token,
@@ -179,48 +176,38 @@ async def forgot_password():
 
     html = render_template(
         'confirmation.html',
-        subject_text='Password reset',
+        subject_text="Password reset",
         body_text="To reset your password, please press the button below. If you didn't request a password reset, "
                   "just ignore this email",
-        button_text='Reset password',
+        button_text="Reset password",
         action_url=confirmation_url)
 
-    asyncio.create_task(send_email(subject='Forgot your password?', recipients=[user.email], html=html))
+    asyncio.create_task(send_email(subject="Forgot your password?", recipients=[user.email], html=html))
 
-    return {'message': 'Check your inbox'}
+    return {}
 
 
 @blueprint.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
     @after_this_request
-    def after_request(response):
-        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    def execute_after_request(response):
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
         return response
-
-    form = ResetPasswordForm()
 
     ts = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
     try:
-        data = ts.loads(token, salt="reset_password", max_age=900)  # 15 minutes
+        user_id = ts.loads(token, salt=RESET_PASSWORD_SALT, max_age=RESET_PASSWORD_TOKEN_MAX_AGE.seconds)
     except SignatureExpired:
-        return {'message': "Token has expired"}, 403
+        return jsonify(AuthError.TOKEN_EXPIRED.to_dict()), HTTPStatus.FORBIDDEN
     except BadSignature:
-        return {'message': "Invalid token"}, 403
+        return jsonify(AuthError.INVALID_TOKEN.to_dict()), HTTPStatus.FORBIDDEN
 
-    user = User.query.filter_by(email=data['email']).first()
+    user = User.query.get(user_id)
 
+    form = ResetPasswordForm()
     if form.validate_on_submit():
         user.set_password(form.password.data)
         db.session.commit()
-        return 'Password has been successfully changed!'
-
-    if not user.password == data['password']:
-        return 'Password has already been reset', 410
+        return {}
 
     return render_template('reset_password.html', form=form)
-
-
-# Simulate response delay while testing app on localhost
-@blueprint.before_request
-def simulate_delay():
-    time.sleep(RESPONSE_DELAY)

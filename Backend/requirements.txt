@@ -1,7 +1,7 @@
 alembic==1.7.7
 click==8.1.2
 email_validator==1.2.0
-eventlet==0.30.2
+eventlet==0.33.3
 Flask[async]==2.1.1
 Flask_JWT_Extended==4.3.1
 Flask_Mail==0.9.1
@@ -9,10 +9,11 @@ Flask_Migrate==3.1.0
 Flask_SocketIO==5.1.2
 Flask_SQLAlchemy==2.5.1
 Flask_WTF==1.0.1
-gunicorn==20.1.0
+# Gunicorn, https://github.com/benoitc/gunicorn/pull/2581
+https://github.com/benoitc/gunicorn/archive/ff58e0c6da83d5520916bc4cc109a529258d76e1.zip#egg=gunicorn==20.1.0
 itsdangerous==2.1.2
 PyJWT==2.3.0
-psycopg2-binary==2.9.3
+psycopg2-binary==2.9.5
 requests==2.27.1
 SQLAlchemy==1.4.36
 Werkzeug==2.1.1
