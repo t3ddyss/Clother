@@ -13,6 +13,15 @@ interface OfferDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(offers: List<OfferEntity>)
 
+    @Query("""SELECT *
+        FROM offer
+        INNER JOIN user
+        ON offer.user_id == user.id
+        WHERE offer.offer_id == :id
+        LIMIT 1
+    """)
+    suspend fun getOfferById(id: Int): OfferWithUserEntity
+
     @Query("""SELECT * 
         FROM offer
         INNER JOIN user

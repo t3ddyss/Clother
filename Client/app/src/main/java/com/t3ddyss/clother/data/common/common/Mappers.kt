@@ -1,6 +1,8 @@
 package com.t3ddyss.clother.data.common.common
 
 import android.net.Uri
+import arrow.retrofit.adapter.either.networkhandling.CallError
+import arrow.retrofit.adapter.either.networkhandling.IOError
 import com.t3ddyss.clother.data.auth.db.models.UserDetailsEntity
 import com.t3ddyss.clother.data.auth.db.models.UserEntity
 import com.t3ddyss.clother.data.auth.db.models.UserWithDetailsEntity
@@ -12,8 +14,7 @@ import com.t3ddyss.clother.data.chat.db.models.ChatWithLastMessageEntity
 import com.t3ddyss.clother.data.chat.db.models.MessageEntity
 import com.t3ddyss.clother.data.chat.remote.models.ChatDto
 import com.t3ddyss.clother.data.chat.remote.models.MessageDto
-import com.t3ddyss.clother.data.common.common.remote.models.ResponseDto
-import com.t3ddyss.clother.data.offers.db.models.CategoryEntity
+import com.t3ddyss.clother.data.offers.db.models.CategoryInfoEntity
 import com.t3ddyss.clother.data.offers.db.models.OfferEntity
 import com.t3ddyss.clother.data.offers.db.models.OfferWithUserEntity
 import com.t3ddyss.clother.data.offers.remote.models.OfferDto
@@ -24,19 +25,21 @@ import com.t3ddyss.clother.domain.auth.models.UserDetails
 import com.t3ddyss.clother.domain.chat.models.Chat
 import com.t3ddyss.clother.domain.chat.models.Message
 import com.t3ddyss.clother.domain.chat.models.MessageStatus
-import com.t3ddyss.clother.domain.common.common.models.Response
 import com.t3ddyss.clother.domain.offers.models.Category
 import com.t3ddyss.clother.domain.offers.models.Offer
+import com.t3ddyss.core.domain.models.ApiCallError
 import com.t3ddyss.navigation.presentation.models.CategoryArg
+import com.t3ddyss.navigation.presentation.models.OfferArg
 import com.t3ddyss.navigation.presentation.models.UserArg
+import java.net.ConnectException
 
 object Mappers {
 
-    fun CategoryEntity.toDomain(): Category {
+    fun CategoryInfoEntity.toDomain(): Category {
         return Category(
-            id = this.id,
-            title = this.title,
-            isLastLevel = this.isLastLevel
+            id = this.category.id,
+            title = this.category.title,
+            isLastLevel = this.isLast
         )
     }
 
@@ -179,12 +182,6 @@ object Mappers {
         )
     }
 
-    fun ResponseDto.toDomain(): Response {
-        return Response(
-            message = this.message.orEmpty()
-        )
-    }
-
     fun User.toEntity(): UserEntity {
         return UserEntity(
             id = this.id,
@@ -290,5 +287,22 @@ object Mappers {
             id = this.id,
             name = this.name
         )
+    }
+
+    fun Offer.toArg(): OfferArg {
+        return OfferArg(
+            id = this.id,
+            user = this.user.toArg()
+        )
+    }
+
+    fun CallError.toApiCallError() = when (this) {
+        is IOError -> cause.toApiCallError()
+        else -> ApiCallError.UnknownError
+    }
+
+    fun Throwable.toApiCallError() = when (this) {
+        is ConnectException -> ApiCallError.ConnectionError
+        else -> ApiCallError.UnknownError
     }
 }

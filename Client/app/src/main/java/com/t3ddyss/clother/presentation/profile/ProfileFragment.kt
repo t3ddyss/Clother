@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -14,19 +13,15 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.data.common.common.Mappers.toArg
+import com.t3ddyss.clother.data.offers.PagingErrorWrapperException
 import com.t3ddyss.clother.databinding.FragmentProfileBinding
 import com.t3ddyss.clother.domain.auth.models.UserDetails
+import com.t3ddyss.clother.domain.auth.models.UserInfoState
 import com.t3ddyss.clother.domain.offers.models.Offer
-import com.t3ddyss.clother.presentation.offers.OfferViewModel
-import com.t3ddyss.clother.presentation.offers.OffersAdapter
-import com.t3ddyss.core.domain.models.Error
-import com.t3ddyss.core.domain.models.Loading
-import com.t3ddyss.core.domain.models.Success
+import com.t3ddyss.clother.presentation.offers.viewer.OffersAdapter
 import com.t3ddyss.core.presentation.BaseFragment
 import com.t3ddyss.core.presentation.GridItemDecoration
-import com.t3ddyss.core.util.extensions.dp
-import com.t3ddyss.core.util.extensions.getThemeDimension
-import com.t3ddyss.core.util.extensions.showSnackbarWithText
+import com.t3ddyss.core.util.extensions.*
 import com.t3ddyss.core.util.utils.ToolbarUtils
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
@@ -37,7 +32,6 @@ class ProfileFragment
     : BaseFragment<FragmentProfileBinding>(FragmentProfileBinding::inflate) {
     // Using activityViewModels delegate here to save data across different instances of ProfileFragment
     private val profileViewModel by viewModels<ProfileViewModel>()
-    private val offerViewModel by activityViewModels<OfferViewModel>()
 
     private val args by navArgs<ProfileFragmentArgs>()
 
@@ -64,11 +58,11 @@ class ProfileFragment
                 }
 
                 is LoadState.Error -> {
-                    val error = (state.refresh as LoadState.Error).error
+                    val error = ((state.refresh as LoadState.Error).error as PagingErrorWrapperException).source
 
                     binding.shimmerList.isVisible = false
                     binding.list.isVisible = true
-                    showSnackbarWithText(error)
+                    showSnackbarWithText(error.textRes)
                 }
             }
         }.also {
@@ -78,15 +72,7 @@ class ProfileFragment
         val layoutManager = GridLayoutManager(context, 2)
         binding.list.layoutManager = layoutManager
         binding.list.adapter = offersAdapter
-        binding.list.addItemDecoration(GridItemDecoration(2, 8.dp(), true))
-
-//        binding.appBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
-//            if (abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
-//                binding.collapsingToolbarLayout.title = "aaaaa"
-//            } else {
-//                binding.collapsingToolbarLayout.title = "bbbbb"
-//            }
-//        })
+        binding.list.addItemDecoration(GridItemDecoration(2, 8.dp, true))
 
         subscribeUi()
     }
@@ -119,38 +105,24 @@ class ProfileFragment
     }
 
     private fun subscribeUi() {
-        profileViewModel.offers.observe(viewLifecycleOwner) {
-            offersAdapter.submitData(lifecycle, it)
+        profileViewModel.user.collectViewLifecycleAware { info ->
+            binding.shimmerHeader.isVisible = info.user.details == null && info is UserInfoState.Cache
+            binding.collapsingToolbarLayout.title = info.user.name
+            AvatarLoader.loadAvatar(binding.avatar, info.user.image, R.drawable.ic_avatar_default)
+            setUserDetails(info.user.details)
         }
 
-        profileViewModel.user.observe(viewLifecycleOwner) {
-            it.content?.let { user ->
-                binding.collapsingToolbarLayout.title = user.name
-                AvatarLoader.loadAvatar(binding.avatar, user.image, R.drawable.ic_avatar_default)
-            }
-
-            when (it) {
-                is Loading -> {
-                    render(it.content?.details, false)
-                }
-                is Success -> {
-                    render(it.content?.details, true)
-                }
-                is Error -> {
-                    render(it.content?.details, true)
-                }
-            }
+        profileViewModel.offers.collectViewLifecycleAware {
+            offersAdapter.submitData(it)
         }
 
-        offerViewModel.removedOffers.observe(viewLifecycleOwner) {
-            profileViewModel.removeOffers(it)
+        profileViewModel.error.collectViewLifecycleAware { event ->
+            event.getContentOrNull()?.let { showSnackbarWithText(it.textRes) }
         }
     }
 
     private fun onOfferClick(offer: Offer) {
-        offerViewModel.selectOffer(offer)
-        val action = ProfileFragmentDirections
-            .actionProfileFragmentToOfferFragment(offer.user.toArg())
+        val action = ProfileFragmentDirections.actionProfileFragmentToOfferFragment(offer.toArg())
         findNavController().navigate(action)
     }
 
@@ -167,23 +139,22 @@ class ProfileFragment
             val actionBarSize = requireContext().getThemeDimension(R.attr.actionBarSize)
             binding.headerContainer.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 setMargins(
-                    16.dp(),
+                    16.dp,
                     actionBarSize,
-                    16.dp(),
-                    16.dp()
+                    16.dp,
+                    16.dp
                 )
             }
-            binding.collapsingToolbarLayout.expandedTitleMarginTop = 4.dp() + actionBarSize
+            binding.collapsingToolbarLayout.expandedTitleMarginTop = 4.dp + actionBarSize
         }
     }
 
-    private fun render(userDetails: UserDetails?, shouldHideShimmer: Boolean) {
+    private fun setUserDetails(userDetails: UserDetails?) {
         if (userDetails != null) {
             binding.textViewStatus.text = userDetails.status
             binding.textViewSignUpDate.text = userDetails.createdAt.toDescription()
             binding.textViewEmail.text = getString(R.string.profile_email, userDetails.email)
             binding.textViewStatus.isVisible = userDetails.status.isNotBlank()
-            binding.shimmerHeader.isVisible = false
             binding.signUpDateContainer.isVisible = true
             binding.emailContainer.isVisible = true
         } else {
@@ -191,7 +162,6 @@ class ProfileFragment
             binding.signUpDateContainer.isVisible = false
             binding.emailContainer.isVisible = false
             binding.ageContainer.isVisible = false
-            binding.shimmerHeader.isVisible = true && !shouldHideShimmer
         }
     }
 

@@ -1,20 +1,21 @@
 package com.t3ddyss.clother.data.auth
 
 import android.net.Uri
+import arrow.core.Either
 import com.google.gson.Gson
 import com.t3ddyss.clother.data.auth.db.UserDao
 import com.t3ddyss.clother.data.auth.remote.RemoteAuthService
+import com.t3ddyss.clother.data.common.common.Mappers.toApiCallError
 import com.t3ddyss.clother.data.common.common.Mappers.toDomain
 import com.t3ddyss.clother.data.common.common.Mappers.toEntity
 import com.t3ddyss.clother.data.common.common.Storage
 import com.t3ddyss.clother.domain.auth.ProfileRepository
 import com.t3ddyss.clother.domain.auth.models.User
+import com.t3ddyss.clother.domain.auth.models.UserInfoState
 import com.t3ddyss.clother.domain.offers.ImagesRepository
-import com.t3ddyss.clother.util.networkBoundResource
-import com.t3ddyss.core.domain.models.Loading
-import com.t3ddyss.core.domain.models.Success
-import com.t3ddyss.core.util.extensions.rethrowIfCancellationException
-import com.t3ddyss.core.util.log
+import com.t3ddyss.core.domain.models.ApiCallError
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -31,41 +32,48 @@ class ProfileRepositoryImpl @Inject constructor(
     private val storage: Storage
 ) : ProfileRepository {
 
-    override fun observeCurrentUserInfo() = networkBoundResource(
-        query = { userDao.observeUserWithDetailsById(storage.userId)
-            .map { it.toDomain() }
-        },
-        fetch = {
-            remoteAuthService.getUserDetails(
-                accessToken = storage.accessToken,
-                userId = storage.userId
-            ).toDomain()
-        },
-        saveFetchResult = {
-            saveUser(it)
-        }
-    )
+    override fun observeCurrentUserInfo(): Flow<UserInfoState> = flow {
+        emit(UserInfoState.Cache(getUserWithDetailsOrUser(storage.userId)))
 
-    override fun observeUserInfo(userId: Int) = flow {
-        emit(Loading(userDao.getUserById(userId).toDomain()))
-        userDao.getUserWithDetailsById(userId)?.toDomain()?.let {
-            emit(Loading(it))
-        }
-
-        try {
-            val user = remoteAuthService.getUserDetails(
-                accessToken = storage.accessToken,
-                userId = userId
-            ).toDomain()
-            saveUser(user)
-            emit(Success(user))
-        } catch (ex: Exception) {
-            ex.rethrowIfCancellationException()
-            log("ProfileRepositoryImpl.observeUserInfo: $ex")
-        }
+        remoteAuthService.getUserDetails(
+            accessToken = storage.accessToken,
+            userId = storage.userId
+        )
+            .tap { user ->
+                storeUser(user.toDomain())
+                emitAll(
+                    userDao.observeUserWithDetailsById(storage.userId)
+                        .map { UserInfoState.Fetched(it.toDomain()) }
+                )
+            }
+            .tapLeft { error ->
+                emitAll(
+                    userDao.observeUserWithDetailsById(storage.userId)
+                        .map { UserInfoState.Error(it.toDomain(), error.toApiCallError()) }
+                )
+            }
     }
 
-    override suspend fun updateCurrentUserInfo(name: String, status: String, avatar: Uri?): User {
+    override fun observeUserInfo(userId: Int): Flow<UserInfoState> = flow {
+        emit(UserInfoState.Cache(getUserWithDetailsOrUser(userId)))
+
+        remoteAuthService.getUserDetails(
+            accessToken = storage.accessToken,
+            userId = userId
+        )
+            .tap { user ->
+                storeUser(user.toDomain())
+                emitAll(
+                    userDao.observeUserWithDetailsById(userId)
+                        .map { UserInfoState.Fetched(it.toDomain()) }
+                )
+            }
+            .tapLeft {
+                emit(UserInfoState.Error(getUserWithDetailsOrUser(userId), it.toApiCallError()))
+            }
+    }
+
+    override suspend fun updateCurrentUserInfo(name: String, status: String, avatar: Uri?): Either<ApiCallError, User> {
         val detailsBody = gson.toJson(
             mapOf("name" to name, "status" to status)
         ).toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
@@ -78,17 +86,22 @@ class ProfileRepositoryImpl @Inject constructor(
             )
         }
 
-        val user = remoteAuthService.updateUserDetails(
+        return remoteAuthService.updateUserDetails(
             storage.accessToken,
             detailsBody,
             part
-        ).toDomain()
-        saveUser(user)
-
-        return user
+        )
+            .map { it.toDomain() }
+            .mapLeft { it.toApiCallError() }
+            .tap { storeUser(it) }
     }
 
-    private suspend fun saveUser(user: User) {
+    private suspend fun getUserWithDetailsOrUser(userId: Int): User {
+        return userDao.getUserWithDetailsById(userId)?.toDomain()
+            ?: userDao.getUserById(userId).toDomain()
+    }
+
+    private suspend fun storeUser(user: User) {
         userDao.insert(user.toEntity())
         user.details?.toEntity(user.id)?.let {
             userDao.insert(it)

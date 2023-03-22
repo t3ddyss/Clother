@@ -104,20 +104,19 @@ def post_offer():
         db.session.rollback()
         return jsonify(CommonError.UNKNOWN_ERROR.to_dict()), HTTPStatus.INTERNAL_SERVER_ERROR
 
-    return {'id': offer.id}
+    return jsonify(offer.to_dict())
 
 
 @blueprint.delete('/delete')
 @jwt_required()
 def delete_offer():
     user = User.query.get(get_jwt_identity())
-    offer_id = request.args['offer']
     offer = Offer.query.get(request.args.get('offer', default=None, type=int))
 
     if offer and offer.user_id == user.id:
         db.session.delete(offer)
         db.session.commit()
-        return {'message': 'Offer was successfully deleted'}
+        return {}
     else:
         abort(400)
 

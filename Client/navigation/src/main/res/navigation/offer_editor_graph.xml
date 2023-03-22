@@ -6,7 +6,7 @@
     app:startDestination="@id/offerEditorFragment">
     <fragment
         android:id="@+id/offerEditorFragment"
-        android:name="com.t3ddyss.clother.presentation.offers.OfferEditorFragment"
+        android:name="com.t3ddyss.clother.presentation.offers.editor.OfferEditorFragment"
         tools:layout="@layout/fragment_offer_editor">
         <argument
             android:name="category"
@@ -24,14 +24,14 @@
             app:popUpTo="@id/main_graph"
             app:popUpToInclusive="true">
             <argument
-                android:name="created_offer_id"
-                android:defaultValue="0"
-                app:argType="integer" />
+                android:name="offer_created"
+                android:defaultValue="true"
+                app:argType="boolean" />
         </action>
     </fragment>
     <fragment
         android:id="@+id/galleryFragment"
-        android:name="com.t3ddyss.clother.presentation.offers.GalleryFragment"
+        android:name="com.t3ddyss.clother.presentation.offers.gallery.GalleryFragment"
         tools:layout="@layout/fragment_gallery" />
     <fragment
         android:id="@+id/locationFragment"

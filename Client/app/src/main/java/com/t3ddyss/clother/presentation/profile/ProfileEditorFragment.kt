@@ -1,35 +1,44 @@
 package com.t3ddyss.clother.presentation.profile
 
-import android.app.DatePickerDialog
 import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.DatePicker
 import androidx.core.view.isVisible
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.FragmentProfileEditorBinding
+import com.t3ddyss.clother.domain.auth.ProfileInteractor
 import com.t3ddyss.clother.presentation.chat.ImageSelectorDialog
-import com.t3ddyss.clother.util.text
-import com.t3ddyss.clother.util.toEditable
-import com.t3ddyss.core.domain.models.Error
-import com.t3ddyss.core.domain.models.Success
+import com.t3ddyss.clother.presentation.profile.models.ProfileEditState
+import com.t3ddyss.clother.util.extensions.toEditable
 import com.t3ddyss.core.presentation.BaseFragment
-import com.t3ddyss.core.util.extensions.getThemeColor
+import com.t3ddyss.core.util.extensions.collectViewLifecycleAware
 import com.t3ddyss.core.util.extensions.showSnackbarWithText
+import com.t3ddyss.core.util.extensions.textRes
 import com.t3ddyss.core.util.utils.ToolbarUtils
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.*
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ProfileEditorFragment :
     BaseFragment<FragmentProfileEditorBinding>(FragmentProfileEditorBinding::inflate) {
     private val viewModel by viewModels<ProfileEditorViewModel>()
+
+    private var isApplyEnabled = false
+        set(value) {
+            if (field != value) {
+                requireActivity().invalidateOptionsMenu()
+                field = value
+            }
+        }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         ToolbarUtils.setupToolbar(
@@ -41,12 +50,22 @@ class ProfileEditorFragment :
         setHasOptionsMenu(true)
 
         binding.avatar.setOnClickListener {
-            val action = if (viewModel.avatar.value == null) {
-                ProfileEditorFragmentDirections.actionProfileEditorFragmentToImageSelectorDialog()
-            } else {
-                ProfileEditorFragmentDirections.actionProfileEditorFragmentToAvatarMenuDialog()
+            viewLifecycleOwner.lifecycleScope.launch {
+                val action = if (viewModel.change.first().updated.image == null) {
+                    ProfileEditorFragmentDirections.actionProfileEditorFragmentToImageSelectorDialog()
+                } else {
+                    ProfileEditorFragmentDirections.actionProfileEditorFragmentToAvatarMenuDialog()
+                }
+                findNavController().navigate(action)
             }
-            findNavController().navigate(action)
+        }
+
+        binding.editTextName.doAfterTextChanged { text ->
+            viewModel.updateName(text.toString().trim())
+        }
+
+        binding.editTextStatus.doAfterTextChanged { text ->
+            viewModel.updateStatus(text.toString().trim())
         }
 
         subscribeUi()
@@ -54,15 +73,13 @@ class ProfileEditorFragment :
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.toolbar_apply_menu, menu)
+        menu.findItem(R.id.apply).isVisible = isApplyEnabled
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.apply -> {
-                viewModel.onApplyClick(
-                    nameInput = binding.editTextName.text(),
-                    statusInput = binding.editTextStatus.text()
-                )
+                viewModel.onApplyClick()
                 true
             }
             else -> {
@@ -71,49 +88,37 @@ class ProfileEditorFragment :
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-        viewModel.updateName(binding.editTextName.text())
-        viewModel.updateStatus(binding.editTextStatus.text())
-    }
-
     private fun subscribeUi() {
-        viewModel.avatar.observe(viewLifecycleOwner) { avatar ->
-            AvatarLoader.loadAvatar(binding.avatar, avatar, R.drawable.ic_avatar_add)
+        viewModel.change.collectViewLifecycleAware { change ->
+            isApplyEnabled = change.isChanged
+            AvatarLoader.loadAvatar(binding.avatar, change.updated.image, R.drawable.ic_avatar_add)
+            binding.editTextName.text?.clear()
+            binding.editTextName.append(change.updated.name.toEditable())
+            binding.editTextStatus.text?.clear()
+            binding.editTextStatus.append(change.updated.details?.status.orEmpty().toEditable())
         }
 
-        viewModel.name.observe(viewLifecycleOwner) {
-            binding.editTextName.text = it.toEditable()
-        }
+        viewModel.state.collectViewLifecycleAware { state ->
+            clearValidationErrors()
 
-        viewModel.status.observe(viewLifecycleOwner) {
-            binding.editTextStatus.text = it.orEmpty().toEditable()
-        }
-
-        viewModel.isLoading.observe(viewLifecycleOwner) {
-            binding.layoutLoading.isVisible = it
-        }
-
-        viewModel.applyResult.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
+            when (state) {
+                ProfileEditState.Loading -> {
+                    binding.layoutLoading.isVisible = true
+                }
+                ProfileEditState.Success -> {
                     findNavController().popBackStack()
                 }
-                is Error -> {
+                ProfileEditState.Error -> {
                     binding.layoutLoading.isVisible = false
-                    when (it.content) {
-                        is ValidationError -> {
-                            binding.textInputName.error = getString(R.string.auth_name_requirements)
-                            binding.textInputName.isErrorEnabled = true
-                        }
-                        else -> {
-                            binding.textInputName.isErrorEnabled = false
-                            showSnackbarWithText(it)
-                        }
-                    }
                 }
-                else -> Unit
+                is ProfileEditState.ValidationError -> {
+                    setValidationErrors(state)
+                }
             }
+        }
+
+        viewModel.error.collectViewLifecycleAware { error ->
+            error.getContentOrNull()?.let { showSnackbarWithText(it.textRes) }
         }
 
         setFragmentResultListener(ImageSelectorDialog.SELECTED_IMAGE_KEY) { _, bundle ->
@@ -131,26 +136,19 @@ class ProfileEditorFragment :
         }
     }
 
-    private fun showDatePickerDialog() {
-        val calendar = Calendar.getInstance()
-        val currentYear = calendar.get(Calendar.YEAR)
-        val currentMonth = calendar.get(Calendar.MONTH)
-        val currentDay = calendar.get(Calendar.DAY_OF_MONTH)
-        val listener = DatePickerDialog.OnDateSetListener { _: DatePicker, year: Int, month: Int, day: Int -> }
+    private fun clearValidationErrors() {
+        binding.textInputName.isErrorEnabled = false
+    }
 
-        DatePickerDialog(
-            requireContext(),
-            listener,
-            currentYear,
-            currentMonth,
-            currentDay
-        ).apply {
-            show()
-            datePicker.maxDate = System.currentTimeMillis()
-
-            val buttonTextColor = requireContext().getThemeColor(R.attr.colorOnPrimary)
-            getButton(DatePickerDialog.BUTTON_NEGATIVE).setTextColor(buttonTextColor)
-            getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(buttonTextColor)
+    private fun setValidationErrors(error: ProfileEditState.ValidationError) {
+        error.causes.forEach {
+            when (it) {
+                ProfileInteractor.ProfileParam.NAME -> {
+                    binding.textInputName.error = getString(R.string.auth_name_requirements)
+                    binding.textInputName.isErrorEnabled = true
+                }
+                ProfileInteractor.ProfileParam.STATUS -> Unit // Character limit is set in layout
+            }
         }
     }
 }

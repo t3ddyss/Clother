@@ -31,7 +31,7 @@ interface MessageDao {
     suspend fun deleteAllMessagesFromChat(serverChatId: Int?)
 
     @Query("DELETE FROM message WHERE server_id IS NULL")
-    suspend fun deleteUnsentMessages()
+    suspend fun deleteLocalMessages()
 
     @Query("DELETE FROM message WHERE local_id == :localId")
     suspend fun deleteByLocalId(localId: Int)

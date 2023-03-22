@@ -1,8 +1,8 @@
 package com.t3ddyss.clother.data.auth.remote
 
-import com.t3ddyss.clother.data.auth.remote.models.UserAuthDataDto
-import com.t3ddyss.clother.data.auth.remote.models.UserDto
-import com.t3ddyss.clother.data.common.common.remote.models.ResponseDto
+import arrow.core.Either
+import arrow.retrofit.adapter.either.networkhandling.CallError
+import com.t3ddyss.clother.data.auth.remote.models.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -15,13 +15,19 @@ interface RemoteAuthService {
     ): Response<UserAuthDataDto>
 
     @POST("api/auth/register")
-    suspend fun createUserWithCredentials(@Body user: Map<String, String>): ResponseDto
+    suspend fun createUserWithCredentials(
+        @Body user: Map<String, String>
+    ): Either<SignUpErrorDto, Unit>
 
     @POST("api/auth/login")
-    suspend fun signInWithCredentials(@Body user: Map<String, String>): UserAuthDataDto
+    suspend fun signInWithCredentials(
+        @Body user: Map<String, String>
+    ): Either<SignInErrorDto, UserAuthDataDto>
 
     @POST("api/auth/forgot_password")
-    suspend fun resetPassword(@Body user: Map<String, String>): ResponseDto
+    suspend fun resetPassword(
+        @Body user: Map<String, String>
+    ): Either<ResetPasswordErrorDto, Unit>
 
     @POST("api/auth/device/{token}")
     suspend fun sendDeviceToken(
@@ -33,7 +39,7 @@ interface RemoteAuthService {
     suspend fun getUserDetails(
         @Header("Authorization") accessToken: String?,
         @Path("user_id") userId: Int
-    ): UserDto
+    ): Either<CallError, UserDto>
 
     @Multipart
     @POST("api/users/update")
@@ -41,5 +47,5 @@ interface RemoteAuthService {
         @Header("Authorization") accessToken: String?,
         @Part("request") body: RequestBody,
         @Part image: MultipartBody.Part?
-    ): UserDto
+    ): Either<CallError, UserDto>
 }

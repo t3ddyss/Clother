@@ -19,8 +19,5 @@ data class CategoryEntity(
     @ColumnInfo(name = "parent_id", index = true)
     val parentId: Int?,
 
-    val title: String,
-
-    @ColumnInfo(name = "last_level")
-    val isLastLevel: Boolean
+    val title: String
 )

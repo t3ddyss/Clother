@@ -48,28 +48,22 @@ class CategoryDaoTest {
 
     @Test
     fun rootCategories_shouldBeMenAndWomen() = runTest {
-        val categories = dao.getSubcategories(null)
-            .map {
-                it.title
-            }
+        val categories = dao.getCategories(null)
+            .map { it.category.title }
         assertThat(categories).containsExactlyElementsIn(arrayOf("Men", "Women"))
     }
 
     @Test
     fun menSubcategories_shouldBeShirts() = runTest {
-        val categories = dao.getSubcategories(2)
-            .map {
-                it.title
-            }
+        val categories = dao.getCategories(2)
+            .map { it.category.title }
         assertThat(categories).containsExactlyElementsIn(arrayOf("Shirts"))
     }
 
     @Test
     fun casualSubcategories_shouldBeNone() = runTest {
-        val categories = dao.getSubcategories(5)
-            .map {
-                it.title
-            }
+        val categories = dao.getCategories(5)
+            .map { it.category.title }
         assertThat(categories).isEmpty()
     }
 
@@ -80,7 +74,6 @@ class CategoryDaoTest {
                     id = 1,
                     parentId = null,
                     title = "Women",
-                    isLastLevel = false
                 )
             )
 
@@ -89,7 +82,6 @@ class CategoryDaoTest {
                     id = 2,
                     parentId = null,
                     title = "Men",
-                    isLastLevel = false
                 )
             )
 
@@ -98,7 +90,6 @@ class CategoryDaoTest {
                     id = 3,
                     parentId = 2,
                     title = "Shirts",
-                    isLastLevel = false
                 )
             )
 
@@ -107,7 +98,6 @@ class CategoryDaoTest {
                     id = 4,
                     parentId = 3,
                     title = "Casual",
-                    isLastLevel = true
                 )
             )
 
@@ -116,7 +106,6 @@ class CategoryDaoTest {
                     id = 5,
                     parentId = 3,
                     title = "Dressed",
-                    isLastLevel = true
                 )
             )
         }

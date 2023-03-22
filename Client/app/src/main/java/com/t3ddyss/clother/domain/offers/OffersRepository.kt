@@ -2,9 +2,11 @@ package com.t3ddyss.clother.domain.offers
 
 import android.net.Uri
 import androidx.paging.PagingData
-import com.google.gson.JsonObject
+import arrow.core.Either
+import com.google.android.gms.maps.model.LatLng
 import com.t3ddyss.clother.domain.offers.models.Category
 import com.t3ddyss.clother.domain.offers.models.Offer
+import com.t3ddyss.core.domain.models.ApiCallError
 import kotlinx.coroutines.flow.Flow
 
 interface OffersRepository {
@@ -17,9 +19,18 @@ interface OffersRepository {
         query: Map<String, String> = emptyMap()
     ): Flow<PagingData<Offer>>
 
-    suspend fun postOffer(offer: JsonObject, images: List<Uri>): Int
+    suspend fun getOffer(id: Int): Offer
 
-    suspend fun deleteOffer(offerId: Int)
+    suspend fun postOffer(
+        title: String,
+        categoryId: Int,
+        description: String,
+        images: List<Uri>,
+        size: String?,
+        location: LatLng?
+    ): Either<ApiCallError, Offer>
+
+    suspend fun deleteOffer(offerId: Int): Either<ApiCallError, Unit>
 
     suspend fun getOfferCategories(parentCategoryId: Int?): List<Category>
 }

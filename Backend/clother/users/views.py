@@ -37,14 +37,14 @@ def update_user():
     if status and len(status) > 70:
         return {'message': "Status is limited to 70 symbols"}, 422
     if image and not is_allowed_image(image.filename):
-        return {"message": "This file type is not allowed"}, 400
+        return {'message': "This file type is not allowed"}, 400
 
     user.name = name
     user.status = status
     if image:
         uri = store_images([image])[0]
         user.image = UserImage(uri=uri)
-    else:
+    elif user.image:
         db.session.delete(user.image)
     db.session.commit()
 

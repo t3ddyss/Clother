@@ -8,7 +8,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'kotlin-parcelize'
-    id 'io.gitlab.arturbosch.detekt' version "$detekt_version"
+    id 'kotlinx-serialization'
 }
 
 android {
@@ -48,7 +48,6 @@ android {
 
     kotlinOptions {
         jvmTarget = '1.8'
-        useIR = true
     }
 
     packagingOptions {
@@ -74,9 +73,9 @@ dependencies {
 
     if (pEnableLeakCanary.toBoolean()) {
         debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
-        println "Leak Canary is enabled"
+        logger.info("Leak Canary is enabled")
     } else {
-        println "Leak Canary is disabled"
+        logger.info("Leak Canary is disabled")
     }
 
     implementation platform("com.google.firebase:firebase-bom:$firebase_bom_version")
@@ -97,7 +96,7 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:$recyclerview_version"
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
-//    implementation "androidx.room:room-paging:$room_version"
+//    implementation "androidx.room:room-paging:$room_version" https://issuetracker.google.com/issues/235319241
     implementation "com.facebook.shimmer:shimmer:$shimmer_version"
     implementation "com.github.bumptech.glide:glide:$glide_version"
     implementation "com.google.android.material:material:$material_version"
@@ -111,11 +110,14 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation "com.github.chrisbanes:PhotoView:$photo_version"
     implementation "id.zelory:compressor:$compressor_version"
+    implementation "io.arrow-kt:arrow-core:$arrow_version"
+    implementation "io.arrow-kt:arrow-core-retrofit:$arrow_version"
     implementation("io.socket:socket.io-client:$socket_io_version") {
         exclude group: 'org.json', module: 'json'
     }
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_version"
 
     debugImplementation "androidx.fragment:fragment-testing:$fragment_version"
     testImplementation "androidx.arch.core:core-testing:$arch_core_test_version"

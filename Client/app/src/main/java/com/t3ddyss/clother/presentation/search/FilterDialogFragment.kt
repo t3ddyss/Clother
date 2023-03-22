@@ -11,7 +11,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.DialogSearchFiltersBinding
-import com.t3ddyss.clother.util.toCoordinatesString
+import com.t3ddyss.clother.util.extensions.toCoordinatesString
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

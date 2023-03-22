@@ -9,10 +9,9 @@ import com.t3ddyss.clother.R
 import com.t3ddyss.clother.data.common.common.Mappers.toArg
 import com.t3ddyss.clother.databinding.FragmentChatsBinding
 import com.t3ddyss.clother.domain.chat.models.Chat
-import com.t3ddyss.core.domain.models.Error
-import com.t3ddyss.core.domain.models.Loading
-import com.t3ddyss.core.domain.models.Success
+import com.t3ddyss.clother.domain.chat.models.ChatsState
 import com.t3ddyss.core.presentation.BaseFragment
+import com.t3ddyss.core.util.extensions.collectViewLifecycleAware
 import com.t3ddyss.core.util.utils.ToolbarUtils
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -33,22 +32,20 @@ class ChatsListFragment : BaseFragment<FragmentChatsBinding>(FragmentChatsBindin
     }
 
     private fun subscribeUi() {
-        viewModel.chats.observe(viewLifecycleOwner) {
-            when (it) {
-                is Loading -> {
-                    val isContentPresent = !it.content.isNullOrEmpty()
-                    binding.listChats.isVisible = isContentPresent
-                    binding.layoutLoading.isVisible = !isContentPresent
-                    adapter.submitList(it.content)
+        viewModel.chats.collectViewLifecycleAware { state ->
+            adapter.submitList(state.chats)
+
+            when (state) {
+                is ChatsState.Cache -> {
+                    binding.listChats.isVisible = state.chats.isNotEmpty()
+                    binding.layoutLoading.isVisible = state.chats.isEmpty()
                 }
-                is Success -> {
-                    val isContentEmpty = it.content?.isEmpty() == true
-                    binding.listChats.isVisible = !isContentEmpty
+                is ChatsState.Fetched -> {
+                    binding.listChats.isVisible = state.chats.isNotEmpty()
                     binding.layoutLoading.isVisible = false
-                    binding.emptyState.isVisible = isContentEmpty
-                    adapter.submitList(it.content)
+                    binding.emptyState.isVisible = state.chats.isEmpty()
                 }
-                is Error -> {
+                is ChatsState.Error -> {
                     binding.listChats.isVisible = true
                     binding.layoutLoading.isVisible = false
                 }

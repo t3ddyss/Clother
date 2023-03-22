@@ -14,7 +14,7 @@ import androidx.test.filters.LargeTest
 import com.google.android.material.textfield.TextInputLayout
 import com.google.common.truth.Truth.assertThat
 import com.t3ddyss.clother.R
-import com.t3ddyss.clother.presentation.auth.SignUpFragment
+import com.t3ddyss.clother.presentation.auth.signup.SignUpFragment
 import com.t3ddyss.clother.utils.EspressoUtil
 import com.t3ddyss.clother.utils.launchFragmentInHiltContainer
 import dagger.hilt.android.testing.HiltAndroidRule

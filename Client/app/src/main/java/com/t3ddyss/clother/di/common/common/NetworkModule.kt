@@ -1,5 +1,6 @@
 package com.t3ddyss.clother.di.common.common
 
+import arrow.retrofit.adapter.either.EitherCallAdapterFactory
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.t3ddyss.clother.data.auth.remote.RemoteAuthService
@@ -74,6 +75,7 @@ object NetworkModule {
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(baseUrl)
+            .addCallAdapterFactory(EitherCallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create(gson))
             .client(httpClient)
             .build()

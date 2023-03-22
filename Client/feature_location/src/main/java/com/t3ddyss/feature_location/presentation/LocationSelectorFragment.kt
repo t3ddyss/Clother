@@ -170,8 +170,8 @@ class LocationSelectorFragment
     private fun checkIfLocationEnabled() {
         if (viewModel.isLocationEnablingRequested.getAndSet(true)) return
 
-        val locationRequest = LocationRequest.create().also {
-            it.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        val locationRequest = LocationRequest.create().apply {
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
         val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
         val result = LocationServices

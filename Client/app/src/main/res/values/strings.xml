@@ -24,6 +24,10 @@
     <string name="auth_reset_password">Reset password</string>
     <string name="auth_already_signed_up">Already have an account? Sign in</string>
     <string name="auth_forgot_password">Forgot your password?</string>
+    <string name="auth_email_occupied">Email is already in use</string>
+    <string name="auth_email_not_verified">Email is not confirmed</string>
+    <string name="auth_invalid_credentials">Wrong email or password</string>
+    <string name="auth_user_not_found">Email doesn\'t exist</string>
     <string name="auth_email_activation_message">To activate your account,
         please follow instructions we sent to\u0020</string>
     <string name="auth_password_reset_message">To reset your password,
@@ -32,9 +36,8 @@
     <string name="auth_check_inbox">Check your inbox</string>
     <string name="auth_name_requirements">Name should contain at least 2 and less than 50 characters</string>
     <string name="auth_email_invalid">Email address is invalid</string>
-    <string name="auth_password_requirements">Password should be at least 8 and less than 25 characters,
-        contain at least 1 digit, 1 uppercase letter, 1 lowercase letter
-        and 1 special character</string>
+    <string name="auth_password_requirements">Password should be a combination of uppercase letters,
+        lowercase letters, numbers, and symbols and contain from 8 to 25 characters</string>
 
     <string name="offer">Offer</string>
     <string name="offer_select_category">Select category</string>

@@ -2,6 +2,7 @@ package com.t3ddyss.clother.data.chat
 
 import android.net.Uri
 import androidx.room.withTransaction
+import arrow.core.Either
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.t3ddyss.clother.data.auth.db.UserDao
@@ -11,6 +12,8 @@ import com.t3ddyss.clother.data.chat.db.MessageDao
 import com.t3ddyss.clother.data.chat.db.models.ChatEntity
 import com.t3ddyss.clother.data.chat.db.models.MessageEntity
 import com.t3ddyss.clother.data.chat.remote.RemoteChatService
+import com.t3ddyss.clother.data.chat.remote.models.ChatDto
+import com.t3ddyss.clother.data.common.common.Mappers.toApiCallError
 import com.t3ddyss.clother.data.common.common.Mappers.toDomain
 import com.t3ddyss.clother.data.common.common.Mappers.toDto
 import com.t3ddyss.clother.data.common.common.Mappers.toEntity
@@ -18,15 +21,16 @@ import com.t3ddyss.clother.data.common.common.Storage
 import com.t3ddyss.clother.data.common.common.db.AppDatabase
 import com.t3ddyss.clother.domain.chat.ChatRepository
 import com.t3ddyss.clother.domain.chat.models.Chat
+import com.t3ddyss.clother.domain.chat.models.ChatsState
 import com.t3ddyss.clother.domain.chat.models.Message
 import com.t3ddyss.clother.domain.chat.models.MessageStatus
 import com.t3ddyss.clother.domain.common.common.models.LoadResult
 import com.t3ddyss.clother.domain.offers.ImagesRepository
-import com.t3ddyss.clother.util.networkBoundResource
-import com.t3ddyss.core.util.extensions.nestedMap
+import com.t3ddyss.core.domain.models.ApiCallError
+import com.t3ddyss.core.util.extensions.mapList
 import com.t3ddyss.core.util.extensions.rethrowIfCancellationException
 import com.t3ddyss.core.util.log
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -50,32 +54,28 @@ class ChatRepositoryImpl @Inject constructor(
     private val gson: Gson
 ) : ChatRepository {
 
-    override fun observeChatsFromDatabase() = networkBoundResource(
-        query = { chatDao.observeChats().nestedMap { it.toDomain() } },
-        fetch = { chatService.getChats(storage.accessToken) },
-        saveFetchResult = { chats ->
-            db.withTransaction {
-                messageDao.deleteUnsentMessages()
-                chatDao.deleteUncreatedChats()
+    override fun observeChatsFromDatabase(): Flow<ChatsState> = flow {
+        val cache = chatDao.observeChats().first().map { it.toDomain() }
+        emit(ChatsState.Cache(cache))
 
-                userDao.insertAll(chats.map { it.interlocutor.toEntity() })
-                chatDao.insertAll(chats.map { it.toEntity() })
-                    .zip(chats)
-                    .map {
-                        it.second.lastMessage.toEntity().apply {
-                            localChatId = it.first.toInt()
-                        }
-                    }.let {
-                        messageDao.insertAll(it)
-                    }
+        chatService.getChats(storage.accessToken)
+            .tap { chats ->
+                storeChats(chats)
+                emitAll(
+                    chatDao.observeChats()
+                        .mapList { it.toDomain() }
+                        .map(ChatsState::Fetched)
+                )
             }
-        }
-    )
+            .tapLeft { error ->
+                ChatsState.Error(cache, error.toApiCallError())
+            }
+    }
 
     override fun observeMessagesForChatFromDatabase(interlocutorId: Int): Flow<List<Message>> {
         return messageDao
             .observeMessagesByInterlocutorId(interlocutorId)
-            .nestedMap { it.toDomain(it.userId == interlocutorId) }
+            .mapList { it.toDomain(it.userId == interlocutorId) }
     }
 
     override suspend fun fetchNextPortionOfMessagesForChat(interlocutorId: Int): LoadResult {
@@ -122,16 +122,16 @@ class ChatRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteMessage(messageLocalId: Int) {
-        messageDao.getMessageByLocalId(messageLocalId).serverId?.let {
-            try {
-                chatService.deleteMessage(storage.accessToken, it)
-            } catch (ex: Throwable) {
-                ex.rethrowIfCancellationException()
-                log(ex.stackTraceToString())
-            }
+    override suspend fun deleteMessage(messageLocalId: Int): Either<ApiCallError, Unit> {
+        val messageServerId = messageDao.getMessageByLocalId(messageLocalId).serverId
+
+        return if (messageServerId != null) {
+            chatService.deleteMessage(storage.accessToken, messageServerId).mapLeft { it.toApiCallError() }
+        } else {
+            Either.Right(Unit)
+        }.tap {
+            messageDao.deleteByLocalId(messageLocalId)
         }
-        messageDao.deleteByLocalId(messageLocalId)
     }
 
     override suspend fun addNewMessage(message: Message) {
@@ -311,6 +311,24 @@ class ChatRepositoryImpl @Inject constructor(
 
     private suspend fun updateChat(chat: ChatEntity) {
         chatDao.update(chat)
+    }
+
+    private suspend fun storeChats(chats: List<ChatDto>) {
+        db.withTransaction {
+            messageDao.deleteLocalMessages()
+            chatDao.deleteLocalChats()
+
+            userDao.insertAll(chats.map { it.interlocutor.toEntity() })
+            chatDao.insertAll(chats.map { it.toEntity() })
+                .zip(chats)
+                .map {
+                    it.second.lastMessage.toEntity().apply {
+                        localChatId = it.first.toInt()
+                    }
+                }.let {
+                    messageDao.insertAll(it)
+                }
+        }
     }
 
     private suspend fun requestCloudMessagingToken() = suspendCoroutine<String> { cont ->

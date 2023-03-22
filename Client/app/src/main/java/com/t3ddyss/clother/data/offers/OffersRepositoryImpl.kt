@@ -5,7 +5,10 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
+import arrow.core.Either
+import com.google.android.gms.maps.model.LatLng
 import com.google.gson.JsonObject
+import com.t3ddyss.clother.data.common.common.Mappers.toApiCallError
 import com.t3ddyss.clother.data.common.common.Mappers.toDomain
 import com.t3ddyss.clother.data.common.common.Storage
 import com.t3ddyss.clother.data.offers.db.CategoryDao
@@ -15,6 +18,7 @@ import com.t3ddyss.clother.domain.offers.ImagesRepository
 import com.t3ddyss.clother.domain.offers.OffersRepository
 import com.t3ddyss.clother.domain.offers.models.Category
 import com.t3ddyss.clother.domain.offers.models.Offer
+import com.t3ddyss.core.domain.models.ApiCallError
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -70,10 +74,37 @@ class OffersRepositoryImpl @Inject constructor(
             }
     }
 
-    override suspend fun postOffer(offer: JsonObject, images: List<Uri>): Int {
-        val body = offer
+    override suspend fun getOffer(id: Int): Offer {
+        return offerDao.getOfferById(id).toDomain()
+    }
+
+    override suspend fun postOffer(
+        title: String,
+        categoryId: Int,
+        description: String,
+        images: List<Uri>,
+        size: String?,
+        location: LatLng?
+    ): Either<ApiCallError, Offer> {
+        val body = JsonObject().apply {
+            addProperty("title", title)
+            addProperty("category_id", categoryId)
+
+            if (description.isNotEmpty()) {
+                addProperty("description", description)
+            }
+
+            if (location != null) {
+                addProperty("location", "${location.latitude},${location.longitude}")
+            }
+
+            if (size != null) {
+                addProperty("size", size)
+            }
+        }
             .toString()
             .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+
         val parts = coroutineScope {
             images
                 .map {
@@ -95,19 +126,22 @@ class OffersRepositoryImpl @Inject constructor(
             storage.accessToken,
             body,
             parts
-        ).id
+        )
+            .map { it.toDomain() }
+            .mapLeft { it.toApiCallError() }
     }
 
-    override suspend fun deleteOffer(offerId: Int) {
-        service.deleteOffer(
+    override suspend fun deleteOffer(offerId: Int): Either<ApiCallError, Unit> {
+        return service.deleteOffer(
             storage.accessToken,
             offerId
         )
-        offerDao.deleteOfferById(offerId)
+            .tap { offerDao.deleteOfferById(offerId) }
+            .mapLeft { it.toApiCallError() }
     }
 
     override suspend fun getOfferCategories(parentCategoryId: Int?): List<Category> {
-        return categoryDao.getSubcategories(parentCategoryId)
+        return categoryDao.getCategories(parentCategoryId)
             .map { it.toDomain() }
     }
 

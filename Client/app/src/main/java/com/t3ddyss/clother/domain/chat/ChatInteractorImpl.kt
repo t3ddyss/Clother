@@ -1,19 +1,15 @@
 package com.t3ddyss.clother.domain.chat
 
 import android.net.Uri
+import arrow.core.Either
 import com.t3ddyss.clother.domain.auth.AuthInteractor
 import com.t3ddyss.clother.domain.auth.models.AuthState
-import com.t3ddyss.clother.domain.chat.models.Chat
-import com.t3ddyss.clother.domain.chat.models.CloudEvent
-import com.t3ddyss.clother.domain.chat.models.Event
-import com.t3ddyss.clother.domain.chat.models.Message
+import com.t3ddyss.clother.domain.chat.models.*
 import com.t3ddyss.clother.domain.common.common.models.LoadResult
 import com.t3ddyss.clother.util.DispatchersProvider
-import com.t3ddyss.clother.util.handleHttpException
-import com.t3ddyss.core.domain.models.Resource
+import com.t3ddyss.core.domain.models.ApiCallError
 import com.t3ddyss.core.util.extensions.rethrowIfCancellationException
 import com.t3ddyss.core.util.log
-import com.t3ddyss.core.util.utils.Utils.asExpression
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
@@ -42,7 +38,7 @@ class ChatInteractorImpl @Inject constructor(
         }
     }
 
-    override fun observeChats(): Flow<Resource<List<Chat>>> {
+    override fun observeChats(): Flow<ChatsState> {
         return chatRepository.observeChatsFromDatabase()
     }
 
@@ -64,10 +60,8 @@ class ChatInteractorImpl @Inject constructor(
         chatRepository.retryToSendMessage(messageLocalId)
     }
 
-    override suspend fun deleteMessage(messageLocalId: Int): Resource<*> {
-        return handleHttpException {
-            chatRepository.deleteMessage(messageLocalId)
-        }
+    override suspend fun deleteMessage(messageLocalId: Int): Either<ApiCallError, Unit> {
+        return chatRepository.deleteMessage(messageLocalId)
     }
 
     override fun onNewToken(token: String) {
@@ -100,7 +94,7 @@ class ChatInteractorImpl @Inject constructor(
                         is Event.NewMessage -> onNewMessage(it.message)
                         is Event.NewChat -> onNewChat(it.chat)
                         is Event.DeleteMessage -> onDeleteMessage(it.messageId)
-                    }.asExpression
+                    }
                 }
         }
         chatRepository.sendDeviceTokenIfNeeded()

@@ -1,66 +1,42 @@
 package com.t3ddyss.clother.presentation.profile
 
-import androidx.lifecycle.*
-import androidx.paging.PagingData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import androidx.paging.filter
 import com.t3ddyss.clother.domain.auth.AuthInteractor
 import com.t3ddyss.clother.domain.auth.ProfileInteractor
-import com.t3ddyss.clother.domain.auth.models.User
-import com.t3ddyss.clother.domain.offers.models.Offer
-import com.t3ddyss.core.domain.models.Resource
-import com.t3ddyss.core.util.log
+import com.t3ddyss.clother.domain.auth.models.UserInfoState
+import com.t3ddyss.clother.presentation.offers.DeletedOffersHolder
+import com.t3ddyss.clother.util.toEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val profileInteractor: ProfileInteractor,
+    profileInteractor: ProfileInteractor,
     authInteractor: AuthInteractor,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val deletedOffersHolder: DeletedOffersHolder
 ) : ViewModel() {
     private val args = ProfileFragmentArgs.fromSavedStateHandle(savedStateHandle)
+    private val userId = args.user?.id ?: authInteractor.authStateFlow.value.userId
 
-    private val _offers = MutableLiveData<PagingData<Offer>>()
-    val offers: LiveData<PagingData<Offer>> = _offers
+    val user = profileInteractor
+        .observeUserInfo(userId)
+        .shareIn(viewModelScope, SharingStarted.Eagerly, 1)
 
-    private val _user = MutableLiveData<Resource<User>>()
-    val user: LiveData<Resource<User>> = _user
-
-    init {
-        val userId = args.user?.id ?: authInteractor.authStateFlow.value.userId ?: 0
-        viewModelScope.launch {
-            launch {
-                profileInteractor
-                    .observeOffersByUser(userId)
-                    .cachedIn(viewModelScope)
-                    .collectLatest {
-                        _offers.postValue(it)
-                    }
-            }
-            launch {
-                profileInteractor
-                    .observeUserInfo(userId)
-                    .catch { log("ProfileViewModel.init(): $it") } // TODO display error
-                    .collectLatest {
-                        _user.postValue(it)
-                    }
-            }
+    val offers = profileInteractor
+        .observeOffersByUser(userId)
+        .cachedIn(viewModelScope)
+        .combine(deletedOffersHolder.offers) { offers, deleted ->
+            offers.filter { it.id !in deleted }
         }
-    }
+        .shareIn(viewModelScope, SharingStarted.Eagerly, 1)
 
-    fun removeOffers(removedOffers: Set<Int>) {
-        val currentOffers = offers.value
-
-        viewModelScope.launch {
-            currentOffers?.filter {
-                it.id !in removedOffers
-            }?.let {
-                _offers.postValue(it)
-            }
-        }
-    }
+    val error = user.filterIsInstance<UserInfoState.Error>()
+        .map { it.error.toEvent() }
+        .shareIn(viewModelScope, SharingStarted.Lazily, 1)
 }

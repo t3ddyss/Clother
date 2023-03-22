@@ -6,7 +6,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.google.common.truth.Truth.assertThat
 import com.t3ddyss.clother.domain.auth.AuthInteractor
-import com.t3ddyss.clother.presentation.auth.SignUpViewModel
+import com.t3ddyss.clother.presentation.auth.signup.SignUpViewModel
 import com.t3ddyss.clother.utils.getOrAwaitValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest

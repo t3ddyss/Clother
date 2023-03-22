@@ -4,10 +4,11 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingSource.LoadParams.Append
 import androidx.paging.PagingSource.LoadParams.Prepend
 import androidx.paging.PagingState
+import arrow.core.merge
+import com.t3ddyss.clother.data.common.common.Mappers.toApiCallError
 import com.t3ddyss.clother.data.common.common.Storage
 import com.t3ddyss.clother.data.offers.remote.RemoteOffersService
 import com.t3ddyss.clother.data.offers.remote.models.OfferDto
-import com.t3ddyss.core.util.extensions.rethrowIfCancellationException
 import com.t3ddyss.core.util.log
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -20,26 +21,27 @@ class OffersPagingSource @AssistedInject constructor(
 ) : PagingSource<Int, OfferDto>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, OfferDto> {
-        return try {
-            val items = service.getOffers(
-                accessToken = storage.accessToken,
-                afterKey = if (params is Append) params.key else null,
-                beforeKey = if (params is Prepend) params.key else null,
-                limit = params.loadSize,
-                filters = query
-            )
-
-            LoadResult.Page(
-                data = items,
-                prevKey = items.firstOrNull()?.id,
-                nextKey = items.lastOrNull()?.id
-            )
-
-        } catch (ex: Exception) {
-            ex.rethrowIfCancellationException()
-            log("OffersPagingSource.load(params=$params) $ex")
-            LoadResult.Error(ex)
-        }
+        return service.getOffers(
+            accessToken = storage.accessToken,
+            afterKey = if (params is Append) params.key else null,
+            beforeKey = if (params is Prepend) params.key else null,
+            limit = params.loadSize,
+            filters = query
+        )
+            .map { items ->
+                LoadResult.Page(
+                    data = items,
+                    prevKey = items.firstOrNull()?.id,
+                    nextKey = items.lastOrNull()?.id
+                )
+            }
+            .mapLeft {
+                LoadResult.Error<Int, OfferDto>(PagingErrorWrapperException(it.toApiCallError()))
+            }
+            .tapLeft {
+                log("OffersPagingSource.load(): $it")
+            }
+            .merge()
     }
 
     override fun getRefreshKey(state: PagingState<Int, OfferDto>): Int? {

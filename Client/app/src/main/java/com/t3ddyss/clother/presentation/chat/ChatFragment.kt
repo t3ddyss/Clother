@@ -14,14 +14,16 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.R
+import com.t3ddyss.clother.data.offers.PagingErrorWrapperException
 import com.t3ddyss.clother.databinding.FragmentChatBinding
 import com.t3ddyss.clother.domain.chat.models.Message
 import com.t3ddyss.clother.domain.chat.models.MessageStatus
 import com.t3ddyss.clother.domain.common.common.models.LoadResult
-import com.t3ddyss.clother.util.text
+import com.t3ddyss.clother.util.extensions.text
 import com.t3ddyss.core.presentation.BaseFragment
 import com.t3ddyss.core.util.extensions.showSnackbarWithAction
 import com.t3ddyss.core.util.extensions.showSnackbarWithText
+import com.t3ddyss.core.util.extensions.textRes
 import com.t3ddyss.core.util.utils.IntentUtils
 import com.t3ddyss.core.util.utils.ToolbarUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -147,7 +149,10 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::infl
         viewModel.loadStatus.observe(viewLifecycleOwner) {
             when (it) {
                 is LoadResult.Success -> Unit
-                is LoadResult.Error -> showSnackbarWithText(it.exception)
+                is LoadResult.Error -> {
+                    val error = (it.exception as PagingErrorWrapperException).source
+                    showSnackbarWithText(error.textRes)
+                }
             }
         }
 

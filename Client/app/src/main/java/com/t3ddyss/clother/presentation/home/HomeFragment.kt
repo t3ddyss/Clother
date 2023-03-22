@@ -6,22 +6,19 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.data.common.common.Mappers.toArg
+import com.t3ddyss.clother.data.offers.PagingErrorWrapperException
 import com.t3ddyss.clother.databinding.FragmentHomeBinding
 import com.t3ddyss.clother.domain.offers.models.Offer
-import com.t3ddyss.clother.presentation.offers.OfferViewModel
-import com.t3ddyss.clother.presentation.offers.OffersAdapter
+import com.t3ddyss.clother.presentation.offers.viewer.OffersAdapter
 import com.t3ddyss.core.presentation.BaseFragment
 import com.t3ddyss.core.presentation.GridItemDecoration
-import com.t3ddyss.core.util.extensions.dp
-import com.t3ddyss.core.util.extensions.getThemeColor
-import com.t3ddyss.core.util.extensions.showSnackbarWithText
+import com.t3ddyss.core.util.extensions.*
 import com.t3ddyss.core.util.utils.ToolbarUtils
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -29,9 +26,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate) {
     // Using activityViewModels delegate here to save data across different instances of HomeFragment
     private val viewModel by activityViewModels<HomeViewModel>()
-    private val offerViewModel by activityViewModels<OfferViewModel>()
-
-    private val args by navArgs<HomeFragmentArgs>()
 
     private val adapter = OffersAdapter(this::onOfferClick)
     private lateinit var loadStateListener: (CombinedLoadStates) -> Unit
@@ -70,12 +64,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                 }
 
                 is LoadState.Error -> {
-                    val error = (it.refresh as LoadState.Error).error
+                    val error = ((it.refresh as LoadState.Error).error as PagingErrorWrapperException).source
 
                     binding.shimmer.isVisible = false
                     binding.containerHome.isVisible = true
                     binding.swipeRefresh.isRefreshing = false
-                    showSnackbarWithText(error)
+                    showSnackbarWithText(error.textRes)
                 }
             }
 
@@ -104,7 +98,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
         binding.list.layoutManager = layoutManager
         binding.list.adapter = adapter
-        binding.list.addItemDecoration(GridItemDecoration(2, 8.dp(), true))
+        binding.list.addItemDecoration(GridItemDecoration(2, 8.dp, true))
 
         // Show progressbar if reached end of current list
         onScrollListener = object : RecyclerView.OnScrollListener() {
@@ -133,8 +127,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
             adapter.refresh()
         }
 
-        if (args.createdOfferId != 0) {
-            viewModel.setNewOfferAdded(args.createdOfferId)
+        arguments?.let { bundle ->
+            if (HomeFragmentArgs.fromBundle(bundle).offerCreated) {
+                showSnackbarWithText(R.string.offer_created_message)
+                bundle.clear()
+            }
         }
 
         subscribeUi()
@@ -158,20 +155,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     }
 
     private fun subscribeUi() {
-        viewModel.offers.observe(viewLifecycleOwner) {
-            adapter.submitData(lifecycle, it)
-        }
-
-        viewModel.newOfferAdded.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled() ?: return@observe
-            showSnackbarWithText(R.string.offer_created_message)
+        viewModel.offers.collectViewLifecycleAware {
+            adapter.submitData(it)
         }
     }
 
     private fun onOfferClick(offer: Offer) {
-        offerViewModel.selectOffer(offer)
-        val action = HomeFragmentDirections
-            .actionHomeFragmentToOfferFragment(offer.user.toArg())
+        val action = HomeFragmentDirections.actionHomeFragmentToOfferFragment(offer.toArg())
         findNavController().navigate(action)
     }
 }

@@ -1,88 +1,97 @@
 package com.t3ddyss.clother.presentation.profile
 
 import android.net.Uri
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.t3ddyss.clother.domain.auth.ProfileInteractor
 import com.t3ddyss.clother.domain.auth.models.User
-import com.t3ddyss.core.domain.models.Resource
-import com.t3ddyss.core.domain.models.Success
-import com.t3ddyss.core.util.log
+import com.t3ddyss.clother.presentation.profile.models.ProfileEditState
+import com.t3ddyss.clother.presentation.profile.models.UserInfoChange
+import com.t3ddyss.clother.util.Event
+import com.t3ddyss.clother.util.toEvent
+import com.t3ddyss.core.domain.models.ApiCallError
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileEditorViewModel @Inject constructor(
-    private val profileInteractor: ProfileInteractor,
+    private val profileInteractor: ProfileInteractor
 ) : ViewModel() {
-    private var user: User? = null
 
-    private val _avatar = MutableLiveData<Uri?>()
-    val avatar: LiveData<Uri?> = _avatar
+    private val _change = MutableSharedFlow<UserInfoChange>(
+        replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+    val change = _change.asSharedFlow().distinctUntilChanged()
 
-    private val _name = MutableLiveData<String>()
-    val name: LiveData<String> = _name
+    private val _state = MutableSharedFlow<ProfileEditState>(
+        replay = 1, onBufferOverflow = BufferOverflow.DROP_LATEST
+    )
+    val state = _state.asSharedFlow().distinctUntilChanged()
 
-    private val _status = MutableLiveData<String?>()
-    val status: LiveData<String?> = _status
-
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> = _isLoading
-
-    private val _applyResult = MutableLiveData<Resource<*>>()
-    val applyResult: LiveData<Resource<*>> = _applyResult
+    private val _error = MutableSharedFlow<Event<ApiCallError>>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    val error = _error.asSharedFlow()
 
     init {
         viewModelScope.launch {
-            profileInteractor.observeCurrentUserInfo().first().content?.let {
-                user = it
-                _avatar.postValue(it.image)
-                _name.postValue(it.name)
-                _status.postValue(it.details?.status)
-                _isLoading.postValue(false)
-            }
+            val user = profileInteractor.observeCurrentUserInfo().first().user
+            _change.emit(UserInfoChange(user, user))
         }
     }
 
-    fun updateName(updatedName: String) {
-        _name.value = updatedName
+    fun updateName(name: String) = update {
+        copy(name = name)
     }
 
-    fun updateStatus(updatedStatus: String) {
-        _status.value = updatedStatus
+    fun updateStatus(status: String) = update {
+        copy(details = details?.copy(status = status))
     }
 
-    fun updateAvatar(updatedAvatar: Uri) {
-        _avatar.value = updatedAvatar
+    fun updateAvatar(avatar: Uri) = update {
+        copy(image = avatar)
     }
 
-    fun removeAvatar() {
-        _avatar.value = null
+    fun removeAvatar() = update {
+        copy(image = null)
     }
 
-    fun onApplyClick(nameInput: String, statusInput: String) {
-        val isAvatarChanged = avatar.value != user?.image
-        val isNameChanged = nameInput != user?.name
-        val isStatusChanged = statusInput != user?.details?.status
-        log("ProfileEditorViewModel.onApplyClick(): isAvatarChanged=$isAvatarChanged, isNameChanged=$isNameChanged, isStatusChanged=$isStatusChanged")
-
-        if (isAvatarChanged || isNameChanged || isStatusChanged) {
-            _isLoading.value = true
-            viewModelScope.launch {
-                profileInteractor.updateCurrentUserInfo(
-                    name = nameInput,
-                    status = statusInput,
-                    avatar = avatar.value
-                ).let {
-                    _applyResult.postValue(it)
+    fun onApplyClick() {
+        viewModelScope.launch {
+            val updated = change.first().updated
+            val name = updated.name
+            val status = updated.details?.status.orEmpty()
+            val avatar = updated.image
+            profileInteractor.validateParameters(name, status)
+                .tap {
+                    _state.emit(ProfileEditState.Loading)
+                    profileInteractor.updateCurrentUserInfo(name, status, avatar)
+                        .tap {
+                            _state.emit(ProfileEditState.Success)
+                        }
+                        .tapLeft {
+                            _state.emit(ProfileEditState.Error)
+                            _error.emit(it.toEvent())
+                        }
                 }
-            }
-        } else {
-            _applyResult.postValue(Success(Unit))
+                .tapLeft { causes ->
+                    _state.emit(ProfileEditState.ValidationError(causes))
+                }
+        }
+    }
+
+    private fun update(update: User.() -> User) {
+        viewModelScope.launch {
+            val previous = change.first()
+            _change.emit(
+                previous.copy(
+                    updated = previous.updated.update()
+                )
+            )
         }
     }
 }

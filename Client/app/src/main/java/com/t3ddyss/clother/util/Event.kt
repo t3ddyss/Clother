@@ -1,19 +1,19 @@
 package com.t3ddyss.clother.util
 
-class Event<out T>(
+import java.util.concurrent.atomic.AtomicBoolean
+
+data class Event<out T>(
     private val content: T
 ) {
-    var hasBeenHandled = false
-        private set
+    private val isHandled = AtomicBoolean()
 
-    fun getContentIfNotHandled(): T? {
-        return if (hasBeenHandled) {
-            null
-        } else {
-            hasBeenHandled = true
+    fun getContentOrNull(): T? {
+        return if (isHandled.compareAndSet(false, true)) {
             content
+        } else {
+            null
         }
     }
-
-    fun peekContent() = content
 }
+
+fun <T> T.toEvent() = Event(this)

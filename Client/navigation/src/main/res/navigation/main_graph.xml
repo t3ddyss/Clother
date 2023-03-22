@@ -23,9 +23,9 @@
             android:id="@+id/action_homeFragment_to_offerFragment"
             app:destination="@id/offerFragment"/>
         <argument
-            android:name="created_offer_id"
-            android:defaultValue="0"
-            app:argType="integer" />
+            android:name="offer_created"
+            android:defaultValue="false"
+            app:argType="boolean" />
     </fragment>
 
     <fragment
@@ -108,7 +108,7 @@
 
     <fragment
         android:id="@+id/signUpFragment"
-        android:name="com.t3ddyss.clother.presentation.auth.SignUpFragment"
+        android:name="com.t3ddyss.clother.presentation.auth.signup.SignUpFragment"
         tools:layout="@layout/fragment_sign_up">
         <action
             android:id="@+id/action_signUpFragment_to_emailActionFragment"
@@ -153,7 +153,7 @@
 
     <fragment
         android:id="@+id/signInFragment"
-        android:name="com.t3ddyss.clother.presentation.auth.SignInFragment"
+        android:name="com.t3ddyss.clother.presentation.auth.signin.SignInFragment"
         tools:layout="@layout/fragment_sign_in">
         <action
             android:id="@+id/action_signInFragment_to_homeFragment"
@@ -171,7 +171,7 @@
 
     <fragment
         android:id="@+id/resetPasswordFragment"
-        android:name="com.t3ddyss.clother.presentation.auth.PasswordRecoveryFragment"
+        android:name="com.t3ddyss.clother.presentation.auth.recovery.PasswordRecoveryFragment"
         tools:layout="@layout/fragment_password_recovery">
         <action
             android:id="@+id/action_resetPasswordFragment_to_emailActionFragment"
@@ -182,11 +182,11 @@
 
     <fragment
         android:id="@+id/offerFragment"
-        android:name="com.t3ddyss.clother.presentation.offers.OfferFragment"
+        android:name="com.t3ddyss.clother.presentation.offers.viewer.OfferFragment"
         tools:layout="@layout/fragment_offer">
         <argument
-            android:name="user"
-            app:argType="com.t3ddyss.navigation.presentation.models.UserArg" />
+            android:name="offer"
+            app:argType="com.t3ddyss.navigation.presentation.models.OfferArg" />
         <action
             android:id="@+id/action_offerFragment_to_locationViewerFragment"
             app:destination="@id/locationViewerFragment" />

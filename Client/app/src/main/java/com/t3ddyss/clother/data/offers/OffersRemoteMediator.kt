@@ -4,7 +4,9 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
+import arrow.core.merge
 import com.t3ddyss.clother.data.auth.db.UserDao
+import com.t3ddyss.clother.data.common.common.Mappers.toApiCallError
 import com.t3ddyss.clother.data.common.common.Mappers.toEntity
 import com.t3ddyss.clother.data.common.common.Storage
 import com.t3ddyss.clother.data.common.common.db.AppDatabase
@@ -13,7 +15,6 @@ import com.t3ddyss.clother.data.offers.db.RemoteKeyDao
 import com.t3ddyss.clother.data.offers.db.models.OfferWithUserEntity
 import com.t3ddyss.clother.data.offers.db.models.RemoteKeyEntity
 import com.t3ddyss.clother.data.offers.remote.RemoteOffersService
-import com.t3ddyss.core.util.extensions.rethrowIfCancellationException
 import com.t3ddyss.core.util.log
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -52,36 +53,33 @@ class OffersRemoteMediator @AssistedInject constructor(
             }
         }
 
-        return try {
-            val items = service.getOffers(
-                accessToken = storage.accessToken,
-                afterKey = key,
-                beforeKey = null,
-                limit = when (loadType) {
-                    LoadType.REFRESH -> state.config.initialLoadSize
-                    else -> state.config.pageSize
-                },
-                filters = query
-            )
+        return service.getOffers(
+            accessToken = storage.accessToken,
+            afterKey = key,
+            beforeKey = null,
+            limit = when (loadType) {
+                LoadType.REFRESH -> state.config.initialLoadSize
+                else -> state.config.pageSize
+            },
+            filters = query
+        )
+            .tap { items ->
+                db.withTransaction {
+                    if (loadType == LoadType.REFRESH) {
+                        // TODO remove unreferenced users
+                        offerDao.deleteAllOffersFromList(listKey)
+                        remoteKeyDao.removeByList(listKey)
+                    }
 
-            db.withTransaction {
-                if (loadType == LoadType.REFRESH) {
-                    // TODO remove unreferenced users
-                    offerDao.deleteAllOffersFromList(listKey)
-                    remoteKeyDao.removeByList(listKey)
+                    userDao.insertAll(items.map { it.user.toEntity() })
+                    offerDao.insertAll(items.map { it.toEntity(listKey) })
+                    remoteKeyDao.insert(RemoteKeyEntity(listKey, items.lastOrNull()?.id))
                 }
-
-                userDao.insertAll(items.map { it.user.toEntity() })
-                offerDao.insertAll(items.map { it.toEntity(listKey) })
-                remoteKeyDao.insert(RemoteKeyEntity(listKey, items.lastOrNull()?.id))
             }
-
-            MediatorResult.Success(endOfPaginationReached = items.isEmpty())
-        } catch (ex: Exception) {
-            ex.rethrowIfCancellationException()
-            log("OffersRemoteMediator.load() $ex")
-            MediatorResult.Error(ex)
-        }
+            .tapLeft { log("OffersRemoteMediator.load() $it") }
+            .map { MediatorResult.Success(it.isEmpty()) }
+            .mapLeft { MediatorResult.Error(PagingErrorWrapperException(it.toApiCallError())) }
+            .merge()
     }
 }
 

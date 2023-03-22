@@ -2,11 +2,11 @@ package com.t3ddyss.clother.domain.offers
 
 import android.net.Uri
 import androidx.paging.PagingData
-import com.google.gson.JsonObject
+import arrow.core.*
+import com.google.android.gms.maps.model.LatLng
 import com.t3ddyss.clother.domain.offers.models.Category
 import com.t3ddyss.clother.domain.offers.models.Offer
-import com.t3ddyss.clother.util.handleHttpException
-import com.t3ddyss.core.domain.models.Resource
+import com.t3ddyss.core.domain.models.ApiCallError
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -25,15 +25,57 @@ class OffersInteractorImpl @Inject constructor(
         return offersRepository.observeOffersFromNetwork(query)
     }
 
-    override suspend fun postOffer(
-        offer: JsonObject,
-        images: List<Uri>
-    ): Resource<Int> = handleHttpException {
-        offersRepository.postOffer(offer, images)
+    override suspend fun getOffer(id: Int): Offer {
+        return offersRepository.getOffer(id)
     }
 
-    override suspend fun deleteOffer(offerId: Int) = handleHttpException {
-        offersRepository.deleteOffer(offerId)
+    override suspend fun validateParameters(
+        title: String,
+        images: List<Uri>
+    ): Either<Nel<OffersInteractor.OfferParam>, Unit> {
+        return OffersInteractor.OfferParam.values().asList().traverse { param ->
+            when (param) {
+                OffersInteractor.OfferParam.TITLE -> {
+                    if (title.isNotBlank()) {
+                        param.validNel()
+                    } else {
+                        param.invalidNel()
+                    }
+                }
+                OffersInteractor.OfferParam.IMAGES -> {
+                    if (images.isNotEmpty()) {
+                        param.validNel()
+                    } else {
+                        param.invalidNel()
+                    }
+                }
+            }
+        }
+            .toEither()
+            .void()
+    }
+
+    override suspend fun postOffer(
+        title: String,
+        categoryId: Int,
+        description: String,
+        images: List<Uri>,
+        size: String?,
+        location: LatLng?
+    ): Either<ApiCallError, Offer> {
+        require(validateParameters(title, images).isRight())
+        return offersRepository.postOffer(
+            title = title,
+            categoryId = categoryId,
+            description = description,
+            images = images,
+            size = size,
+            location = location
+        )
+    }
+
+    override suspend fun deleteOffer(offerId: Int): Either<ApiCallError, Unit> {
+        return offersRepository.deleteOffer(offerId)
     }
 
     override suspend fun getOfferCategories(parentCategoryId: Int?): List<Category> {

@@ -6,7 +6,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.core.view.isVisible
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
@@ -18,14 +17,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.maps.model.LatLng
 import com.t3ddyss.clother.R
 import com.t3ddyss.clother.data.common.common.Mappers.toArg
+import com.t3ddyss.clother.data.offers.PagingErrorWrapperException
 import com.t3ddyss.clother.databinding.FragmentSearchResultsBinding
 import com.t3ddyss.clother.domain.offers.models.Offer
-import com.t3ddyss.clother.presentation.offers.OfferViewModel
-import com.t3ddyss.clother.presentation.offers.OffersAdapter
+import com.t3ddyss.clother.presentation.offers.viewer.OffersAdapter
 import com.t3ddyss.core.presentation.BaseFragment
 import com.t3ddyss.core.presentation.GridItemDecoration
 import com.t3ddyss.core.util.extensions.dp
 import com.t3ddyss.core.util.extensions.showSnackbarWithText
+import com.t3ddyss.core.util.extensions.textRes
 import com.t3ddyss.core.util.utils.ToolbarUtils
 import com.t3ddyss.feature_location.presentation.LocationSelectorFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,7 +40,6 @@ class SearchResultsFragment
     private val filtersViewModel by hiltNavGraphViewModels<FiltersViewModel>(
         R.id.search_results_graph
     )
-    private val offerViewModel by activityViewModels<OfferViewModel>()
     private val args by navArgs<SearchResultsFragmentArgs>()
 
     private val adapter = OffersAdapter(this::onOfferClick)
@@ -80,11 +79,11 @@ class SearchResultsFragment
                 }
 
                 is LoadState.Error -> {
-                    val error = (it.refresh as LoadState.Error).error
+                    val error = ((it.refresh as LoadState.Error).error as PagingErrorWrapperException).source
 
                     binding.shimmer.isVisible = false
                     binding.containerSearch.isVisible = true
-                    showSnackbarWithText(error)
+                    showSnackbarWithText(error.textRes)
                 }
             }
 
@@ -104,7 +103,7 @@ class SearchResultsFragment
         val layoutManager = GridLayoutManager(context, 2)
         binding.list.layoutManager = layoutManager
         binding.list.adapter = adapter
-        binding.list.addItemDecoration(GridItemDecoration(2, 8.dp(), true))
+        binding.list.addItemDecoration(GridItemDecoration(2, 8.dp, true))
 
         // Show progressbar if reached end of current list
         onScrollListener = object : RecyclerView.OnScrollListener() {
@@ -168,9 +167,7 @@ class SearchResultsFragment
     }
 
     private fun onOfferClick(offer: Offer) {
-        offerViewModel.selectOffer(offer)
-        val action = SearchResultsFragmentDirections
-            .actionSearchResultsToOfferFragment(offer.user.toArg())
+        val action = SearchResultsFragmentDirections.actionSearchResultsToOfferFragment(offer.toArg())
         findNavController().navigate(action)
     }
 }

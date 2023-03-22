@@ -19,5 +19,7 @@ fun Context.getThemeDimension(@AttrRes res: Int): Int {
     return dimension
 }
 
-fun Int.toColorFilter() = BlendModeColorFilterCompat
-    .createBlendModeColorFilterCompat(this, BlendModeCompat.SRC_ATOP)
+fun Int.toColorFilter() = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+    this,
+    BlendModeCompat.SRC_ATOP
+)

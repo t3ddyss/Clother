@@ -1,12 +1,15 @@
 package com.t3ddyss.clother.data.chat
 
 import androidx.room.withTransaction
+import arrow.core.merge
 import com.t3ddyss.clother.data.chat.db.ChatDao
 import com.t3ddyss.clother.data.chat.db.MessageDao
 import com.t3ddyss.clother.data.chat.remote.RemoteChatService
+import com.t3ddyss.clother.data.common.common.Mappers.toApiCallError
 import com.t3ddyss.clother.data.common.common.Mappers.toEntity
 import com.t3ddyss.clother.data.common.common.Storage
 import com.t3ddyss.clother.data.common.common.db.AppDatabase
+import com.t3ddyss.clother.data.offers.PagingErrorWrapperException
 import com.t3ddyss.clother.data.offers.db.RemoteKeyDao
 import com.t3ddyss.clother.data.offers.db.models.RemoteKeyEntity
 import com.t3ddyss.clother.domain.common.common.models.LoadResult
@@ -39,48 +42,46 @@ class MessagesPagingLoader @Inject constructor(
             }
         }
 
-        return try {
-            val items = service.getMessages(
-                interlocutorId = interlocutorId,
-                accessToken = storage.accessToken,
-                afterKey = key,
-                beforeKey = null,
-                limit = PAGE_SIZE
-            )
+        return service.getMessages(
+            interlocutorId = interlocutorId,
+            accessToken = storage.accessToken,
+            afterKey = key,
+            beforeKey = null,
+            limit = PAGE_SIZE
+        )
+            .tap { items ->
+                db.withTransaction {
+                    // TODO handle situation when user opens existing chat which is not cached yet from
+                    //  offer fragment
+                    val chat = chatDao.getChatByInterlocutorId(interlocutorId)
 
-            db.withTransaction {
-                // TODO handle situation when user opens existing chat which is not cached yet from
-                //  offer fragment
-                val chat = chatDao.getChatByInterlocutorId(interlocutorId)
+                    if (chat != null && loadType == LoadType.REFRESH) {
+                        messageDao.deleteAllMessagesFromChat(chat.serverId)
+                        remoteKeyDao.removeByList(listKey)
+                        interlocutorsLoadTypes[interlocutorId] = LoadType.APPEND
+                    }
 
-                if (chat != null && loadType == LoadType.REFRESH) {
-                    messageDao.deleteAllMessagesFromChat(chat.serverId)
-                    remoteKeyDao.removeByList(listKey)
-                    interlocutorsLoadTypes[interlocutorId] = LoadType.APPEND
-                }
-
-                if (chat != null) {
-                    messageDao.insertAll(
-                        items.map { messageDto ->
-                            messageDto.toEntity().also {
-                                it.localChatId = chat.localId
+                    if (chat != null) {
+                        messageDao.insertAll(
+                            items.map { messageDto ->
+                                messageDto.toEntity().also {
+                                    it.localChatId = chat.localId
+                                }
                             }
-                        }
+                        )
+                    }
+                    remoteKeyDao.insert(
+                        RemoteKeyEntity(
+                            listKey,
+                            items.lastOrNull()?.id
+                        )
                     )
                 }
-                remoteKeyDao.insert(
-                    RemoteKeyEntity(
-                        listKey,
-                        items.lastOrNull()?.id
-                    )
-                )
             }
-
-            LoadResult.Success(isEndOfPaginationReached = items.isEmpty())
-        } catch (ex: Exception) {
-            log("MessagesPagingLoader.load() $ex")
-            LoadResult.Error(ex)
-        }
+            .tapLeft { log("MessagesPagingLoader.load() $it") }
+            .map { LoadResult.Success(it.isEmpty()) }
+            .mapLeft { LoadResult.Error(PagingErrorWrapperException(it.toApiCallError())) }
+            .merge()
     }
 
     private companion object {

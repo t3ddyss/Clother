@@ -5,7 +5,7 @@ import com.t3ddyss.clother.data.auth.remote.models.UserAuthDataDto
 import com.t3ddyss.clother.data.common.common.Mappers.toDomain
 import com.t3ddyss.clother.data.common.common.Storage
 import com.t3ddyss.clother.domain.auth.AuthTokenRepository
-import com.t3ddyss.clother.util.toBearer
+import com.t3ddyss.clother.util.extensions.toBearer
 import com.t3ddyss.core.util.log
 import dagger.Lazy
 import kotlinx.coroutines.channels.BufferOverflow

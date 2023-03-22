@@ -1,15 +1,16 @@
 package com.t3ddyss.clother.data.chat.remote
 
+import arrow.core.Either
+import arrow.retrofit.adapter.either.networkhandling.CallError
 import com.t3ddyss.clother.data.chat.remote.models.ChatDto
 import com.t3ddyss.clother.data.chat.remote.models.MessageDto
-import com.t3ddyss.clother.data.common.common.remote.models.ResponseDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.*
 
 interface RemoteChatService {
     @GET("api/chats")
-    suspend fun getChats(@Header("Authorization") accessToken: String?): List<ChatDto>
+    suspend fun getChats(@Header("Authorization") accessToken: String?): Either<CallError, List<ChatDto>>
 
     @GET("api/chats/{interlocutor_id}")
     suspend fun getMessages(
@@ -18,7 +19,7 @@ interface RemoteChatService {
         @Query("after") afterKey: Int? = null,
         @Query("before") beforeKey: Int? = null,
         @Query("limit") limit: Int
-    ): List<MessageDto>
+    ): Either<CallError, List<MessageDto>>
 
     @Multipart
     @POST("api/chats/message?return_chat=false")
@@ -42,5 +43,5 @@ interface RemoteChatService {
     suspend fun deleteMessage(
         @Header("Authorization") accessToken: String?,
         @Path("message_id") messageId: Int
-    ): ResponseDto
+    ): Either<CallError, Unit>
 }

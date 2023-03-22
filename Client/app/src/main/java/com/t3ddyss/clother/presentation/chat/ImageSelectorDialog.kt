@@ -40,7 +40,7 @@ class ImageSelectorDialog : BottomSheetDialogFragment() {
         binding.list.layoutManager = layoutManager
         binding.list.adapter = adapter
         binding.list.setItemViewCacheSize(100)
-        binding.list.addItemDecoration(GridItemDecoration(3, 8.dp(), true))
+        binding.list.addItemDecoration(GridItemDecoration(3, 8.dp, true))
 
         subscribeUi()
     }

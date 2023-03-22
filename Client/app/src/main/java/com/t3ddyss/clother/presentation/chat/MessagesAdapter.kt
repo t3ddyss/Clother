@@ -16,7 +16,7 @@ import com.t3ddyss.clother.databinding.ListItemMessageInBinding
 import com.t3ddyss.clother.databinding.ListItemMessageOutBinding
 import com.t3ddyss.clother.domain.chat.models.Message
 import com.t3ddyss.clother.domain.chat.models.MessageStatus
-import com.t3ddyss.clother.util.formatTime
+import com.t3ddyss.clother.util.extensions.formatTime
 
 class MessagesAdapter(
     private val messageClickListener: (Message) -> Unit,

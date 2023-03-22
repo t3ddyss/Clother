@@ -65,5 +65,5 @@ interface ChatDao {
     suspend fun delete(chat: ChatEntity)
 
     @Query("DELETE FROM chat WHERE server_id IS NULL")
-    suspend fun deleteUncreatedChats()
+    suspend fun deleteLocalChats()
 }

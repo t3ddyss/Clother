@@ -1,21 +1,22 @@
 package com.t3ddyss.clother.data.offers.remote
 
+import arrow.core.Either
+import arrow.retrofit.adapter.either.networkhandling.CallError
 import com.t3ddyss.clother.data.offers.remote.models.OfferDto
-import com.t3ddyss.clother.data.offers.remote.models.OfferPostResponseDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.Response
 import retrofit2.http.*
 
 interface RemoteOffersService {
+
     @GET("api/offers")
     suspend fun getOffers(
         @Header("Authorization") accessToken: String?,
-        @Query("after") afterKey: Int? = null,
-        @Query("before") beforeKey: Int? = null,
-        @Query("limit") limit: Int = 10,
-        @QueryMap filters: Map<String, String>? = null
-    ): List<OfferDto>
+        @Query("after") afterKey: Int?,
+        @Query("before") beforeKey: Int?,
+        @Query("limit") limit: Int,
+        @QueryMap filters: Map<String, String>
+    ): Either<CallError, List<OfferDto>>
 
     @Multipart
     @POST("api/offers/new")
@@ -23,11 +24,11 @@ interface RemoteOffersService {
         @Header("Authorization") accessToken: String?,
         @Part("request") body: RequestBody,
         @Part files: List<MultipartBody.Part>
-    ): OfferPostResponseDto
+    ): Either<CallError, OfferDto>
 
     @DELETE("api/offers/delete")
     suspend fun deleteOffer(
         @Header("Authorization") accessToken: String?,
         @Query("offer") offerId: Int
-    ): Response<*>
+    ): Either<CallError, Unit>
 }

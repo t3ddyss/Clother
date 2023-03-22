@@ -10,7 +10,7 @@ import com.t3ddyss.clother.R
 import com.t3ddyss.clother.databinding.ListItemChatBinding
 import com.t3ddyss.clother.domain.chat.models.Chat
 import com.t3ddyss.clother.presentation.profile.AvatarLoader
-import com.t3ddyss.clother.util.formatDate
+import com.t3ddyss.clother.util.extensions.formatDate
 
 class ChatsAdapter(
     private val clickListener: (Chat) -> Unit
