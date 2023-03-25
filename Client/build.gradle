@@ -14,7 +14,7 @@ buildscript {
         compressor_version = '3.0.1'
         constraintlayout_version = '2.1.3'
         coroutines_version = '1.6.1'
-        detekt_version = '1.18.1'
+        detekt_version = '1.22.0'
         firebase_analytics_version = '18.0.3'
         firebase_bom_version = '27.0.0'
         firebase_crashlytics_version = '2.5.2'
@@ -75,6 +75,10 @@ buildscript {
     }
 }
 
+plugins {
+    id "io.gitlab.arturbosch.detekt" version "$detekt_version" apply false
+}
+
 allprojects {
     repositories {
         google()
@@ -84,6 +88,11 @@ allprojects {
 }
 
 subprojects {
+    apply plugin: "io.gitlab.arturbosch.detekt"
+    dependencies {
+        detektPlugins "io.gitlab.arturbosch.detekt:detekt-formatting:${detekt_version}"
+    }
+
     afterEvaluate { project ->
         if (project.hasProperty("android")) {
             android {
@@ -95,6 +104,25 @@ subprojects {
                 ]
             }
         }
+    }
+
+    detekt {
+        // Version of Detekt that will be used. When unspecified the latest detekt
+        // version found will be used. Override to stay on the same version.
+        toolVersion = "$detekt_version"
+
+        // If set to `true` the build does not fail when the
+        // maxIssues count was reached. Defaults to `false`.
+        ignoreFailures = false
+
+        // Android: Don't create tasks for the specified build types (e.g. "release")
+        ignoredBuildTypes = ["release"]
+
+        // Specify the base path for file paths in the formatted reports.
+        // If not set, all file paths reported will be absolute file path.
+        basePath = projectDir
+
+        autoCorrect = true
     }
 }
 

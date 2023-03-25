@@ -1,6 +1,10 @@
 package com.t3ddyss.clother.data.auth.db
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
 import com.t3ddyss.clother.data.auth.db.models.UserDetailsEntity
 import com.t3ddyss.clother.data.auth.db.models.UserEntity
 import com.t3ddyss.clother.data.auth.db.models.UserWithDetailsEntity

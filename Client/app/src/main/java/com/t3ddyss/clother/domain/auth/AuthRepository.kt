@@ -1,7 +1,11 @@
 package com.t3ddyss.clother.domain.auth
 
 import arrow.core.Either
-import com.t3ddyss.clother.domain.auth.models.*
+import com.t3ddyss.clother.domain.auth.models.AuthData
+import com.t3ddyss.clother.domain.auth.models.ResetPasswordError
+import com.t3ddyss.clother.domain.auth.models.SignInError
+import com.t3ddyss.clother.domain.auth.models.SignUpError
+import com.t3ddyss.clother.domain.auth.models.UserAuthData
 
 interface AuthRepository {
     val authData: AuthData

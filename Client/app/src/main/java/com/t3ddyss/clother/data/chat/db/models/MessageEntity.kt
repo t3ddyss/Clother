@@ -1,9 +1,13 @@
 package com.t3ddyss.clother.data.chat.db.models
 
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
 import com.t3ddyss.clother.data.auth.db.models.UserEntity
 import com.t3ddyss.clother.domain.chat.models.MessageStatus
-import java.util.*
+import java.util.Date
 
 @Entity(
     tableName = "message",

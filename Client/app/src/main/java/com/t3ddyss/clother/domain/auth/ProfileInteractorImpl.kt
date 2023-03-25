@@ -2,7 +2,11 @@ package com.t3ddyss.clother.domain.auth
 
 import android.net.Uri
 import androidx.paging.PagingData
-import arrow.core.*
+import arrow.core.Either
+import arrow.core.Nel
+import arrow.core.invalidNel
+import arrow.core.traverse
+import arrow.core.validNel
 import com.t3ddyss.clother.domain.auth.models.User
 import com.t3ddyss.clother.domain.auth.models.UserInfoState
 import com.t3ddyss.clother.domain.offers.OffersInteractor
@@ -10,9 +14,9 @@ import com.t3ddyss.clother.domain.offers.models.Offer
 import com.t3ddyss.core.domain.models.ApiCallError
 import com.t3ddyss.core.util.log
 import com.t3ddyss.core.util.utils.StringUtils
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.onEach
-import javax.inject.Inject
 
 class ProfileInteractorImpl @Inject constructor(
     private val authInteractor: AuthInteractor,

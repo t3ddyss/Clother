@@ -2,10 +2,20 @@ package com.t3ddyss.clother.data.auth.remote
 
 import arrow.core.Either
 import arrow.retrofit.adapter.either.networkhandling.CallError
-import com.t3ddyss.clother.data.auth.remote.models.*
+import com.t3ddyss.clother.data.auth.remote.models.ResetPasswordErrorDto
+import com.t3ddyss.clother.data.auth.remote.models.SignInErrorDto
+import com.t3ddyss.clother.data.auth.remote.models.SignUpErrorDto
+import com.t3ddyss.clother.data.auth.remote.models.UserAuthDataDto
+import com.t3ddyss.clother.data.auth.remote.models.UserDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.Multipart
+import retrofit2.http.POST
+import retrofit2.http.Part
+import retrofit2.http.Path
 
 interface RemoteAuthService {
     @GET("api/auth/refresh")

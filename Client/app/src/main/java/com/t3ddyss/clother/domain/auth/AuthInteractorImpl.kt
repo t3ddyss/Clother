@@ -1,17 +1,26 @@
 package com.t3ddyss.clother.domain.auth
 
-import arrow.core.*
+import arrow.core.Either
+import arrow.core.Nel
+import arrow.core.invalidNel
+import arrow.core.traverse
+import arrow.core.validNel
 import com.t3ddyss.clother.data.common.common.Mappers.toAuthData
-import com.t3ddyss.clother.domain.auth.models.*
+import com.t3ddyss.clother.domain.auth.models.AuthData
+import com.t3ddyss.clother.domain.auth.models.AuthState
+import com.t3ddyss.clother.domain.auth.models.ResetPasswordError
+import com.t3ddyss.clother.domain.auth.models.SignInError
+import com.t3ddyss.clother.domain.auth.models.SignUpError
+import com.t3ddyss.clother.domain.auth.models.UserAuthData
 import com.t3ddyss.clother.util.DispatchersProvider
 import com.t3ddyss.core.util.log
 import com.t3ddyss.core.util.utils.StringUtils
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 class AuthInteractorImpl @Inject constructor(
     private val authRepository: AuthRepository,

@@ -5,14 +5,23 @@ import arrow.core.Either
 import arrow.core.flatten
 import com.t3ddyss.clother.data.auth.db.UserDao
 import com.t3ddyss.clother.data.auth.remote.RemoteAuthService
-import com.t3ddyss.clother.data.auth.remote.models.*
+import com.t3ddyss.clother.data.auth.remote.models.ResetPasswordErrorDto
+import com.t3ddyss.clother.data.auth.remote.models.ResetPasswordErrorType
+import com.t3ddyss.clother.data.auth.remote.models.SignInErrorDto
+import com.t3ddyss.clother.data.auth.remote.models.SignInErrorType
+import com.t3ddyss.clother.data.auth.remote.models.SignUpErrorDto
+import com.t3ddyss.clother.data.auth.remote.models.SignUpErrorType
 import com.t3ddyss.clother.data.common.common.Mappers.toApiCallError
 import com.t3ddyss.clother.data.common.common.Mappers.toDomain
 import com.t3ddyss.clother.data.common.common.Mappers.toEntity
 import com.t3ddyss.clother.data.common.common.Storage
 import com.t3ddyss.clother.data.common.common.db.AppDatabase
 import com.t3ddyss.clother.domain.auth.AuthRepository
-import com.t3ddyss.clother.domain.auth.models.*
+import com.t3ddyss.clother.domain.auth.models.AuthData
+import com.t3ddyss.clother.domain.auth.models.ResetPasswordError
+import com.t3ddyss.clother.domain.auth.models.SignInError
+import com.t3ddyss.clother.domain.auth.models.SignUpError
+import com.t3ddyss.clother.domain.auth.models.UserAuthData
 import com.t3ddyss.clother.util.extensions.toBearer
 import javax.inject.Inject
 

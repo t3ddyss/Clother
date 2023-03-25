@@ -1,7 +1,11 @@
 package com.t3ddyss.clother.data.auth.db.models
 
-import androidx.room.*
-import java.util.*
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+import java.util.Date
 
 @Entity(
     tableName = "user_details",

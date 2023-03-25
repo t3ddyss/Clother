@@ -11,15 +11,19 @@ import com.t3ddyss.clother.domain.auth.models.UserInfoState
 import com.t3ddyss.clother.presentation.offers.DeletedOffersHolder
 import com.t3ddyss.clother.util.toEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
 import javax.inject.Inject
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.shareIn
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     profileInteractor: ProfileInteractor,
     authInteractor: AuthInteractor,
     savedStateHandle: SavedStateHandle,
-    private val deletedOffersHolder: DeletedOffersHolder
+    deletedOffersHolder: DeletedOffersHolder
 ) : ViewModel() {
     private val args = ProfileFragmentArgs.fromSavedStateHandle(savedStateHandle)
     private val userId = args.user?.id ?: authInteractor.authStateFlow.value.userId

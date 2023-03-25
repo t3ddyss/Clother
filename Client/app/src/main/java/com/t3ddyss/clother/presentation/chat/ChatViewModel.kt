@@ -1,18 +1,22 @@
 package com.t3ddyss.clother.presentation.chat
 
 import android.net.Uri
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.t3ddyss.clother.domain.chat.ChatInteractor
 import com.t3ddyss.clother.domain.chat.NotificationInteractor
 import com.t3ddyss.clother.domain.chat.models.Message
 import com.t3ddyss.clother.domain.common.common.models.LoadResult
 import com.t3ddyss.clother.domain.common.navigation.NavigationInteractor
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.concurrent.atomic.AtomicBoolean
+import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.util.concurrent.atomic.AtomicBoolean
-import javax.inject.Inject
 
 @HiltViewModel
 class ChatViewModel @Inject constructor(

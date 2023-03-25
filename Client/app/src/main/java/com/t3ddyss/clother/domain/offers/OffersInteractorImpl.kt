@@ -2,13 +2,17 @@ package com.t3ddyss.clother.domain.offers
 
 import android.net.Uri
 import androidx.paging.PagingData
-import arrow.core.*
+import arrow.core.Either
+import arrow.core.Nel
+import arrow.core.invalidNel
+import arrow.core.traverse
+import arrow.core.validNel
 import com.google.android.gms.maps.model.LatLng
 import com.t3ddyss.clother.domain.offers.models.Category
 import com.t3ddyss.clother.domain.offers.models.Offer
 import com.t3ddyss.core.domain.models.ApiCallError
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 class OffersInteractorImpl @Inject constructor(
     private val offersRepository: OffersRepository

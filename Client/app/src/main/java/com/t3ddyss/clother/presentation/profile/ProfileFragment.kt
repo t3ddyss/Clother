@@ -21,10 +21,14 @@ import com.t3ddyss.clother.domain.offers.models.Offer
 import com.t3ddyss.clother.presentation.offers.viewer.OffersAdapter
 import com.t3ddyss.core.presentation.BaseFragment
 import com.t3ddyss.core.presentation.GridItemDecoration
-import com.t3ddyss.core.util.extensions.*
+import com.t3ddyss.core.util.extensions.collectViewLifecycleAware
+import com.t3ddyss.core.util.extensions.dp
+import com.t3ddyss.core.util.extensions.getThemeDimension
+import com.t3ddyss.core.util.extensions.showSnackbarWithText
+import com.t3ddyss.core.util.extensions.textRes
 import com.t3ddyss.core.util.utils.ToolbarUtils
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.*
+import java.util.Date
 import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
