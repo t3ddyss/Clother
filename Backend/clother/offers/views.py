@@ -54,7 +54,7 @@ def get_offers():
         offers = offers_query.order_by(Offer.id.asc()).filter(Offer.id > before).limit(limit).all()
         offers.reverse()
 
-    return jsonify([offer.to_dict(url_root=request.url_root) for offer in offers])
+    return jsonify([offer.to_dict() for offer in offers])
 
 
 @blueprint.post('/new')

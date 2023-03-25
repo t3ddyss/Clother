@@ -28,7 +28,6 @@ import com.t3ddyss.clother.domain.common.common.models.LoadResult
 import com.t3ddyss.clother.domain.offers.ImagesRepository
 import com.t3ddyss.core.domain.models.ApiCallError
 import com.t3ddyss.core.util.extensions.mapList
-import com.t3ddyss.core.util.extensions.rethrowIfCancellationException
 import com.t3ddyss.core.util.log
 import kotlinx.coroutines.flow.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -160,26 +159,19 @@ class ChatRepositoryImpl @Inject constructor(
         messageDao.deleteByServerId(messageId)
     }
 
-    override suspend fun sendDeviceTokenIfNeeded() {
-        if (!storage.isDeviceTokenRetrieved) {
-            try {
-                val token = requestCloudMessagingToken()
-                sendDeviceToken(token)
-            } catch (ex: Exception) {
-                ex.rethrowIfCancellationException()
-                log("ChatRepositoryImpl.sendDeviceTokenIfNeeded() $ex")
-            }
+    override suspend fun registerDeviceIfNeeded() {
+        if (!storage.isDeviceRegistered) {
+            Either
+                .catch { requestFirebaseMessagingToken() }
+                .tap { registerDevice(it) }
         }
     }
 
-    override suspend fun sendDeviceToken(token: String) {
-        try {
-            authService.sendDeviceToken(storage.accessToken, token)
-            storage.isDeviceTokenRetrieved = true
-        } catch (ex: Exception) {
-            ex.rethrowIfCancellationException()
-            log("ChatRepositoryImpl.sendDeviceToken() $ex")
-        }
+    override suspend fun registerDevice(token: String) {
+        authService.registerDevice(storage.accessToken, token)
+            .tap {
+                storage.isDeviceRegistered = true
+            }
     }
 
     private suspend fun sendMessageImpl(
@@ -192,39 +184,36 @@ class ChatRepositoryImpl @Inject constructor(
             updateMessage(message)
         }
 
-        try {
-            val messageBody = gson
-                .toJson(message.toDto())
-                .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
-            val imageFiles = image?.let {
-                val file = imagesRepository.getCompressedImage(it)
-                listOf(
-                    MultipartBody.Part.createFormData(
-                        name = "file",
-                        file.name,
-                        file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
-                    )
+        val messageBody = gson
+            .toJson(message.toDto())
+            .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+        val imageFiles = image?.let {
+            val file = imagesRepository.getCompressedImage(it)
+            listOf(
+                MultipartBody.Part.createFormData(
+                    name = "file",
+                    file.name,
+                    file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
                 )
-            }
-            val messageDto = chatService.sendMessageAndGetIt(
-                accessToken = storage.accessToken,
-                interlocutorId = interlocutorId,
-                body = messageBody,
-                images = imageFiles
             )
-
-            message.status = MessageStatus.DELIVERED
-            message.serverId = messageDto.id
-            message.serverChatId = messageDto.chatId
-            message.createdAt = messageDto.createdAt
-        } catch (ex: Exception) {
-            ex.rethrowIfCancellationException()
-            log("ChatRepositoryImpl.sendMessage() $ex")
-
-            message.status = MessageStatus.FAILED
-        } finally {
-            updateMessage(message)
         }
+
+        chatService.sendMessageAndGetIt(
+            accessToken = storage.accessToken,
+            interlocutorId = interlocutorId,
+            body = messageBody,
+            images = imageFiles
+        )
+            .tap { messageDto ->
+                message.status = MessageStatus.DELIVERED
+                message.serverId = messageDto.id
+                message.serverChatId = messageDto.chatId
+                message.createdAt = messageDto.createdAt
+            }
+            .tapLeft {
+                message.status = MessageStatus.FAILED
+            }
+        updateMessage(message)
     }
 
     private suspend fun sendMessageToNewChat(body: String?, image: Uri?, interlocutorId: Int) {
@@ -263,46 +252,43 @@ class ChatRepositoryImpl @Inject constructor(
             updateMessage(message)
         }
 
-        try {
-            val messageBody = gson
-                .toJson(message.toDto())
-                .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
-            val imageFiles = image?.let {
-                val file = imagesRepository.getCompressedImage(it)
-                listOf(
-                    MultipartBody.Part.createFormData(
-                        name = "file",
-                        file.name,
-                        file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
-                    )
+        val messageBody = gson
+            .toJson(message.toDto())
+            .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+        val imageFiles = image?.let {
+            val file = imagesRepository.getCompressedImage(it)
+            listOf(
+                MultipartBody.Part.createFormData(
+                    name = "file",
+                    file.name,
+                    file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
                 )
+            )
+        }
+
+        chatService.sendMessageAndGetChat(
+            accessToken = storage.accessToken,
+            interlocutorId = interlocutorId,
+            body = messageBody,
+            images = imageFiles
+        )
+            .tap { chatDto ->
+                val messageDto = chatDto.lastMessage
+                chat.serverId = chatDto.id
+                message.status = MessageStatus.DELIVERED
+                message.serverId = messageDto.id
+                message.serverChatId = messageDto.chatId
+                message.createdAt = messageDto.createdAt
+
+                db.withTransaction {
+                    updateChat(chat)
+                    updateMessage(message)
+                }
             }
-            val chatDto = chatService
-                .sendMessageAndGetChat(
-                    accessToken = storage.accessToken,
-                    interlocutorId = interlocutorId,
-                    body = messageBody,
-                    images = imageFiles
-                )
-            val messageDto = chatDto.lastMessage
-
-            chat.serverId = chatDto.id
-            message.status = MessageStatus.DELIVERED
-            message.serverId = messageDto.id
-            message.serverChatId = messageDto.chatId
-            message.createdAt = messageDto.createdAt
-
-            db.withTransaction {
-                updateChat(chat)
+            .tapLeft {
+                message.status = MessageStatus.FAILED
                 updateMessage(message)
             }
-        } catch (ex: Exception) {
-            ex.rethrowIfCancellationException()
-            log("ChatRepositoryImpl.sendMessage() $ex")
-
-            message.status = MessageStatus.FAILED
-            updateMessage(message)
-        }
     }
 
     private suspend fun updateMessage(message: MessageEntity) {
@@ -331,12 +317,14 @@ class ChatRepositoryImpl @Inject constructor(
         }
     }
 
-    private suspend fun requestCloudMessagingToken() = suspendCoroutine<String> { cont ->
-        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                cont.resume(task.result)
-            } else {
-                cont.resumeWithException(task.exception!!)
+    private suspend fun requestFirebaseMessagingToken() = suspendCoroutine<String> { cont ->
+        FirebaseMessaging.getInstance().token.apply {
+            addOnSuccessListener {
+                cont.resume(it)
+            }
+            addOnFailureListener {
+                log("ChatRepositoryImpl.requestFirebaseMessagingToken() $it")
+                cont.resumeWithException(it)
             }
         }
     }

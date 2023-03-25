@@ -7,6 +7,7 @@ class AuthError(MethodError):
     INVALID_NAME = auto()
     INVALID_EMAIL = auto()
     INVALID_PASSWORD = auto()
+    INVALID_STATUS = auto()
     INVALID_CREDENTIALS = auto()
     INVALID_TOKEN = auto()
     TOKEN_EXPIRED = auto()

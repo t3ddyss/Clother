@@ -29,7 +29,7 @@ def get_chats():
     chats = user.chats
     chats.sort(key=lambda x: x.messages[-1].created_at, reverse=True)
 
-    return jsonify([chat.to_dict(url_root=request.url_root, addressee_id=user.id) for chat in chats])
+    return jsonify([chat.to_dict(addressee_id=user.id) for chat in chats])
 
 
 @blueprint.get('/<int:interlocutor_id>')
@@ -60,7 +60,7 @@ def get_messages(interlocutor_id):
         messages = chat.messages.order_by(Message.id.asc()).filter(Message.id > before).limit(limit).all()
         messages.reverse()
 
-    return jsonify([message.to_dict(url_root=request.url_root) for message in messages])
+    return jsonify([message.to_dict() for message in messages])
 
 
 @blueprint.post('/message')
@@ -96,8 +96,8 @@ async def send_message():
     chat.messages.append(message)
     db.session.commit()
 
-    chat_dict = chat.to_dict(url_root=request.url_root, addressee_id=interlocutor.id)
-    message_dict = message.to_dict(url_root=request.url_root)
+    chat_dict = chat.to_dict(addressee_id=interlocutor.id)
+    message_dict = message.to_dict()
 
     if not is_existing_chat:
         socketio.emit(SocketEvent.NEW_CHAT, json.dumps(chat_dict), to=interlocutor.id)
@@ -123,7 +123,7 @@ def delete_message(message_id):
     if message.user_id == user.id:
         db.session.delete(message)
         db.session.commit()
-        socketio.emit(SocketEvent.DELETE_MESSAGE, json.dumps(message.to_dict(url_root=request.url_root)), to=interlocutor_id)
+        socketio.emit(SocketEvent.DELETE_MESSAGE, json.dumps(message.to_dict()), to=interlocutor_id)
         return {}
     else:
         abort(HTTPStatus.FORBIDDEN)

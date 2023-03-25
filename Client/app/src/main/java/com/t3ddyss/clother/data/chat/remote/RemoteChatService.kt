@@ -28,7 +28,7 @@ interface RemoteChatService {
         @Query("to") interlocutorId: Int,
         @Part("request") body: RequestBody,
         @Part images: List<MultipartBody.Part>?
-    ): MessageDto
+    ): Either<CallError, MessageDto>
 
     @Multipart
     @POST("api/chats/message?return_chat=true")
@@ -37,7 +37,7 @@ interface RemoteChatService {
         @Query("to") interlocutorId: Int,
         @Part("request") body: RequestBody,
         @Part images: List<MultipartBody.Part>?
-    ): ChatDto
+    ): Either<CallError, ChatDto>
 
     @DELETE("api/chats/message/{message_id}")
     suspend fun deleteMessage(

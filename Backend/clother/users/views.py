@@ -1,12 +1,15 @@
 import json
+from http import HTTPStatus
 
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from .models import User, UserImage
 from .. import db
-from ..auth.validators import validate_name
+from ..auth.error import AuthError
+from ..auth.validators import validate_name, validate_status
 from clother.common.constants import BASE_PREFIX
+from ..common.error import CommonError
 from ..images.utils import is_allowed_image, store_images
 
 blueprint = Blueprint('users', __name__, url_prefix=(BASE_PREFIX + '/users'))
@@ -17,9 +20,9 @@ blueprint = Blueprint('users', __name__, url_prefix=(BASE_PREFIX + '/users'))
 def get_user(user_id):
     user = User.query.get(user_id)
     if user is None:
-        return {'message': "User doesn't exist"}, 404
+        return jsonify(AuthError.USER_NOT_FOUND.to_dict()), HTTPStatus.NOT_FOUND
     else:
-        return jsonify(user.to_details_dict(request.url_root))
+        return jsonify(user.to_details_dict())
 
 
 @blueprint.post('/update')
@@ -33,11 +36,11 @@ def update_user():
     image = next(iter(request.files.getlist('file') or []), None)
 
     if not validate_name(name):
-        return {'message': "Name should contain at least 2 and less than 50 characters"}, 422
-    if status and len(status) > 70:
-        return {'message': "Status is limited to 70 symbols"}, 422
+        return jsonify(AuthError.INVALID_NAME.to_dict()), HTTPStatus.UNPROCESSABLE_ENTITY
+    if status and not validate_status(status):
+        return jsonify(AuthError.INVALID_STATUS.to_dict()), HTTPStatus.UNPROCESSABLE_ENTITY
     if image and not is_allowed_image(image.filename):
-        return {'message': "This file type is not allowed"}, 400
+        return jsonify(CommonError.UNSUPPORTED_FILE_TYPE), HTTPStatus.BAD_REQUEST
 
     user.name = name
     user.status = status
@@ -48,4 +51,4 @@ def update_user():
         db.session.delete(user.image)
     db.session.commit()
 
-    return jsonify(user.to_details_dict(request.url_root))
+    return jsonify(user.to_details_dict())

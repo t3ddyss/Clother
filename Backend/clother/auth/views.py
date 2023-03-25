@@ -48,7 +48,7 @@ def refresh_tokens():
         return jsonify(AuthError.INVALID_TOKEN.to_dict()), HTTPStatus.FORBIDDEN
 
     additional_claims = {'user_id': user_id}
-    return {'user': user.to_dict(request.url_root),
+    return {'user': user.to_dict(),
             'access_token': create_access_token(user_id, additional_claims=additional_claims),
             'refresh_token': create_refresh_token(user_id, additional_claims=additional_claims)}
 
@@ -143,7 +143,7 @@ def login():
 
     if user and user.check_password(password):
         additional_claims = {'user_id': user.id}
-        return {'user': user.to_details_dict(request.url_root),
+        return {'user': user.to_details_dict(),
                 'access_token': create_access_token(user.id, additional_claims=additional_claims),
                 'refresh_token': create_refresh_token(user.id, additional_claims=additional_claims)}
     else:

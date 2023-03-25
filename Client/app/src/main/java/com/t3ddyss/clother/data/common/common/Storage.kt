@@ -28,10 +28,10 @@ class Storage @Inject constructor(
         set(value) {
             prefs.edit().putInt(USER_ID, value).apply()
         }
-    var isDeviceTokenRetrieved: Boolean
-        get() = prefs.getBoolean(IS_DEVICE_TOKEN_RETRIEVED, false)
+    var isDeviceRegistered: Boolean
+        get() = prefs.getBoolean(IS_DEVICE_REGISTERED, false)
         set(value) {
-            prefs.edit().putBoolean(IS_DEVICE_TOKEN_RETRIEVED, value).apply()
+            prefs.edit().putBoolean(IS_DEVICE_REGISTERED, value).apply()
         }
     var isOnboardingCompleted: Boolean
         get() = prefs.getBoolean(IS_ONBOARDING_COMPLETED, false)
@@ -48,7 +48,7 @@ class Storage @Inject constructor(
         const val ACCESS_TOKEN = "access_token"
         const val REFRESH_TOKEN = "refresh_token"
         const val USER_ID = "user_id"
-        const val IS_DEVICE_TOKEN_RETRIEVED = "is_device_token_retrieved"
+        const val IS_DEVICE_REGISTERED = "is_device_registered"
         const val IS_ONBOARDING_COMPLETED = "is_onboarding_completed"
     }
 }

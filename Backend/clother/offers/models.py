@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 
-from flask import current_app, request
+from flask import current_app
 from sqlalchemy import func, event
 from sqlalchemy.ext.hybrid import hybrid_method
 
@@ -23,16 +23,16 @@ class Offer(db.Model):
     images = db.relationship('OfferImage', passive_deletes=True)
     location = db.relationship('Location', uselist=False, passive_deletes=True)
 
-    def to_dict(self, url_root):
+    def to_dict(self):
         return {'id': self.id,
-                'user': self.user.to_dict(request.url_root),
+                'user': self.user.to_dict(),
                 'category_id': self.category_id,
                 'created_at': self.created_at.isoformat(sep=' ', timespec='seconds'),
                 'title': self.title,
                 'description': self.description,
                 'size': self.size,
                 'category': self.category.title,
-                'images': [image.get_uri(url_root) for image in self.images],
+                'images': [image.get_url() for image in self.images],
                 'location': self.location.to_string() if self.location else None}
 
 

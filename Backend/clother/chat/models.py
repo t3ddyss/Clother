@@ -20,12 +20,12 @@ class Chat(db.Model):
                             backref=db.backref('chats', lazy=True))
     messages = db.relationship('Message', cascade="all,delete", lazy='dynamic')
 
-    def to_dict(self, url_root, addressee_id):
+    def to_dict(self, addressee_id):
         interlocutor = [x for x in self.users if x.id != addressee_id][0]
         last_message = self.messages[-1]
         return {'id': self.id,
-                'interlocutor': interlocutor.to_dict(url_root=url_root),
-                'last_message': last_message.to_dict(url_root=url_root)}
+                'interlocutor': interlocutor.to_dict(),
+                'last_message': last_message.to_dict()}
 
 
 class Message(db.Model):
@@ -38,14 +38,14 @@ class Message(db.Model):
     images = db.relationship('MessageImage', passive_deletes=True)
     user = db.relationship('User', uselist=False)
 
-    def to_dict(self, url_root):
+    def to_dict(self):
         return {'id': self.id,
                 'chat_id': self.chat_id,
                 'user_id': self.user_id,
                 'user_name': self.user.name,
                 'created_at': self.created_at.isoformat(' ', 'seconds'),
                 'body': self.body,
-                'images': [image.get_uri(url_root) for image in self.images]}
+                'images': [image.get_url() for image in self.images]}
 
 
 class MessageImage(BaseImage):

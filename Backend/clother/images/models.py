@@ -1,3 +1,5 @@
+from flask import request
+
 from clother import db
 
 
@@ -6,9 +8,9 @@ class BaseImage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     uri = db.Column(db.String, nullable=False)
 
-    def get_uri(self, url_root):
+    def get_url(self):
         if self.is_local():
-            return f'{url_root}api/images/{self.uri}'
+            return f'{request.url_root}api/images/{self.uri}'
         else:
             return self.uri
 

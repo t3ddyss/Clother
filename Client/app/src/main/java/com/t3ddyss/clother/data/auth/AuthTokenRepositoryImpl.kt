@@ -1,5 +1,6 @@
 package com.t3ddyss.clother.data.auth
 
+import arrow.core.merge
 import com.t3ddyss.clother.data.auth.remote.RemoteAuthService
 import com.t3ddyss.clother.data.auth.remote.models.UserAuthDataDto
 import com.t3ddyss.clother.data.common.common.Mappers.toDomain
@@ -51,28 +52,31 @@ class AuthTokenRepositoryImpl @Inject constructor(
 
             log("AuthTokenRepositoryImpl.authenticate(). Requesting auth tokens...")
             val refreshToken = storage.refreshToken ?: return unauthorized()
-            val refreshResponse = try {
-                runBlocking {
-                    remoteAuthService.refreshTokens(refreshToken)
-                }
-            } catch (ex: Exception) {
-                null
-            }
-            val authData = refreshResponse?.body() ?: return unauthorized()
-            saveTokens(authData)
-            _tokenStateFlow.tryEmit(authData)
-            log("AuthTokenRepositoryImpl.authenticate(). Requesting auth tokens: success")
 
-            return response
-                .request
-                .newBuilder()
-                .header(AUTHORIZATION, authData.accessToken.toBearer())
-                .build()
+            return runBlocking {
+                remoteAuthService.refreshTokens(refreshToken)
+                    .tap { authData ->
+                        log("AuthTokenRepositoryImpl.authenticate(). Requesting auth tokens: success")
+                        saveTokens(authData)
+                        _tokenStateFlow.emit(authData)
+                    }
+                    .tapLeft {
+                        log("AuthTokenRepositoryImpl.authenticate(). Requesting auth tokens: $it")
+                    }
+                    .map { authData ->
+                        response
+                            .request
+                            .newBuilder()
+                            .header(AUTHORIZATION, authData.accessToken.toBearer())
+                            .build()
+                    }
+                    .mapLeft { unauthorized() }
+                    .merge()
+            }
         }
     }
 
     private fun unauthorized(): Request? {
-        log("AuthTokenRepositoryImpl.authenticate(). Requesting auth tokens: refresh token expired")
         _tokenStateFlow.tryEmit(null)
         return null
     }

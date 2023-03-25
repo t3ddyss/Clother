@@ -5,14 +5,13 @@ import arrow.retrofit.adapter.either.networkhandling.CallError
 import com.t3ddyss.clother.data.auth.remote.models.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.Response
 import retrofit2.http.*
 
 interface RemoteAuthService {
     @GET("api/auth/refresh")
     suspend fun refreshTokens(
         @Header("Authorization") refreshToken: String?
-    ): Response<UserAuthDataDto>
+    ): Either<CallError, UserAuthDataDto>
 
     @POST("api/auth/register")
     suspend fun createUserWithCredentials(
@@ -30,10 +29,10 @@ interface RemoteAuthService {
     ): Either<ResetPasswordErrorDto, Unit>
 
     @POST("api/auth/device/{token}")
-    suspend fun sendDeviceToken(
+    suspend fun registerDevice(
         @Header("Authorization") accessToken: String?,
         @Path("token") token: String
-    )
+    ): Either<CallError, Unit>
 
     @GET("api/users/{user_id}")
     suspend fun getUserDetails(

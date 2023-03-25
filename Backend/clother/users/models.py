@@ -36,13 +36,13 @@ class User(db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-    def to_dict(self, url_root):
+    def to_dict(self):
         return {'id': self.id,
                 'name': self.name,
-                'image': self.image.get_uri(url_root) if self.image else None}
+                'image': self.image.get_url() if self.image else None}
 
-    def to_details_dict(self, url_root):
-        data = self.to_dict(url_root)
+    def to_details_dict(self):
+        data = self.to_dict()
         details = {'email': self.email,
                    'created_at': self.created_at.isoformat(' ', 'seconds'),
                    'status': self.status}

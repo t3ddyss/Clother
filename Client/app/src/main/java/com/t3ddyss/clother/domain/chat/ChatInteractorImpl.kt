@@ -66,7 +66,7 @@ class ChatInteractorImpl @Inject constructor(
 
     override fun onNewToken(token: String) {
         scope.launch {
-            chatRepository.sendDeviceToken(token)
+            chatRepository.registerDevice(token)
         }
     }
 
@@ -97,7 +97,7 @@ class ChatInteractorImpl @Inject constructor(
                     }
                 }
         }
-        chatRepository.sendDeviceTokenIfNeeded()
+        chatRepository.registerDeviceIfNeeded()
     }
 
     private fun onAuthFailure() {

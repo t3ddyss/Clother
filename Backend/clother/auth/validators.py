@@ -9,6 +9,10 @@ def validate_password(password):
     return get_password_regex().match(password)
 
 
+def validate_status(status):
+    return len(status) <= 70
+
+
 def get_name_regex():
     return re.compile(r'^(?=[a-zA-Z\s]{2,50}$)')
 
