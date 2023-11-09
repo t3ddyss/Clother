@@ -2,6 +2,8 @@ package com.t3ddyss.clother.presentation.offers.viewer
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -25,7 +27,7 @@ class OffersAdapter(
     }
 
     override fun onBindViewHolder(holder: OfferViewHolder, position: Int) {
-        getItem(position)?.let { holder.bind(it) }
+        holder.bind(getItem(position))
     }
 
     inner class OfferViewHolder(
@@ -41,17 +43,25 @@ class OffersAdapter(
             }
         }
 
-        fun bind(offer: Offer) {
-            binding.apply {
-                Glide.with(image.context)
-                    .load(offer.images.firstOrNull())
-                    .thumbnail(0.5f)
-                    .centerCrop()
-                    .placeholder(R.drawable.image_placeholder)
-                    .dontAnimate()
-                    .into(image)
+        fun bind(offer: Offer?) {
+            val isPlaceholder = offer == null
 
-                textViewTitle.text = offer.title
+            binding.apply {
+                image.isInvisible = isPlaceholder
+                title.isInvisible = isPlaceholder
+                progressBar.isVisible = isPlaceholder
+
+                if (offer != null) {
+                    Glide.with(image.context)
+                        .load(offer.images.firstOrNull())
+                        .thumbnail(0.5f)
+                        .centerCrop()
+                        .placeholder(R.drawable.image_placeholder)
+                        .dontAnimate()
+                        .into(image)
+
+                    title.text = offer.title
+                }
             }
         }
     }

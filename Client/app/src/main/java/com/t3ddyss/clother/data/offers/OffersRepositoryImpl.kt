@@ -43,7 +43,7 @@ class OffersRepositoryImpl @Inject constructor(
     private val pagingConfig by lazy {
         PagingConfig(
             pageSize = PAGE_SIZE,
-            enablePlaceholders = false
+            enablePlaceholders = true // Workaround for https://issuetracker.google.com/issues/235319241
         )
     }
 

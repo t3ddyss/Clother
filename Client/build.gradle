@@ -38,11 +38,11 @@ buildscript {
         material_version = '1.6.0'
         nav_version = '2.5.0-beta01'
         ok_http_version = '4.9.0'
-        paging_version = '3.1.1'
+        paging_version = '3.2.1'
         photo_version = '2.3.0'
         recyclerview_version = '1.2.1'
         retrofit_version = '2.9.0'
-        room_version = '2.3.0' // https://issuetracker.google.com/issues/235319241
+        room_version = '2.5.0'
         serialization_version = '1.5.0'
         shimmer_version = '0.5.0'
         socket_io_version = '2.0.1'

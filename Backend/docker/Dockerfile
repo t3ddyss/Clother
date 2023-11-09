@@ -6,13 +6,14 @@ WORKDIR /usr/src/app
 COPY .. /usr/src/app
 RUN mkdir -p ./media
 
+RUN apt-get update  \
+    && apt-get install -y curl netcat libpq-dev gcc \
+    && apt-get -y autoclean \
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-
-RUN apt-get update && apt-get install -y curl netcat && apt-get -y autoclean
 
 EXPOSE 5000
 

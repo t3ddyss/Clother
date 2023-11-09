@@ -93,7 +93,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
         adapterDataObserver = object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                if (layoutManager.findFirstVisibleItemPosition() == 0) {
+                if (positionStart == 0 && layoutManager.findFirstVisibleItemPosition() == 0) {
                     binding.list.scrollToPosition(positionStart)
                 }
             }
