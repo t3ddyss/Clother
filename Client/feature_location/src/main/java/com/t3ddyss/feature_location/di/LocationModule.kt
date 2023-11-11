@@ -15,9 +15,9 @@ import javax.inject.Singleton
 interface LocationModule {
     @Singleton
     @Binds
-    fun LocationRepositoryImpl.bindLocationRepository(): LocationRepository
+    fun bindLocationRepository(locationRepositoryImpl: LocationRepositoryImpl): LocationRepository
 
     @Singleton
     @Binds
-    fun LocationInteractorImpl.bindLocationInteractor(): LocationInteractor
+    fun bindLocationInteractor(locationInteractorImpl: LocationInteractorImpl): LocationInteractor
 }

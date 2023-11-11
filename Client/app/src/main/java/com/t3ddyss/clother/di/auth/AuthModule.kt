@@ -22,25 +22,25 @@ import okhttp3.Authenticator
 interface AuthModule {
     @Singleton
     @Binds
-    fun AuthInteractorImpl.bindAuthInteractor(): AuthInteractor
+    fun bindAuthInteractor(authInteractorImpl: AuthInteractorImpl): AuthInteractor
 
     @Singleton
     @Binds
-    fun AuthRepositoryImpl.bindAuthRepository(): AuthRepository
+    fun bindAuthRepository(authRepositoryImpl: AuthRepositoryImpl): AuthRepository
 
     @Singleton
     @Binds
-    fun AuthTokenRepositoryImpl.bindAuthTokenRepository(): AuthTokenRepository
+    fun bindAuthTokenRepository(authTokenRepositoryImpl: AuthTokenRepositoryImpl): AuthTokenRepository
 
     @Singleton
     @Binds
-    fun AuthTokenRepositoryImpl.bindAuthenticator(): Authenticator
+    fun bindAuthenticator(authTokenRepositoryImpl: AuthTokenRepositoryImpl): Authenticator
 
     @Singleton
     @Binds
-    fun ProfileInteractorImpl.bindProfileInteractor(): ProfileInteractor
+    fun bindProfileInteractor(profileInteractorImpl: ProfileInteractorImpl): ProfileInteractor
 
     @Singleton
     @Binds
-    fun ProfileRepositoryImpl.bindProfileRepository(): ProfileRepository
+    fun bindProfileRepository(profileRepositoryImpl: ProfileRepositoryImpl): ProfileRepository
 }

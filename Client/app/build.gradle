@@ -1,24 +1,23 @@
 plugins {
-    id 'com.android.application'
-    id 'com.google.gms.google-services'
-    id 'com.google.secrets_gradle_plugin' version '0.5'
-    id 'com.google.android.gms.strict-version-matcher-plugin'
-    id 'com.google.firebase.crashlytics'
-    id 'dagger.hilt.android.plugin'
-    id 'kotlin-android'
-    id 'kotlin-kapt'
-    id 'kotlin-parcelize'
-    id 'kotlinx-serialization'
+    alias libs.plugins.android.application
+    alias libs.plugins.firebase.crashlytics
+    alias libs.plugins.google.services
+    alias libs.plugins.hilt
+    alias libs.plugins.kotlin.android
+    alias libs.plugins.kotlin.parcelize
+    alias libs.plugins.kotlin.serialization
+    alias libs.plugins.ksp
+    alias libs.plugins.secrets
 }
 
 android {
-    compileSdkVersion rootProject.compileSdkVersion
-    buildToolsVersion rootProject.buildToolsVersion
+    namespace 'com.t3ddyss.clother'
 
     defaultConfig {
         applicationId "com.t3ddyss.clother"
-        minSdkVersion rootProject.minSdkVersion
-        targetSdkVersion rootProject.targetSdkVersion
+        minSdk rootProject.minSdkVersion
+        targetSdk rootProject.targetSdkVersion
+        compileSdk rootProject.compileSdkVersion
         versionCode pVersionCode.toInteger()
         versionName pVersionName
 
@@ -37,6 +36,7 @@ android {
     }
 
     buildFeatures {
+        buildConfig true
         viewBinding true
     }
 
@@ -51,97 +51,90 @@ android {
     }
 
     packagingOptions {
-        exclude "**/attach_hotspot_windows.dll"
-        exclude "META-INF/licenses/**"
-        exclude "META-INF/AL2.0"
-        exclude "META-INF/LGPL2.1"
+        jniLibs {
+            excludes += ['META-INF/licenses/**']
+        }
+        resources {
+            excludes += ['**/attach_hotspot_windows.dll', 'META-INF/licenses/**', 'META-INF/AL2.0', 'META-INF/LGPL2.1']
+        }
     }
 }
 
 dependencies {
-    kapt "androidx.hilt:hilt-compiler:$hilt_compiler_version"
-    kapt "androidx.room:room-compiler:$room_version"
-    kapt "com.github.bumptech.glide:compiler:$glide_version"
-    kapt "com.google.dagger:hilt-compiler:$hilt_version"
+    ksp libs.androidx.hilt.compiler
+    ksp libs.androidx.room.compiler
+    ksp libs.hilt.compiler
 
-    kaptTest "com.google.dagger:hilt-compiler:$hilt_version"
-    kaptAndroidTest "com.google.dagger:hilt-compiler:$hilt_version"
+    kspTest libs.hilt.compiler
+    kspAndroidTest libs.hilt.compiler
 
-    implementation project(":core")
-    implementation project(":navigation")
-    implementation project(":feature_location")
+    implementation projects.core
+    implementation projects.navigation
+    implementation projects.featureLocation
 
-    if (pEnableLeakCanary.toBoolean()) {
-        debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
-        logger.info("Leak Canary is enabled")
-    } else {
-        logger.info("Leak Canary is disabled")
-    }
+    implementation platform(libs.firebase.bom)
+    implementation libs.androidx.activity
+    implementation libs.androidx.annotation
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.constraintlayout
+    implementation libs.androidx.core
+    implementation libs.androidx.fragment
+    implementation libs.androidx.hilt.navigation.fragment
+    implementation libs.androidx.lifecycle.livedata
+    implementation libs.androidx.lifecycle.viewmodel
+    implementation libs.androidx.lifecycle.viewmodel.savedstate
+    implementation libs.androidx.navigation.fragment
+    implementation libs.androidx.navigation.ui
+    implementation libs.androidx.paging.runtime
+    implementation libs.androidx.recyclerview
+    implementation libs.androidx.room
+    implementation libs.androidx.room.paging
+    implementation libs.androidx.room.runtime
+    implementation libs.androidx.swiperefreshlayout
+    implementation libs.arrow.core
+    implementation libs.arrow.core.retrofit
+    implementation libs.compressor
+    implementation libs.firebase.analytics
+    implementation libs.firebase.crashlytics
+    implementation libs.firebase.messaging
+    implementation libs.glide
+    implementation libs.hilt
+    implementation libs.kotlinx.coroutines.android
+    implementation libs.kotlinx.coroutines.core
+    implementation libs.kotlinx.serialization.json
+    implementation libs.material
+    implementation libs.okhttp
+    implementation libs.okhttp.logging
+    implementation libs.photoview
+    implementation libs.retrofit2
+    implementation libs.retrofit2.converter.gson
+    implementation libs.shimmer
+    implementation (libs.socketio.client) { exclude module : "org.json:json" }
 
-    implementation platform("com.google.firebase:firebase-bom:$firebase_bom_version")
-    implementation "androidx.activity:activity-ktx:$activity_version"
-    implementation "androidx.annotation:annotation:$annotation_version"
-    implementation "androidx.appcompat:appcompat:$app_compat_version"
-    implementation "androidx.constraintlayout:constraintlayout:$constraintlayout_version"
-    implementation "androidx.core:core-ktx:$ktx_version"
-    implementation "androidx.fragment:fragment-ktx:$fragment_version"
-    implementation "androidx.hilt:hilt-navigation-fragment:$hilt_nav_version"
-    implementation "androidx.legacy:legacy-support-v4:$legacy_version"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
-    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
-    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
-    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
-    implementation "androidx.recyclerview:recyclerview:$recyclerview_version"
-    implementation "androidx.room:room-runtime:$room_version"
-    implementation "androidx.room:room-ktx:$room_version"
-    implementation "androidx.room:room-paging:$room_version"
-    implementation "com.facebook.shimmer:shimmer:$shimmer_version"
-    implementation "com.github.bumptech.glide:glide:$glide_version"
-    implementation "com.google.android.material:material:$material_version"
-    implementation "com.google.dagger:hilt-android:$hilt_version"
-    implementation "com.google.firebase:firebase-analytics-ktx"
-    implementation "com.google.firebase:firebase-crashlytics-ktx"
-    implementation "com.google.firebase:firebase-messaging-ktx"
-    implementation "com.squareup.okhttp3:okhttp:$ok_http_version"
-    implementation "com.squareup.okhttp3:logging-interceptor:$ok_http_version"
-    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
-    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
-    implementation "com.github.chrisbanes:PhotoView:$photo_version"
-    implementation "id.zelory:compressor:$compressor_version"
-    implementation "io.arrow-kt:arrow-core:$arrow_version"
-    implementation "io.arrow-kt:arrow-core-retrofit:$arrow_version"
-    implementation("io.socket:socket.io-client:$socket_io_version") {
-        exclude group: 'org.json', module: 'json'
-    }
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_version"
-
-    debugImplementation "androidx.fragment:fragment-testing:$fragment_version"
-    testImplementation "androidx.arch.core:core-testing:$arch_core_test_version"
-    testImplementation "androidx.test:core:$test_version"
-    testImplementation "androidx.test.ext:junit:$test_ext_junit_version"
-    testImplementation "androidx.test:runner:$test_version"
-    testImplementation "androidx.test:rules:$test_version"
-    testImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
-    testImplementation "com.google.truth:truth:$truth_version"
-    testImplementation "com.squareup.okhttp3:mockwebserver:$ok_http_version"
-    testImplementation "junit:junit:$junit_version"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_test_version"
-    testImplementation "org.mockito:mockito-android:$mockito_version"
-    androidTestImplementation "androidx.arch.core:core-testing:$arch_core_test_version"
-    androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
-    androidTestImplementation "androidx.test:core:$test_version"
-    androidTestImplementation "androidx.test.ext:junit:$test_ext_junit_version"
-    androidTestImplementation "androidx.test:runner:$test_version"
-    androidTestImplementation "androidx.test:rules:$test_version"
-    androidTestImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
-    androidTestImplementation "com.google.truth:truth:$truth_version"
-    androidTestImplementation "com.squareup.okhttp3:mockwebserver:$ok_http_version"
-    androidTestImplementation "junit:junit:$junit_version"
-    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_test_version"
-    androidTestImplementation "org.mockito:mockito-android:$mockito_version"
+    if (pEnableLeakCanary.toBoolean()) debugImplementation libs.leakcanary
+    debugImplementation libs.androidx.fragment.testing
+    testImplementation libs.androidx.core.testing
+    testImplementation libs.androidx.test.core
+    testImplementation libs.androidx.test.junit
+    testImplementation libs.androidx.test.rules
+    testImplementation libs.androidx.test.runner
+    testImplementation libs.hilt.android.testing
+    testImplementation libs.junit
+    testImplementation libs.kotlinx.coroutines.test
+    testImplementation libs.mockito.android
+    testImplementation libs.mockwebserver
+    testImplementation libs.truth
+    androidTestImplementation libs.androidx.core.testing
+    androidTestImplementation libs.androidx.navigation.testing
+    androidTestImplementation libs.androidx.test.core
+    androidTestImplementation libs.androidx.test.espresso.core
+    androidTestImplementation libs.androidx.test.junit
+    androidTestImplementation libs.androidx.test.rules
+    androidTestImplementation libs.androidx.test.runner
+    androidTestImplementation libs.hilt.android.testing
+    androidTestImplementation libs.junit
+    androidTestImplementation libs.kotlinx.coroutines.test
+    androidTestImplementation libs.mockito.android
+    androidTestImplementation libs.mockwebserver
+    androidTestImplementation libs.truth
 }

@@ -1,16 +1,17 @@
 plugins {
-    id 'com.android.library'
-    id 'kotlin-android'
-    id 'androidx.navigation.safeargs.kotlin'
-    id 'kotlin-parcelize'
+    alias libs.plugins.android.library
+    alias libs.plugins.kotlin.android
+    alias libs.plugins.kotlin.parcelize
+    alias libs.plugins.navigation.safeargs
 }
 
 android {
-    compileSdk rootProject.compileSdkVersion
+    namespace 'com.t3ddyss.navigation'
 
     defaultConfig {
         minSdk rootProject.minSdkVersion
         targetSdk rootProject.targetSdkVersion
+        compileSdk rootProject.compileSdkVersion
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -27,15 +28,15 @@ android {
 }
 
 dependencies {
-    implementation project(":core")
+    implementation projects.core
 
-    implementation "androidx.appcompat:appcompat:$app_compat_version"
-    implementation "androidx.core:core-ktx:$ktx_version"
-    implementation "com.google.android.material:material:$material_version"
-    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
-    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.core
+    implementation libs.androidx.navigation.fragment
+    implementation libs.androidx.navigation.ui
+    implementation libs.material
 
-    testImplementation "junit:junit:$junit_version"
-    androidTestImplementation "androidx.test.ext:junit:$test_ext_junit_version"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+    testImplementation libs.junit
+    androidTestImplementation libs.androidx.test.espresso.core
+    androidTestImplementation libs.androidx.test.junit
 }

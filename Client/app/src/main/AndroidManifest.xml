@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.t3ddyss.clother">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <!-- FIXME Remove "usesCleartextTraffic" and "requestLegacyStorage" in the future -->
+    <!-- TODO Remove "usesCleartextTraffic" and "requestLegacyStorage" -->
     <application
         android:name=".presentation.MainApplication"
         android:allowBackup="false"

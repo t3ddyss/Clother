@@ -17,12 +17,11 @@ import javax.inject.Singleton
 interface CoroutineModule {
     @Singleton
     @Binds
-    fun DispatchersProviderImpl.bindDispatchersProvider(): DispatchersProvider
+    fun bindDispatchersProvider(dispatchersProviderImpl: DispatchersProviderImpl): DispatchersProvider
 
     companion object {
         @Singleton
         @Provides
-        fun provideCoroutineScope() =
-            CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+        fun provideCoroutineScope() = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     }
 }

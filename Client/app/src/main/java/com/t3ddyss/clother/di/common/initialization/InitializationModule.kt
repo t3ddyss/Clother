@@ -15,8 +15,8 @@ import javax.inject.Singleton
 interface InitializationModule {
     @Singleton
     @Binds
-    fun InitializationInteractorImpl.bindInitializationInteractor(): InitializationInteractor
+    fun bindInitializationInteractor(initializationInteractorImpl: InitializationInteractorImpl): InitializationInteractor
 
     @Binds
-    fun MapRepositoryImpl.bindMapRepository(): MapRepository
+    fun bindMapRepository(mapRepositoryImpl: MapRepositoryImpl): MapRepository
 }

@@ -21,21 +21,21 @@ import javax.inject.Singleton
 interface ChatModule {
     @Singleton
     @Binds
-    fun ChatInteractorImpl.bindChatInteractor(): ChatInteractor
+    fun bindChatInteractor(chatInteractorImpl: ChatInteractorImpl): ChatInteractor
 
     @Singleton
     @Binds
-    fun ChatRepositoryImpl.bindChatRepository(): ChatRepository
+    fun bindChatRepository(chatRepositoryImpl: ChatRepositoryImpl): ChatRepository
 
     @Singleton
     @Binds
-    fun ChatListenerRepositoryImpl.bindChatListenerRepository(): ChatListenerRepository
+    fun bindChatListenerRepository(chatListenerRepositoryImpl: ChatListenerRepositoryImpl): ChatListenerRepository
 
     @Singleton
     @Binds
-    fun NotificationInteractorImpl.bindNotificationInteractor(): NotificationInteractor
+    fun bindNotificationInteractor(notificationInteractorImpl: NotificationInteractorImpl): NotificationInteractor
 
     @Singleton
     @Binds
-    fun NotificationControllerImpl.bindNotificationController(): NotificationController
+    fun bindNotificationController(notificationControllerImpl: NotificationControllerImpl): NotificationController
 }

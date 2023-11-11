@@ -19,17 +19,17 @@ import javax.inject.Singleton
 interface OfferModule {
     @Singleton
     @Binds
-    fun OffersInteractorImpl.bindOffersInteractor(): OffersInteractor
+    fun bindOffersInteractor(offersInteractorImpl: OffersInteractorImpl): OffersInteractor
 
     @Singleton
     @Binds
-    fun OffersRepositoryImpl.bindOffersRepository(): OffersRepository
+    fun bindOffersRepository(offersRepositoryImpl: OffersRepositoryImpl): OffersRepository
 
     @Singleton
     @Binds
-    fun ImagesInteractorImpl.bindImagesInteractor(): ImagesInteractor
+    fun bindImagesInteractor(imagesInteractorImpl: ImagesInteractorImpl): ImagesInteractor
 
     @Singleton
     @Binds
-    fun ImagesRepositoryImpl.bindImagesRepository(): ImagesRepository
+    fun bindImagesRepository(imagesRepositoryImpl: ImagesRepositoryImpl): ImagesRepository
 }

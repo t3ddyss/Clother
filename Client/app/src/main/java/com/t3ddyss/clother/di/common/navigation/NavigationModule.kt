@@ -15,9 +15,9 @@ import javax.inject.Singleton
 interface NavigationModule {
     @Singleton
     @Binds
-    fun NavigationInteractorImpl.bindNavigationInteractor(): NavigationInteractor
+    fun bindNavigationInteractor(navigationInteractorImpl: NavigationInteractorImpl): NavigationInteractor
 
     @Singleton
     @Binds
-    fun NavigationRepositoryImpl.bindNavigationRepository(): NavigationRepository
+    fun bindNavigationRepository(navigationRepositoryImpl: NavigationRepositoryImpl): NavigationRepository
 }

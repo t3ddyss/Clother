@@ -27,17 +27,11 @@ class DestinationChangeListener(
         when (destination.id) {
             R.id.profileFragment -> {
                 val user = arguments?.getParcelable<UserArg>(ARG_USER)
-                changeVisibilityIfNeeded(navView, user == null)
+                navView.isVisible = user == null
             }
             else -> {
-                changeVisibilityIfNeeded(navView, destination.id in fragmentsWithBottomMenu)
+                navView.isVisible = destination.id in fragmentsWithBottomMenu
             }
-        }
-    }
-
-    private fun changeVisibilityIfNeeded(view: View, isVisible: Boolean) {
-        if (view.isVisible != isVisible) {
-            view.isVisible = isVisible
         }
     }
 
